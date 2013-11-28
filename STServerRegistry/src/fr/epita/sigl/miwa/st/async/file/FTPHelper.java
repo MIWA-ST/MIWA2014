@@ -15,9 +15,9 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import fr.epita.sigl.miwa.st.EApplication;
 
-public class FTPManager implements AsyncFileManager {
+public class FTPHelper implements AsyncFileHelper {
 
-	private static final Logger log = Logger.getLogger(FTPManager.class
+	private static final Logger log = Logger.getLogger(FTPHelper.class
 			.getName());
 
 	private FTPClient ftpClient = null;

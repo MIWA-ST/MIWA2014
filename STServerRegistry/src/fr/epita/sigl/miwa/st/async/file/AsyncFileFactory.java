@@ -17,12 +17,12 @@ public class AsyncFileFactory {
 		log.info("Using configuration : " + (isLocal ? "local" : "remote"));
 	}
 
-	public AsyncFileManager getManager() {
-		AsyncFileManager manager = null;
+	public AsyncFileHelper getFileHelper() {
+		AsyncFileHelper manager = null;
 		if (isLocal) {
-			manager =  new LocalManager();
+			manager =  new LocalFileHelper();
 		} else {
-			manager = new FTPManager();
+			manager = new FTPHelper();
 		}
 		log.info("Return file manager : " + manager.getClass().getName());
 		return manager;

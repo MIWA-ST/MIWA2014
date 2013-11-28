@@ -10,9 +10,9 @@ import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.st.EApplication;
 
-public class LocalManager implements AsyncFileManager {
+public class LocalFileHelper implements AsyncFileHelper {
 
-	private static final Logger log = Logger.getLogger(LocalManager.class.getName());
+	private static final Logger log = Logger.getLogger(LocalFileHelper.class.getName());
 	
 	private File destFolder = null;
 	private File localFolder = null;
