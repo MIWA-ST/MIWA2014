@@ -163,7 +163,7 @@ public class FTPManager implements AsyncFileManager {
 	}
 
 	@Override
-	public void retrieve(String filename, EApplication current)
+	public void retrieve(String filename)
 			throws AsyncFileException {
 		// TODO Récupérer les properties qui vont bien
 		String localFolder = "/Users/francois/Downloads/";

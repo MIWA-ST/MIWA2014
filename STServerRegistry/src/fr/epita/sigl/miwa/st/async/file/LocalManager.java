@@ -46,8 +46,10 @@ public class LocalManager implements AsyncFileManager {
 	}
 
 	@Override
-	public void retrieve(String filename, EApplication current)
+	public void retrieve(String filename)
 			throws AsyncFileException {
+		// TODO recuperer current application
+		EApplication current = EApplication.BACK_OFFICE;
 		init(current);
 		
 		File from = new File(destFolder.getAbsolutePath() + "/" + filename);
