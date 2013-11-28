@@ -15,7 +15,7 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import fr.epita.sigl.miwa.st.EApplication;
 
-public class FTPManager implements IAsyncFileManager {
+public class FTPManager implements AsyncFileManager {
 
 	private static final Logger log = Logger.getLogger(FTPManager.class
 			.getName());
@@ -53,8 +53,7 @@ public class FTPManager implements IAsyncFileManager {
 		} catch (IOException e) {
 			disconnect();
 			log.severe("Failed to connect to FTP server" + e);
-			throw new AsyncFileException(
-					"Failed to connect to FTP server", e);
+			throw new AsyncFileException("Failed to connect to FTP server", e);
 		}
 	}
 
@@ -69,18 +68,22 @@ public class FTPManager implements IAsyncFileManager {
 		}
 	}
 
-	private void send(String localFilepath, String destApplication,
-			String remoteFilename) throws AsyncFileException {
+	private void send(String localFilepath, String remoteFilepath)
+			throws AsyncFileException {
 		InputStream inputStream = null;
 		try {
 			log.info("Trying to send file " + localFilepath + " to "
-					+ destApplication + "...");
-			inputStream = new FileInputStream(new File(localFilepath));
+					+ remoteFilepath + "...");
+			File localFile = new File(localFilepath);
+			if (!localFile.exists()) {
+				log.severe("The file " + localFilepath + " does not exists.");
+				throw new AsyncFileException("The file " + localFilepath + " does not exists.");
+			}
+			inputStream = new FileInputStream(localFile);
 			if (ftpClient != null && ftpClient.isConnected()) {
 				log.info("Sending file " + localFilepath + " to "
-						+ destApplication + "...");
-				ftpClient.storeFile(destApplication + "/" + remoteFilename,
-						inputStream);
+						+ remoteFilepath + "...");
+				ftpClient.storeFile(remoteFilepath, inputStream);
 				if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 					disconnect();
 					log.severe("Failed to send file " + localFilepath
@@ -90,7 +93,7 @@ public class FTPManager implements IAsyncFileManager {
 							+ localFilepath + " to FTP server : "
 							+ ftpClient.getReplyString());
 				}
-				log.info("File successfully sent to " + destApplication + " !");
+				log.info("File successfully sent to " + remoteFilepath + " !");
 			}
 		} catch (FileNotFoundException e) {
 			log.severe("File not found : " + e.getMessage());
@@ -113,8 +116,8 @@ public class FTPManager implements IAsyncFileManager {
 		}
 	}
 
-	private void retrieve(String remoteFilepath, String application,
-			String localFilepath) throws AsyncFileException {
+	private void retrieve(String remoteFilepath, String localFilepath)
+			throws AsyncFileException {
 		OutputStream outputStream = null;
 		try {
 			log.info("Trying to retrieve file " + remoteFilepath + " to "
@@ -124,7 +127,7 @@ public class FTPManager implements IAsyncFileManager {
 			if (ftpClient != null && ftpClient.isConnected()) {
 				log.info("Retrieving file " + remoteFilepath + " to "
 						+ localFilepath + "...");
-				ftpClient.retrieveFile(application + "/" + remoteFilepath,
+				ftpClient.retrieveFile(remoteFilepath,
 						outputStream);
 				if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 					disconnect();
@@ -135,15 +138,18 @@ public class FTPManager implements IAsyncFileManager {
 							+ remoteFilepath + " to FTP server : "
 							+ ftpClient.getReplyString());
 				}
-				log.info("File successfully retrieved to " + localFilepath + " !");
+				log.info("File successfully retrieved to " + localFilepath
+						+ " !");
 			}
 		} catch (FileNotFoundException e) {
 			log.severe("File not found : " + e.getMessage());
 			throw new AsyncFileException("File not found", e);
 		} catch (IOException e) {
-			log.severe("A problem occured when trying to retrieve file " + remoteFilepath);
+			log.severe("A problem occured when trying to retrieve file "
+					+ remoteFilepath);
 			throw new AsyncFileException(
-					"A problem occured when trying to retrieve file " + remoteFilepath, e);
+					"A problem occured when trying to retrieve file "
+							+ remoteFilepath, e);
 		} finally {
 			disconnect();
 			if (outputStream != null) {
@@ -156,12 +162,6 @@ public class FTPManager implements IAsyncFileManager {
 		}
 	}
 
-//	public static void main(String[] args) throws AsyncFileException {
-//		FTPManager ftpManager = new FTPManager();
-//		ftpManager.send("FTPClientExample.java", EApplication.BACK_OFFICE);
-//		ftpManager.retrieve("FTPClientExample.java", EApplication.BACK_OFFICE);
-//	}
-
 	@Override
 	public void retrieve(String filename, EApplication current)
 			throws AsyncFileException {
@@ -172,9 +172,9 @@ public class FTPManager implements IAsyncFileManager {
 		int port = 2266;
 		String username = "anonymous";
 		String password = "";
-		
+
 		connect(host, port, username, password);
-		retrieve(filename, remoteFolder, localFolder + filename);
+		retrieve(remoteFolder + filename, localFolder + filename);
 	}
 
 	@Override
@@ -187,8 +187,8 @@ public class FTPManager implements IAsyncFileManager {
 		String password = "";
 		String remoteFolder = "TOTO";
 		String localFolder = "/Users/francois/Downloads/";
-		
+
 		connect(host, port, username, password);
-		send(localFolder + filename, remoteFolder, filename);
+		send(localFolder + filename, remoteFolder + filename);
 	}
 }
