@@ -1,5 +1,11 @@
 package fr.epita.sigl.miwa.st.async.file;
 
+/**
+ * Exception du gestionnaire de fichiers asynchrones
+ * 
+ * @author francois
+ *
+ */
 public class AsyncFileException extends Exception {
 
 	/**

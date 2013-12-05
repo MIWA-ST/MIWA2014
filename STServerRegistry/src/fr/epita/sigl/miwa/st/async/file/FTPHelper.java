@@ -15,6 +15,12 @@ import org.apache.commons.net.ftp.FTPReply;
 
 import fr.epita.sigl.miwa.st.EApplication;
 
+/**
+ * L'utilitaire d'envoi de fichiers sur un serveur FTP
+ * 
+ * @author francois
+ * 
+ */
 public class FTPHelper implements AsyncFileHelper {
 
 	private static final Logger log = Logger.getLogger(FTPHelper.class
@@ -22,6 +28,15 @@ public class FTPHelper implements AsyncFileHelper {
 
 	private FTPClient ftpClient = null;
 
+	/**
+	 * Connexion au serveur FTP et initialisation du FTPClient
+	 * 
+	 * @param address
+	 * @param port
+	 * @param username
+	 * @param password
+	 * @throws AsyncFileException
+	 */
 	private void connect(String address, int port, String username,
 			String password) throws AsyncFileException {
 		ftpClient = new FTPClient();
@@ -57,6 +72,9 @@ public class FTPHelper implements AsyncFileHelper {
 		}
 	}
 
+	/**
+	 * Déconnexion au serveur FTP
+	 */
 	private void disconnect() {
 		if (ftpClient != null && ftpClient.isConnected()) {
 			try {
@@ -68,6 +86,16 @@ public class FTPHelper implements AsyncFileHelper {
 		}
 	}
 
+	/**
+	 * Envoi le fichier sur le serveur FTP
+	 * 
+	 * @param localFilepath
+	 *            Le chemin du fichier à envoyer
+	 * @param remoteFilepath
+	 *            Le chemin de l'endroit où le fichier doit être placé sur le
+	 *            serveur FTP
+	 * @throws AsyncFileException
+	 */
 	private void send(String localFilepath, String remoteFilepath)
 			throws AsyncFileException {
 		InputStream inputStream = null;
@@ -77,7 +105,8 @@ public class FTPHelper implements AsyncFileHelper {
 			File localFile = new File(localFilepath);
 			if (!localFile.exists()) {
 				log.severe("The file " + localFilepath + " does not exists.");
-				throw new AsyncFileException("The file " + localFilepath + " does not exists.");
+				throw new AsyncFileException("The file " + localFilepath
+						+ " does not exists.");
 			}
 			inputStream = new FileInputStream(localFile);
 			if (ftpClient != null && ftpClient.isConnected()) {
@@ -116,6 +145,15 @@ public class FTPHelper implements AsyncFileHelper {
 		}
 	}
 
+	/**
+	 * Récupère le fichier depuis le serveur FTP
+	 * 
+	 * @param remoteFilepath
+	 *            Le chemin du fichier à récupérer sur le serveur FTP
+	 * @param localFilepath
+	 *            Le chemin où sera stocké le fichier en local
+	 * @throws AsyncFileException
+	 */
 	private void retrieve(String remoteFilepath, String localFilepath)
 			throws AsyncFileException {
 		OutputStream outputStream = null;
@@ -127,8 +165,7 @@ public class FTPHelper implements AsyncFileHelper {
 			if (ftpClient != null && ftpClient.isConnected()) {
 				log.info("Retrieving file " + remoteFilepath + " to "
 						+ localFilepath + "...");
-				ftpClient.retrieveFile(remoteFilepath,
-						outputStream);
+				ftpClient.retrieveFile(remoteFilepath, outputStream);
 				if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 					disconnect();
 					log.severe("Failed to retrieve file " + remoteFilepath
@@ -162,10 +199,16 @@ public class FTPHelper implements AsyncFileHelper {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.epita.sigl.miwa.st.async.file.AsyncFileHelper#retrieve(java.lang.String
+	 * )
+	 */
 	@Override
-	public void retrieve(String filename)
-			throws AsyncFileException {
-		// TODO R�cup�rer les properties qui vont bien
+	public void retrieve(String filename) throws AsyncFileException {
+		// TODO Récupérer les properties qui vont bien
 		String localFolder = "/Users/francois/Downloads/";
 		String remoteFolder = "TOTO";
 		String host = "bnf.sigl.epita.fr";
@@ -177,10 +220,17 @@ public class FTPHelper implements AsyncFileHelper {
 		retrieve(remoteFolder + filename, localFolder + filename);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * fr.epita.sigl.miwa.st.async.file.AsyncFileHelper#send(java.lang.String,
+	 * fr.epita.sigl.miwa.st.EApplication)
+	 */
 	@Override
 	public void send(String filename, EApplication destination)
 			throws AsyncFileException {
-		// TODO R�cup�rer les properties qui vont bien
+		// TODO Récupérer les properties qui vont bien
 		String host = "bnf.sigl.epita.fr";
 		int port = 2266;
 		String username = "anonymous";
