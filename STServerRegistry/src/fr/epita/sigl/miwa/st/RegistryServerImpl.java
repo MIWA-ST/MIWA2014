@@ -1,4 +1,5 @@
 package fr.epita.sigl.miwa.st;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,8 +8,15 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import fr.epita.sigl.miwa.st.async.file.FTPHelper;
 
 public class RegistryServerImpl extends UnicastRemoteObject {
+	
+	private static final Logger log = Logger.getLogger(RegistryServerImpl.class
+			.getName());
 
 	protected RegistryServerImpl(int arg0, RMIClientSocketFactory arg1,
 			RMIServerSocketFactory arg2) throws RemoteException {
@@ -22,18 +30,19 @@ public class RegistryServerImpl extends UnicastRemoteObject {
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
-	    try {
-	        LocateRegistry.createRegistry(1099);
-	        try {
+		try {
+			LocateRegistry.createRegistry(1099);
+			try {
 				new BufferedReader(new InputStreamReader(System.in)).readLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				log.log(Level.SEVERE, "ERREUR REGISTRY READLINE.");
 				e.printStackTrace();
 			}
 		} catch (RemoteException e) {
+			log.log(Level.SEVERE, "ERREUR REGISTRY : RemoteException.");
 			e.printStackTrace();
-		
-	}
+
+		}
 	}
 
 }

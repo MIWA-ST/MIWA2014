@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.st.clock.IClock;
 import fr.epita.sigl.miwa.st.clock.IClockClient;
@@ -25,6 +27,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 	 * 
 	 */
 
+	private static final Logger log = Logger.getLogger(Clock.class.getName());
 	private static final long serialVersionUID = -8347497431139736160L;
 	private static final int _interval = 500;
 	private static final Object _instanceLock = new Object();
@@ -47,7 +50,8 @@ public class Clock extends UnicastRemoteObject implements IClock {
 						_instance = new Clock();
 						_instance.initConnection();
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
+						log.log(Level.SEVERE,
+								"CLOCK SERVER : Failed to build Clock");
 						e.printStackTrace();
 					}
 				}
@@ -123,6 +127,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				try {
 					Thread.sleep(_interval);
 				} catch (InterruptedException e) {
+					log.log(Level.SEVERE, "CLOCK SERVER : Timer sleep failed");
 					e.printStackTrace();
 				}
 				update();
@@ -198,12 +203,16 @@ public class Clock extends UnicastRemoteObject implements IClock {
 					receiver.wakeUp(_date, _message);
 			} catch (RemoteException e) {
 				e.printStackTrace();
-				System.err.println("#12093928 : Try to reconnect");
+				log.log(Level.WARNING, "CLOCK SERVER : Failed to wakeUp "
+						+ _sender + ", Try to reconnect.");
 				final IClockClient receiver = getClientConnection(true);
 				if (receiver != null) {
 					try {
 						receiver.wakeUp(_date, _message);
 					} catch (RemoteException e1) {
+						log.log(Level.SEVERE,
+								"CLOCK SERVER : Failed to wakeUp " + _sender
+										+ " for the second try.");
 						e1.printStackTrace();
 						return;
 					}
@@ -238,10 +247,15 @@ public class Clock extends UnicastRemoteObject implements IClock {
 							_clients.put(_sender, receiver);
 						} catch (MalformedURLException | RemoteException
 								| NotBoundException e) {
+							log.log(Level.SEVERE,
+									"CLOCK SERVER : Failed to establish connection with "
+											+ _sender + ".");
 							e.printStackTrace();
 							return null;
 						}
 					} catch (UnknownHostException e) {
+						log.log(Level.SEVERE,
+								"CLOCK SERVER : UnknownHostException");
 						e.printStackTrace();
 						return null;
 					}
@@ -273,11 +287,13 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				// FIXME WithConf
 				Naming.rebind(url, _instance);
 			} catch (RemoteException | MalformedURLException e) {
-				// TODO Auto-generated catch block
+				log.log(Level.SEVERE,
+						"CLOCK SERVER : Failed to register URL Or Remote exception");
 				e.printStackTrace();
 			}
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
+			log.log(Level.SEVERE,
+					"CLOCK SERVER : Failed to register UnknownHost exception");
 			e.printStackTrace();
 		}
 		_clients = new HashMap<String, IClockClient>();
@@ -337,7 +353,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 			} while (true);
 
 		} catch (Exception e) {
-			System.err.println("Erreur : " + e.getMessage());
+			log.log(Level.SEVERE, "CLOCK SERVER : cmd Reader exception");
 		}
 	}
 	/* !main */
