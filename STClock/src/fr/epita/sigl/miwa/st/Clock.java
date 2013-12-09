@@ -239,7 +239,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				if (reset || !_clients.containsKey(_sender)) {
 					try {
 						String rmiClockClient = "rmi://"
-								+ InetAddress.getLocalHost().getHostAddress()
+								+ InetAddress.getLocalHost().getHostAddress() //FIXME
 								+ "/Clock" + _sender;
 						try {
 							receiver = (IClockClient) Naming

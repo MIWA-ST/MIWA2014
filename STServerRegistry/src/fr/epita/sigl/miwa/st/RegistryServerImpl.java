@@ -3,6 +3,10 @@ package fr.epita.sigl.miwa.st;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.RMIClientSocketFactory;
@@ -32,6 +36,8 @@ public class RegistryServerImpl extends UnicastRemoteObject {
 	public static void main(String[] args) {
 		try {
 			LocateRegistry.createRegistry(1099);
+			runAppLocator();
+			
 			try {
 				new BufferedReader(new InputStreamReader(System.in)).readLine();
 			} catch (IOException e) {
@@ -42,6 +48,35 @@ public class RegistryServerImpl extends UnicastRemoteObject {
 			log.log(Level.SEVERE, "ERREUR REGISTRY : RemoteException.");
 			e.printStackTrace();
 
+		}
+	}
+	
+	private static void runAppLocator () {
+
+		ApplicationLocator locator = null;
+		try {
+			locator = new ApplicationLocator();
+		} catch (RemoteException e1) {
+			log.log(Level.SEVERE,
+					"APP LOCATOR : Failed to build.");
+			e1.printStackTrace();
+			return;
+		}
+		try {
+			String url = "rmi://" + InetAddress.getLocalHost().getHostAddress()
+					+ "/ApplicationLocator";
+			try {
+				// FIXME WithConf
+				Naming.rebind(url, locator);
+			} catch (RemoteException | MalformedURLException e) {
+				log.log(Level.SEVERE,
+						"APP LOCATOR : Failed to register URL Or Remote exception");
+				e.printStackTrace();
+			}
+		} catch (UnknownHostException e) {
+			log.log(Level.SEVERE,
+					"APP LOCATOR : Failed to register UnknownHost exception");
+			e.printStackTrace();
 		}
 	}
 
