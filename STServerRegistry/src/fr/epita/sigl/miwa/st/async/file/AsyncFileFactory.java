@@ -33,7 +33,7 @@ public class AsyncFileFactory {
 		} else {
 			manager = new FTPHelper();
 		}
-		log.info("Return file manager : " + manager.getClass().getName());
+		log.info("Return file helper : " + manager.getClass().getName());
 		return manager;
 	}
 }
