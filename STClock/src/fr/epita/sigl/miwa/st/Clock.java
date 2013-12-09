@@ -34,7 +34,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 
 	private static Clock _instance;
 
-	private Map<String, IClockClient> _clients;
+	private Map<EApplication, IClockClient> _clients;
 	private final Object _clientsLock = new Object();
 
 	private Date _hour;
@@ -67,25 +67,25 @@ public class Clock extends UnicastRemoteObject implements IClock {
 	}
 
 	@Override
-	public void wakeMeUp(String sender, Date date, Object message)
+	public void wakeMeUp(EApplication sender, Date date, Object message)
 			throws RemoteException {
 		registerMessage(sender, date, message, RepeatFrequecy.NEVER);
 	}
 
 	@Override
-	public void wakeMeUpEveryHours(String sender, Date nextOccurence,
+	public void wakeMeUpEveryHours(EApplication sender, Date nextOccurence,
 			Object message) throws RemoteException {
 		registerMessage(sender, nextOccurence, message, RepeatFrequecy.HOUR);
 	}
 
 	@Override
-	public void wakeMeUpEveryDays(String sender, Date nextOccurence,
+	public void wakeMeUpEveryDays(EApplication sender, Date nextOccurence,
 			Object message) throws RemoteException {
 		registerMessage(sender, nextOccurence, message, RepeatFrequecy.DAY);
 	}
 
 	@Override
-	public void wakeMeUpEveryWeeks(String sender, Date nextOccurence,
+	public void wakeMeUpEveryWeeks(EApplication sender, Date nextOccurence,
 			Object message) throws RemoteException {
 		registerMessage(sender, nextOccurence, message, RepeatFrequecy.WEEK);
 	}
@@ -149,7 +149,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 
 	/* !Time management */
 	/* Message Handling */
-	private void registerMessage(String sender, Date date, Object message,
+	private void registerMessage(EApplication sender, Date date, Object message,
 			RepeatFrequecy frequency) {
 		synchronized (_messagesToDeliver) {
 			synchronized (_hour) {
@@ -183,12 +183,12 @@ public class Clock extends UnicastRemoteObject implements IClock {
 	}
 
 	private class MessageHandler implements Runnable {
-		public String _sender;
+		public EApplication _sender;
 		public Date _date;
 		public Object _message;
 		public RepeatFrequecy _frequency;
 
-		public MessageHandler(String sender, Date date, Object message,
+		public MessageHandler(EApplication sender, Date date, Object message,
 				RepeatFrequecy frequency) {
 			_sender = sender;
 			_message = message;
@@ -296,7 +296,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 					"CLOCK SERVER : Failed to register UnknownHost exception");
 			e.printStackTrace();
 		}
-		_clients = new HashMap<String, IClockClient>();
+		_clients = new HashMap<EApplication, IClockClient>();
 	}
 
 	/* !initConnection */
