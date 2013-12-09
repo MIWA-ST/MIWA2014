@@ -16,7 +16,7 @@ import fr.epita.sigl.miwa.st.EApplication;
  * @author francois
  * 
  */
-public class LocalFileHelper implements AsyncFileHelper {
+public class LocalFileHelper implements IAsyncFileHelper {
 
 	private static final Logger log = Logger.getLogger(LocalFileHelper.class
 			.getName());
@@ -71,7 +71,7 @@ public class LocalFileHelper implements AsyncFileHelper {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * fr.epita.sigl.miwa.st.async.file.AsyncFileHelper#retrieve(java.lang.String
+	 * fr.epita.sigl.miwa.st.async.file.IAsyncFileHelper#retrieve(java.lang.String
 	 * )
 	 */
 	@Override
@@ -101,7 +101,7 @@ public class LocalFileHelper implements AsyncFileHelper {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * fr.epita.sigl.miwa.st.async.file.AsyncFileHelper#send(java.lang.String,
+	 * fr.epita.sigl.miwa.st.async.file.IAsyncFileHelper#send(java.lang.String,
 	 * fr.epita.sigl.miwa.st.EApplication)
 	 */
 	@Override

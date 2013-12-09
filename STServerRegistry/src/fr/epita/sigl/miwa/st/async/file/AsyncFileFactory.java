@@ -26,8 +26,8 @@ public class AsyncFileFactory {
 	 * 
 	 * @return
 	 */
-	public AsyncFileHelper getFileHelper() {
-		AsyncFileHelper manager = null;
+	public IAsyncFileHelper getFileHelper() {
+		IAsyncFileHelper manager = null;
 		if (isLocal) {
 			manager = new LocalFileHelper();
 		} else {

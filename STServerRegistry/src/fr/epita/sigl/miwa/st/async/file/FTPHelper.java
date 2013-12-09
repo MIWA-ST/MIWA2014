@@ -21,7 +21,7 @@ import fr.epita.sigl.miwa.st.EApplication;
  * @author francois
  * 
  */
-public class FTPHelper implements AsyncFileHelper {
+public class FTPHelper implements IAsyncFileHelper {
 
 	private static final Logger log = Logger.getLogger(FTPHelper.class
 			.getName());
@@ -203,7 +203,7 @@ public class FTPHelper implements AsyncFileHelper {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * fr.epita.sigl.miwa.st.async.file.AsyncFileHelper#retrieve(java.lang.String
+	 * fr.epita.sigl.miwa.st.async.file.IAsyncFileHelper#retrieve(java.lang.String
 	 * )
 	 */
 	@Override
@@ -224,7 +224,7 @@ public class FTPHelper implements AsyncFileHelper {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * fr.epita.sigl.miwa.st.async.file.AsyncFileHelper#send(java.lang.String,
+	 * fr.epita.sigl.miwa.st.async.file.IAsyncFileHelper#send(java.lang.String,
 	 * fr.epita.sigl.miwa.st.EApplication)
 	 */
 	@Override

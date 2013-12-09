@@ -8,7 +8,7 @@ import fr.epita.sigl.miwa.st.EApplication;
  * @author francois
  * 
  */
-public interface AsyncFileHelper {
+public interface IAsyncFileHelper {
 
 	/**
 	 * Récupère le fichier
