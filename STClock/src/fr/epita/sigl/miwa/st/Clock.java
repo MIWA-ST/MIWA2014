@@ -136,7 +136,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 		synchronized (_hour) {
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(_hour);
-			cal.add(Calendar.SECOND, _factor / 2);
+			cal.add(Calendar.MILLISECOND, _factor * 500);
 			_hour = cal.getTime();
 			checkMessages();
 		}
@@ -312,11 +312,11 @@ public class Clock extends UnicastRemoteObject implements IClock {
 							factor = Integer.parseInt(cmdArgs[2]);
 						}
 						if (cmdArgs.length >= 5) {
-							if (cmdArgs[4].equals("-h")) {
+							if (cmdArgs[3].equals("-h")) {
 								SimpleDateFormat formatter = new SimpleDateFormat(
 										"MM/dd/yyyy-HH:mm:ss");
 								start = formatter.parse(cmdArgs[5]);
-							} else if (cmdArgs[4].equals("-f")) {
+							} else if (cmdArgs[3].equals("-f")) {
 								factor = Integer.parseInt(cmdArgs[5]);
 							}
 						}
@@ -327,12 +327,13 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				} else if (cmdArgs[0].equals("factor")) {
 					int factor = Integer.parseInt(cmdArgs[1]);
 					c.setFactor(factor);
+				} else if (cmdArgs[0].equals("quit")) {
+					System.exit(0);
 				} else {
 					System.out
 							.println("Commande inconnue, tapez help pour la liste des commandes disponibles");
 				}
 				System.out.println("Entrez votre commande :");
-				s = br.readLine();
 			} while (true);
 
 		} catch (Exception e) {
