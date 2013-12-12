@@ -6,10 +6,21 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
 		<sourceDirectory>STServerRegistry/src</sourceDirectory>
+
 		<repositories>
 			<repository>
-				<id>jboss</id>
-				<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+				<id>jboss-public-repository-group</id>
+				<name>JBoss Public Maven Repository Group</name>
+				<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+				<layout>default</layout>
+				<releases>
+					<enabled>true</enabled>
+					<updatePolicy>never</updatePolicy>
+				</releases>
+				<snapshots>
+					<enabled>true</enabled>
+					<updatePolicy>never</updatePolicy>
+				</snapshots>
 			</repository>
 		</repositories>
 		<plugins>
@@ -30,11 +41,6 @@
 			<version>3.3</version>
 		</dependency>
 		<!-- <dependency> -->
-		<!-- <groupId>javax.jms</groupId> -->
-		<!-- <artifactId>jms</artifactId> -->
-		<!-- <version>1.1</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
 		<!-- <groupId>org.hornetq</groupId> -->
 		<!-- <artifactId>hornetq-jms</artifactId> -->
 		<!-- <version>2.1.1.GA</version> -->
@@ -44,40 +50,16 @@
 			<artifactId>jboss-jms-api_1.1_spec</artifactId>
 			<version>1.0.0.Beta1</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.as</groupId> -->
-<!-- 			<artifactId>jboss-as-server</artifactId> -->
-<!-- 			<version>7.2.0.Final</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>junit</groupId> -->
-<!-- 			<artifactId>junit</artifactId> -->
-<!-- 			<version>4.11</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss</groupId> -->
-<!-- 			<artifactId>jboss-remote-naming</artifactId> -->
-<!-- 			<version>1.0.7.Final</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.logging</groupId> -->
-<!-- 			<artifactId>jboss-logging-processor</artifactId> -->
-<!-- 			<version>1.1.0.Final</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.msc</groupId> -->
-<!-- 			<artifactId>jboss-msc</artifactId> -->
-<!-- 			<version>1.2.0.CR1</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.as</groupId> -->
-<!-- 			<artifactId>jboss-as-subsystem-test</artifactId> -->
-<!-- 			<version>7.2.0.Final</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.as</groupId> -->
-<!-- 			<artifactId>jboss-as-naming</artifactId> -->
-<!-- 			<version>7.2.0.Final</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.hornetq.examples.jms</groupId>
+			<artifactId>hornetq-jms-examples-common</artifactId>
+			<version>2.3.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>jboss</groupId>
+			<artifactId>jnp-client</artifactId>
+			<version>4.2.2.GA</version>
+		</dependency>
+
 	</dependencies>
 </project>
