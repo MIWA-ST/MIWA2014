@@ -159,7 +159,7 @@ public class ClockClient extends UnicastRemoteObject implements IClockClient {
 				.getCurrentApplication();
 		String url;
 		url = "rmi://"
-				+ ConfigurationContainer.getInstance().getServerHostAddress()
+				+ ConfigurationContainer.getInstance().getApplicationHostAddress()
 				+ "/Clock" + app.getShortName();
 		try {
 			Naming.rebind(url, _instance);
