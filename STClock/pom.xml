@@ -22,7 +22,6 @@
 			<groupId>fr.epita.sigl.miwa.st</groupId>
 			<artifactId>SharedObject</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<type>pom</type>
 		</dependency>
 	</dependencies>
 	<build>
