@@ -2,6 +2,10 @@ package fr.epita.sigl.miwa.st.async.file;
 
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.st.async.file.helper.FTPHelper;
+import fr.epita.sigl.miwa.st.async.file.helper.IAsyncFileHelper;
+import fr.epita.sigl.miwa.st.async.file.helper.LocalFileHelper;
+
 /**
  * La factory permettant d'instancier le gestionnaire de fichier asynchrone
  * 

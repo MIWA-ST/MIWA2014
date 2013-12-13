@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st.async.file;
+package fr.epita.sigl.miwa.st.async.file.helper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +14,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
 import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 
 /**
  * L'utilitaire d'envoi de fichiers sur un serveur FTP

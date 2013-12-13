@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st.async.file;
+package fr.epita.sigl.miwa.st.async.file.exception;
 
 /**
  * Exception du gestionnaire de fichiers asynchrones

@@ -15,8 +15,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import fr.epita.sigl.miwa.st.async.file.FTPHelper;
-
 public class RegistryServerImpl extends UnicastRemoteObject {
 	
 	private static final Logger log = Logger.getLogger(RegistryServerImpl.class

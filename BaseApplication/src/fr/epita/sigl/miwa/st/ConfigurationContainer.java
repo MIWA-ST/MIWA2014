@@ -49,7 +49,7 @@ public class ConfigurationContainer {
 			try {
 				return _applicationLocator.getApplicationIP(application);
 			} catch (RemoteException e1) {
-				log.log(Level.SEVERE, "Failed to get IP of " + application.getShortName() + ".");
+				log.severe("Failed to get IP of " + application.getShortName() + ".");
 				e1.printStackTrace();
 			}
 		}		
