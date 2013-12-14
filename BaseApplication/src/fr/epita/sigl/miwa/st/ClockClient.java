@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Date;
 import java.util.logging.Level;
@@ -155,6 +156,12 @@ public class ClockClient extends UnicastRemoteObject implements IClockClient {
 	}
 
 	private void initConnection() {
+		try {
+			LocateRegistry.createRegistry(1099);
+		} catch (RemoteException e1) {
+			// FIXME Log
+			e1.printStackTrace();
+		}
 		EApplication app = ConfigurationContainer.getInstance()
 				.getCurrentApplication();
 		String url;
