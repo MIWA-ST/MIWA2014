@@ -34,6 +34,8 @@ public class Clock extends UnicastRemoteObject implements IClock {
 
 	private static Clock _instance;
 
+	private ConnectionHandler _connectionHandler;
+
 	private Map<EApplication, IClockClient> _clients;
 	private final Object _clientsLock = new Object();
 
@@ -51,8 +53,8 @@ public class Clock extends UnicastRemoteObject implements IClock {
 						_instance.initConnection();
 					} catch (RemoteException e) {
 						log.log(Level.SEVERE,
-								"CLOCK SERVER : Failed to build Clock");
-						e.printStackTrace();
+								"CLOCK SERVER : Failed to build Clock\n"
+										+ e.getMessage());
 					}
 				}
 			}
@@ -92,7 +94,8 @@ public class Clock extends UnicastRemoteObject implements IClock {
 
 	/* !Remotes methods */
 
-	public Clock() throws RemoteException {
+	private Clock() throws RemoteException {
+		_connectionHandler = new ConnectionHandler();
 	}
 
 	private void start(Date begin, int factor) {
@@ -149,8 +152,8 @@ public class Clock extends UnicastRemoteObject implements IClock {
 
 	/* !Time management */
 	/* Message Handling */
-	private void registerMessage(EApplication sender, Date date, Object message,
-			RepeatFrequecy frequency) {
+	private void registerMessage(EApplication sender, Date date,
+			Object message, RepeatFrequecy frequency) {
 		synchronized (_messagesToDeliver) {
 			synchronized (_hour) {
 				MessageHandler messageH = new MessageHandler(sender, date,
@@ -237,25 +240,17 @@ public class Clock extends UnicastRemoteObject implements IClock {
 			final IClockClient receiver;
 			synchronized (_clientsLock) {
 				if (reset || !_clients.containsKey(_sender)) {
+					String rmiClockClient = "rmi://"
+							+ _connectionHandler.getIPOfApp(_sender) + "/Clock"
+							+ _sender;
 					try {
-						String rmiClockClient = "rmi://"
-								+ InetAddress.getLocalHost().getHostAddress() //FIXME
-								+ "/Clock" + _sender;
-						try {
-							receiver = (IClockClient) Naming
-									.lookup(rmiClockClient);
-							_clients.put(_sender, receiver);
-						} catch (MalformedURLException | RemoteException
-								| NotBoundException e) {
-							log.log(Level.SEVERE,
-									"CLOCK SERVER : Failed to establish connection with "
-											+ _sender + ".");
-							e.printStackTrace();
-							return null;
-						}
-					} catch (UnknownHostException e) {
+						receiver = (IClockClient) Naming.lookup(rmiClockClient);
+						_clients.put(_sender, receiver);
+					} catch (MalformedURLException | RemoteException
+							| NotBoundException e) {
 						log.log(Level.SEVERE,
-								"CLOCK SERVER : UnknownHostException");
+								"CLOCK SERVER : Failed to establish connection with "
+										+ _sender + ".");
 						e.printStackTrace();
 						return null;
 					}

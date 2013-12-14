@@ -15,7 +15,7 @@ public class STRemoteApplicationMgmtToUse {
 	static public void registerRemoteClass(String className,
 			Remote classInstance) {
 		String url = "rmi://"
-				+ ConfigurationContainer.getInstance().getServerHostAddress()
+				+ ConfigurationContainer.getInstance().getApplicationHostAddress()
 				+ "/" + className
 				+ ConfigurationContainer.getInstance().getCurrentApplication();
 		try {
@@ -30,7 +30,7 @@ public class STRemoteApplicationMgmtToUse {
 	static public Remote getRemoteClass(String className,
 			EApplication distantApplication) {
 		String rmiURL = "rmi://"
-				+ ConfigurationContainer.getInstance().getServerHostAddress()
+				+ ConfigurationContainer.getInstance().getIPOfApp(distantApplication)
 				+ "/" + className + distantApplication.getShortName();
 		try {
 			return Naming.lookup(rmiURL);
@@ -38,6 +38,7 @@ public class STRemoteApplicationMgmtToUse {
 			log.log(Level.SEVERE, "REMOTE CLASS GETTER : Failed to contact "
 					+ distantApplication.getShortName() + " for the class "
 					+ className);
+			log.severe("REMOTE CLASS FINDER : Failed to contact distant app : " + distantApplication.getShortName() + ".\n" + e.getMessage());
 			e.printStackTrace();
 		}
 		return null;

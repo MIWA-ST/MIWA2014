@@ -84,11 +84,11 @@ public class ConfigurationContainer {
 	}
 	
 	private void initAppLocator() {
-		String rmiClockClient = "rmi://" + _serverHostAddress
+		String rmiAppLocator = "rmi://" + _serverHostAddress
 				+ "/ApplicationLocator";
 		try {
 			_applicationLocator = (IApplicationLocator) Naming
-					.lookup(rmiClockClient);
+					.lookup(rmiAppLocator);
 		} catch (MalformedURLException | RemoteException
 				| NotBoundException e) {
 			log.log(Level.SEVERE,

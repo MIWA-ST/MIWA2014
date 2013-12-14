@@ -165,8 +165,7 @@ public class ClockClient extends UnicastRemoteObject implements IClockClient {
 			Naming.rebind(url, _instance);
 		} catch (RemoteException | MalformedURLException e) {
 			log.log(Level.SEVERE,
-					"CLOCK CLIENT : Failed to (re)bind the connection.");
-			e.printStackTrace();
+					"CLOCK CLIENT : Failed to (re)bind the connection.\n" + e.getMessage());
 		}
 
 		String rmiClockServer = "rmi://"
@@ -176,27 +175,17 @@ public class ClockClient extends UnicastRemoteObject implements IClockClient {
 			remoteClock = (IClock) Naming.lookup(rmiClockServer);
 		} catch (MalformedURLException | RemoteException | NotBoundException e) {
 			log.log(Level.SEVERE,
-					"CLOCK CLIENT : Failed to contact Clock Server.");
-			e.printStackTrace();
+					"CLOCK CLIENT : Failed to contact Clock Server.\n" + e.getMessage());
 		}
 	}
 
 	public static void main(String[] args) {
 		ClockClient clock = ClockClient.getInstance();
-		while (true) {
 			Date hour = clock.getHour();
 			System.out.println("Au troisième top il sera exactement : "
 					+ hour.toString());
-			try {
-				Thread.sleep(15000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		/*
-		 * clock.wakeMeUp(hour, "INIT"); clock.wakeMeUpEveryDays(hour, "DAY");
-		 * clock.wakeMeUpEveryWeeks(hour, "WEEK");
-		 */
+		
+		clock.wakeMeUp(hour, "INIT"); clock.wakeMeUpEveryDays(hour, "DAY");
+		clock.wakeMeUpEveryWeeks(hour, "WEEK");		 
 	}
 }
