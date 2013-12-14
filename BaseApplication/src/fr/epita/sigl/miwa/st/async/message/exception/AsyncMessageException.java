@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st.async.message;
+package fr.epita.sigl.miwa.st.async.message.exception;
 
 public class AsyncMessageException extends Exception {
 

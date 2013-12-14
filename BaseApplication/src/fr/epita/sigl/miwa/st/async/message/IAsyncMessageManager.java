@@ -1,9 +1,10 @@
 package fr.epita.sigl.miwa.st.async.message;
 
 import fr.epita.sigl.miwa.st.EApplication;
-import fr.epita.sigl.miwa.st.async.file.AsyncFileException;
+import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
+import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
-public interface IAsyncMessageSender {
+public interface IAsyncMessageManager {
 
 	/**
 	 * Envoi le message à l'application
@@ -15,5 +16,8 @@ public interface IAsyncMessageSender {
 	 * @throws AsyncFileException
 	 */
 	public void send(String message, EApplication destination)
+			throws AsyncMessageException;
+	
+	public void addListener(AAsyncMessageListener listener, EApplication application)
 			throws AsyncMessageException;
 }

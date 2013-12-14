@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st.async.file;
+package fr.epita.sigl.miwa.st.async.file.helper;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 
 /**
  * L'utilitaire de copie de fichier en local

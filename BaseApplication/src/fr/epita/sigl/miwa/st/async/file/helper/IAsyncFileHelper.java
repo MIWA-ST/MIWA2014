@@ -1,6 +1,7 @@
-package fr.epita.sigl.miwa.st.async.file;
+package fr.epita.sigl.miwa.st.async.file.helper;
 
 import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 
 /**
  * Interface de l'utilisataire permettant d'envoyer et de récupérer des fichiers
