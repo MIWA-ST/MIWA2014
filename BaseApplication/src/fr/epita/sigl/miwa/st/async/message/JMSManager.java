@@ -58,6 +58,22 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		}
 
 		@Override
+		protected void finalize() throws Throwable {
+			super.finalize();
+			if (context != null) {
+				if (context.session != null) {
+					context.session.close();
+					context.session = null;
+				}
+				
+				if (context.connection != null) {
+					context.connection.close();
+					context.connection = null;
+				}
+			}
+		}
+
+		@Override
 		public void run() {
 			do {
 				try {
