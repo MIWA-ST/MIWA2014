@@ -2,6 +2,8 @@ package fr.epita.sigl.miwa.st.async.file;
 
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.async.file.helper.FTPHelper;
 import fr.epita.sigl.miwa.st.async.file.helper.IAsyncFileHelper;
 import fr.epita.sigl.miwa.st.async.file.helper.LocalFileHelper;
@@ -14,15 +16,26 @@ import fr.epita.sigl.miwa.st.async.file.helper.LocalFileHelper;
  */
 public class AsyncFileFactory {
 
-	private static final Logger log = Logger.getLogger(AsyncFileFactory.class
+	private static final Logger LOGGER = Logger.getLogger(AsyncFileFactory.class
 			.getName());
 
 	private boolean isLocal = true;
-
-	public AsyncFileFactory() {
-		// TODO get appropriate property
-		isLocal = true;
-		log.info("Using configuration : " + (isLocal ? "local" : "remote"));
+	private static AsyncFileFactory instance = null;
+	
+	public static AsyncFileFactory getInstance() {
+		if (instance == null) {
+			instance = new AsyncFileFactory();
+		}
+		return instance;
+	}
+	
+	private AsyncFileFactory() {
+		try {
+			isLocal = ConfigurationContainer.getInstance().isLocal();
+		} catch (ConfigurationException e) {
+			LOGGER.severe("Could not determine with we are working with localhost.");
+		}
+		LOGGER.info("Using configuration : " + (isLocal ? "local" : "remote"));
 	}
 
 	/**
@@ -37,7 +50,11 @@ public class AsyncFileFactory {
 		} else {
 			manager = new FTPHelper();
 		}
-		log.info("Return file helper : " + manager.getClass().getName());
+		LOGGER.info("Return file helper : " + manager.getClass().getName());
 		return manager;
+	}
+	
+	public IAsyncFileManager getFileManager() {
+		return new AsyncFileManager();
 	}
 }

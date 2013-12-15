@@ -7,13 +7,21 @@ package fr.epita.sigl.miwa.st;
  * 
  */
 public enum EApplication {
-	BI("BI"), BACK_OFFICE("BO"), GESTION_COMMERCIALE("GC"), CAISSE("CA"), ENTREPOT("EN"), CRM("CR"), MDM("MD"), MONETIQUE("MO"), INTERNET("IN");
+	BI("BI", "BI"), BACK_OFFICE("BO", "Back office"), GESTION_COMMERCIALE("GC",
+			"Gestion commerciale"), CAISSE("CA", "Caisse"), ENTREPOT("EN",
+			"Entrepot"), CRM("CR", "CRM"), MDM("MD", "MDM"), MONETIQUE("MO",
+			"Monétique"), INTERNET("IN", "Internet");
 	private String _shortName;
-	
+	private String _longName;
+
 	public String getShortName() {
 		return _shortName;
 	}
-	
+
+	public String getLongName() {
+		return _longName;
+	}
+
 	public static EApplication getFromShortName(String shortName) {
 		for (EApplication app : EApplication.values()) {
 			if (app.getShortName().equals(shortName))
@@ -21,8 +29,14 @@ public enum EApplication {
 		}
 		return null;
 	}
-	
-	private EApplication(String shortName) {
+
+	private EApplication(String shortName, String longName) {
 		_shortName = shortName;
+		_longName = longName;
+	}
+
+	@Override
+	public String toString() {
+		return _longName;
 	}
 }

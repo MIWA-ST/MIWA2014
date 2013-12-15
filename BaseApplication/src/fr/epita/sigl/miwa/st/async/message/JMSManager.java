@@ -11,11 +11,12 @@ import javax.jms.Queue;
 import javax.jms.Connection;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileMessage;
 import fr.epita.sigl.miwa.st.async.file.IAsyncFileNotifier;
@@ -33,9 +34,6 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 	private static final Logger LOGGER = Logger.getLogger(JMSManager.class
 			.getName());
 
-	private static final String INITIAL_CONTEXT_FACTORY = "org.jnp.interfaces.NamingContextFactory";
-	private static final String PROVIDER_URL = "jnp://localhost:1099";
-
 	private class JMSContext {
 		private ConnectionFactory connectionFactory = null;
 		private Queue queue = null;
@@ -49,24 +47,34 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 	 * 
 	 * @throws AsyncMessageException
 	 */
-	private JMSContext init(EApplication destination)
+	private JMSContext init(EApplication application)
 			throws AsyncMessageException {
 		JMSContext context = new JMSContext();
 		Context jndiContext = null;
-		String queueName = null;
+		String connectionFactoryURL = null;
+		String initialContextFactory = null;
+		String providerURL = null;
 
-		final Properties env = new Properties();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
-		env.put(Context.PROVIDER_URL,
-				System.getProperty(Context.PROVIDER_URL, PROVIDER_URL));
-
-		if (queueName == null || queueName == "") {
-			// TODO get queue name from ConfigurationManager
-			LOGGER.info("Retrieving queue name...");
-			queueName = "queue/test";
-			LOGGER.info("Queue name is : " + queueName);
+		try {
+			providerURL = ConfigurationContainer.getInstance()
+					.getJMSProviderURL();
+			initialContextFactory = ConfigurationContainer.getInstance()
+					.getJMSInitialContextFactory();
+			connectionFactoryURL = ConfigurationContainer.getInstance()
+					.getJMSConnectionFactoryURL();
+		} catch (ConfigurationException e1) {
+			LOGGER.severe("Failed to load configution.");
+			throw new AsyncMessageException("Failed to load configution.", e1);
 		}
 
+		final Properties env = new Properties();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
+		env.put(Context.PROVIDER_URL, providerURL);
+
+		String queueName = "queue/" + application.getShortName();
+		LOGGER.info("Using queue : " + queueName);
+		
+		
 		if (jndiContext == null) {
 			LOGGER.info("The context is null, initializing context...");
 			try {
@@ -81,9 +89,8 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 
 		try {
 			LOGGER.info("Initializing connection factory...");
-			// TODO get JNDI name of connection factory
 			context.connectionFactory = (ConnectionFactory) jndiContext
-					.lookup("/ConnectionFactory");
+					.lookup(connectionFactoryURL);
 		} catch (NamingException e) {
 			LOGGER.severe("Failed to retrieve ConnectionFactory from jndi context.");
 			try {
@@ -134,7 +141,7 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		try {
 			LOGGER.info("Creating session...");
 			context.session = context.connection.createSession(false,
-					Session.CLIENT_ACKNOWLEDGE);
+					Session.AUTO_ACKNOWLEDGE);
 		} catch (JMSException e) {
 			LOGGER.severe("Failed to create queue session.");
 			context.connectionFactory = null;
@@ -161,7 +168,11 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 			throws AsyncMessageException {
 		JMSContext context = init(destination);
 
-		TextMessage textMessage = null;
+		JMSMessage mes = new JMSMessage(ConfigurationContainer.getInstance()
+				.getCurrentApplication());
+		mes.setDestination(destination);
+		mes.setText(message);
+		ObjectMessage objectMessage = null;
 
 		try {
 			LOGGER.info("Creating producer...");
@@ -175,19 +186,19 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 			LOGGER.info("Producer intialized.");
 
 			try {
-				LOGGER.info("Creating text message...");
-				textMessage = context.session.createTextMessage(message);
+				LOGGER.info("Creating object message...");
+				objectMessage = context.session.createObjectMessage(mes);
 			} catch (JMSException e) {
-				LOGGER.severe("Failed to create text message.");
+				LOGGER.severe("Failed to create object message.");
 				throw new AsyncMessageException(
 						"Failed to create text message.", e);
 			}
-			LOGGER.info("TextMessage created.");
+			LOGGER.info("ObjectMessage created.");
 
 			try {
 				LOGGER.info("Sending message to " + destination.toString());
-				context.producer.send(textMessage);
-				LOGGER.info("Message sent.");
+				context.producer.send(objectMessage);
+				LOGGER.info("JMSMessage sent.");
 			} catch (JMSException e) {
 				LOGGER.severe("Failed to send message to "
 						+ destination.toString());
@@ -200,16 +211,17 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 	}
 
 	@Override
-	public void addListener(AAsyncMessageListener listener,
-			EApplication application) throws AsyncMessageException {
-		JMSContext context = init(application);
+	public void addListener(AAsyncMessageListener listener)
+			throws AsyncMessageException {
+		JMSContext context = init(ConfigurationContainer.getInstance()
+				.getCurrentApplication());
 
 		MessageConsumer consumer = null;
 
 		LOGGER.info("Creating message consumer...");
 		try {
 			consumer = context.session.createConsumer(context.queue);
-			LOGGER.info("Message consumer created.");
+			LOGGER.info("JMSMessage consumer created.");
 		} catch (JMSException e) {
 			LOGGER.severe("Failed to create message consumer.");
 			close(context);
@@ -220,7 +232,7 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		LOGGER.info("Setting message listener...");
 		try {
 			consumer.setMessageListener(listener);
-			LOGGER.info("Message listener set");
+			LOGGER.info("JMSMessage listener set");
 		} catch (JMSException e) {
 			LOGGER.severe("Failed to set message listener.");
 			close(context);
@@ -236,6 +248,11 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 			LOGGER.severe("Failed to start connection.");
 			close(context);
 			throw new AsyncMessageException("Failed to start connection.", e);
+		}
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
 		}
 
 		close(context);
@@ -259,7 +276,7 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 
 			try {
 				LOGGER.info("Creating object message...");
-				objectMessage = context.session.createObjectMessage();
+				objectMessage = context.session.createObjectMessage(message);
 			} catch (JMSException e) {
 				LOGGER.severe("Failed to create object message.");
 				throw new AsyncMessageException(
@@ -268,20 +285,10 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 			LOGGER.info("ObjectMessage created.");
 
 			try {
-				LOGGER.info("Setting AsyncFileMessage to ObjectMessage...");
-				objectMessage.setObject(message);
-				LOGGER.info("AsyncFileMessage in ObjectMessage.");
-			} catch (JMSException e) {
-				LOGGER.severe("Failed to set AsyncFileMessage to ObjectMessage.");
-				throw new AsyncMessageException(
-						"Failed to set AsyncFileMessage to ObjectMessage.", e);
-			}
-
-			try {
 				LOGGER.info("Sending message to "
 						+ message.getDestination().toString());
 				context.producer.send(objectMessage);
-				LOGGER.info("Message sent.");
+				LOGGER.info("JMSMessage sent.");
 			} catch (JMSException e) {
 				LOGGER.severe("Failed to send message to "
 						+ message.getDestination().toString());

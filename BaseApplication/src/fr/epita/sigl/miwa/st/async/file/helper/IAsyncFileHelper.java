@@ -1,5 +1,7 @@
 package fr.epita.sigl.miwa.st.async.file.helper;
 
+import java.io.File;
+
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 
@@ -18,7 +20,7 @@ public interface IAsyncFileHelper {
 	 *            le nom du fichier à récupérer
 	 * @throws AsyncFileException
 	 */
-	public void retrieve(String filename) throws AsyncFileException;
+	public File retrieve(String filename) throws AsyncFileException;
 
 	/**
 	 * Envoi le fichier à l'application

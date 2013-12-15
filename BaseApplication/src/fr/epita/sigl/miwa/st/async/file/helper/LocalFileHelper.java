@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 
@@ -19,7 +21,7 @@ import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
  */
 public class LocalFileHelper implements IAsyncFileHelper {
 
-	private static final Logger log = Logger.getLogger(LocalFileHelper.class
+	private static final Logger LOGGER = Logger.getLogger(LocalFileHelper.class
 			.getName());
 
 	private File destFolder = null;
@@ -33,11 +35,21 @@ public class LocalFileHelper implements IAsyncFileHelper {
 	 * @throws AsyncFileException
 	 */
 	private void init(EApplication application) throws AsyncFileException {
-		// TODO Aller chercher les properties qui vont bien
-		String localRepository = "/Users/francois/Downloads/";
-		destFolder = new File(localRepository + "TOTO");
-		localFolder = new File(localRepository + "local");
+		String localRepository = null;
+		try {
+			localRepository = ConfigurationContainer.getInstance()
+					.getLocalRepository();
+		} catch (ConfigurationException e) {
+			LOGGER.severe("Failed to load configuration");
+			throw new AsyncFileException("Failed to load configuration", e);
+		}
 
+		destFolder = new File(localRepository + File.separatorChar
+				+ application.getShortName());
+		localFolder = new File(localRepository
+				+ File.separatorChar
+				+ ConfigurationContainer.getInstance().getCurrentApplication()
+						.getShortName());
 		File repository = new File(localRepository);
 		if (!repository.exists()) {
 			throw new AsyncFileException("The repository "
@@ -45,14 +57,14 @@ public class LocalFileHelper implements IAsyncFileHelper {
 		}
 
 		if (!destFolder.exists()) {
-			log.info("Destination folder does not exists, trying to create it...");
+			LOGGER.info("Destination folder does not exists, trying to create it...");
 			destFolder.mkdir();
-			log.info("Destination folder created");
+			LOGGER.info("Destination folder created");
 		}
 		if (!localFolder.exists()) {
-			log.info("Local folder does not exists, trying to create it...");
+			LOGGER.info("Local folder does not exists, trying to create it...");
 			localFolder.mkdir();
-			log.info("Local folder created");
+			LOGGER.info("Local folder created");
 		}
 	}
 
@@ -72,30 +84,33 @@ public class LocalFileHelper implements IAsyncFileHelper {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * fr.epita.sigl.miwa.st.async.file.IAsyncFileHelper#retrieve(java.lang.String
-	 * )
+	 * fr.epita.sigl.miwa.st.async.file.IAsyncFileHelper#retrieve(java.lang.
+	 * String )
 	 */
 	@Override
-	public void retrieve(String filename) throws AsyncFileException {
-		// TODO recuperer current application
-		EApplication current = EApplication.BACK_OFFICE;
+	public File retrieve(String filename) throws AsyncFileException {
+		EApplication current = ConfigurationContainer.getInstance()
+				.getCurrentApplication();
 		init(current);
 
-		File from = new File(destFolder.getAbsolutePath() + "/" + filename);
-		File to = new File(localFolder.getAbsolutePath() + "/" + filename);
+		File from = new File(destFolder.getAbsolutePath() + File.separatorChar
+				+ filename);
+		File to = new File(localFolder.getAbsolutePath() + File.separatorChar
+				+ filename);
 		if (!from.exists()) {
-			log.severe("Failed to find " + from.getPath());
+			LOGGER.severe("Failed to find " + from.getPath());
 			throw new AsyncFileException("Failed to find " + from.getPath());
 		}
 		try {
-			log.info("Retrieving " + from + " to " + to + "...");
+			LOGGER.info("Retrieving " + from + " to " + to + "...");
 			copy(from.toPath(), to.toPath());
-			log.info("File " + filename + " retrieved " + to + " !");
+			LOGGER.info("File " + filename + " retrieved " + to + " !");
 		} catch (IOException e) {
-			log.severe("Failed to retrieve " + from + " to " + to);
+			LOGGER.severe("Failed to retrieve " + from + " to " + to);
 			throw new AsyncFileException("Failed to retrieve " + from + " to "
 					+ to, e);
 		}
+		return to;
 	}
 
 	/*
@@ -110,18 +125,20 @@ public class LocalFileHelper implements IAsyncFileHelper {
 			throws AsyncFileException {
 		init(destination);
 
-		File from = new File(localFolder.getAbsolutePath() + "/" + filename);
-		File to = new File(destFolder.getAbsolutePath() + "/" + filename);
+		File from = new File(localFolder.getAbsolutePath() + File.separatorChar
+				+ filename);
+		File to = new File(destFolder.getAbsolutePath() + File.separatorChar
+				+ filename);
 		if (!from.exists()) {
-			log.severe("Failed to find " + from.getPath());
+			LOGGER.severe("Failed to find " + from.getPath());
 			throw new AsyncFileException("Failed to find " + from.getPath());
 		}
 		try {
-			log.info("Sending " + from + " to " + to + "...");
+			LOGGER.info("Sending " + from + " to " + to + "...");
 			copy(from.toPath(), to.toPath());
-			log.info("File " + filename + " sent " + to + " !");
+			LOGGER.info("File " + filename + " sent " + to + " !");
 		} catch (IOException e) {
-			log.severe("Failed to send " + from + " to " + to);
+			LOGGER.severe("Failed to send " + from + " to " + to);
 			throw new AsyncFileException(
 					"Failed to send " + from + " to " + to, e);
 		}
