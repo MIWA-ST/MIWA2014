@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st.async.file.helper;
+package fr.epita.sigl.miwa.st.async.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +24,7 @@ import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
  * @author francois
  * 
  */
-public class FTPHelper implements IAsyncFileHelper {
+class FTPHelper implements IAsyncFileHelper {
 
 	private static final Logger LOGGER = Logger.getLogger(FTPHelper.class
 			.getName());

@@ -29,17 +29,92 @@ import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
  * @author francois
  * 
  */
-public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
+class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 
 	private static final Logger LOGGER = Logger.getLogger(JMSManager.class
 			.getName());
-
-	private class JMSContext {
+	
+	private static final int CONNECTION_TIMEOUT = 15000;
+	
+	private Thread listenerThread = null;
+	
+	protected class JMSContext {
 		private ConnectionFactory connectionFactory = null;
 		private Queue queue = null;
 		private Connection connection = null;
 		private Session session = null;
 		private MessageProducer producer = null;
+	}
+
+	protected class JMSListenerRunnable implements Runnable {
+
+		private JMSContext context = null;
+		private AAsyncMessageListener listener = null;
+
+		protected JMSListenerRunnable(JMSContext context,
+				AAsyncMessageListener listener) {
+			this.context = context;
+			this.listener = listener;
+		}
+
+		@Override
+		public void run() {
+			do {
+				try {
+					try {
+						context = initConnection(context);
+					} catch (AsyncMessageException e1) {
+						LOGGER.severe("Cannot init connection.");
+						continue;
+					}
+					MessageConsumer consumer = null;
+
+					LOGGER.info("Creating message consumer...");
+					try {
+						consumer = context.session
+								.createConsumer(context.queue);
+						LOGGER.info("JMSMessage consumer created.");
+					} catch (JMSException e) {
+						LOGGER.severe("Failed to create message consumer.");
+					}
+
+					LOGGER.info("Setting message listener...");
+					try {
+						consumer.setMessageListener(listener);
+						LOGGER.info("JMSMessage listener set");
+					} catch (JMSException e) {
+						LOGGER.severe("Failed to set message listener.");
+					}
+
+					LOGGER.info("Starting connection...");
+					try {
+						context.connection.start();
+						LOGGER.info("Connection started.");
+					} catch (JMSException e) {
+						LOGGER.severe("Failed to start connection.");
+					}
+
+					try {
+						Thread.sleep(CONNECTION_TIMEOUT);
+					} catch (InterruptedException e) {
+					}
+
+				} finally {
+					try {
+						if (context.session != null) {
+							context.session.close();							
+						}
+						if (context.connection != null) {
+							context.connection.close();
+						}
+					} catch (JMSException e) {
+					}
+					context.connection = null;
+					context.session = null;
+				}
+			} while (true);
+		}
+
 	}
 
 	/**
@@ -73,8 +148,7 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 
 		String queueName = "queue/" + application.getShortName();
 		LOGGER.info("Using queue : " + queueName);
-		
-		
+
 		if (jndiContext == null) {
 			LOGGER.info("The context is null, initializing context...");
 			try {
@@ -127,12 +201,16 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		}
 		jndiContext = null;
 
+		return context;
+	}
+
+	protected JMSContext initConnection(JMSContext context)
+			throws AsyncMessageException {
 		try {
 			LOGGER.info("Establishing connection...");
 			context.connection = context.connectionFactory.createConnection();
 		} catch (JMSException e) {
 			LOGGER.severe("Failed to establish connection to the queue.");
-			context.connectionFactory = null;
 			throw new AsyncMessageException(
 					"Failed to establish connection to the queue.", e);
 		}
@@ -144,7 +222,6 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 					Session.AUTO_ACKNOWLEDGE);
 		} catch (JMSException e) {
 			LOGGER.severe("Failed to create queue session.");
-			context.connectionFactory = null;
 			close(context);
 			throw new AsyncMessageException("Failed to create session.", e);
 		}
@@ -167,6 +244,7 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 	public void send(String message, EApplication destination)
 			throws AsyncMessageException {
 		JMSContext context = init(destination);
+		context = initConnection(context);
 
 		JMSMessage mes = new JMSMessage(ConfigurationContainer.getInstance()
 				.getCurrentApplication());
@@ -211,56 +289,32 @@ public class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 	}
 
 	@Override
-	public void addListener(AAsyncMessageListener listener)
+	public void initListener(AAsyncMessageListener listener)
 			throws AsyncMessageException {
 		JMSContext context = init(ConfigurationContainer.getInstance()
 				.getCurrentApplication());
 
-		MessageConsumer consumer = null;
-
-		LOGGER.info("Creating message consumer...");
-		try {
-			consumer = context.session.createConsumer(context.queue);
-			LOGGER.info("JMSMessage consumer created.");
-		} catch (JMSException e) {
-			LOGGER.severe("Failed to create message consumer.");
-			close(context);
-			throw new AsyncMessageException(
-					"Failed to create message consumer.", e);
-		}
-
-		LOGGER.info("Setting message listener...");
-		try {
-			consumer.setMessageListener(listener);
-			LOGGER.info("JMSMessage listener set");
-		} catch (JMSException e) {
-			LOGGER.severe("Failed to set message listener.");
-			close(context);
-			throw new AsyncMessageException("Failed to set message listener.",
-					e);
-		}
-
-		LOGGER.info("Starting connection...");
-		try {
-			context.connection.start();
-			LOGGER.info("Connection started.");
-		} catch (JMSException e) {
-			LOGGER.severe("Failed to start connection.");
-			close(context);
-			throw new AsyncMessageException("Failed to start connection.", e);
-		}
 		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-		}
-
-		close(context);
+		Thread thread = new Thread(new JMSListenerRunnable(context, listener));
+		
+		thread.start();
 	}
 
 	@Override
+	public void stopListener() {
+		if (listenerThread != null && listenerThread.isAlive()) {
+			try {
+				listenerThread.join(0);
+			} catch (InterruptedException e) {
+			}
+		}
+	}
+	
+	@Override
 	public void notify(AsyncFileMessage message) throws AsyncMessageException {
 		JMSContext context = init(message.getDestination());
+		context = initConnection(context);
+
 		ObjectMessage objectMessage = null;
 
 		try {

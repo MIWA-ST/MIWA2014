@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st.async.file.helper;
+package fr.epita.sigl.miwa.st.async.file;
 
 import java.io.File;
 

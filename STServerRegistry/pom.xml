@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.epita.sigl.miwa.st</groupId>
 	<artifactId>ServerRegistry</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
-	
+
 	<properties>
 		<java.version>1.7</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -26,5 +26,10 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>fr.epita.sigl.miwa.st</groupId>
+			<artifactId>SharedObject</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 </project>

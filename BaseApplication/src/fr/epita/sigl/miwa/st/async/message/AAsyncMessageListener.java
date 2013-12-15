@@ -13,7 +13,6 @@ import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileMessage;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
-import fr.epita.sigl.miwa.st.async.file.helper.IAsyncFileHelper;
 
 public abstract class AAsyncMessageListener implements MessageListener, ExceptionListener {
 
@@ -57,11 +56,11 @@ public abstract class AAsyncMessageListener implements MessageListener, Exceptio
 		if (jmsMessage instanceof AsyncFileMessage) {
 			LOGGER.info("A file is available for us.");
 			AsyncFileMessage fileMessage = (AsyncFileMessage) jmsMessage;
-			IAsyncFileHelper fileHelper = AsyncFileFactory.getInstance()
-					.getFileHelper();
+			
 			File file = null;
 			try {
-				file = fileHelper.retrieve(fileMessage.getFilename());
+				file = AsyncFileFactory.getInstance()
+						.getFileHelper().retrieve(fileMessage.getFilename());
 			} catch (AsyncFileException e) {
 				LOGGER.severe("Failed to retrieve file.");
 				return;

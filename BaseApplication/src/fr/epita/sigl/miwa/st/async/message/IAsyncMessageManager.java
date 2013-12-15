@@ -18,6 +18,8 @@ public interface IAsyncMessageManager {
 	public void send(String message, EApplication destination)
 			throws AsyncMessageException;
 
-	public void addListener(AAsyncMessageListener listener)
+	public void initListener(AAsyncMessageListener listener)
 			throws AsyncMessageException;
+	
+	public void stopListener();
 }
