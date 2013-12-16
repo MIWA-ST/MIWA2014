@@ -13,12 +13,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.st.application_locator.IApplicationLocator;
+import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 
-public class ConfigurationContainer {
+public class Conf {
 
 	private static final Logger LOGGER = Logger
-			.getLogger(ConfigurationContainer.class.getName());
-	private static ConfigurationContainer _instance;
+			.getLogger(Conf.class.getName());
+	private static Conf _instance;
 	private static final Object _instanceLock = new Object();
 	private static IApplicationLocator _applicationLocator;
 
@@ -45,11 +46,11 @@ public class ConfigurationContainer {
 	private String _serverHostAddress;
 	private String _applicationHostAddress;
 
-	public static ConfigurationContainer getInstance() {
+	public static Conf getInstance() {
 		if (_instance == null) {
 			synchronized (_instanceLock) {
 				if (_instance == null) {
-					_instance = new ConfigurationContainer();
+					_instance = new Conf();
 				}
 			}
 		}
@@ -62,8 +63,7 @@ public class ConfigurationContainer {
 		} catch (RemoteException e) {
 			LOGGER.log(Level.WARNING,
 					"Failed to get IP of " + application.getShortName()
-							+ " retrying.");
-			e.printStackTrace();
+							+ " retrying." + e.getMessage());
 			initAppLocator();
 			try {
 				return _applicationLocator.getApplicationIP(application);
@@ -76,7 +76,7 @@ public class ConfigurationContainer {
 		return "";
 	}
 
-	private ConfigurationContainer() {
+	private Conf() {
 		try {
 			_prop.load(new FileInputStream("conf/config.properties"));
 			_currentApplication = EApplication.getFromShortName(_prop
@@ -96,13 +96,17 @@ public class ConfigurationContainer {
 						Level.SEVERE,
 						"Properties Loading : Failed to load the application name in the config.properties file.");
 			}
-			// TODO remove comment
 			initAppLocator();
+			initSyncMessReceiver();
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE,
 					"Properties Loading : Failed to load properties file.");
 			e.printStackTrace();
 		}
+	}
+
+	private void initSyncMessReceiver() {
+		SyncMessFactory.initSyncMessReceiver();		
 	}
 
 	private void initAppLocator() {

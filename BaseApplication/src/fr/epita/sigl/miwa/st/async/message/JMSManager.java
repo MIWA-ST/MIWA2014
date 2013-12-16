@@ -15,7 +15,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileMessage;
@@ -147,11 +147,11 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		String providerURL = null;
 
 		try {
-			providerURL = ConfigurationContainer.getInstance()
+			providerURL = Conf.getInstance()
 					.getJMSProviderURL();
-			initialContextFactory = ConfigurationContainer.getInstance()
+			initialContextFactory = Conf.getInstance()
 					.getJMSInitialContextFactory();
-			connectionFactoryURL = ConfigurationContainer.getInstance()
+			connectionFactoryURL = Conf.getInstance()
 					.getJMSConnectionFactoryURL();
 		} catch (ConfigurationException e1) {
 			LOGGER.severe("Failed to load configution.");
@@ -262,7 +262,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		JMSContext context = init(destination);
 		context = initConnection(context);
 
-		JMSMessage mes = new JMSMessage(ConfigurationContainer.getInstance()
+		JMSMessage mes = new JMSMessage(Conf.getInstance()
 				.getCurrentApplication());
 		mes.setDestination(destination);
 		mes.setText(message);
@@ -307,7 +307,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 	@Override
 	public void initListener(AAsyncMessageListener listener)
 			throws AsyncMessageException {
-		JMSContext context = init(ConfigurationContainer.getInstance()
+		JMSContext context = init(Conf.getInstance()
 				.getCurrentApplication());
 
 		

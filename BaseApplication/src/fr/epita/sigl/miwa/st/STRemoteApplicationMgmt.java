@@ -15,9 +15,9 @@ public class STRemoteApplicationMgmt {
 	static public void registerRemoteClass(String className,
 			Remote classInstance) {
 		String url = "rmi://"
-				+ ConfigurationContainer.getInstance().getApplicationHostAddress()
+				+ Conf.getInstance().getApplicationHostAddress()
 				+ "/" + className
-				+ ConfigurationContainer.getInstance().getCurrentApplication();
+				+ Conf.getInstance().getCurrentApplication();
 		try {
 			Naming.rebind(url, classInstance);
 		} catch (RemoteException | MalformedURLException e) {
@@ -30,7 +30,7 @@ public class STRemoteApplicationMgmt {
 	static public Remote getRemoteClass(String className,
 			EApplication distantApplication) {
 		String rmiURL = "rmi://"
-				+ ConfigurationContainer.getInstance().getIPOfApp(distantApplication)
+				+ Conf.getInstance().getIPOfApp(distantApplication)
 				+ "/" + className + distantApplication.getShortName();
 		try {
 			return Naming.lookup(rmiURL);

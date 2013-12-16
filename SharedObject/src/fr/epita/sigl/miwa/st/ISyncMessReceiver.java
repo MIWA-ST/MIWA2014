@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 
 import org.w3c.dom.Document;
 
-public interface ISyncMessHandler extends Remote {
+public interface ISyncMessReceiver extends Remote {
 	public boolean receiveMessage(EApplication sender, String message) throws RemoteException;
 	public String answerToRequestMessage(EApplication sender, String request) throws RemoteException;
 	

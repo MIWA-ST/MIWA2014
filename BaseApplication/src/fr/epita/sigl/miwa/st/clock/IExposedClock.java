@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st;
+package fr.epita.sigl.miwa.st.clock;
 
 import java.util.Date;
 

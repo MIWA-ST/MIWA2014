@@ -2,7 +2,7 @@ package fr.epita.sigl.miwa.st.async.file;
 
 import java.util.logging.Logger;
 
-import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.ConfigurationException;
 
 /**
@@ -28,7 +28,7 @@ public class AsyncFileFactory {
 	
 	private AsyncFileFactory() {
 		try {
-			isLocal = ConfigurationContainer.getInstance().isLocal();
+			isLocal = Conf.getInstance().isLocal();
 		} catch (ConfigurationException e) {
 			LOGGER.severe("Could not determine with we are working with localhost.");
 		}

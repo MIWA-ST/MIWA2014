@@ -1,11 +1,12 @@
 package fr.epita.sigl.miwa.application;
 
-import java.io.File;
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
+import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
+import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
-import fr.epita.sigl.miwa.st.async.message.AAsyncMessageListener;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
@@ -13,30 +14,20 @@ public class Main {
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 	
 	public static void main(String[] args) throws AsyncFileException, AsyncMessageException {
-		AsyncMessageFactory.getInstance().getAsyncMessageManager().initListener(new AAsyncMessageListener() {
-			
-			@Override
-			public void onException(Exception arg0) {
-				
-			}
-			
-			@Override
-			public void onMessage(String message, EApplication source) {
-				LOGGER.severe(message);
-			}
-			
-			@Override
-			public void onFile(File file, EApplication source) {
-				LOGGER.severe(source + " : " + file.getAbsolutePath());
-			}
-		});
-		
+		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE*/
+			Conf.getInstance();
+			AsyncMessageFactory.getInstance().getAsyncMessageManager().initListener(new AsyncMessageListener());
+		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE*/
+		/* CODE HERE */
 		try {
-			Thread.sleep(20000);
+			Thread.sleep(30000);
 		} catch (InterruptedException e) {
 		}
-		
+		SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "Coucou GC");
+		/* !CODE HERE */
+		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW*/
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().stopListener();
+		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW*/
 	}
 
 }

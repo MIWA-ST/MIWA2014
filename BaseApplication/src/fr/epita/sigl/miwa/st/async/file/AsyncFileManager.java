@@ -2,7 +2,7 @@ package fr.epita.sigl.miwa.st.async.file;
 
 import java.util.logging.Logger;
 
-import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
@@ -22,7 +22,7 @@ class AsyncFileManager implements IAsyncFileManager {
 
 		IAsyncFileNotifier notifier = AsyncMessageFactory.getInstance()
 				.getAsyncFileNotifier();
-		AsyncFileMessage message = new AsyncFileMessage(ConfigurationContainer
+		AsyncFileMessage message = new AsyncFileMessage(Conf
 				.getInstance().getCurrentApplication(), destination, filename);
 		try {
 			notifier.notify(message);

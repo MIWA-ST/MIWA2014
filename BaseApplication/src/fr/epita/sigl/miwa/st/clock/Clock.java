@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st;
+package fr.epita.sigl.miwa.st.clock;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -10,11 +10,14 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import fr.epita.sigl.miwa.application.clock.ClockClientToUse;
+import fr.epita.sigl.miwa.application.clock.ClockClient;
+import fr.epita.sigl.miwa.st.Conf;
+import fr.epita.sigl.miwa.st.ConfigurationException;
+import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.clock.IClock;
 import fr.epita.sigl.miwa.st.clock.IClockClient;
 
-public class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
+class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 
 	/**
 	 * 
@@ -67,7 +70,7 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 	}
 
 	public void wakeMeUp(Date date, Object message) {
-		EApplication app = ConfigurationContainer.getInstance()
+		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
 			remoteClock.wakeMeUp(app, date, message);
@@ -87,7 +90,7 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 	}
 
 	public void wakeMeUpEveryDays(Date nextOccurence, Object message) {
-		EApplication app = ConfigurationContainer.getInstance()
+		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
 			remoteClock.wakeMeUpEveryDays(app, nextOccurence, message);
@@ -107,7 +110,7 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 	}
 
 	public void wakeMeUpEveryWeeks(Date nextOccurence, Object message) {
-		EApplication app = ConfigurationContainer.getInstance()
+		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
 			remoteClock.wakeMeUpEveryWeeks(app, nextOccurence, message);
@@ -127,7 +130,7 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 	}
 
 	public void wakeMeUpEveryHours(Date nextOccurence, Object message) {
-		EApplication app = ConfigurationContainer.getInstance()
+		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
 			remoteClock.wakeMeUpEveryHours(app, nextOccurence, message);
@@ -148,7 +151,7 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 
 	@Override
 	public String wakeUp(Date date, Object message) throws RemoteException {
-		ClockClientToUse.wakeUp(date, message);
+		ClockClient.wakeUp(date, message);
 		return null;
 	}
 
@@ -156,10 +159,10 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 	}
 
 	private void initConnection() {
-		EApplication app = ConfigurationContainer.getInstance()
+		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
-			if (!ConfigurationContainer.getInstance().isLocal()) {
+			if (!Conf.getInstance().isLocal()) {
 				try {
 					LocateRegistry.createRegistry(1099);
 				} catch (RemoteException e1) {
@@ -170,7 +173,7 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 			log.severe("Failed to get isLocal conf : " + e1.getMessage());
 		}
 		String url = "rmi://"
-				+ ConfigurationContainer.getInstance()
+				+ Conf.getInstance()
 						.getApplicationHostAddress() + "/Clock"
 				+ app.getShortName();
 		try {
@@ -183,7 +186,7 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 		}
 
 		String rmiClockServer = "rmi://"
-				+ ConfigurationContainer.getInstance().getServerHostAddress()
+				+ Conf.getInstance().getServerHostAddress()
 				+ "/Clock";
 		try {
 			remoteClock = (IClock) Naming.lookup(rmiClockServer);

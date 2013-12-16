@@ -13,7 +13,7 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -221,17 +221,17 @@ class FTPHelper implements IAsyncFileHelper {
 		String username = null;
 		String password = null;
 		try {
-			localRepository = ConfigurationContainer.getInstance()
+			localRepository = Conf.getInstance()
 					.getLocalRepository();
-			host = ConfigurationContainer.getInstance().getFTPHost();
-			port = ConfigurationContainer.getInstance().getFTPPort();
-			username = ConfigurationContainer.getInstance().getFTPUsername();
-			password = ConfigurationContainer.getInstance().getFTPPassword();
+			host = Conf.getInstance().getFTPHost();
+			port = Conf.getInstance().getFTPPort();
+			username = Conf.getInstance().getFTPUsername();
+			password = Conf.getInstance().getFTPPassword();
 		} catch (ConfigurationException e) {
 			LOGGER.severe("Failed to load configuration");
 			throw new AsyncFileException("Failed to load configuration", e);
 		}
-		String remoteFolder = ConfigurationContainer.getInstance()
+		String remoteFolder = Conf.getInstance()
 				.getCurrentApplication().getShortName();
 
 		connect(host, port, username, password);
@@ -256,12 +256,12 @@ class FTPHelper implements IAsyncFileHelper {
 		String username = null;
 		String password = null;
 		try {
-			localRepository = ConfigurationContainer.getInstance()
+			localRepository = Conf.getInstance()
 					.getLocalRepository();
-			host = ConfigurationContainer.getInstance().getFTPHost();
-			port = ConfigurationContainer.getInstance().getFTPPort();
-			username = ConfigurationContainer.getInstance().getFTPUsername();
-			password = ConfigurationContainer.getInstance().getFTPPassword();
+			host = Conf.getInstance().getFTPHost();
+			port = Conf.getInstance().getFTPPort();
+			username = Conf.getInstance().getFTPUsername();
+			password = Conf.getInstance().getFTPPassword();
 		} catch (ConfigurationException e) {
 			LOGGER.severe("Failed to load configuration");
 			throw new AsyncFileException("Failed to load configuration", e);

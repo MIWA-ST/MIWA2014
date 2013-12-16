@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.logging.Logger;
 
-import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -37,7 +37,7 @@ class LocalFileHelper implements IAsyncFileHelper {
 	private void init(EApplication application) throws AsyncFileException {
 		String localRepository = null;
 		try {
-			localRepository = ConfigurationContainer.getInstance()
+			localRepository = Conf.getInstance()
 					.getLocalRepository();
 		} catch (ConfigurationException e) {
 			LOGGER.severe("Failed to load configuration");
@@ -48,7 +48,7 @@ class LocalFileHelper implements IAsyncFileHelper {
 				+ application.getShortName());
 		localFolder = new File(localRepository
 				+ File.separatorChar
-				+ ConfigurationContainer.getInstance().getCurrentApplication()
+				+ Conf.getInstance().getCurrentApplication()
 						.getShortName());
 		File repository = new File(localRepository);
 		if (!repository.exists()) {
@@ -89,7 +89,7 @@ class LocalFileHelper implements IAsyncFileHelper {
 	 */
 	@Override
 	public File retrieve(String filename) throws AsyncFileException {
-		EApplication current = ConfigurationContainer.getInstance()
+		EApplication current = Conf.getInstance()
 				.getCurrentApplication();
 		init(current);
 
