@@ -24,11 +24,12 @@ public class Conf {
 	private static IApplicationLocator _applicationLocator;
 
 	// GLOBAL
-	public static final String IS_LOCAL_KEY = "global.is_local";
+	public static final String CLOCK_IS_LOCAL_KEY = "clock.is_local";
 	public static final String LOCAL_REPOSITORY_KEY = "global.local_repository";
 	public static final String CURRENT_APPLICATION_KEY = "application";
 
 	// FTP
+	public static final String FTP_IS_LOCAL_KEY = "ftp.is_local";
 	public static final String FTP_HOST_KEY = "ftp.host";
 	public static final String FTP_PORT_KEY = "ftp.port";
 	public static final String FTP_USERNAME_KEY = "ftp.username";
@@ -139,7 +140,12 @@ public class Conf {
 	}
 
 	public boolean isLocal() throws ConfigurationException {
-		String isLocalStr = extractProperty(IS_LOCAL_KEY);
+		String isLocalStr = extractProperty(FTP_IS_LOCAL_KEY);
+		return (isLocalStr.compareTo("true") == 0);
+	}
+	
+	public boolean clockIsLocal() throws ConfigurationException {
+		String isLocalStr = extractProperty(CLOCK_IS_LOCAL_KEY);
 		return (isLocalStr.compareTo("true") == 0);
 	}
 

@@ -162,7 +162,7 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
-			if (!Conf.getInstance().isLocal()) {
+			if (!Conf.getInstance().clockIsLocal()) {
 				try {
 					LocateRegistry.createRegistry(1099);
 				} catch (RemoteException e1) {
@@ -202,7 +202,7 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		Clock clock = Clock.getInstance();
 
 		Date hour = clock.getHour();
-		System.out.println("Au troisième top il sera exactement : "
+		System.out.println("Au troisiï¿½me top il sera exactement : "
 				+ hour.toString());
 
 		clock.wakeMeUp(hour, "INIT");

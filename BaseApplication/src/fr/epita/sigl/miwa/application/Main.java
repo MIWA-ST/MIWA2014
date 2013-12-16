@@ -1,7 +1,9 @@
 package fr.epita.sigl.miwa.application;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.application.clock.ClockClientToUse;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.st.Conf;
@@ -19,9 +21,6 @@ public class Main {
 			AsyncMessageFactory.getInstance().getAsyncMessageManager().initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE*/
 		/* CODE HERE */
-		try {
-			Thread.sleep(30000);
-		} catch (InterruptedException e) {
 		}
 		SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "Coucou GC");
 		/* !CODE HERE */
