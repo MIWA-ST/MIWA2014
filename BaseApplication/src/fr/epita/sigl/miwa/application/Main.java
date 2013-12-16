@@ -1,8 +1,10 @@
 package fr.epita.sigl.miwa.application;
 
 import java.io.File;
+import java.util.Date;
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.application.clock.ClockClientToUse;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AAsyncMessageListener;
@@ -30,15 +32,14 @@ public class Main {
 				LOGGER.severe(source + " : " + file.getAbsolutePath());
 			}
 		});
+		Date hour = ClockClientToUse.getClock().getHour();
+		System.out.println(hour.toString());
+		hour.setHours(hour.getHours() + 10);
+		ClockClientToUse.getClock().wakeMeUpEveryHours(hour, "COUCOU HOUR");
 		
-//		try {
-//			Thread.sleep(20000);
-//		} catch (InterruptedException e) {
-//		}
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().send("Salut BI", EApplication.BI);
 		
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().stopListener();
-		
-//		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(" Coucouc ! ", EApplication.BI);
 	}
 
 }

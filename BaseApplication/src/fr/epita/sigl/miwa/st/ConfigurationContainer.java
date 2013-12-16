@@ -24,6 +24,7 @@ public class ConfigurationContainer {
 
 	// GLOBAL
 	public static final String IS_LOCAL_KEY = "global.is_local";
+	public static final String CLOCK_IS_LOCAL_KEY = "clock.is_local";
 	public static final String LOCAL_REPOSITORY_KEY = "global.local_repository";
 	public static final String CURRENT_APPLICATION_KEY = "application";
 
@@ -136,6 +137,11 @@ public class ConfigurationContainer {
 
 	public boolean isLocal() throws ConfigurationException {
 		String isLocalStr = extractProperty(IS_LOCAL_KEY);
+		return (isLocalStr.compareTo("true") == 0);
+	}
+	
+	public boolean clockIsLocal() throws ConfigurationException {
+		String isLocalStr = extractProperty(CLOCK_IS_LOCAL_KEY);
 		return (isLocalStr.compareTo("true") == 0);
 	}
 
