@@ -33,11 +33,11 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 
 	private static final Logger LOGGER = Logger.getLogger(JMSManager.class
 			.getName());
-	
+
 	private static final int CONNECTION_TIMEOUT = 15000;
-	
-	private Thread listenerThread = null;
-	
+
+	private JMSListenerRunnable listenerRunnable = null;
+
 	protected class JMSContext {
 		private ConnectionFactory connectionFactory = null;
 		private Queue queue = null;
@@ -50,6 +50,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 
 		private JMSContext context = null;
 		private AAsyncMessageListener listener = null;
+		private boolean isAlive = true;
 
 		protected JMSListenerRunnable(JMSContext context,
 				AAsyncMessageListener listener) {
@@ -65,7 +66,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 					context.session.close();
 					context.session = null;
 				}
-				
+
 				if (context.connection != null) {
 					context.connection.close();
 					context.connection = null;
@@ -85,24 +86,24 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 					}
 					MessageConsumer consumer = null;
 
-					LOGGER.info("Creating message consumer...");
+					LOGGER.fine("Creating message consumer...");
 					try {
 						consumer = context.session
 								.createConsumer(context.queue);
-						LOGGER.info("JMSMessage consumer created.");
+						LOGGER.fine("JMSMessage consumer created.");
 					} catch (JMSException e) {
 						LOGGER.severe("Failed to create message consumer.");
 					}
 
-					LOGGER.info("Setting message listener...");
+					LOGGER.fine("Setting message listener...");
 					try {
 						consumer.setMessageListener(listener);
-						LOGGER.info("JMSMessage listener set");
+						LOGGER.fine("JMSMessage listener set");
 					} catch (JMSException e) {
 						LOGGER.severe("Failed to set message listener.");
 					}
 
-					LOGGER.info("Starting connection...");
+					LOGGER.fine("Starting connection...");
 					try {
 						context.connection.start();
 						LOGGER.info("Connection started.");
@@ -118,7 +119,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 				} finally {
 					try {
 						if (context.session != null) {
-							context.session.close();							
+							context.session.close();
 						}
 						if (context.connection != null) {
 							context.connection.close();
@@ -128,9 +129,27 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 					context.connection = null;
 					context.session = null;
 				}
-			} while (true);
+			} while (isAlive);
+			try {
+				if (context.session != null) {
+					context.session.close();
+				}
+				if (context.connection != null) {
+					context.connection.close();
+				}
+			} catch (JMSException e) {
+			}
+			context.connection = null;
+			context.session = null;
 		}
 
+		public boolean isAlive() {
+			return isAlive;
+		}
+
+		public void setAlive(boolean isAlive) {
+			this.isAlive = isAlive;
+		}
 	}
 
 	/**
@@ -310,22 +329,19 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		JMSContext context = init(ConfigurationContainer.getInstance()
 				.getCurrentApplication());
 
-		
-		Thread thread = new Thread(new JMSListenerRunnable(context, listener));
-		
+		listenerRunnable = new JMSListenerRunnable(context, listener);
+		Thread thread = new Thread(listenerRunnable);
+
 		thread.start();
 	}
 
 	@Override
 	public void stopListener() {
-		if (listenerThread != null && listenerThread.isAlive()) {
-			try {
-				listenerThread.join(0);
-			} catch (InterruptedException e) {
-			}
+		if (listenerRunnable != null && listenerRunnable.isAlive()) {
+			listenerRunnable.setAlive(false);
 		}
 	}
-	
+
 	@Override
 	public void notify(AsyncFileMessage message) throws AsyncMessageException {
 		JMSContext context = init(message.getDestination());

@@ -31,12 +31,14 @@ public class Main {
 			}
 		});
 		
-		try {
-			Thread.sleep(20000);
-		} catch (InterruptedException e) {
-		}
+//		try {
+//			Thread.sleep(20000);
+//		} catch (InterruptedException e) {
+//		}
 		
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().stopListener();
+		
+//		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(" Coucouc ! ", EApplication.BI);
 	}
 
 }
