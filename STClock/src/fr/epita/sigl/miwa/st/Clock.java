@@ -215,8 +215,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 					} catch (RemoteException e1) {
 						log.log(Level.SEVERE,
 								"CLOCK SERVER : Failed to wakeUp " + _sender
-										+ " for the second try.");
-						e1.printStackTrace();
+										+ " for the second try." + e.getMessage());
 						return;
 					}
 				}
@@ -250,8 +249,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 							| NotBoundException e) {
 						log.log(Level.SEVERE,
 								"CLOCK SERVER : Failed to establish connection with "
-										+ _sender + ".");
-						e.printStackTrace();
+										+ _sender + "." + e.getMessage());
 						return null;
 					}
 				} else {
