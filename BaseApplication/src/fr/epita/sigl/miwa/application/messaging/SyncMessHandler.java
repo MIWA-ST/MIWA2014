@@ -22,7 +22,6 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.st.sync;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,8 +14,12 @@ import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.ISyncMessReceiver;
 
-class SyncMessReceiver implements ISyncMessReceiver {
+class SyncMessReceiver extends UnicastRemoteObject implements ISyncMessReceiver {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1925073667781359257L;
 	static private SyncMessReceiver _instance;
 	static private Object _instanceLock = new Object();
 	static private final Logger LOG = Logger.getGlobal();
@@ -23,7 +28,13 @@ class SyncMessReceiver implements ISyncMessReceiver {
 		if (_instance == null) {
 			synchronized (_instanceLock) {
 				if (_instance == null) {
-					_instance = new SyncMessReceiver();
+					try {
+						_instance = new SyncMessReceiver();
+						_instance.initConnection();
+					} catch (RemoteException e) {
+						LOG.severe("SyncMessReceiver : RemoteException during construct\n" + e.getMessage());
+					}
+					
 				}
 			}
 		}
@@ -74,7 +85,11 @@ class SyncMessReceiver implements ISyncMessReceiver {
 		return SyncMessHandler.answerToRequestXML(sender, request);
 	}
 	
-	private SyncMessReceiver() {
+	private SyncMessReceiver() throws RemoteException {
+
+	}
+	
+	private void initConnection() {
 		EApplication app = Conf.getInstance().getCurrentApplication();
 		String url = "rmi://"
 				+ Conf.getInstance()

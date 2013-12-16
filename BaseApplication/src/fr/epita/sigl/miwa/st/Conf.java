@@ -98,18 +98,13 @@ public class Conf {
 						"Properties Loading : Failed to load the application name in the config.properties file.");
 			}
 			initAppLocator();
-			initSyncMessReceiver();
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE,
 					"Properties Loading : Failed to load properties file.");
 			e.printStackTrace();
 		}
 	}
-
-	private void initSyncMessReceiver() {
-		SyncMessFactory.initSyncMessReceiver();		
-	}
-
+	
 	private void initAppLocator() {
 		String rmiAppLocator = "rmi://" + _serverHostAddress
 				+ "/ApplicationLocator";
