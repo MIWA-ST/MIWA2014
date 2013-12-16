@@ -17,8 +17,8 @@ public class SyncMessHandler {
 
 	/*
 	 * l'application sender vous envoie la string message.
-	 * Vous ne devez faire aucun appel à cette fonction, seulement remplir le code
-	 * Elle est automatiquement appelée lorsqu'une application vous contacte
+	 * Vous ne devez faire aucun appel ï¿½ cette fonction, seulement remplir le code
+	 * Elle est automatiquement appelï¿½e lorsqu'une application vous contacte
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
@@ -29,8 +29,8 @@ public class SyncMessHandler {
 	/*
 	 * L'application sender vous demande request
 	 * Vous devez lui renvoyer une string
-	 * Vous ne devez faire aucun appel à cette fonction, seulement remplir le code
-	 * Elle est automatiquement appelée lorsqu'une application vous contacte
+	 * Vous ne devez faire aucun appel ï¿½ cette fonction, seulement remplir le code
+	 * Elle est automatiquement appelï¿½e lorsqu'une application vous contacte
 	 */
 	@Deprecated
 	static public String answerToRequestMessage(EApplication sender, String request){
@@ -40,8 +40,8 @@ public class SyncMessHandler {
 	
 	/*
 	* L'application sender vous envoie le XML xml
-	* Vous ne devez faire aucun appel à cette fonction, seulement remplir le code
-	* Elle est automatiquement appelée lorsqu'une application vous contacte
+	* Vous ne devez faire aucun appel ï¿½ cette fonction, seulement remplir le code
+	* Elle est automatiquement appelï¿½e lorsqu'une application vous contacte
 	*/
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
@@ -51,8 +51,8 @@ public class SyncMessHandler {
 
 	/*
 	 * L'application sender vous demande un XML avec la requete request
-	 * Vous ne devez faire aucun appel à cette fonction, seulement remplir le code
-	 * Elle est automatiquement appelée lorsqu'une application vous contacte
+	 * Vous ne devez faire aucun appel ï¿½ cette fonction, seulement remplir le code
+	 * Elle est automatiquement appelï¿½e lorsqu'une application vous contacte
 	 */
 	@Deprecated
 	static public Document answerToRequestXML(EApplication sender, String request){
