@@ -16,7 +16,7 @@ public class ClockClientToUse {
 	
 	/*
 	 * Vous ne devez faire aucun appel à cette fonction, seulement remplir le code
-	 * Elle est automatiquement appelée lorsque l'horloge vous contacte
+	 * Elle est automatiquement appelée lorsque l'horloge vous contacte ne pas appeler vous même
 	 */
 	static public void wakeUp(Date date, Object message) {
 		if (message instanceof String) {

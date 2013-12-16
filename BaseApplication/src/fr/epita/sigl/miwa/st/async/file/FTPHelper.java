@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.st.async.file.helper;
+package fr.epita.sigl.miwa.st.async.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +13,8 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
+import fr.epita.sigl.miwa.st.ConfigurationContainer;
+import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 
@@ -22,9 +24,9 @@ import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
  * @author francois
  * 
  */
-public class FTPHelper implements IAsyncFileHelper {
+class FTPHelper implements IAsyncFileHelper {
 
-	private static final Logger log = Logger.getLogger(FTPHelper.class
+	private static final Logger LOGGER = Logger.getLogger(FTPHelper.class
 			.getName());
 
 	private FTPClient ftpClient = null;
@@ -42,25 +44,26 @@ public class FTPHelper implements IAsyncFileHelper {
 			String password) throws AsyncFileException {
 		ftpClient = new FTPClient();
 		try {
-			log.info("Trying to connect to FTP server " + address + ":"
+			LOGGER.info("Trying to connect to FTP server " + address + ":"
 					+ String.valueOf(port) + "...");
 			ftpClient.connect(address, port);
 
-			log.info("Login to FTP server " + address + ":"
+			LOGGER.info("Login to FTP server " + address + ":"
 					+ String.valueOf(port) + "...");
 			ftpClient.login(username, password);
-			log.info("Login successful to FTP server " + address + ":"
+			LOGGER.info("Login successful to FTP server " + address + ":"
 					+ String.valueOf(port));
 			int reply = ftpClient.getReplyCode();
 			if (FTPReply.isPositiveCompletion(reply)) {
-				log.info("Connection established with FTP server " + address
+				LOGGER.info("Connection established with FTP server " + address
 						+ ":" + String.valueOf(port));
-				log.info("FTP Welcome message : " + ftpClient.getReplyString());
+				LOGGER.info("FTP Welcome message : "
+						+ ftpClient.getReplyString());
 			} else {
 				disconnect();
-				log.severe("Failed to connect to FTP server " + address + ":"
-						+ String.valueOf(port) + " !");
-				log.severe("FTP error : " + ftpClient.getReplyString());
+				LOGGER.severe("Failed to connect to FTP server " + address
+						+ ":" + String.valueOf(port) + " !");
+				LOGGER.severe("FTP error : " + ftpClient.getReplyString());
 				throw new AsyncFileException(
 						"Failed to connect to FTP server : "
 								+ ftpClient.getReplyString());
@@ -68,7 +71,7 @@ public class FTPHelper implements IAsyncFileHelper {
 			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 		} catch (IOException e) {
 			disconnect();
-			log.severe("Failed to connect to FTP server" + e);
+			LOGGER.severe("Failed to connect to FTP server" + e);
 			throw new AsyncFileException("Failed to connect to FTP server", e);
 		}
 	}
@@ -82,7 +85,7 @@ public class FTPHelper implements IAsyncFileHelper {
 				ftpClient.logout();
 				ftpClient.disconnect();
 			} catch (IOException f) {
-				log.severe("Failed to disconnect to FTP Server");
+				LOGGER.severe("Failed to disconnect to FTP Server");
 			}
 		}
 	}
@@ -101,35 +104,36 @@ public class FTPHelper implements IAsyncFileHelper {
 			throws AsyncFileException {
 		InputStream inputStream = null;
 		try {
-			log.info("Trying to send file " + localFilepath + " to "
+			LOGGER.info("Trying to send file " + localFilepath + " to "
 					+ remoteFilepath + "...");
 			File localFile = new File(localFilepath);
 			if (!localFile.exists()) {
-				log.severe("The file " + localFilepath + " does not exists.");
+				LOGGER.severe("The file " + localFilepath + " does not exists.");
 				throw new AsyncFileException("The file " + localFilepath
 						+ " does not exists.");
 			}
 			inputStream = new FileInputStream(localFile);
 			if (ftpClient != null && ftpClient.isConnected()) {
-				log.info("Sending file " + localFilepath + " to "
+				LOGGER.info("Sending file " + localFilepath + " to "
 						+ remoteFilepath + "...");
 				ftpClient.storeFile(remoteFilepath, inputStream);
 				if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 					disconnect();
-					log.severe("Failed to send file " + localFilepath
+					LOGGER.severe("Failed to send file " + localFilepath
 							+ "  to FTP server !");
-					log.severe("FTP error : " + ftpClient.getReplyString());
+					LOGGER.severe("FTP error : " + ftpClient.getReplyString());
 					throw new AsyncFileException("Failed to send file "
 							+ localFilepath + " to FTP server : "
 							+ ftpClient.getReplyString());
 				}
-				log.info("File successfully sent to " + remoteFilepath + " !");
+				LOGGER.info("File successfully sent to " + remoteFilepath
+						+ " !");
 			}
 		} catch (FileNotFoundException e) {
-			log.severe("File not found : " + e.getMessage());
+			LOGGER.severe("File not found : " + e.getMessage());
 			throw new AsyncFileException("File not found", e);
 		} catch (IOException e) {
-			log.severe("A problem occured when trying to send file "
+			LOGGER.severe("A problem occured when trying to send file "
 					+ localFilepath);
 			throw new AsyncFileException(
 					"A problem occured when trying to send file "
@@ -140,7 +144,7 @@ public class FTPHelper implements IAsyncFileHelper {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
-					log.severe("Failed to close InputStream");
+					LOGGER.severe("Failed to close InputStream");
 				}
 			}
 		}
@@ -155,35 +159,36 @@ public class FTPHelper implements IAsyncFileHelper {
 	 *            Le chemin où sera stocké le fichier en local
 	 * @throws AsyncFileException
 	 */
-	private void retrieve(String remoteFilepath, String localFilepath)
+	private File retrieve(String remoteFilepath, String localFilepath)
 			throws AsyncFileException {
 		OutputStream outputStream = null;
+		File localFile = null;
 		try {
-			log.info("Trying to retrieve file " + remoteFilepath + " to "
+			LOGGER.info("Trying to retrieve file " + remoteFilepath + " to "
 					+ localFilepath + "...");
-			File localFile = new File(localFilepath);
+			localFile = new File(localFilepath);
 			outputStream = new FileOutputStream(localFile);
 			if (ftpClient != null && ftpClient.isConnected()) {
-				log.info("Retrieving file " + remoteFilepath + " to "
+				LOGGER.info("Retrieving file " + remoteFilepath + " to "
 						+ localFilepath + "...");
 				ftpClient.retrieveFile(remoteFilepath, outputStream);
 				if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 					disconnect();
-					log.severe("Failed to retrieve file " + remoteFilepath
+					LOGGER.severe("Failed to retrieve file " + remoteFilepath
 							+ "  to FTP server !");
-					log.severe("FTP error : " + ftpClient.getReplyString());
+					LOGGER.severe("FTP error : " + ftpClient.getReplyString());
 					throw new AsyncFileException("Failed to retrieve file "
 							+ remoteFilepath + " to FTP server : "
 							+ ftpClient.getReplyString());
 				}
-				log.info("File successfully retrieved to " + localFilepath
+				LOGGER.info("File successfully retrieved to " + localFilepath
 						+ " !");
 			}
 		} catch (FileNotFoundException e) {
-			log.severe("File not found : " + e.getMessage());
+			LOGGER.severe("File not found : " + e.getMessage());
 			throw new AsyncFileException("File not found", e);
 		} catch (IOException e) {
-			log.severe("A problem occured when trying to retrieve file "
+			LOGGER.severe("A problem occured when trying to retrieve file "
 					+ remoteFilepath);
 			throw new AsyncFileException(
 					"A problem occured when trying to retrieve file "
@@ -194,31 +199,44 @@ public class FTPHelper implements IAsyncFileHelper {
 				try {
 					outputStream.close();
 				} catch (IOException e) {
-					log.severe("Failed to close OutputStream");
+					LOGGER.severe("Failed to close OutputStream");
 				}
 			}
 		}
+		return localFile;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * fr.epita.sigl.miwa.st.async.file.IAsyncFileHelper#retrieve(java.lang.String
-	 * )
+	 * fr.epita.sigl.miwa.st.async.file.IAsyncFileHelper#retrieve(java.lang.
+	 * String )
 	 */
 	@Override
-	public void retrieve(String filename) throws AsyncFileException {
-		// TODO Récupérer les properties qui vont bien
-		String localFolder = "/Users/francois/Downloads/";
-		String remoteFolder = "TOTO";
-		String host = "bnf.sigl.epita.fr";
-		int port = 2266;
-		String username = "anonymous";
-		String password = "";
+	public File retrieve(String filename) throws AsyncFileException {
+		String localRepository = null;
+		String host = null;
+		int port = 0;
+		String username = null;
+		String password = null;
+		try {
+			localRepository = ConfigurationContainer.getInstance()
+					.getLocalRepository();
+			host = ConfigurationContainer.getInstance().getFTPHost();
+			port = ConfigurationContainer.getInstance().getFTPPort();
+			username = ConfigurationContainer.getInstance().getFTPUsername();
+			password = ConfigurationContainer.getInstance().getFTPPassword();
+		} catch (ConfigurationException e) {
+			LOGGER.severe("Failed to load configuration");
+			throw new AsyncFileException("Failed to load configuration", e);
+		}
+		String remoteFolder = ConfigurationContainer.getInstance()
+				.getCurrentApplication().getShortName();
 
 		connect(host, port, username, password);
-		retrieve(remoteFolder + filename, localFolder + filename);
+		return retrieve(remoteFolder + File.separatorChar + filename, localRepository
+				+ File.separatorChar + filename);
 	}
 
 	/*
@@ -231,15 +249,26 @@ public class FTPHelper implements IAsyncFileHelper {
 	@Override
 	public void send(String filename, EApplication destination)
 			throws AsyncFileException {
-		// TODO Récupérer les properties qui vont bien
-		String host = "bnf.sigl.epita.fr";
-		int port = 2266;
-		String username = "anonymous";
-		String password = "";
-		String remoteFolder = "TOTO";
-		String localFolder = "/Users/francois/Downloads/";
+		String remoteFolder = destination.getShortName();
+		String localRepository = null;
+		String host = null;
+		int port = 0;
+		String username = null;
+		String password = null;
+		try {
+			localRepository = ConfigurationContainer.getInstance()
+					.getLocalRepository();
+			host = ConfigurationContainer.getInstance().getFTPHost();
+			port = ConfigurationContainer.getInstance().getFTPPort();
+			username = ConfigurationContainer.getInstance().getFTPUsername();
+			password = ConfigurationContainer.getInstance().getFTPPassword();
+		} catch (ConfigurationException e) {
+			LOGGER.severe("Failed to load configuration");
+			throw new AsyncFileException("Failed to load configuration", e);
+		}
 
 		connect(host, port, username, password);
-		send(localFolder + filename, remoteFolder + filename);
+		send(localRepository + File.separatorChar + filename, remoteFolder
+				+ File.separatorChar + filename);
 	}
 }

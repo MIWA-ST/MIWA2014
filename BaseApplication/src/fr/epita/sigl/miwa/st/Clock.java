@@ -158,12 +158,16 @@ public class Clock extends UnicastRemoteObject implements IClockClient, IExposed
 	private void initConnection() {
 		EApplication app = ConfigurationContainer.getInstance()
 				.getCurrentApplication();
-		if (ConfigurationContainer.getInstance().getEnv().equals("prod")) {
-			try {
-				LocateRegistry.createRegistry(1099);
-			} catch (RemoteException e1) {
-				log.severe("Failed to create Registry" + e1.getMessage());
+		try {
+			if (!ConfigurationContainer.getInstance().isLocal()) {
+				try {
+					LocateRegistry.createRegistry(1099);
+				} catch (RemoteException e1) {
+					log.severe("Failed to create Registry" + e1.getMessage());
+				}
 			}
+		} catch (ConfigurationException e1) {
+			log.severe("Failed to get isLocal conf : " + e1.getMessage());
 		}
 		String url = "rmi://"
 				+ ConfigurationContainer.getInstance()
