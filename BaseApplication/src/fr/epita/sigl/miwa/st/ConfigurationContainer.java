@@ -27,6 +27,7 @@ public class ConfigurationContainer {
 	private EApplication _currentApplication;
 	private String _serverHostAddress;
 	private String _applicationHostAddress;
+	private String _env;
 
 	public static ConfigurationContainer getInstance() {
 		if (_instance == null) {
@@ -62,6 +63,7 @@ public class ConfigurationContainer {
 			_currentApplication = EApplication.getFromShortName(_prop
 					.getProperty("application"));
 			_serverHostAddress = _prop.getProperty("server_ip");
+			_env = _prop.getProperty("env");
 			try {
 				_applicationHostAddress = InetAddress.getLocalHost()
 						.getHostAddress();
@@ -117,5 +119,9 @@ public class ConfigurationContainer {
 
 	public String getApplicationHostAddress() {
 		return _applicationHostAddress;
+	}
+	
+	public String getEnv() {
+		return _env;
 	}
 }

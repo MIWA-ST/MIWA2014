@@ -64,8 +64,8 @@ public class RegistryServerImpl extends UnicastRemoteObject {
 			String url = "rmi://" + InetAddress.getLocalHost().getHostAddress()
 					+ "/ApplicationLocator";
 			try {
-				// FIXME WithConf
 				Naming.rebind(url, locator);
+				log.info("Started : " + url);
 			} catch (RemoteException | MalformedURLException e) {
 				log.log(Level.SEVERE,
 						"APP LOCATOR : Failed to register URL Or Remote exception");

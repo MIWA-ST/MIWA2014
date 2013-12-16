@@ -8,9 +8,9 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class STRemoteApplicationMgmtToUse {
+public class STRemoteApplicationMgmt {
 	private static final Logger log = Logger
-			.getLogger(STRemoteApplicationMgmtToUse.class.getName());
+			.getLogger(STRemoteApplicationMgmt.class.getName());
 
 	static public void registerRemoteClass(String className,
 			Remote classInstance) {

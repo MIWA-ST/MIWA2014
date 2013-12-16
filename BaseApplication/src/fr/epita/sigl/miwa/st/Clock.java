@@ -14,7 +14,7 @@ import fr.epita.sigl.miwa.application.clock.ClockClientToUse;
 import fr.epita.sigl.miwa.st.clock.IClock;
 import fr.epita.sigl.miwa.st.clock.IClockClient;
 
-public class ClockClient extends UnicastRemoteObject implements IClockClient {
+public class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 
 	/**
 	 * 
@@ -23,18 +23,18 @@ public class ClockClient extends UnicastRemoteObject implements IClockClient {
 	/**
 	 * @param args
 	 */
-	private static final Logger log = Logger.getLogger(ClockClient.class
+	private static final Logger log = Logger.getLogger(Clock.class
 			.getName());
-	private static ClockClient _instance;
+	private static Clock _instance;
 	private static final Object _lockInstance = new Object();
 	private static IClock remoteClock;
 
-	static public ClockClient getInstance() {
+	static public Clock getInstance() {
 		if (_instance == null) {
 			synchronized (_lockInstance) {
 				if (_instance == null) {
 					try {
-						_instance = new ClockClient();
+						_instance = new Clock();
 						_instance.initConnection();
 					} catch (RemoteException e) {
 						log.log(Level.SEVERE,
@@ -123,7 +123,7 @@ public class ClockClient extends UnicastRemoteObject implements IClockClient {
 						"CLOCK CLIENT : Failed to register a weekly event for the second time.");
 				e1.printStackTrace();
 			}
-		} // FIXME withConf
+		}
 	}
 
 	public void wakeMeUpEveryHours(Date nextOccurence, Object message) {
@@ -152,27 +152,30 @@ public class ClockClient extends UnicastRemoteObject implements IClockClient {
 		return null;
 	}
 
-	private ClockClient() throws RemoteException {
+	private Clock() throws RemoteException {
 	}
 
 	private void initConnection() {
-		try {
-			LocateRegistry.createRegistry(1099);
-		} catch (RemoteException e1) {
-			// FIXME Log
-			e1.printStackTrace();
-		}
 		EApplication app = ConfigurationContainer.getInstance()
 				.getCurrentApplication();
-		String url;
-		url = "rmi://"
-				+ ConfigurationContainer.getInstance().getApplicationHostAddress()
-				+ "/Clock" + app.getShortName();
+		if (ConfigurationContainer.getInstance().getEnv().equals("prod")) {
+			try {
+				LocateRegistry.createRegistry(1099);
+			} catch (RemoteException e1) {
+				log.severe("Failed to create Registry" + e1.getMessage());
+			}
+		}
+		String url = "rmi://"
+				+ ConfigurationContainer.getInstance()
+						.getApplicationHostAddress() + "/Clock"
+				+ app.getShortName();
 		try {
 			Naming.rebind(url, _instance);
+			log.info("Clock" + app.getShortName() + " registred.");
 		} catch (RemoteException | MalformedURLException e) {
 			log.log(Level.SEVERE,
-					"CLOCK CLIENT : Failed to (re)bind the connection.\n" + e.getMessage());
+					"CLOCK CLIENT : Failed to (re)bind the connection.\n"
+							+ e.getMessage());
 		}
 
 		String rmiClockServer = "rmi://"
@@ -180,19 +183,23 @@ public class ClockClient extends UnicastRemoteObject implements IClockClient {
 				+ "/Clock";
 		try {
 			remoteClock = (IClock) Naming.lookup(rmiClockServer);
+			log.info("Server Clock found.");
 		} catch (MalformedURLException | RemoteException | NotBoundException e) {
 			log.log(Level.SEVERE,
-					"CLOCK CLIENT : Failed to contact Clock Server.\n" + e.getMessage());
+					"CLOCK CLIENT : Failed to contact Clock Server.\n"
+							+ e.getMessage());
 		}
 	}
 
 	public static void main(String[] args) {
-		ClockClient clock = ClockClient.getInstance();
-			Date hour = clock.getHour();
-			System.out.println("Au troisième top il sera exactement : "
-					+ hour.toString());
-		
-		clock.wakeMeUp(hour, "INIT"); clock.wakeMeUpEveryDays(hour, "DAY");
-		clock.wakeMeUpEveryWeeks(hour, "WEEK");		 
+		Clock clock = Clock.getInstance();
+
+		Date hour = clock.getHour();
+		System.out.println("Au troisième top il sera exactement : "
+				+ hour.toString());
+
+		clock.wakeMeUp(hour, "INIT");
+		clock.wakeMeUpEveryDays(hour, "DAY");
+		clock.wakeMeUpEveryHours(hour, "HOUR");
 	}
 }

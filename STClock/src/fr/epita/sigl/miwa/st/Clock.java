@@ -279,8 +279,8 @@ public class Clock extends UnicastRemoteObject implements IClock {
 			String url = "rmi://" + InetAddress.getLocalHost().getHostAddress()
 					+ "/Clock";
 			try {
-				// FIXME WithConf
 				Naming.rebind(url, _instance);
+				log.info("Started : " + url);
 			} catch (RemoteException | MalformedURLException e) {
 				log.log(Level.SEVERE,
 						"CLOCK SERVER : Failed to register URL Or Remote exception");
