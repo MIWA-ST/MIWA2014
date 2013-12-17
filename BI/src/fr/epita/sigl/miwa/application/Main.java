@@ -1,7 +1,9 @@
 package fr.epita.sigl.miwa.application;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.st.Conf;
@@ -23,14 +25,6 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		try {
-			Thread.sleep(40000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.BI, "Coucou BI");
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
