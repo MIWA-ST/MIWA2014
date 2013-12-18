@@ -6,6 +6,7 @@ import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -32,6 +33,9 @@ public class Main {
 		SyncMessHandler.getSyncMessSender().sendMessage(
 				EApplication.BI, "Coucou BI");
 		/* !CODE HERE */
+		AsyncFileFactory.getInstance().getFileManager().send("C:\\Download\\EN\\coucou.txt", EApplication.GESTION_COMMERCIALE);
+		
+		/* !FIN CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
 				.stopListener();
