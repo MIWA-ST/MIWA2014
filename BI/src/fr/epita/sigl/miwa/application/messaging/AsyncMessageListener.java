@@ -1,9 +1,13 @@
 package fr.epita.sigl.miwa.application.messaging;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -25,12 +29,21 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("Le message est : " + message);
 			// Envoi du fichier de segmentation au CRM suite à leur demande
 			try {
-				String fileName = "segmentation-client.xml";
+				String content = "<xml><ENTETE objet=\"segmentation-client\" source=\"bi\" date=\"2013-12-18\"/><GROUPES><GROUPE><CRITERES><CRITERE type=\"age\" min=\"20\" max=\"30\"/><CRITERE type=\"geographie\" departement=\"75\"/><CRITERE type=\"sexe\" sexe=\"F\"/><CRITERE type=\"situation-familiale\" situation=\"marie\"/><CRITERE type=\"enfant\" enfant=\"1\"/><CRITERE type=\"fidelite\" carte=\"1\"/></CRITERES><CLIENTS><CLIENT numero=\"1\"><CATEGORIEARTICLES><CATEGORIE ref=\"0000000000000001\" achat=\"6\"/></CATEGORIEARTICLES></CLIENT></CLIENTS></GROUPE></GROUPES></xml>";
+				String fileName = "/segmentation-client.xml";
+				String repo = (String) Conf.getInstance().getProp().get(Conf.LOCAL_REPOSITORY_KEY);
+				File file = new File(repo + "/" + EApplication.BI.getShortName() + fileName);
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+				writer.write(content);
+				writer.close();					
 				AsyncFileFactory.getInstance().getFileManager().send(fileName, EApplication.CRM);
 				LOGGER.info("Fichier envoyé au CRM");
-				LOGGER.info("Nom du fichier : " + fileName); 
+				LOGGER.info("Nom du fichier : " + fileName);
 			} catch (AsyncFileException e) {
 				LOGGER.severe("Erreur pendant l'envoi du fichier au CRM");
+				LOGGER.severe("L'erreur est : " + e);
+			} catch (IOException e){
+				LOGGER.severe("Erreur pendant l'écriture du fichier");
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
