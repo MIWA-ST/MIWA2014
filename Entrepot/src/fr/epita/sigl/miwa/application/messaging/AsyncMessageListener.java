@@ -38,6 +38,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				try
 				{
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.GESTION_COMMERCIALE);
+					LOGGER.info("Envoi du BL fournisseur à la GC effectué");
 				}
 				catch (AsyncMessageException e)
 				{
@@ -52,7 +53,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			
 				try
 				{
-					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BACK_OFFICE);
+					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.GESTION_COMMERCIALE);
+					LOGGER.info("Livraison de la commande internet effectuée");
 				}
 				catch (AsyncMessageException e)
 				{
@@ -67,7 +69,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				
 				try
 				{
-					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.GESTION_COMMERCIALE);
+					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BACK_OFFICE);
+					LOGGER.info("Envoi BL réassort envoyé à la GC");
 				}
 				catch (AsyncMessageException e)
 				{
