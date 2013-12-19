@@ -106,7 +106,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 					LOGGER.fine("Starting connection...");
 					try {
 						context.connection.start();
-						LOGGER.info("Connection started.");
+						LOGGER.fine("Connection started.");
 					} catch (JMSException e) {
 						LOGGER.severe("Failed to start connection.");
 					}
@@ -185,7 +185,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		LOGGER.info("Using queue : " + queueName);
 
 		if (jndiContext == null) {
-			LOGGER.info("The context is null, initializing context...");
+			LOGGER.fine("The context is null, initializing context...");
 			try {
 				jndiContext = new InitialContext(env);
 			} catch (NamingException e) {
@@ -193,11 +193,11 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 				throw new AsyncMessageException("Failed to initialize context",
 						e);
 			}
-			LOGGER.info("Context initialized.");
+			LOGGER.fine("Context initialized.");
 		}
 
 		try {
-			LOGGER.info("Initializing connection factory...");
+			LOGGER.fine("Initializing connection factory...");
 			context.connectionFactory = (ConnectionFactory) jndiContext
 					.lookup(connectionFactoryURL);
 		} catch (NamingException e) {
@@ -211,10 +211,10 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 					"Failed to retrieve ConnectionFactory from jndi context.",
 					e);
 		}
-		LOGGER.info("QueueConnectionFactory initialized");
+		LOGGER.fine("QueueConnectionFactory initialized");
 
 		try {
-			LOGGER.info("Retrieving queue " + queueName
+			LOGGER.fine("Retrieving queue " + queueName
 					+ " from jndi context...");
 			context.queue = (Queue) jndiContext.lookup(queueName);
 		} catch (NamingException e) {
@@ -228,7 +228,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 			throw new AsyncMessageException("Failed to retrieve queue "
 					+ queueName + " from jndi context.", e);
 		}
-		LOGGER.info("Queue retrieved.");
+		LOGGER.fine("Queue retrieved.");
 
 		try {
 			jndiContext.close();
@@ -242,17 +242,17 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 	protected JMSContext initConnection(JMSContext context)
 			throws AsyncMessageException {
 		try {
-			LOGGER.info("Establishing connection...");
+			LOGGER.fine("Establishing connection...");
 			context.connection = context.connectionFactory.createConnection();
 		} catch (JMSException e) {
 			LOGGER.severe("Failed to establish connection to the queue.");
 			throw new AsyncMessageException(
 					"Failed to establish connection to the queue.", e);
 		}
-		LOGGER.info("Connection established.");
+		LOGGER.fine("Connection established.");
 
 		try {
-			LOGGER.info("Creating session...");
+			LOGGER.fine("Creating session...");
 			context.session = context.connection.createSession(false,
 					Session.AUTO_ACKNOWLEDGE);
 		} catch (JMSException e) {
@@ -260,7 +260,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 			close(context);
 			throw new AsyncMessageException("Failed to create session.", e);
 		}
-		LOGGER.info("Session sucessfully created.");
+		LOGGER.fine("Session sucessfully created.");
 		return context;
 	}
 
@@ -288,7 +288,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		ObjectMessage objectMessage = null;
 
 		try {
-			LOGGER.info("Creating producer...");
+			LOGGER.fine("Creating producer...");
 			try {
 				context.producer = context.session
 						.createProducer(context.queue);
@@ -296,17 +296,17 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 				LOGGER.severe("Failed to create producer.");
 				throw new AsyncMessageException("Failed to create producer.", e);
 			}
-			LOGGER.info("Producer intialized.");
+			LOGGER.fine("Producer intialized.");
 
 			try {
-				LOGGER.info("Creating object message...");
+				LOGGER.fine("Creating object message...");
 				objectMessage = context.session.createObjectMessage(mes);
 			} catch (JMSException e) {
 				LOGGER.severe("Failed to create object message.");
 				throw new AsyncMessageException(
 						"Failed to create text message.", e);
 			}
-			LOGGER.info("ObjectMessage created.");
+			LOGGER.fine("ObjectMessage created.");
 
 			try {
 				LOGGER.info("Sending message to " + destination.toString());
@@ -350,7 +350,7 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 		ObjectMessage objectMessage = null;
 
 		try {
-			LOGGER.info("Creating producer...");
+			LOGGER.fine("Creating producer...");
 			try {
 				context.producer = context.session
 						.createProducer(context.queue);
@@ -358,17 +358,17 @@ class JMSManager implements IAsyncMessageManager, IAsyncFileNotifier {
 				LOGGER.severe("Failed to create producer.");
 				throw new AsyncMessageException("Failed to create producer.", e);
 			}
-			LOGGER.info("Producer intialized.");
+			LOGGER.fine("Producer intialized.");
 
 			try {
-				LOGGER.info("Creating object message...");
+				LOGGER.fine("Creating object message...");
 				objectMessage = context.session.createObjectMessage(message);
 			} catch (JMSException e) {
 				LOGGER.severe("Failed to create object message.");
 				throw new AsyncMessageException(
 						"Failed to create object message.", e);
 			}
-			LOGGER.info("ObjectMessage created.");
+			LOGGER.fine("ObjectMessage created.");
 
 			try {
 				LOGGER.info("Sending message to "
