@@ -1,3 +1,5 @@
+package fr.epita.sigl.miwa.application.messaging;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
