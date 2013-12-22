@@ -3,7 +3,6 @@ package fr.epita.sigl.miwa.application;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -11,6 +10,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import fr.epita.sigl.miwa.application.bo.Article;
+import fr.epita.sigl.miwa.application.bo.CommandeInternet;
+import fr.epita.sigl.miwa.application.bo.LivraisonFournisseur;
+import fr.epita.sigl.miwa.application.bo.ReassortBO;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
@@ -62,8 +65,7 @@ public class XMLManager
 		//TODO sauvergarde en base
 		
 		//Construction du xml
-		String bl = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-				+ "<EXPEDITIONCLIENT>"
+		String bl = "<EXPEDITIONCLIENT>"
 					+ "<LIVRAISON>"
 						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
 						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
@@ -113,8 +115,7 @@ public class XMLManager
 		//TODO sauvergarde en base
 		
 		//Construction du xml
-		String bl = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-				+ "<LIVRAISONSCOMMANDEFOURNISSEUR>"
+		String bl = "<LIVRAISONSCOMMANDEFOURNISSEUR>"
 					+ "<LIVRAISON>"
 						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
 						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
@@ -167,8 +168,7 @@ public class XMLManager
 		//TODO sauvergarde en base
 		
 		//Construction du xml
-		String bl = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-				+ "<LIVRAISONS>"
+		String bl = "<LIVRAISONS>"
 					+ "<LIVRAISON>"
 						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
 						+ "<REFMAGASIN>"+ command.getBackOfficeRef() + "</REFMAGASIN>"

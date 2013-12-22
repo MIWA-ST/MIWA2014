@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.application;
+package fr.epita.sigl.miwa.application.bo;
 
 public class Article
 {
