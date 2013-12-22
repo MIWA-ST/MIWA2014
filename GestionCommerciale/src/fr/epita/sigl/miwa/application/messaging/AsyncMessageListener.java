@@ -49,6 +49,11 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			if (source == EApplication.BACK_OFFICE) {
 				if (root.toLowerCase().equals("REASSORT")) {
 					LOGGER.info("BO envoi demande de reassort");
+					
+					//A faire envoyer à entrepot demande reassort
+					
+					//Commande fournisseur + envoi bon de commande fournisseur à l'entrepot
+					
 				}
 				else if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCK")) {
 					LOGGER.info("BO envoi niveau stock");
@@ -63,6 +68,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			} else if (source == EApplication.INTERNET) {
 				if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCKINTERNET")) {
 					LOGGER.info("Internet demande les niveaux de stock");
+					// A faire envoi niveau de stock
 					content = "";
 
 					AsyncMessageFactory.getInstance().getAsyncMessageManager()
@@ -70,6 +76,15 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					LOGGER.info("Envoi des stocks à internet");
 				}
 
+			}else if (source == EApplication.MDM) {
+				if (root.toLowerCase().equals("ARTICLES")) {
+					LOGGER.info("Ref envoi prix fournisseurs");
+					
+					//A faire envoyer au ref les prix des articles
+					
+					//Envoyer promotions au ref
+				}
+			
 			}
 		} catch (AsyncMessageException | ParserConfigurationException
 				| SAXException | IOException e) {
