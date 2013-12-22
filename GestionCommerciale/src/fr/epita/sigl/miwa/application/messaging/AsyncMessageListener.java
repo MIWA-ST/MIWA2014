@@ -77,13 +77,32 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				}
 
 			}else if (source == EApplication.MDM) {
-				if (root.toLowerCase().equals("ARTICLES")) {
-					LOGGER.info("Ref envoi prix fournisseurs");
+				//if (root.toLowerCase().equals("ARTICLES")) {
+					//LOGGER.info("Ref envoi prix fournisseurs");
 					
 					//A faire envoyer au ref les prix des articles
+					if (root.toUpperCase().equals("PRIXVENTE"))
+					{
+						LOGGER.info("prix de vente des articles reçus par le référentiel");
+						content = "<XML><PRIXVENTE></ARTICLES><ARTICLE reference=\"AU736827\" prix_vente=\"15\"/></ARTICLES></ARTICLES><ARTICLE reference=\"BZ758887\" prix_vente=\"80\"/></ARTICLES></PRIXVENTE></XML>";
+						
+						//content = XMLManager.getInstance().getCommandeFournisseur(message, doc);
+						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
+						LOGGER.info("Envoi des prix des articles au référentiel effectué");
+					}
 					
 					//Envoyer promotions au ref
-				}
+					if (root.toUpperCase().equals("PROMOTION"))
+					{
+						LOGGER.info("promotion des articles par le référentiel");
+						content = "<XML><PROMOTIONS><PROMOTION datedebut=\"2012-09-17\" datefin=\"2012-09-25\" promotion_pourcentage=\"23\"></ARTICLES><ARTICLE reference=\"FR145687\" /></ARTICLES></PROMOTION><PROMOTION datedebut=\"2013-11-01\" datefin=\"2013-12-30\" promotion_pourcentage=\"50\"></ARTICLES><ARTICLE reference=\"FD123456\" /></ARTICLES></ARTICLES><ARTICLE reference=\"GT789562\" /></ARTICLES></PROMOTION></PROMOTIONS></XML>";
+						
+						//content = XMLManager.getInstance().getCommandeFournisseur(message, doc);
+						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
+						LOGGER.info("Envoi des promotions des articles au référentiel effectué");
+					}
+					
+				//}
 			
 			}
 		} catch (AsyncMessageException | ParserConfigurationException
