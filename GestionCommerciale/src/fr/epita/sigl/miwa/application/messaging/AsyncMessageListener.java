@@ -67,15 +67,24 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				}
 			} else if (source == EApplication.INTERNET) {
 				if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCKINTERNET")) {
-					LOGGER.info("Internet demande les niveaux de stock");
+					LOGGER.info("On envoie les niveaux de stock à internet");
 					// A faire envoi niveau de stock
-					content = "";
+					content = "<DEMANDENIVEAUDESTOCKINTERNET><NUMERO>CV398719873</NUMERO><DATE>20131225</DATE><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>7</QUANTITE></ARTICLE><ARTICLE><REFERENCE>AU736829</REFERENCE><QUANTITE>3</QUANTITE></ARTICLE></ARTICLES></DEMANDENIVEAUDESTOCKINTERNET>";
 
 					AsyncMessageFactory.getInstance().getAsyncMessageManager()
 							.send(content, EApplication.INTERNET);
 					LOGGER.info("Envoi des stocks à internet");
 				}
+			} else if (source == EApplication.BACK_OFFICE) {
+				if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCK")) {
+					LOGGER.info("On demande les niveaux de stock à Back office");
+					// A faire envoi niveau de stock
+					content = "<DEMANDENIVEAUDESTOCK><NUMERO>CV398719873</NUMERO><REFMAGASIN>PA218765</REFMAGASIN><DATE>20131225</DATE><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE></ARTICLE><ARTICLE><REFERENCE>AU736829</REFERENCE></ARTICLE></ARTICLES></DEMANDENIVEAUDESTOCK>";
 
+					AsyncMessageFactory.getInstance().getAsyncMessageManager()
+							.send(content, EApplication.BACK_OFFICE);
+					LOGGER.info("Envoi des stocks au back office");
+				}
 			}else if (source == EApplication.MDM) {
 				//if (root.toLowerCase().equals("ARTICLES")) {
 					//LOGGER.info("Ref envoi prix fournisseurs");
