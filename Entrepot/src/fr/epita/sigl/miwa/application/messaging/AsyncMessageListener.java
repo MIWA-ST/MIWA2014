@@ -37,15 +37,15 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			String root = "";
 			String content = "";
 			
-		    DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		    InputSource is = new InputSource();
-		    is.setCharacterStream(new StringReader(message));
-	
-		    Document doc = db.parse(is);
-		    root = doc.getFirstChild().getNodeName();
-			
 			if (source == EApplication.GESTION_COMMERCIALE)
 			{	
+			    DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			    InputSource is = new InputSource();
+			    is.setCharacterStream(new StringReader(message));
+		
+			    Document doc = db.parse(is);
+			    root = doc.getFirstChild().getNodeName();
+			    
 				//Bon de commandes fournisseur >> Renvoyer BL à la GC
 				if (root.toUpperCase().equals("COMMANDESFOURNISSEUR"))
 				{

@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
 public class XMLManager
@@ -56,7 +57,7 @@ public class XMLManager
 		command.setArticles(articles);
 		
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		command.setDateBL(df.format(Calendar.getInstance().getTime()));
+		command.setDateBL(df.format(ClockClient.getClock().getHour()));
 		
 		//TODO sauvergarde en base
 		
@@ -107,7 +108,7 @@ public class XMLManager
 		command.setArticles(articles);
 		
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		command.setDateBL(df.format(Calendar.getInstance().getTime()));
+		command.setDateBL(df.format(ClockClient.getClock().getHour()));
 		
 		//TODO sauvergarde en base
 		
@@ -161,7 +162,7 @@ public class XMLManager
 		command.setArticles(articles);
 		
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		command.setDateBL(df.format(Calendar.getInstance().getTime()));
+		command.setDateBL(df.format(ClockClient.getClock().getHour()));
 		
 		//TODO sauvergarde en base
 		
