@@ -29,6 +29,11 @@ public class Main {
 		Date d = ClockClient.getClock().getHour();
 		System.out.println(d);
 		
+		// Pour se faire appeler à une certaine heure :
+		ClockClient.getClock().wakeMeUpEveryDays(new Date("23/12/2013"), "envoie_msg_BO");
+		
+		
+		
 		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.BI, "Coucou");
 		
 		/*try {
