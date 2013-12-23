@@ -10,7 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
+//import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.bo.Article;
 import fr.epita.sigl.miwa.application.bo.CommandeInternet;
 import fr.epita.sigl.miwa.application.bo.LivraisonFournisseur;

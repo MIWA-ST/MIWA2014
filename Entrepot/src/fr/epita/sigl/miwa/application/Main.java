@@ -1,6 +1,6 @@
 package fr.epita.sigl.miwa.application;
 
-import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
+//import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -27,7 +27,6 @@ public class Main {
 		}
 		catch (InterruptedException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
