@@ -1,5 +1,6 @@
 package fr.epita.sigl.miwa.application;
 
+import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -18,12 +19,19 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		try {
+		//JdbcConnection.getInstance().getConnection();
+		
+		try
+		{
 			Thread.sleep(86400000);
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		//JdbcConnection.getInstance().closeConnection();
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
