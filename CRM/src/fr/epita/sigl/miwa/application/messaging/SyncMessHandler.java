@@ -22,6 +22,15 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
+		
+		if (sender == EApplication.BI)
+		{
+			if (message == "Test")
+			{
+				System.out.println("Message reçu du BI :" + message);
+			}
+		}
+		
 		return false;
 	}
 
