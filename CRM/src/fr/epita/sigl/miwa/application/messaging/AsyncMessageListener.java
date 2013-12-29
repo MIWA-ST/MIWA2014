@@ -31,8 +31,9 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 	@Override
 	public void onFile(File file, EApplication source) {
-		//Message du BI
+		
 		if (source == EApplication.BI){
+			// Segmentation client
 			LOGGER.info("Fichier reçu du BI");
 			LOGGER.info("Le path du fichier est : " + file.getAbsolutePath());
 		}	

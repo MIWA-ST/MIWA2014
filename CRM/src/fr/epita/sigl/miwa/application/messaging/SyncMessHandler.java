@@ -33,10 +33,14 @@ public class SyncMessHandler {
 		}
 		else if (sender == EApplication.INTERNET)
 		{
+			// Demande d'information client
 			LOGGER.info("Message synchrone reçu d'internet :" + message);
+			
+			//TODO : envoyer les infos client demandées à internet
 		}
 		else if (sender == EApplication.MONETIQUE)
 		{
+			// Validation création / MAJ / suppression compte après avoir fait la demande
 			LOGGER.info("Message synchrone reçu de la monétique :" + message);
 		}
 		else
