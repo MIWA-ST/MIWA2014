@@ -10,6 +10,8 @@ import org.jdom2.input.*;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
+import fr.epita.sigl.miwa.application.object.Segmentation;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -45,6 +47,8 @@ public class JDOM
 	static void getData()
 	{
 	    String tmp = racine.getAttributeValue("objet");
+	    int num = -1;
+	    
 	    if (tmp.equals("segmentation-client"))
 	    {
 	    	Element groupes = racine.getChild("GROUPES");
@@ -70,8 +74,9 @@ public class JDOM
 		 	    while(k.hasNext())
 			    {
 		 	    	Element clientCourant = (Element)k.next();
+		 	    	num =  Integer.parseInt(clientCourant.getAttributeValue("numero"));
 		 	    	System.out.println(clientCourant.getAttributeValue("numero"));
-		 	    	
+		 	    	Segmentation.AssocClientSeq(num);
 		 	    	Element articles = clientCourant.getChild("CATEGORIEARTICLES");
 		 	    	List listArticles = articles.getChildren("CATEGORIE");
 		 	    	Iterator l = listArticles.iterator();

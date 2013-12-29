@@ -1,11 +1,13 @@
 package fr.epita.sigl.miwa.application;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
+import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
@@ -26,6 +28,8 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
+		Client.clientsList = new ArrayList<>();
+		
 		Date date = new Date();
 		date.getDate();
 		

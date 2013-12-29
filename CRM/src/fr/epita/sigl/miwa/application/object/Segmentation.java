@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Segmentation {
 
 	private int id;
-	private ArrayList<Client> clients;
+	private static ArrayList<Client> clients;
 	private ArrayList<String> criteres;
 	
 	public Segmentation ()
@@ -64,5 +64,18 @@ public class Segmentation {
 	public void setCriteres(ArrayList<String> criteres) {
 		this.criteres = criteres;
 	}
+	
+	
+	public static void AssocClientSeq(int id)
+	{
+		for (Client c : Client.clientsList)
+		{
+			if (c.getMatricule() == id)
+			{
+				clients.add(c);
+			}
+		}
+	}
+	
 	
 }

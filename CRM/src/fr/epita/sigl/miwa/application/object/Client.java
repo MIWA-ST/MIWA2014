@@ -3,6 +3,8 @@
  */
 package fr.epita.sigl.miwa.application.object;
 
+import java.util.List;
+
 /**
  * @author clementlavigne
  *
@@ -13,11 +15,14 @@ public class Client {
 	private String nom;
 	private String prenom;
 	
+	public static List<Client> clientsList;
+	
 	public Client (int id, String nom, String prenom)
 	{
 		this.matricule = id;
 		this.nom = nom;
 		this.prenom = prenom;
+		clientsList.add(this);
 	}
 
 	/**
