@@ -258,13 +258,15 @@ public class JDOM
 	   catch (java.io.IOException e){}
 	}
 	
-	static void sendXML(org.jdom2.Document doc)
+	static String sendXML(org.jdom2.Document doc)
 	{
-	   try
-	   {
-	      XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
-	      System.out.println(sortie.outputString(doc));
-	   }
-	   catch (Exception e){}
+		String tmp = "";
+		try
+	   	{
+			XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
+			tmp = sortie.outputString(doc);
+	   	}
+		catch (Exception e){}
+		return tmp;
 	}
 }
