@@ -29,8 +29,10 @@ public class Main {
 		Date date = new Date();
 		date.getDate();
 		
-		//JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
-		//JDOM.createXML("monetique");
+		JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
+		JDOM.createXML("monetique");
+		JDOM.createXML("bi-segmentation");
+		
 		System.out.println(ClockClient.getClock().getHour());
 		ClockClient.getClock().wakeMeUpEveryHours(date, "baseclient");
 		

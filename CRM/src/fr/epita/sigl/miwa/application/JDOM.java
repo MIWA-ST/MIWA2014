@@ -27,18 +27,15 @@ public class JDOM
 
 	public static void browseXML(String filename)
 	{
-	   //On crée une instance de SAXBuilder
 	   SAXBuilder sxb = new SAXBuilder();
 	   try
 	   {
-	      //On crée un nouveau document JDOM avec en argument le fichier XML
 	      document = sxb.build(new File(filename));
 	   }
 	   catch(Exception e){
 		   System.out.println("Impossible de trouver : " + filename);
 	   }
  
-	   //On initialise un nouvel élément racine avec l'élément racine du document.
 	   racine = document.getRootElement();
 
 	   getData();
@@ -89,9 +86,9 @@ public class JDOM
 	    }
 	    if (tmp.equals("ticket-client-fidelise"))
 	    {
-	    	Element clients = racine.getChild("ticketvente");
+	    	Element clients = racine.getChild("TICKETVENTE");
 
-			List listClient = clients.getChildren("article");
+			List listClient = clients.getChildren("ARTICLE");
 			
 		    Iterator i = listClient.iterator();
 		    System.out.println("XML BO!");
@@ -110,7 +107,7 @@ public class JDOM
 	{
 		if (type.equals("monetique"))
 		{
-			Element entete = new Element("entete");
+			Element entete = new Element("ENTETE");
 			String date = new SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE).format(new Date());
 			
 			Attribute objet = new Attribute("objet","information-client");
@@ -121,11 +118,11 @@ public class JDOM
 			entete.setAttribute(dateAttribute);
 			org.jdom2.Document doc = new Document(entete);
 
-			Element info = new Element("informations");
+			Element info = new Element("INFORMATIONS");
 			entete.addContent(info);
 			
 			
-			Element client = new Element("client");
+			Element client = new Element("CLIENT");
 			info.addContent(client);
 			
 			Attribute id = new Attribute("id","01");
@@ -135,17 +132,116 @@ public class JDOM
 			Attribute coord = new Attribute("coord","0130506070");
 			client.setAttribute(coord);
 
-			//Les deux méthodes qui suivent seront définies plus loin dans l'article
 			affiche(doc);
-			enregistre("Exercice1.xml", doc);
+			sendXML(doc);
 		}
+		else if (type.equals("bi"))
+		{
+			Element entete = new Element("ENTETE");
+			String date = new SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE).format(new Date());
+			
+			Attribute objet = new Attribute("objet","information-client");
+			entete.setAttribute(objet);
+			Attribute source = new Attribute("source","crm");
+			entete.setAttribute(source);
+			Attribute dateAttribute = new Attribute("date", date);
+			entete.setAttribute(dateAttribute);
+			org.jdom2.Document doc = new Document(entete);
+
+			Element info = new Element("CLIENTS");
+			entete.addContent(info);
+			
+			
+			Element client = new Element("CLIENT");
+			info.addContent(client);
+			
+			Attribute id = new Attribute("id","01");
+			client.setAttribute(id);
+			Attribute civilite = new Attribute("civilite","M");
+			client.setAttribute(civilite);
+			Attribute naissance = new Attribute("naissance","AAAAA-MM-JJ");
+			client.setAttribute(naissance);
+			Attribute codepostal = new Attribute("codepostal","75000");
+			client.setAttribute(codepostal);
+			Attribute situationfam = new Attribute("situationfam","Marie");
+			client.setAttribute(situationfam);
+			Attribute nbenfant = new Attribute("nbenfant","3");
+			client.setAttribute(nbenfant);
+			Attribute typecarte = new Attribute("typecarte","Super+");
+			client.setAttribute(typecarte);
+
+			affiche(doc);
+			enregistre("bi.xml", doc);
+		}
+		else if (type.equals("bi-segmentation"))
+		{
+			Element entete = new Element("ENTETE");
+			String date = new SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE).format(new Date());
+			
+			Attribute objet = new Attribute("objet","demande-segmentation-client");
+			entete.setAttribute(objet);
+			Attribute source = new Attribute("source","crm");
+			entete.setAttribute(source);
+			Attribute dateAttribute = new Attribute("date", date);
+			entete.setAttribute(dateAttribute);
+			org.jdom2.Document doc = new Document(entete);
+
+			Element criteres = new Element("CRITERES");
+			entete.addContent(criteres);
+			
+			
+			Element critere = new Element("CRITERE");
+			criteres.addContent(critere);
+			
+			Attribute typ = new Attribute("type","age");
+			critere.setAttribute(typ);
+			Attribute min = new Attribute("min","0"); //FIXME
+			critere.setAttribute(min);
+			Attribute max = new Attribute("max","100"); //FIXME
+			critere.setAttribute(max);
+			
+			Element critere2 = new Element("CRITERE");
+			criteres.addContent(critere2);
+			
+			Attribute typ2 = new Attribute("type","geographie");
+			critere2.setAttribute(typ2);
+			Attribute valeur1 = new Attribute("valeur","Sud"); //FIXME
+			critere2.setAttribute(valeur1);
+			
+			Element critere3 = new Element("CRITERE");
+			criteres.addContent(critere3);
+			
+			Attribute typ3 = new Attribute("type","sexe");
+			critere3.setAttribute(typ3);
+			Attribute valeur2 = new Attribute("valeur","H"); //FIXME
+			critere3.setAttribute(valeur2);
+			
+			Element critere4 = new Element("CRITERE");
+			criteres.addContent(critere4);
+			
+			Attribute typ4 = new Attribute("type","situation-familiale");
+			critere4.setAttribute(typ4);
+			Attribute valeur3 = new Attribute("valeur","Marié"); //FIXME
+			critere4.setAttribute(valeur3);
+			
+			Element critere5 = new Element("CRITERE");
+			criteres.addContent(critere5);
+			
+			Attribute typ5 = new Attribute("type","enfant");
+			critere5.setAttribute(typ5);
+			Attribute valeur4 = new Attribute("valeur","O"); //FIXME
+			critere5.setAttribute(valeur4);
+			
+			affiche(doc);
+			sendXML(doc);
+		}
+		
 	}
 	
 	static void affiche(org.jdom2.Document doc)
 	{
 	   try
 	   {
-	      //On utilise ici un affichage classique avec getPrettyFormat()
 	      XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
 	      sortie.output(doc, System.out);
 	   }
@@ -156,12 +252,19 @@ public class JDOM
 	{
 	   try
 	   {
-	      //On utilise ici un affichage classique avec getPrettyFormat()
 	      XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
-	      //Remarquez qu'il suffit simplement de créer une instance de FileOutputStream
-	      //avec en argument le nom du fichier pour effectuer la sérialisation.
 	      sortie.output(doc, new FileOutputStream(fichier));
 	   }
 	   catch (java.io.IOException e){}
+	}
+	
+	static void sendXML(org.jdom2.Document doc)
+	{
+	   try
+	   {
+	      XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
+	      System.out.println(sortie.outputString(doc));
+	   }
+	   catch (Exception e){}
 	}
 }
