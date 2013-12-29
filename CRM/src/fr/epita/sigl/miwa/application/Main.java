@@ -29,8 +29,8 @@ public class Main {
 		Date date = new Date();
 		date.getDate();
 		
-		JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\BO ticket client fidelise.xml");
-		
+		JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
+		JDOM.createXML("monetique");
 		System.out.println(ClockClient.getClock().getHour());
 		ClockClient.getClock().wakeMeUp(date, "Debout !");
 		

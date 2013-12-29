@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+	<ENTETE objet="segmentation-client" source="bi" date="">
+	<GROUPES>
+		<GROUPE>
+			<CRITERES>
+				<CRITERE type="age" min="" max=""/>
+				<CRITERE type="geographie" departement=""/>
+				<CRITERE type="sexe" sexe=""/>
+				<CRITERE type="situation-familiale" situation=""/>
+				<CRITERE type="enfant" enfant=""/>
+				<CRITERE type="fidelite" carte="" />
+			</CRITERES>
+			<CLIENTS>
+				<CLIENT numero="01">
+					<CATEGORIEARTICLES>
+						<CATEGORIE ref="art1" achat=""/>
+						<CATEGORIE ref="art2" achat=""/>
+					</CATEGORIEARTICLES>
+				</CLIENT>
+				<CLIENT numero="02">
+					<CATEGORIEARTICLES>
+						<CATEGORIE ref="art1" achat=""/>
+					</CATEGORIEARTICLES>
+				</CLIENT>				
+			</CLIENTS>
+		</GROUPE>
+	</GROUPES>		
+</ENTETE>
