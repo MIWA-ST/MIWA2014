@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entete objet="information-client" source="crm" date="AAAAA-MM-JJ">
+	<clients>
+		<client id="01" civilite="" naissance="" codepostal="" situationfam="" nbenfant="" typecarte="" />
+		<client id="02" civilite="" naissance="" codepostal="" situationfam="" nbenfant="" typecarte="" />
+	</clients>
+</entete>

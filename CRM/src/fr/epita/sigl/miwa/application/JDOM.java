@@ -39,21 +39,35 @@ public class JDOM
 	
 	
 	static void displayALL()
-	{
-		Element clients = racine.getChild("clients");
-
-		List listClient = clients.getChildren("client");
-		
-	    Iterator i = listClient.iterator();
-	   
+	{	   
 	    String tmp = racine.getAttributeValue("objet");
 	    if (tmp.equals("information-client"))
 	    {
+	    	Element clients = racine.getChild("clients");
+
+			List listClient = clients.getChildren("client");
+			
+		    Iterator i = listClient.iterator();
 		    System.out.println("XML BI!");
 	 	    while(i.hasNext())
 		    {
 		       Element courant = (Element)i.next();
 		       System.out.println(courant.getAttributeValue("id"));
+		      
+		    }
+	    }
+	    if (tmp.equals("ticket-client-fidelise"))
+	    {
+	    	Element clients = racine.getChild("ticketvente");
+
+			List listClient = clients.getChildren("article");
+			
+		    Iterator i = listClient.iterator();
+		    System.out.println("XML BO!");
+	 	    while(i.hasNext())
+		    {
+		       Element courant = (Element)i.next();
+		       System.out.println(courant.getAttributeValue("refarticle"));
 		      
 		    }
 	    }

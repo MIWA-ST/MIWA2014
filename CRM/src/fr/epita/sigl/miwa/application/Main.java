@@ -29,7 +29,7 @@ public class Main {
 		Date date = new Date();
 		date.getDate();
 		
-		JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\lol.xml");
+		JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\BO ticket client fidelise.xml");
 		
 		System.out.println(ClockClient.getClock().getHour());
 		ClockClient.getClock().wakeMeUp(date, "Debout !");
@@ -39,7 +39,7 @@ public class Main {
 		
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().send("Message Async vers GC", EApplication.GESTION_COMMERCIALE);
 		
-		AsyncFileFactory.getInstance().getFileManager().send("/test.png", EApplication.GESTION_COMMERCIALE);
+		//AsyncFileFactory.getInstance().getFileManager().send("/test.png", EApplication.GESTION_COMMERCIALE);
 		
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
