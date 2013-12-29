@@ -33,15 +33,15 @@ public class Main {
 		Date date = new Date();
 		date.getDate();
 		
-		JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
-		JDOM.createXML("monetique");
-		JDOM.createXML("bi-segmentation");
+		//JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
+	//	JDOM.createXML("monetique");
+		//JDOM.createXML("bi-segmentation");
 		
 		System.out.println(ClockClient.getClock().getHour());
-		ClockClient.getClock().wakeMeUpEveryHours(date, "baseclient");
+		ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
-		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.GESTION_COMMERCIALE, "Coucou GC");
+		//SyncMessHandler.getSyncMessSender().sendMessage(
+		//		EApplication.GESTION_COMMERCIALE, "Coucou GC");
 		
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().send("Message Async vers GC", EApplication.GESTION_COMMERCIALE);
 		

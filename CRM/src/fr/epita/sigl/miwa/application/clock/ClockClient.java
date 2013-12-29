@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Date;
 
+import fr.epita.sigl.miwa.application.JDOM;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -34,22 +35,9 @@ public class ClockClient {
 				System.out.println(date.toString() + " : C'est l'heure d'envoyer la base client!");
 				
 				try {
-					//Date date = new Date();
+					JDOM.createXML("bi");
 					
-					Writer writer = null;
-
-					try {
-					    writer = new BufferedWriter(new OutputStreamWriter(
-					          new FileOutputStream(new Date().toGMTString() + "filename.txt"), "utf-8"));
-					    writer.write("Something");
-					} catch (IOException ex) {
-					  // report
-					} finally {
-					   try {writer.close();} catch (Exception ex) {}
-					}
-					
-					
-					AsyncFileFactory.getInstance().getFileManager().send("/test.png", EApplication.BI);
+					AsyncFileFactory.getInstance().getFileManager().send("/bi.xml", EApplication.BI);
 				} catch (AsyncFileException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

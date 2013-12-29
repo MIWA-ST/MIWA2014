@@ -176,7 +176,7 @@ public class JDOM
 			client.setAttribute(typecarte);
 
 			affiche(doc);
-			enregistre("bi.xml", doc);
+			enregistre("../../ftp/CR/bi.xml", doc);
 		}
 		else if (type.equals("bi-segmentation"))
 		{
