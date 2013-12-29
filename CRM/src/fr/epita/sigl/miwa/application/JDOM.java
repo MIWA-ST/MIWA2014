@@ -27,18 +27,15 @@ public class JDOM
 
 	public static void browseXML(String filename)
 	{
-	   //On crée une instance de SAXBuilder
 	   SAXBuilder sxb = new SAXBuilder();
 	   try
 	   {
-	      //On crée un nouveau document JDOM avec en argument le fichier XML
 	      document = sxb.build(new File(filename));
 	   }
 	   catch(Exception e){
 		   System.out.println("Impossible de trouver : " + filename);
 	   }
  
-	   //On initialise un nouvel élément racine avec l'élément racine du document.
 	   racine = document.getRootElement();
 
 	   getData();
@@ -89,9 +86,9 @@ public class JDOM
 	    }
 	    if (tmp.equals("ticket-client-fidelise"))
 	    {
-	    	Element clients = racine.getChild("ticketvente");
+	    	Element clients = racine.getChild("TICKETVENTE");
 
-			List listClient = clients.getChildren("article");
+			List listClient = clients.getChildren("ARTICLE");
 			
 		    Iterator i = listClient.iterator();
 		    System.out.println("XML BO!");
@@ -110,7 +107,7 @@ public class JDOM
 	{
 		if (type.equals("monetique"))
 		{
-			Element entete = new Element("entete");
+			Element entete = new Element("ENTETE");
 			String date = new SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE).format(new Date());
 			
 			Attribute objet = new Attribute("objet","information-client");
@@ -121,11 +118,11 @@ public class JDOM
 			entete.setAttribute(dateAttribute);
 			org.jdom2.Document doc = new Document(entete);
 
-			Element info = new Element("informations");
+			Element info = new Element("INFORMATIONS");
 			entete.addContent(info);
 			
 			
-			Element client = new Element("client");
+			Element client = new Element("CLIENT");
 			info.addContent(client);
 			
 			Attribute id = new Attribute("id","01");
@@ -135,17 +132,54 @@ public class JDOM
 			Attribute coord = new Attribute("coord","0130506070");
 			client.setAttribute(coord);
 
-			//Les deux méthodes qui suivent seront définies plus loin dans l'article
 			affiche(doc);
-			enregistre("Exercice1.xml", doc);
+			enregistre("monetique.xml", doc);
 		}
+		else if (type.equals("bi"))
+		{
+			Element entete = new Element("ENTETE");
+			String date = new SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE).format(new Date());
+			
+			Attribute objet = new Attribute("objet","information-client");
+			entete.setAttribute(objet);
+			Attribute source = new Attribute("source","crm");
+			entete.setAttribute(source);
+			Attribute dateAttribute = new Attribute("date", date);
+			entete.setAttribute(dateAttribute);
+			org.jdom2.Document doc = new Document(entete);
+
+			Element info = new Element("CLIENTS");
+			entete.addContent(info);
+			
+			
+			Element client = new Element("CLIENT");
+			info.addContent(client);
+			
+			Attribute id = new Attribute("id","01");
+			client.setAttribute(id);
+			Attribute civilite = new Attribute("civilite","M");
+			client.setAttribute(civilite);
+			Attribute naissance = new Attribute("naissance","AAAAA-MM-JJ");
+			client.setAttribute(naissance);
+			Attribute codepostal = new Attribute("codepostal","75000");
+			client.setAttribute(codepostal);
+			Attribute situationfam = new Attribute("situationfam","Marie");
+			client.setAttribute(situationfam);
+			Attribute nbenfant = new Attribute("nbenfant","3");
+			client.setAttribute(nbenfant);
+			Attribute typecarte = new Attribute("typecarte","Super+");
+			client.setAttribute(typecarte);
+
+			affiche(doc);
+			enregistre("bi.xml", doc);
+		}
+		
 	}
 	
 	static void affiche(org.jdom2.Document doc)
 	{
 	   try
 	   {
-	      //On utilise ici un affichage classique avec getPrettyFormat()
 	      XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
 	      sortie.output(doc, System.out);
 	   }
@@ -156,10 +190,7 @@ public class JDOM
 	{
 	   try
 	   {
-	      //On utilise ici un affichage classique avec getPrettyFormat()
 	      XMLOutputter sortie = new XMLOutputter(Format.getPrettyFormat());
-	      //Remarquez qu'il suffit simplement de créer une instance de FileOutputStream
-	      //avec en argument le nom du fichier pour effectuer la sérialisation.
 	      sortie.output(doc, new FileOutputStream(fichier));
 	   }
 	   catch (java.io.IOException e){}
