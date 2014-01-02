@@ -71,14 +71,14 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					LOGGER.info("Entrepot envoi bon de livraison fournisseur");
 				}
 				
-				if (root.toLowerCase().equals("commande_internet")) {
-					LOGGER.info("On envoie la commande internet à l'entrepot");
-					content = "<commande_internet><commande><numero>CV398719856</numero><refclient>CV398719456</refclient><datebc>20130923</datebc><datebl>20130924</datebl><adresseClient>36 rue de la noise</adresseClient><nom>picsou</nom><prenom>jacki</prenom><articles><article><CATEGORIE>001</CATEGORIE><reference>AU736827</reference><quantite>263000</quantite></article></articles><articles><article><CATEGORIE>023</CATEGORIE><reference>AU734577</reference><quantite>12000</quantite></article></articles>	</commande></commande_internet>";
-
-					AsyncMessageFactory.getInstance().getAsyncMessageManager()
-							.send(content, EApplication.ENTREPOT);
-					LOGGER.info("Envoi de la commande internet  à l'entrepot");
-				}
+//				if (root.toLowerCase().equals("commande_internet")) {
+//					LOGGER.info("On envoie la commande internet à l'entrepot");
+//					content = "<commande_internet><commande><numero>CV398719856</numero><refclient>CV398719456</refclient><datebc>20130923</datebc><datebl>20130924</datebl><adresseClient>36 rue de la noise</adresseClient><nom>picsou</nom><prenom>jacki</prenom><articles><article><CATEGORIE>001</CATEGORIE><reference>AU736827</reference><quantite>263000</quantite></article></articles><articles><article><CATEGORIE>023</CATEGORIE><reference>AU734577</reference><quantite>12000</quantite></article></articles>	</commande></commande_internet>";
+//
+//					AsyncMessageFactory.getInstance().getAsyncMessageManager()
+//							.send(content, EApplication.ENTREPOT);
+//					LOGGER.info("Envoi de la commande internet  à l'entrepot");
+//				}
 				
 				else if (root.toLowerCase().equals("EXPEDITIONCLIENT")) {
 					LOGGER.info("Entrepot envoi expedition client");

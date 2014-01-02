@@ -29,16 +29,11 @@ public class Main {
 		Date d = ClockClient.getClock().getHour();
 		System.out.println(d);
 		
-		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.BI, "Coucou");
+		// Pour se faire appeler à une certaine heure :
+		// ClockClient.getClock().wakeMeUpEveryDays(new Date("23/12/2013"), "envoie_msg_BO");
+		ClockClient.getClock().wakeMeUpEveryDays(new Date ("23/12/2013 07:00"), "envoi_stocks");
 		
-		/*try {
-			Thread.sleep(40000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.BI, "Coucou BI");*/
+		
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
