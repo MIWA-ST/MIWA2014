@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 ﻿<!-- Commande internet Site à GC -->
 <commande_internet>
-<commande>
-<numero>XXXXXX</numero>
-<refclient>REF</refclient>
-<datebc>AAAAMMJJ</datebc> <!-- bc = bon de commande-->
-<datebl>AAAAMMJJ</datebl> <!-- bl = bon de livraison-->
-<adresseClient>XXXX</adresse>
-<nom>XXX</nom>
-<prénom>XXX</prenom>
-<articles>
-<article>
-<CATEGORIE>001</CATEGORIE>
-<reference>REF</reference>
-<quantite>XX</quantite> <!-- qt = quantité -->
-</article>
-<!-- plusieurs articles -->
-</articles>
-</commande>
+	<commande>
+		<numero>CV56E8</numero>
+		<refclient>Fd595SD</refclient>
+		<datebc>20121223</datebc> <!-- bc = bon de commande-->
+		<datebl>20140102</datebl> <!-- bl = bon de livraison-->
+		<adresseClient>XXXX</adresse>
+		<nom>XXX</nom>
+		<prénom>XXX</prenom>
+		<articles>
+			<article>
+				<CATEGORIE>001</CATEGORIE>
+				<reference>REF</reference>
+				<quantite>57</quantite> <!-- qt = quantité -->
+			</article>
+		<!-- plusieurs articles -->
+		</articles>
+	</commande>
 </commande_internet>

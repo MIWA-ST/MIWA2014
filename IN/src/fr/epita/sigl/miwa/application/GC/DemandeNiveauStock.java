@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.application.GC;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class DemandeNiveauStock {
 	// numero de la demande
 	private String numero;
 	private Date date;
-	private List<DemandeNiveauStockArticles> articles;
+	private List<DemandeNiveauStockArticles> articles = new ArrayList<DemandeNiveauStockArticles>();
 	
 	public String getNumero() {
 		return numero;
@@ -50,14 +51,16 @@ public class DemandeNiveauStock {
 			System.out.println("	Numero : NULL");
 		
 		if (this.numero != null)
-			System.out.println("	Numero : " + this.date);
+			System.out.println("	Date : " + this.date);
 		else
-			System.out.println("	Numero : NULL");
+			System.out.println("	Date : NULL");
 		
-		if (articles != null)
+		if (articles != null || articles.isEmpty())
 		{
+			System.out.println("	Articles : [");
 			for(DemandeNiveauStockArticles article : articles)
 				article.print();
+			System.out.println("]");
 		}
 		else
 			System.out.println("	Articles : NULL");

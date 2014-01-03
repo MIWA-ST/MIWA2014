@@ -4,6 +4,11 @@ public class DemandeNiveauStockArticles {
 	private String reference;
 	private Integer quantite;
 
+	public DemandeNiveauStockArticles(String reference, Integer quantite)
+	{
+		this.reference = reference;
+		this.quantite = quantite;
+	}
 	
 	public Integer getQuantite() {
 		return quantite;
@@ -23,7 +28,6 @@ public class DemandeNiveauStockArticles {
 	
 	public void print()
 	{
-		System.out.println("	ARTICLE :[");
 		if (this.reference != null)
 			System.out.println("		REFERENCE : " + this.reference);
 		else
@@ -33,7 +37,5 @@ public class DemandeNiveauStockArticles {
 			System.out.println("		QUANTITE : " + this.quantite);
 		else
 			System.out.println("		QUANTITE : NULL");
-
-		System.out.println("]");
 	}
 }
