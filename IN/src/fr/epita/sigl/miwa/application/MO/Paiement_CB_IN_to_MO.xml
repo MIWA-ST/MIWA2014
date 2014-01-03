@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Paiement CB Internet à Monétique -->
+
+<Paiement_CB>
+	<Montant>XX...XX</Montant>
+	<Coordonnées_bancaires>
+		<numéro_cb>XXXXXXXXXXXXXXXX</numéro_cb>
+		<numéro_cb_validité>MMAA</numéro_cb_validité>
+		<cb_pictogramme>XXX</cb_pictogramme>
+	</Coordonnées_bancaires>
+</Paiement_CB>
