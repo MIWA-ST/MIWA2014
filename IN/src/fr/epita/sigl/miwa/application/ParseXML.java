@@ -14,6 +14,7 @@ import fr.epita.sigl.miwa.application.CR.PromotionClientCR;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockGC;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticlesGC;
 import fr.epita.sigl.miwa.application.MDM.ArticleAVendreMDM;
+import fr.epita.sigl.miwa.application.MDM.ProductsClientMDM;
 import fr.epita.sigl.miwa.application.MDM.PromotionArticleMDM;
 
 // Parser des fichiers XML
@@ -54,27 +55,35 @@ public class ParseXML {
 	public void parseMDM()
 	{
 		// Creation de l'objet correspondant
-		ArticleAVendreMDM articleAVendre = new ArticleAVendreMDM();
+		ProductsClientMDM productsClient = new ProductsClientMDM();
 		
 		// Récupération des informations du fichier XML
-		Element product = root.getChild("PRODUCT");
 		
-		articleAVendre.setReference(product.getAttributeValue("reference"));
-		articleAVendre.setEan(product.getAttributeValue("ean"));
-		articleAVendre.setCategorie(product.getAttributeValue("categorie"));
-		articleAVendre.setPrix_fournisseur(Integer.parseInt(product.getAttributeValue("prix_fournisseur")));
-		articleAVendre.setPrix_vente(Integer.parseInt(product.getAttributeValue("prix_vente")));
-		
-		Element promotions = root.getChild("PROMOTIONS");
-		
-		// A CORRIGER !!!
-		List<Element> listPromotions = promotions.getChildren("PROMOTION");
-		for(Element e : listPromotions)
-			articleAVendre.getPromotions().add(new PromotionArticleMDM(e.getAttributeValue("debut"),
-					e.getAttributeValue("fin"),
-					Integer.parseInt(e.getAttributeValue("percent"))));
+		List<Element> listProducts = root.getChildren("PRODUCT");
+		// Element product = root.getChild("PRODUCT");
+		for(Element e : listProducts)
+		{
+			ArticleAVendreMDM articleAVendre = new ArticleAVendreMDM();
+			
+			articleAVendre.setReference(e.getAttributeValue("reference"));
+			articleAVendre.setEan(e.getAttributeValue("ean"));
+			articleAVendre.setCategorie(e.getAttributeValue("categorie"));
+			articleAVendre.setPrix_fournisseur(Integer.parseInt(e.getAttributeValue("prix_fournisseur")));
+			articleAVendre.setPrix_vente(Integer.parseInt(e.getAttributeValue("prix_vente")));
+			
+			articleAVendre.setDescription(e.getChildText("DESCRIPTION"));
+			
+			Element promitions = e.getChild("PROMOTIONS");
+			List<Element> listPromotions = promitions.getChildren("PROMOTION");
 
-		articleAVendre.print();
+			for(Element elt : listPromotions)
+				articleAVendre.getPromotions().add(new PromotionArticleMDM(elt.getAttributeValue("debut"),
+						elt.getAttributeValue("fin"),
+						Integer.parseInt(elt.getAttributeValue("percent"))));
+			
+			productsClient.getProducts().add(articleAVendre);
+		}
+		productsClient.print();
 	}
 	
 	public void parseCRM()

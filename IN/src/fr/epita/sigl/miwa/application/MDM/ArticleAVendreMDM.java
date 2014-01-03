@@ -14,6 +14,22 @@ public class ArticleAVendreMDM {
 	private String description;
 	private List<PromotionArticleMDM> promotions = new ArrayList<PromotionArticleMDM>();
 	
+	public ArticleAVendreMDM()
+	{
+	}
+	
+	public ArticleAVendreMDM(String reference, String ean, String categorie,
+			Integer prix_fournisseur, Integer prix_vente, String description, ArrayList<PromotionArticleMDM> promotions)
+	{
+		this.reference = reference;
+		this.ean = ean;
+		this.categorie = categorie;
+		this.prix_fournisseur = prix_fournisseur;
+		this.prix_vente = prix_vente;
+		this.description = description;
+		this.promotions = promotions;
+	}
+	
 	public String getReference() {
 		return reference;
 	}
@@ -74,6 +90,11 @@ public class ArticleAVendreMDM {
 			System.out.println("	categorie : " + this.categorie);
 		else
 			System.out.println("	categorie : NULL");
+		
+		if (this.description != null)
+			System.out.println("	description : " + this.description);
+		else
+			System.out.println("	description : NULL");
 		
 		if (this.prix_fournisseur != null)
 			System.out.println("	prix_fournisseur : " + this.prix_fournisseur);

@@ -13,7 +13,7 @@ Référentiel => BO, BI, Internet
 -->
 <PRODUCTS>
 	<PRODUCT reference="VX566655D" ean="EaN" categorie="CATEGORIE" prix_fournisseur="512" prix_vente="1024">
-		<DESCRIPTION><![CDATA[<Texte multi lignes de description du produit.>]]> </DESCRIPTION>
+		<DESCRIPTION>qsd</DESCRIPTION>
 		<PROMOTIONS>
 			<PROMOTION debut="20140101" fin="20140102" percent="33" />
 			<PROMOTION debut="20140102" fin="20140103" percent="66" />
