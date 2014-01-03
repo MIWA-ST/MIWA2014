@@ -29,6 +29,10 @@ public class Main {
 			//ClockClient.getClock().wakeMeUp(new Date("12/13/2013 23:12:13"), "Test");
 			EApplication to = EApplication.INTERNET;
 			ClockClient.wakeUp(new Date("12/13/2013 23:12:13"), to.toString());
+			
+			ParseXML parser = new ParseXML("src/fr/epita/sigl/miwa/application/GC/Envoi_stock_GC_to_IN.xml");
+			parser.readXML();
+			
 			Thread.sleep(40000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
