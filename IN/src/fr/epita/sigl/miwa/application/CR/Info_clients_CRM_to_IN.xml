@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <INFORMATIONS>
-<SOLDE restant="" />
-<PROMOTIONS>
-<PROMOTION article="" fin="" reduc="" />
-<PROMOTION article="" fin="" reduc="" />
-</PROMOTIONS>
+	<SOLDE restant="55" />
+	<PROMOTIONS>
+		<PROMOTION article="Tarte aux pommes" fin="20140123" reduc="57" />
+		<PROMOTION article="Tarte aux daims" fin="20141209" reduc="95" />
+	</PROMOTIONS>
 </INFORMATIONS>

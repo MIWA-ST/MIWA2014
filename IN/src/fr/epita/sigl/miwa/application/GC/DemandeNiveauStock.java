@@ -55,12 +55,12 @@ public class DemandeNiveauStock {
 		else
 			System.out.println("	Date : NULL");
 		
-		if (articles != null || articles.isEmpty())
+		if (articles != null || !articles.isEmpty())
 		{
 			System.out.println("	Articles : [");
 			for(DemandeNiveauStockArticles article : articles)
 				article.print();
-			System.out.println("]");
+			System.out.println("	]");
 		}
 		else
 			System.out.println("	Articles : NULL");

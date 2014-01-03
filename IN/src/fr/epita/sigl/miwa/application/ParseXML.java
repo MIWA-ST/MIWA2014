@@ -9,6 +9,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.Element;
 
+import fr.epita.sigl.miwa.application.CR.PromotionArticle;
+import fr.epita.sigl.miwa.application.CR.PromotionClient;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStock;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticles;
 
@@ -39,8 +41,28 @@ public class ParseXML {
 		root = document.getRootElement();
 		if (root.getName().equals("DEMANDENIVEAUDESTOCKINTERNET"))
 			parseGC();
-		else if (root.getName().equals("DEMANDENIVEAUDESTOCKINTERNET"))
-			parseGC();
+		else if (root.getName().equals("INFORMATIONS"))
+			parseCRM();
+	}
+	
+	public void parseCRM()
+	{
+		// Creation de l'objet correspondant
+		PromotionClient promotionClient = new PromotionClient();
+		
+		// Récupération des informations du fichier XML
+		Element solde = root.getChild("SOLDE");
+		
+		promotionClient.setSolde(Integer.parseInt(solde.getAttributeValue("restant")));
+		Element promotions = root.getChild("PROMOTIONS");
+		
+		List<Element> listPromotions = promotions.getChildren("PROMOTION");
+		for(Element e : listPromotions)
+			promotionClient.getPromotions().add(new PromotionArticle(e.getAttributeValue("article"),
+					e.getAttributeValue("fin"),
+					Integer.parseInt(e.getAttributeValue("reduc"))));
+
+		promotionClient.print();
 	}
 	
 	public void parseGC()
@@ -57,6 +79,6 @@ public class ParseXML {
 		for(Element e : listArticles)
 			demandeNiveauStock.getArticles().add(new DemandeNiveauStockArticles(e.getChildText("REFERENCE"),
 					Integer.parseInt(e.getChildText("QUANTITE"))));
-		demandeNiveauStock.print();
+		// demandeNiveauStock.print();
 	}
 }
