@@ -1,6 +1,6 @@
 package fr.epita.sigl.miwa.application.GC;
 
-public class ArticleCommandeParClient {
+public class ArticleCommandeParClientGC {
 	private String categorie;
 	private String reference;
 	private Integer quantite;

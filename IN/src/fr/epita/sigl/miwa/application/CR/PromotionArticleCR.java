@@ -5,13 +5,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PromotionArticle {
+public class PromotionArticleCR {
 	// reference article
 	private String article;
 	private Date fin;
 	private Integer reduc;
 	
-	public PromotionArticle(String article, String fin, Integer reduc)
+	public PromotionArticleCR(String article, String fin, Integer reduc)
 	{
 		this.article = article;
 		this.reduc = reduc;

@@ -1,6 +1,6 @@
 package fr.epita.sigl.miwa.application.MO;
 
-public class PaiementCB {
+public class PaiementCBMO {
 	private Integer montant;
 	private String numero_cb;
 	private String numero_cb_validite;

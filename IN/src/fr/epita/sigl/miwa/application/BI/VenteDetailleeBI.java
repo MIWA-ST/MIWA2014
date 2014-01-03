@@ -2,7 +2,7 @@ package fr.epita.sigl.miwa.application.BI;
 
 import java.util.Date;
 
-public class VenteDetaillee {
+public class VenteDetailleeBI {
 	private  String numero_client;
 	private Integer montant_total;
 	private String moyen_paiement;

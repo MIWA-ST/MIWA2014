@@ -30,7 +30,7 @@ public class Main {
 			EApplication to = EApplication.INTERNET;
 			ClockClient.wakeUp(new Date("12/13/2013 23:12:13"), to.toString());
 			
-			ParseXML parser = new ParseXML("src/fr/epita/sigl/miwa/application/CR/Info_clients_CRM_to_IN.xml");
+			ParseXML parser = new ParseXML("src/fr/epita/sigl/miwa/application/MDM/Envoi_produits_MDM_to_IN.xml");
 			parser.readXML();
 			
 			Thread.sleep(40000);

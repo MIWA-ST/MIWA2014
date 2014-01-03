@@ -1,10 +1,10 @@
 package fr.epita.sigl.miwa.application.GC;
 
-public class DemandeNiveauStockArticles {
+public class DemandeNiveauStockArticlesGC {
 	private String reference;
 	private Integer quantite;
 
-	public DemandeNiveauStockArticles(String reference, Integer quantite)
+	public DemandeNiveauStockArticlesGC(String reference, Integer quantite)
 	{
 		this.reference = reference;
 		this.quantite = quantite;

@@ -3,11 +3,11 @@ package fr.epita.sigl.miwa.application.CR;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticles;
+import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticlesGC;
 
-public class PromotionClient {
+public class PromotionClientCR {
 	private Integer solde;
-	private List<PromotionArticle> promotions = new ArrayList<PromotionArticle>();
+	private List<PromotionArticleCR> promotions = new ArrayList<PromotionArticleCR>();
 	
 	
 	public Integer getSolde() {
@@ -16,10 +16,10 @@ public class PromotionClient {
 	public void setSolde(Integer solde) {
 		this.solde = solde;
 	}
-	public List<PromotionArticle> getPromotions() {
+	public List<PromotionArticleCR> getPromotions() {
 		return promotions;
 	}
-	public void setPromotions(List<PromotionArticle> promotions) {
+	public void setPromotions(List<PromotionArticleCR> promotions) {
 		this.promotions = promotions;
 	}
 	
@@ -34,7 +34,7 @@ public class PromotionClient {
 		if (promotions != null || !promotions.isEmpty())
 		{
 			System.out.println("	PROMOTIONS : [");
-			for(PromotionArticle promotion : promotions)
+			for(PromotionArticleCR promotion : promotions)
 				promotion.print();
 			System.out.println("	]");
 		}

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DemandeNiveauStock {
+public class DemandeNiveauStockGC {
 	// numero de la demande
 	private String numero;
 	private Date date;
-	private List<DemandeNiveauStockArticles> articles = new ArrayList<DemandeNiveauStockArticles>();
+	private List<DemandeNiveauStockArticlesGC> articles = new ArrayList<DemandeNiveauStockArticlesGC>();
 	
 	public String getNumero() {
 		return numero;
@@ -35,10 +35,10 @@ public class DemandeNiveauStock {
 			e.printStackTrace();
 		}
 	}
-	public List<DemandeNiveauStockArticles> getArticles() {
+	public List<DemandeNiveauStockArticlesGC> getArticles() {
 		return articles;
 	}
-	public void setArticles(List<DemandeNiveauStockArticles> articles) {
+	public void setArticles(List<DemandeNiveauStockArticlesGC> articles) {
 		this.articles = articles;
 	}
 	
@@ -58,7 +58,7 @@ public class DemandeNiveauStock {
 		if (articles != null || !articles.isEmpty())
 		{
 			System.out.println("	Articles : [");
-			for(DemandeNiveauStockArticles article : articles)
+			for(DemandeNiveauStockArticlesGC article : articles)
 				article.print();
 			System.out.println("	]");
 		}

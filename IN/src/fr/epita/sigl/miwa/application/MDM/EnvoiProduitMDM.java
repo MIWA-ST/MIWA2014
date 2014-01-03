@@ -3,11 +3,11 @@ package fr.epita.sigl.miwa.application.MDM;
 import java.util.Date;
 import java.util.List;
 
-public class EnvoiProduit {
+public class EnvoiProduitMDM {
 	private String objet;
 	private String source;
 	private Date date;
-	private List<ArticleAVendre> articles;
+	private List<ArticleAVendreMDM> articles;
 	
 	public String getObjet() {
 		return objet;
@@ -27,10 +27,10 @@ public class EnvoiProduit {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public List<ArticleAVendre> getArticles() {
+	public List<ArticleAVendreMDM> getArticles() {
 		return articles;
 	}
-	public void setArticles(List<ArticleAVendre> articles) {
+	public void setArticles(List<ArticleAVendreMDM> articles) {
 		this.articles = articles;
 	}
 }

@@ -1,6 +1,6 @@
 package fr.epita.sigl.miwa.application.MO;
 
-public class PaiementFidelite {
+public class PaiementFideliteMO {
 	private Integer montant;
 	private String numero_carte;
 	

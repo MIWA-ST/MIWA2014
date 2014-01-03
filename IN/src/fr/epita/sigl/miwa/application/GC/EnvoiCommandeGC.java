@@ -3,7 +3,7 @@ package fr.epita.sigl.miwa.application.GC;
 import java.util.Date;
 import java.util.List;
 
-public class EnvoiCommande {
+public class EnvoiCommandeGC {
 	// numero commande
 	private Integer numero;
 	private String refclient;
@@ -13,7 +13,7 @@ public class EnvoiCommande {
 	private String nom;
 	private String prenom;
 	// liste des articles commandes par le client
-	private List<ArticleCommandeParClient> articles;
+	private List<ArticleCommandeParClientGC> articles;
 	
 	public Integer getNumero() {
 		return numero;
@@ -57,10 +57,10 @@ public class EnvoiCommande {
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
 	}
-	public List<ArticleCommandeParClient> getArticles() {
+	public List<ArticleCommandeParClientGC> getArticles() {
 		return articles;
 	}
-	public void setArticles(List<ArticleCommandeParClient> articles) {
+	public void setArticles(List<ArticleCommandeParClientGC> articles) {
 		this.articles = articles;
 	}
 }
