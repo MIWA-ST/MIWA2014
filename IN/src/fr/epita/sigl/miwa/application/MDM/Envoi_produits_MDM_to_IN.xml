@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Référentiel => BO, BI, Internet
+	reference : CHAR(32)
+	ean : CHAR(13)
+	categorie : CHAR(32)
+	prix_fournisseur : Numeric(2)
+	prix_vente : Numeric(2)
+	debut : date
+	fin : date
+	percent : integer
+	DESCRIPTION : VARCHAR(2048)
+-->
+<PRODUCTS>
+	<PRODUCT reference="" ean="" categorie="" prix_fournisseur="" prix_vente="">
+		<DESCRIPTION><![CDATA[<Texte multi lignes de description du produit.>]]> </DESCRIPTION>
+		<PROMOTIONS>
+			<PROMOTION debut="" fin="" percent="" />
+		</PROMOTIONS>
+	</PRODUCT>
+</PRODUCTS>

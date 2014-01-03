@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Objet : Ventes détaillées
+Provenance : Internet ou BO
+Destination : BI
+Fréquence : 1 fois par jour
+
+Champs du XML :
+    ENTETE
+        objet : ne pas modifier
+        source : mettre "bo" ou "internet" selon l'émetteur
+        date : format AAAA-MM-JJ
+    VENTES-DETAILLEES 
+        lieu : référence du magasin ou string "internet" (string; max 32)
+        numero_client : numéro du client (string; max 32) - si client inconnu, string vide (et pas null)
+        montant : montant total du ticket (numeric 2)
+        moyen_paiement : moyen de paiement utilisé (string; max 2) - "CB" pour carte bancaire, "CF" pour carte fidélité, "CQ" pour chèques ou "ES" pour espèces
+        dateHeure : date et heure de la vente (format AAAA-MM-JJ HH:mm:SS)
+        ref-article : référence de l'article (string; max 32)
+        quantité : quantité vendue d'article (int)
+-->
+
+<XML>
+    <ENTETE objet="ventes détaillées" source="" date="" />
+    <VENTES-DETAILLEES lieu="">
+        <VENTE numero_client="" montant="" moyen_paiement="" dateHeure="">
+            <ARTICLES>
+                <ARTICLE ref-article="" quantité="" />
+                <!-- plusieurs articles -->
+            </ARTICLES>
+        </VENTE>
+        <!-- plusieurs ventes -->
+    </VENTES-DETAILLEES>
+</XML>
