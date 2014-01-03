@@ -23,6 +23,10 @@ public class ParseXML {
 	private static Element root;
 	private String filename;
 	
+	public ParseXML()
+	{
+	}
+	
 	public ParseXML(String filename)
 	{
 		this.filename = filename;
