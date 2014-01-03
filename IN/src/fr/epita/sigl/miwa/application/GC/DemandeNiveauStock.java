@@ -26,7 +26,7 @@ public class DemandeNiveauStock {
 	}
 	
 	public void setDate(String dateString) {
-		DateFormat df = new SimpleDateFormat("YYYYMMDD");
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		try {
 			this.date = df.parse(dateString);
 		} catch (ParseException e) {
