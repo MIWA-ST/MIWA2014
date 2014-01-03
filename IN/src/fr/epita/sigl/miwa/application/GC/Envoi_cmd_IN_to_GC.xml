@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+﻿<!-- Commande internet Site à GC -->
+<commande_internet>
+<commande>
+<numero>XXXXXX</numero>
+<refclient>REF</refclient>
+<datebc>AAAAMMJJ</datebc> <!-- bc = bon de commande-->
+<datebl>AAAAMMJJ</datebl> <!-- bl = bon de livraison-->
+<adresseClient>XXXX</adresse>
+<nom>XXX</nom>
+<prénom>XXX</prenom>
+<articles>
+<article>
+<CATEGORIE>001</CATEGORIE>
+<reference>REF</reference>
+<quantite>XX</quantite> <!-- qt = quantité -->
+</article>
+<!-- plusieurs articles -->
+</articles>
+</commande>
+</commande_internet>
