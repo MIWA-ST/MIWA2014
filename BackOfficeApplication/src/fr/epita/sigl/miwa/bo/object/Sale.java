@@ -9,6 +9,7 @@ public class Sale
 	public String paymentMeans = null;
 	public String total = null;
 	public Date dateAndTime = null; // AAAA-MM-JJ HH:mm:ss
+	public Payment payment = null;
 	public List<Article> articles = null;
 	
 	public void print()
@@ -25,6 +26,12 @@ public class Sale
 		{
 			System.out.println("DATE AND TIME:");
 		}
+		System.out.println("==========SALE=>PAYMENT=BEGIN==========");
+		if (this.payment != null)
+		{
+			this.payment.print();
+		}
+		System.out.println("==========SALE=>PAYMENT=END==========");
 		System.out.println("==========SALE=>ARTICLES=BEGIN==========");
 		if (this.articles != null)
 		{
