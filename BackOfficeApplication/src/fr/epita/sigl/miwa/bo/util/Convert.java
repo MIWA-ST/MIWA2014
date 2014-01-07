@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.application.util;
+package fr.epita.sigl.miwa.bo.util;
 
 import java.util.Date;
 

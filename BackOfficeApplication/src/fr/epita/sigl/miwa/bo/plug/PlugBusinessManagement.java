@@ -1,0 +1,45 @@
+package fr.epita.sigl.miwa.bo.plug;
+
+public class PlugBusinessManagement {
+	
+	public static String restockRequest =
+	"<REASSORT>" +
+		"<NUMERO>CV398719873</NUMERO>" +
+		"<REFBO>20131225</REFBO>" +
+		"<ADRESSEBO>XXXXXX</ADRESSEBO>" + 
+		"<TELBO>0133333333</TELBO>" +
+		"<DATEBC>20130427</DATEBC>" + // AAAAMMJJ
+		"<ARTICLES>" +
+			"<ARTICLE>" +
+				"<REFERENCE>AU736827</REFERENCE>" +
+				"<QUANTITE>265000</QUANTITE>" +
+				"<CATEGORIE>001</CATEGORIE>" +
+			"</ARTICLE>" +
+			"<ARTICLE>" +
+				"<REFERENCE>AU736823</REFERENCE>" +
+				"<QUANTITE>12</QUANTITE>" +
+				"<CATEGORIE>001</CATEGORIE>" +
+			"</ARTICLE>" +
+		"<ARTICLES>" +
+	"</REASSORT>";
+			
+	public static String restockRequestReception =
+	"<RECEPTIONREASSORT>" +
+		"<NUMEROCOMMANDE>CV398719873</NUMEROCOMMANDE>" +
+		"<DATELIVRAISON>20131225</DATELIVRAISON>" + // AAAAMMJJ
+		"<STATUT>TRUE</STATUT>" +
+		"<COMMENTAIRE>Rien à signaler</COMMENTAIRE>" +
+		"<ARTICLES>" +
+			"<ARTICLE>" +
+				"<REFERENCE>AU736827</REFERENCE>" +
+				"<QUANTITE>265000</QUANTITE>" +
+				"<CATEGORIE>001</CATEGORIE>" +
+			"</ARTICLE>" +
+			"<ARTICLE>" +
+				"<REFERENCE>AU736823</REFERENCE>" +
+				"<QUANTITE>12</QUANTITE>" +
+				"<CATEGORIE>001</CATEGORIE>" +
+			"</ARTICLE>" +
+		"</ARTICLES>" +
+	"</RECEPTIONREASSORT>";
+}

@@ -6,6 +6,7 @@ import java.util.List;
 public class Sale
 {
 	public String customer = null;
+	public String customerNumber = null;
 	public String paymentMeans = null;
 	public String total = null;
 	public Date dateAndTime = null; // AAAA-MM-JJ HH:mm:ss
@@ -16,6 +17,7 @@ public class Sale
 	{
 		System.out.println("==========SALE=BEGIN==========");
 		System.out.println("CUSOMER:" + this.customer);
+		System.out.println("CUSOMER NUMBER:" + this.customerNumber);
 		System.out.println("PAYMENT MEANS:" + this.paymentMeans);
 		System.out.println("TOTAL:" + this.total);
 		if (this.dateAndTime != null)

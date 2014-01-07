@@ -140,4 +140,15 @@ public class DomParserHelper
 	    
 	    return res;
 	}
+	
+	public static Node getNode(String tagName, Node node) {
+		
+		for ( int y = 0; y < node.getChildNodes().getLength(); y++ ){
+	        if (node.getChildNodes().item(y).getNodeName().equalsIgnoreCase(tagName)) {
+	            return node.getChildNodes().item(y);	
+	        }
+        }
+	    
+	    return null;
+	}
 }
