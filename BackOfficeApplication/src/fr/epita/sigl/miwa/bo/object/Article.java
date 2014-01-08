@@ -13,6 +13,7 @@ public class Article
 	public String salesPrice = null;
 	public String ean = null;
 	public String description = null;
+	public String promotion = null;
 	public List<Promotion> promotions = null;
 	
 	public Article()
@@ -31,6 +32,7 @@ public class Article
 		System.out.println("SALES PRICE:" + this.salesPrice);
 		System.out.println("EAN:" + this.ean);
 		System.out.println("DESCRIPTION:" + this.description);
+		System.out.println("PROMOTION:" + this.promotion);
 		System.out.println("==========ARTICLE=>PROMOTIONS=BEGIN==========");
 		for (Promotion promotion : this.promotions)
 		{
