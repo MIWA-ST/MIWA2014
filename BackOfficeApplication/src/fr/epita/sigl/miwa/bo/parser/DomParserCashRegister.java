@@ -1,9 +1,7 @@
 
 package fr.epita.sigl.miwa.bo.parser;
 
-import java.io.Console;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.w3c.dom.Node;
@@ -16,9 +14,8 @@ import fr.epita.sigl.miwa.bo.util.Convert;
 
 public class DomParserCashRegister extends DomParser
 {
-	public DomParserCashRegister(String xml)
+	public DomParserCashRegister()
 	{
-		super(xml);
 	}
 	
 	/*
@@ -32,12 +29,12 @@ public class DomParserCashRegister extends DomParser
 			</VENTE>
 		</VENTES>
 	*/
-	public SalesTicket salesTicket()
+	public SalesTicket salesTicket(String xml)
 	{
 		SalesTicket salesTicket = new SalesTicket();
 		
-		String header = DomParserHelper.getHeader(this.xml);
-		String body = DomParserHelper.getBody(this.xml);
+		String header = DomParserHelper.getHeader(xml);
+		String body = DomParserHelper.getBody(xml);
 		
 		this.setXml(header);
 		this.updateDoc();
@@ -46,8 +43,6 @@ public class DomParserCashRegister extends DomParser
 		
 		this.setXml(body);
 		this.updateDoc();
-		
-		List<Sale> sales = new ArrayList<>();
 		
 		List<Node> salesNode = DomParserHelper.getNodes("VENTE", this.doc.getChildNodes());
 		
@@ -67,26 +62,21 @@ public class DomParserCashRegister extends DomParser
 			sale.payment = payment; 
 			
 			List<Node> articlesNode = DomParserHelper.getNodes("ARTICLE", saleNode);
-			
-			List<Article> articles = new ArrayList<Article>();
-			
+
 			for (Node articleNode : articlesNode)
 			{
 				Article article = new Article();
 			
 				article.name = DomParserHelper.getNodeAttr("nomarticle", articleNode);
 				article.reference = DomParserHelper.getNodeAttr("refarticle", articleNode);
-				article.quantity = Integer.parseInt(DomParserHelper.getNodeAttr("quantite", articleNode));
-				article.salesPrice = Float.parseFloat(DomParserHelper.getNodeAttr("prix", articleNode));
+				article.quantity = DomParserHelper.getNodeAttr("quantite", articleNode);
+				article.salesPrice = DomParserHelper.getNodeAttr("prix", articleNode);
 				
-				articles.add(article);
+				sale.articles.add(article);
 			}
-			sale.articles = articles;
-			
-			sales.add(sale);
+				
+			salesTicket.sales.add(sale);
 		}
-		
-		salesTicket.sales = sales;
 		
 		salesTicket.print();
 		

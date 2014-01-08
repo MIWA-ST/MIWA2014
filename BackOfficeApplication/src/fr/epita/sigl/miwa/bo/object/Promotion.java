@@ -6,7 +6,7 @@ public class Promotion
 {
 	public Date beginDate = null;
 	public Date endDate = null;
-	public Float percent = null;
+	public String percent = null;
 	
 	public void print()
 	{

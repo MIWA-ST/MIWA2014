@@ -1,17 +1,22 @@
 package fr.epita.sigl.miwa.bo.object;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class RestockRequestReception
 {
 	public String orderNumber = null;
-	public Boolean status = null;
+	public String status = null;
 	public String comment = null;
 	public Date deliveryDate = null;
 	public List<Article> articles = null;
 	
-	
+	public RestockRequestReception()
+	{
+		 this.articles = new ArrayList<Article>();
+	}
+
 	public void print()
 	{
 		System.out.println("==========RESTOCK=REQUEST=RECEPTION=BEGIN==========");
@@ -27,12 +32,9 @@ public class RestockRequestReception
 			System.out.println("DELIVERY DATE:");
 		}
 		System.out.println("==========RESTOCK=REQUEST=RECEPTION=>ARTICLES=BEGIN==========");
-		if (this.articles != null)
+		for (Article article : this.articles)
 		{
-			for (Article article : this.articles)
-			{
-				article.print();
-			}
+			article.print();
 		}
 		System.out.println("==========RESTOCK=REQUEST=RECEPTION=>ARTICLES=END==========");
 		System.out.println("==========RESTOCK=REQUEST=RECEPTION=END==========");

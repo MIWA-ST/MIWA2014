@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ArticleAndLocalPriceAndPromotion
+public class ArticleList
 {
 	public Date date = null;
 	public List<Article> articles = null;
 	
-	public ArticleAndLocalPriceAndPromotion()
+	public ArticleList()
 	{
 		this.articles = new ArrayList<Article>();
 	}
+	
 	public void print()
 	{
-		System.out.println("==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=BEGIN==========");
+		System.out.println("==========ARTICLE=LIST=BEGIN==========");
 		if (this.date != null)
 		{
 			System.out.println("DATE:" + this.date.toString());			
@@ -24,12 +25,12 @@ public class ArticleAndLocalPriceAndPromotion
 		{
 			System.out.println("DATE:");
 		}
-		System.out.println("==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=>ARTICLES=BEGIN==========");
+		System.out.println("==========ARTICLE=LIST=>ARTICLES=BEGIN==========");
 		for (Article article : this.articles)
 		{
 			article.print();
 		}
-		System.out.println("==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=>ARTICLES=END==========");
-		System.out.println("==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=END==========");
+		System.out.println("==========ARTICLE=LIST=>ARTICLE=END==========");
+		System.out.println("==========ARTICLE=LIST=END==========");
 	}
 }

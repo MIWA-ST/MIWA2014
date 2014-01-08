@@ -1,5 +1,6 @@
 package fr.epita.sigl.miwa.bo.object;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Article
@@ -7,12 +8,17 @@ public class Article
 	public String name = null;
 	public String reference = null;
 	public String category = null;
-	public Integer quantity = null;
-	public Float providerPrice = null;
-	public Float salesPrice = null;
+	public String quantity = null;
+	public String providerPrice = null;
+	public String salesPrice = null;
 	public String ean = null;
 	public String description = null;
-	public List<Promotion> promotions = null; 
+	public List<Promotion> promotions = null;
+	
+	public Article()
+	{
+		this.promotions = new ArrayList<Promotion>();
+	}
 
 	public void print()
 	{
@@ -26,12 +32,9 @@ public class Article
 		System.out.println("EAN:" + this.ean);
 		System.out.println("DESCRIPTION:" + this.description);
 		System.out.println("==========ARTICLE=>PROMOTIONS=BEGIN==========");
-		if (this.promotions != null)
+		for (Promotion promotion : this.promotions)
 		{
-			for (Promotion promotion : this.promotions)
-			{
-				promotion.print();
-			}
+			promotion.print();
 		}
 		System.out.println("==========ARTICLE=>PROMOTIONS=END==========");
 		System.out.println("==========ARTICLE=END==========");

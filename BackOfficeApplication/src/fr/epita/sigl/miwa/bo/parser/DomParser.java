@@ -8,9 +8,8 @@ public class DomParser
 	protected String xml = null;
 	
 
-	DomParser(String xml)
+	DomParser()
 	{
-		this.xml = xml;
 	}
 	
 	protected void updateDoc()

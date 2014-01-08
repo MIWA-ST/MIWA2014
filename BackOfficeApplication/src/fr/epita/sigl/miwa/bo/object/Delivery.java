@@ -1,5 +1,6 @@
 package fr.epita.sigl.miwa.bo.object;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,11 @@ public class Delivery
 	public Date orderDate = null; // AAAAMMJJ
 	public Date deliveryDate = null; // AAAAMMJJ
 	public List<Article> articles = null;
+	
+	public Delivery()
+	{
+		this.articles = new ArrayList<Article>();
+	}
 	
 	public void print()
 	{
@@ -33,12 +39,9 @@ public class Delivery
 			System.out.println("DELIVERY DATE:");
 		}
 		System.out.println("==========DELIVERY=>ARTICLES=BEGIN==========");
-		if (this.articles != null)
+		for (Article article : this.articles)
 		{
-			for (Article article : this.articles)
-			{
-				article.print();
-			}
+			article.print();
 		}
 		System.out.println("==========DELIVERY=>ARTICLES=END==========");
 		System.out.println("==========DELIVERY=END==========");
