@@ -1,7 +1,7 @@
 package fr.epita.sigl.miwa.bo.plug;
 
 public class PlugReferential {
-	public static String articles =
+	public static String articleList =
 	"<XML>" +
 	"<ENTETE objet='liste-article' source='mdm' date='2013-12-22'/>" +
 		"<ARTICLES>" +

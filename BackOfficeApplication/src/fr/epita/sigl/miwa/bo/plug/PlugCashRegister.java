@@ -28,6 +28,7 @@ public class PlugCashRegister {
 		"</VENTE>" +
 	"</VENTES>";
 	
+	@SuppressWarnings("deprecation")
 	public static ArticleAndLocalPriceAndPromotion articleAndLocalPriceAndPromotionObject()
 	{
 		ArticleAndLocalPriceAndPromotion a = new ArticleAndLocalPriceAndPromotion();

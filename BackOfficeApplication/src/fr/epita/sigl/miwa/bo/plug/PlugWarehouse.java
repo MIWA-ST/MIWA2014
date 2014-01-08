@@ -1,7 +1,7 @@
 package fr.epita.sigl.miwa.bo.plug;
 
 public class PlugWarehouse {
-	public static String delivery =
+	public static String deliveryList =
 	"<LIVRAISONS>" +
 		"<LIVRAISON>" +
 			"<NUMERO>CV398719873</NUMERO>" +

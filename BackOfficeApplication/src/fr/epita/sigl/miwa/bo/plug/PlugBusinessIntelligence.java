@@ -31,7 +31,7 @@ public class PlugBusinessIntelligence {
 	"</XML>";
 	
 	@SuppressWarnings("deprecation")
-	public static DetailedSale detailedSale()
+	public static DetailedSale detailedSaleObject()
 	{
 		DetailedSale ds = new DetailedSale();
 		
@@ -74,7 +74,7 @@ public class PlugBusinessIntelligence {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static CategorizedSale categorizedSale()
+	public static CategorizedSale categorizedSaleObject()
 	{
 		CategorizedSale cs = new CategorizedSale();
 		

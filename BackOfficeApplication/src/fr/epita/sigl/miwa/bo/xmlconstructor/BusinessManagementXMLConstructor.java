@@ -50,19 +50,19 @@ public class BusinessManagementXMLConstructor extends XMLConstructor
 		
 		this.openNodeWithoutNewLine("NUMEROCOMMANDE", null, 1);
 		this.printText(restockRequestReception.orderNumber);
-		this.closeNode("NUMEROCOMMANDE", 1);
+		this.closeNode("NUMEROCOMMANDE", 0);
 		
 		this.openNodeWithoutNewLine("DATELIVRAISON", null, 1);
 		this.printText(new SimpleDateFormat("YYYYMMdd").format(restockRequestReception.deliveryDate));
-		this.closeNode("DATELIVRAISON", 1);
+		this.closeNode("DATELIVRAISON", 0);
 		
 		this.openNodeWithoutNewLine("STATUT", null, 1);
 		this.printText(restockRequestReception.status);
-		this.closeNode("STATUT", 1);
+		this.closeNode("STATUT", 0);
 
 		this.openNodeWithoutNewLine("COMMENTAIRE", null, 1);
 		this.printText(restockRequestReception.comment);
-		this.closeNode("COMMENTAIRE", 1);
+		this.closeNode("COMMENTAIRE", 0);
 		
 		this.openNode("ARTICLES", null, 1);
 		
@@ -72,15 +72,15 @@ public class BusinessManagementXMLConstructor extends XMLConstructor
 			
 			this.openNodeWithoutNewLine("REFERENCE", null, 3);
 			this.printText(article.reference);
-			this.closeNode("REFERENCE", 3);
+			this.closeNode("REFERENCE", 0);
 			
 			this.openNodeWithoutNewLine("QUANTITE", null, 3);
 			this.printText(article.quantity);
-			this.closeNode("QUANTITE", 3);
+			this.closeNode("QUANTITE", 0);
 			
 			this.openNodeWithoutNewLine("CATEGORIE", null, 3);
 			this.printText(article.category);
-			this.closeNode("CATEGORIE", 3);
+			this.closeNode("CATEGORIE", 0);
 			
 			this.closeNode("ARTICLE", 2);
 		}
@@ -130,23 +130,23 @@ public class BusinessManagementXMLConstructor extends XMLConstructor
 		
 		this.openNodeWithoutNewLine("NUMERO", null, 1);
 		this.printText(restockRequest.number);
-		this.closeNode("NUMERO", 1);
+		this.closeNode("NUMERO", 0);
 		
 		this.openNodeWithoutNewLine("REFBO", null, 1);
 		this.printText(restockRequest.backOfficeReference);
-		this.closeNode("REFBO", 1);
+		this.closeNode("REFBO", 0);
 		
 		this.openNodeWithoutNewLine("ADRESSEBO", null, 1);
 		this.printText(restockRequest.backOfficeAdresse);
-		this.closeNode("ADRESSEBO", 1);
+		this.closeNode("ADRESSEBO", 0);
 		
 		this.openNodeWithoutNewLine("TELBO", null, 1);
 		this.printText(restockRequest.backOfficePhone);
-		this.closeNode("TELBO", 1);
+		this.closeNode("TELBO", 0);
 		
 		this.openNodeWithoutNewLine("DATEBC", null, 1);
 		this.printText(new SimpleDateFormat("YYYYMMdd").format(restockRequest.date));
-		this.closeNode("DATEBC", 1);
+		this.closeNode("DATEBC", 0);
 		
 		this.openNode("ARTICLES", null, 1);
 		
@@ -156,15 +156,15 @@ public class BusinessManagementXMLConstructor extends XMLConstructor
 			
 			this.openNodeWithoutNewLine("REFERENCE", null, 3);
 			this.printText(article.reference);
-			this.closeNode("REFERENCE", 3);
+			this.closeNode("REFERENCE", 0);
 			
 			this.openNodeWithoutNewLine("QUANTITE", null, 3);
 			this.printText(article.quantity);
-			this.closeNode("QUANTITE", 3);
+			this.closeNode("QUANTITE", 0);
 			
 			this.openNodeWithoutNewLine("CATEGORIE", null, 3);
 			this.printText(article.category);
-			this.closeNode("CATEGORIE", 3);
+			this.closeNode("CATEGORIE", 0);
 			
 			this.closeNode("ARTICLE", 2);
 		}

@@ -49,14 +49,15 @@ public class PlugBusinessManagement {
 		"</ARTICLES>" +
 	"</RECEPTIONREASSORT>";
 
-	public static RestockRequest restockRequest()
+	@SuppressWarnings("deprecation")
+	public static RestockRequest restockRequestObject()
 	{
 		RestockRequest rr = new RestockRequest();
 		
-		rr.number = "";
-		rr.backOfficeReference = "";
-		rr.backOfficeAdresse = "";
-		rr.backOfficePhone = "";
+		rr.number = "CV398719873";
+		rr.backOfficeReference = "20131225";
+		rr.backOfficeAdresse = "XXXXXX";
+		rr.backOfficePhone = "0133333333";
 		rr.date = new Date(2014 - 1900, 03, 25);
 		
 		Article a1 = new Article();
@@ -68,13 +69,14 @@ public class PlugBusinessManagement {
 		Article a2 = new Article();
 		a2.reference = "AU736823";
 		a2.quantity = "12";
-		a2.category = "001";
+		a2.category = "002";
 		rr.articles.add(a2);
 				
 		return rr;
 	}
 	
-	public static RestockRequestReception restockRequestReception()
+	@SuppressWarnings("deprecation")
+	public static RestockRequestReception restockRequestReceptionObject()
 	{
 		RestockRequestReception rrr = new RestockRequestReception();
 		
@@ -92,7 +94,7 @@ public class PlugBusinessManagement {
 		Article a2 = new Article();
 		a2.reference = "AU736823";
 		a2.quantity = "12";
-		a2.category = "001";
+		a2.category = "002";
 		rrr.articles.add(a2);
 		
 		return rrr;
