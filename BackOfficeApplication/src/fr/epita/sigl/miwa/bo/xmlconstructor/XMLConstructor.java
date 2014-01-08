@@ -60,6 +60,22 @@ public class XMLConstructor
 		this.xml += ">" + "\n";
 	}
 	
+	protected void openNodeWithoutNewLine(String nodeName, List<NodeAttribute> attributes, int indentLevel)
+	{
+		this.indent(indentLevel);
+		this.xml += "<" + nodeName;
+		
+		if (attributes != null)
+		{
+			for (NodeAttribute attribute : attributes)
+			{
+				this.xml += " " + attribute.key + "=\"" + attribute.value + "\""; 
+			}
+		}
+		
+		this.xml += ">";
+	}
+	
 	protected void closeNode(String nodeName, int indentLevel)
 	{
 		this.indent(indentLevel);

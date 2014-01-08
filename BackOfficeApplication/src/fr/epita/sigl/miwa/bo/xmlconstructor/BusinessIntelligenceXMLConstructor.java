@@ -1,8 +1,15 @@
 package fr.epita.sigl.miwa.bo.xmlconstructor;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.CategorizedSale;
 import fr.epita.sigl.miwa.bo.object.DetailedSale;
+import fr.epita.sigl.miwa.bo.object.NodeAttribute;
 import fr.epita.sigl.miwa.bo.object.RestockRequestReception;
+import fr.epita.sigl.miwa.bo.object.Sale;
 
 public class BusinessIntelligenceXMLConstructor extends XMLConstructor
 {
@@ -45,9 +52,48 @@ public class BusinessIntelligenceXMLConstructor extends XMLConstructor
 			return null;
 		}
 
+		this.openNode("XML", null, 0);
+		
+		List<NodeAttribute> headerAttributes = new ArrayList<NodeAttribute>();
+		headerAttributes.add(new NodeAttribute("objet", "ventes détaillées"));
+		headerAttributes.add(new NodeAttribute("source", "bo"));
+		headerAttributes.add(new NodeAttribute("date", new SimpleDateFormat("YYYY-MM-dd").format(detailedSale.date)));
+		this.openClosedNode("ENTETE", headerAttributes, 1);
+		
+		List<NodeAttribute> detailedSaleAttributes = new ArrayList<NodeAttribute>();
+		detailedSaleAttributes.add(new NodeAttribute("lieu", detailedSale.location));
+		this.openNode("VENTES-DETAILLEES", detailedSaleAttributes, 1);
+		
+		for (Sale sale : detailedSale.sales)
+		{
+			List<NodeAttribute> saleAttributes = new ArrayList<NodeAttribute>();
+			saleAttributes.add(new NodeAttribute("numero_client", sale.customerNumber));
+			saleAttributes.add(new NodeAttribute("montant", sale.total));
+			saleAttributes.add(new NodeAttribute("moyen_paiement", sale.paymentMeans));
+			saleAttributes.add(new NodeAttribute("dateHeure", new SimpleDateFormat("YYYY-MM-dd hh:mm:ss").format(sale.dateAndTime)));
+			this.openNode("VENTE", saleAttributes, 2);
+			
+			this.openNode("ARTICLES", null, 3);
+			
+			for (Article article : sale.articles)
+			{
+				List<NodeAttribute> articleAttributes = new ArrayList<NodeAttribute>();
+				articleAttributes.add(new NodeAttribute("ref-article", article.reference));
+				articleAttributes.add(new NodeAttribute("quantité", article.quantity));
+				this.openClosedNode("ARTICLE", articleAttributes, 4);
+			}
+			
+			this.closeNode("ARTICLES", 3);
+			
+			this.closeNode("VENTE", 2);
+		}
+		
+		this.closeNode("VENTES-DETAILLEES", 1);
+		
+		this.closeNode("XML", 1);
+		
 		return this.xml;
 	}
-	
 	
 	/*
 	Objet : Ventes par catégorie d'article
@@ -73,7 +119,7 @@ public class BusinessIntelligenceXMLConstructor extends XMLConstructor
 	        <CATEGORIE ref-categorie="" quantité_vendue="" montant_fournisseur="" montant_vente="" />
 	        <CATEGORIE ref-categorie="" quantité_vendue="" montant_fournisseur="" montant_vente="" />
 	        <!-- plusieurs catégories -->
-	    </STOCKS>
+	    </VENTES>
 	</XML>
 	*/
 	public String categorizedSale(CategorizedSale categorizedSale)
@@ -83,6 +129,32 @@ public class BusinessIntelligenceXMLConstructor extends XMLConstructor
 			return null;
 		}
 
+		this.openNode("XML", null, 0);
+		
+		List<NodeAttribute> headerAttributes = new ArrayList<NodeAttribute>();
+		headerAttributes.add(new NodeAttribute("objet", "ventes 15min"));
+		headerAttributes.add(new NodeAttribute("source", "bo"));
+		headerAttributes.add(new NodeAttribute("date", new SimpleDateFormat("YYYY-MM-dd hh:mm:ss").format(categorizedSale.date)));
+		this.openClosedNode("ENTETE", headerAttributes, 1);
+		
+		List<NodeAttribute> salesAttributes = new ArrayList<NodeAttribute>();
+		salesAttributes.add(new NodeAttribute("lieu", categorizedSale.location));
+		this.openNode("VENTES", salesAttributes, 1);
+		
+		for (Article article : categorizedSale.articles)
+		{
+			List<NodeAttribute> articleAttributes = new ArrayList<NodeAttribute>();
+			articleAttributes.add(new NodeAttribute("ref-categorie", article.category));
+			articleAttributes.add(new NodeAttribute("quantité_vendue", article.quantity));
+			articleAttributes.add(new NodeAttribute("montant_fournisseur", article.providerPrice));
+			articleAttributes.add(new NodeAttribute("montant_vente", article.salesPrice));
+			this.openClosedNode("CATEGORIE", articleAttributes, 2);
+		}
+		
+		this.closeNode("VENTES", 1);
+		
+		this.closeNode("XML", 0);
+		
 		return this.xml;
 	}
 }

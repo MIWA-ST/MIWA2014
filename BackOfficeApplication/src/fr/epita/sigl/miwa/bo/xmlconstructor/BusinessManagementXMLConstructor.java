@@ -7,6 +7,7 @@ import java.util.List;
 import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleAndLocalPriceAndPromotion;
 import fr.epita.sigl.miwa.bo.object.NodeAttribute;
+import fr.epita.sigl.miwa.bo.object.RestockRequest;
 import fr.epita.sigl.miwa.bo.object.RestockRequestReception;
 
 public class BusinessManagementXMLConstructor extends XMLConstructor
@@ -45,10 +46,51 @@ public class BusinessManagementXMLConstructor extends XMLConstructor
 			return null;
 		}
 
+		this.openNode("RECEPTIONREASSORT", null, 0);
+		
+		this.openNodeWithoutNewLine("NUMEROCOMMANDE", null, 1);
+		this.printText(restockRequestReception.orderNumber);
+		this.closeNode("NUMEROCOMMANDE", 1);
+		
+		this.openNodeWithoutNewLine("DATELIVRAISON", null, 1);
+		this.printText(new SimpleDateFormat("YYYYMMdd").format(restockRequestReception.deliveryDate));
+		this.closeNode("DATELIVRAISON", 1);
+		
+		this.openNodeWithoutNewLine("STATUT", null, 1);
+		this.printText(restockRequestReception.status);
+		this.closeNode("STATUT", 1);
+
+		this.openNodeWithoutNewLine("COMMENTAIRE", null, 1);
+		this.printText(restockRequestReception.comment);
+		this.closeNode("COMMENTAIRE", 1);
+		
+		this.openNode("ARTICLES", null, 1);
+		
+		for (Article article : restockRequestReception.articles)
+		{
+			this.openNode("ARTICLE", null, 2);
+			
+			this.openNodeWithoutNewLine("REFERENCE", null, 3);
+			this.printText(article.reference);
+			this.closeNode("REFERENCE", 3);
+			
+			this.openNodeWithoutNewLine("QUANTITE", null, 3);
+			this.printText(article.quantity);
+			this.closeNode("QUANTITE", 3);
+			
+			this.openNodeWithoutNewLine("CATEGORIE", null, 3);
+			this.printText(article.category);
+			this.closeNode("CATEGORIE", 3);
+			
+			this.closeNode("ARTICLE", 2);
+		}
+		
+		this.closeNode("ARTICLES", 1);
+		
+		this.closeNode("RECEPTIONREASSORT", 0);
+		
 		return this.xml;
 	}
-	
-	
 	
 	/* 
 	BO => GC (Demande de réassort)
@@ -77,13 +119,60 @@ public class BusinessManagementXMLConstructor extends XMLConstructor
 		<ARTICLES>
 	</REASSORT>
 	*/
-	public String restockRequest(RestockRequestReception restockRequest)
+	public String restockRequest(RestockRequest restockRequest)
 	{
 		if (restockRequest == null)
 		{
 			return null;
 		}
 
+		this.openNode("REASSORT", null, 0);
+		
+		this.openNodeWithoutNewLine("NUMERO", null, 1);
+		this.printText(restockRequest.number);
+		this.closeNode("NUMERO", 1);
+		
+		this.openNodeWithoutNewLine("REFBO", null, 1);
+		this.printText(restockRequest.backOfficeReference);
+		this.closeNode("REFBO", 1);
+		
+		this.openNodeWithoutNewLine("ADRESSEBO", null, 1);
+		this.printText(restockRequest.backOfficeAdresse);
+		this.closeNode("ADRESSEBO", 1);
+		
+		this.openNodeWithoutNewLine("TELBO", null, 1);
+		this.printText(restockRequest.backOfficePhone);
+		this.closeNode("TELBO", 1);
+		
+		this.openNodeWithoutNewLine("DATEBC", null, 1);
+		this.printText(new SimpleDateFormat("YYYYMMdd").format(restockRequest.date));
+		this.closeNode("DATEBC", 1);
+		
+		this.openNode("ARTICLES", null, 1);
+		
+		for (Article article : restockRequest.articles)
+		{
+			this.openNode("ARTICLE", null, 2);
+			
+			this.openNodeWithoutNewLine("REFERENCE", null, 3);
+			this.printText(article.reference);
+			this.closeNode("REFERENCE", 3);
+			
+			this.openNodeWithoutNewLine("QUANTITE", null, 3);
+			this.printText(article.quantity);
+			this.closeNode("QUANTITE", 3);
+			
+			this.openNodeWithoutNewLine("CATEGORIE", null, 3);
+			this.printText(article.category);
+			this.closeNode("CATEGORIE", 3);
+			
+			this.closeNode("ARTICLE", 2);
+		}
+		
+		this.closeNode("ARTICLES", 1);
+		
+		this.closeNode("REASSORT", 0);
+		
 		return this.xml;
 	}
 }
