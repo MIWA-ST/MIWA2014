@@ -1,0 +1,2 @@
+code EAN;description;pack;price;taxRate;minimalOrder;orderBy;
+1234567891234;Description du produit;128;120;18;<nombre minimal de références pour une commande>;<taille des lots à commander>
