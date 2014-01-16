@@ -23,10 +23,8 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		/* !CODE HERE */
-		AsyncFileFactory.getInstance().getFileManager().send("C:\\Download\\EN\\coucou.txt", EApplication.GESTION_COMMERCIALE);
 		
-		/* !FIN CODE HERE */
+		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
 				.stopListener();

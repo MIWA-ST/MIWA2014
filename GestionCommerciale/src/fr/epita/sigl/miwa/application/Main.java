@@ -31,7 +31,7 @@ public class Main {
 		
 		// Pour se faire appeler à une certaine heure :
 		// ClockClient.getClock().wakeMeUpEveryDays(new Date("23/12/2013"), "envoie_msg_BO");
-		
+		ClockClient.getClock().wakeMeUpEveryDays(new Date ("23/12/2013 07:00"), "envoi_stocks");
 		
 		
 		/* !CODE HERE */
