@@ -13,8 +13,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
-
 //import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 //import fr.epita.sigl.miwa.application.bo.Article;
 //import fr.epita.sigl.miwa.application.bo.CommandeInternet;
@@ -23,378 +21,418 @@ import org.w3c.dom.NodeList;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
-public class XMLManager
-{
+public class XMLManager {
 	private static XMLManager instance = null;
-	
-	public static XMLManager getInstance()
-	{
+
+	public static XMLManager getInstance() {
 		if (instance == null)
 			instance = new XMLManager();
-		
+
 		return instance;
 	}
-	
-	public String getCommandeInternet(String message, Document doc) throws AsyncMessageException
-	{
+
+	public String getCommandeInternet(String message, Document doc)
+			throws AsyncMessageException {
 		CommandeInternet command = new CommandeInternet();
-		
-		command.setCommandNumber(doc.getElementsByTagName("numero").item(0).getTextContent());
-		command.setCustomerRef(doc.getElementsByTagName("refclient").item(0).getTextContent());
-		command.setCustomerLastname(doc.getElementsByTagName("nom").item(0).getTextContent());
-		command.setCustomerFirstname(doc.getElementsByTagName("prenom").item(0).getTextContent());
-		command.setCustomerAddress(doc.getElementsByTagName("adresseClient").item(0).getTextContent());
-		command.setDateBC(doc.getElementsByTagName("datebc").item(0).getTextContent());
-		
+
+		command.setCommandNumber(doc.getElementsByTagName("numero").item(0)
+				.getTextContent());
+		command.setCustomerRef(doc.getElementsByTagName("refclient").item(0)
+				.getTextContent());
+		command.setCustomerLastname(doc.getElementsByTagName("nom").item(0)
+				.getTextContent());
+		command.setCustomerFirstname(doc.getElementsByTagName("prenom").item(0)
+				.getTextContent());
+		command.setCustomerAddress(doc.getElementsByTagName("adresseClient")
+				.item(0).getTextContent());
+		command.setDateBC(doc.getElementsByTagName("datebc").item(0)
+				.getTextContent());
+
 		List<Article> articles = new ArrayList<Article>();
 		NodeList nList = doc.getElementsByTagName("article");
-		for (int temp = 0; temp < nList.getLength(); temp++) 
-		{
+		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Article a = new Article();
-			
-			//Récupéraction du noeud à traiter
+
+			// Récupéraction du noeud à traiter
 			Node nNode = nList.item(temp);
-			//Conversion en element
+			// Conversion en element
 			Element eElement = (Element) nNode;
 
-			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-			a.setReference(eElement.getElementsByTagName("reference").item(0).getTextContent());
-			a.setQuantity(eElement.getElementsByTagName("quantite").item(0).getTextContent());
+			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
+					.getTextContent());
+			a.setReference(eElement.getElementsByTagName("reference").item(0)
+					.getTextContent());
+			a.setQuantity(eElement.getElementsByTagName("quantite").item(0)
+					.getTextContent());
 
 			articles.add(a);
 		}
 		command.setArticles(articles);
-		
+
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		command.setDateBL(df.format(ClockClient.getClock().getHour()));
-		
-		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertCommandeInternet(command);
-		
-		//Construction du xml
-		String bl = "<EXPEDITIONCLIENT>"
-					+ "<LIVRAISON>"
-						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
-						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
-						+ "<DATEBL>" + command.getDateBL() + "</DATEBL>";
-						
+
+		// TODO sauvergarde en base
+		// JdbcConnection.getInstance().insertCommandeInternet(command);
+
+		// Construction du xml
+		String bl = "<EXPEDITIONCLIENT>" + "<LIVRAISON>" + "<NUMERO>"
+				+ command.getCommandNumber() + "</NUMERO>" + "<DATEBC>"
+				+ command.getDateBC() + "</DATEBC>" + "<DATEBL>"
+				+ command.getDateBL() + "</DATEBL>";
+
 		for (Article a : articles)
-			bl += "<ARTICLE>"
-					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";
-							
+			bl += "<ARTICLE>" + "<REFERENCE>" + a.getReference()
+					+ "</REFERENCE>" + "<QUANTITE>" + a.getQuantity()
+					+ "</QUANTITE>" + "<CATEGORIE>" + a.getCategory()
+					+ "</CATEGORIE>" + "</ARTICLE>";
+
 		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
-		
+
 		return bl;
 	}
-	
-	public String getprixfournisseurs(String message, Document doc) throws AsyncMessageException
-	{
-		//FIXME
+
+	public String getprixfournisseurs(String message, Document doc)
+			throws AsyncMessageException {
+		// FIXME
 	}
-	public void getdemandereassortfromBO(String message, Document doc) throws AsyncMessageException
-	{
+
+	public void getdemandereassortfromBO(String message, Document doc)
+			throws AsyncMessageException {
 		DemandeReassort demand = new DemandeReassort();
-		
-		demand.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
-		demand.setBackOfficeRef(doc.getElementsByTagName("REFBO").item(0).getTextContent());
-		demand.setBackOfficeAddress(doc.getElementsByTagName("ADRESSEBO").item(0).getTextContent());
-		demand.setBackOfficePhone(doc.getElementsByTagName("TELBO").item(0).getTextContent());
-		demand.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
-		
+
+		demand.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0)
+				.getTextContent());
+		demand.setBackOfficeRef(doc.getElementsByTagName("REFBO").item(0)
+				.getTextContent());
+		demand.setBackOfficeAddress(doc.getElementsByTagName("ADRESSEBO")
+				.item(0).getTextContent());
+		demand.setBackOfficePhone(doc.getElementsByTagName("TELBO").item(0)
+				.getTextContent());
+		demand.setDateBC(doc.getElementsByTagName("DATEBC").item(0)
+				.getTextContent());
+
 		List<Articles> articles = new ArrayList<Articles>();
 		List<String> quantities = new ArrayList<String>();
 		NodeList nList = doc.getElementsByTagName("ARTICLE");
-		for (int temp = 0; temp < nList.getLength(); temp++) 
-		{
+		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
-			
-			//Récupéraction du noeud à traiter
+
+			// Récupéraction du noeud à traiter
 			Node nNode = nList.item(temp);
-			//Conversion en element
+			// Conversion en element
 			Element eElement = (Element) nNode;
 
-			
-			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-			
-			
-			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
+					.getTextContent());
+
+			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0)
+					.getTextContent());
+			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
+					.getTextContent());
 			articles.add(a);
 		}
 		demand.setArticles(articles);
 		demand.setQuatity(quantities);
-				//FIXME SAVEBDD
+		// FIXME SAVEBDD
 	}
-	
-	public List<Articles> getdemandeniveaustockfromInternet(String message, Document doc) throws AsyncMessageException
-	{
+
+	public List<Articles> getdemandeniveaustockfromInternet(String message,
+			Document doc) throws AsyncMessageException {
 		List<Articles> articles = new ArrayList<Articles>();
 		NodeList nList = doc.getElementsByTagName("ARTICLE");
-		for (int temp = 0; temp < nList.getLength(); temp++) 
-		{
+		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
-			//Récupéraction du noeud à traiter
+			// Récupéraction du noeud à traiter
 			Node nNode = nList.item(temp);
-			//Conversion en element
+			// Conversion en element
 			Element eElement = (Element) nNode;
-			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());		
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
+					.getTextContent());
 			articles.add(a);
 		}
 		return articles;
-		
+
 	}
-	public void getbonlivraisonfromEntrepot(String message, Document doc) throws AsyncMessageException, DOMException, ParseException
-	{
-		SimpleDateFormat df= new SimpleDateFormat("yyyyMMdd");
+
+	public void getbonlivraisonfromEntrepot(String message, Document doc)
+			throws AsyncMessageException, DOMException, ParseException {
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		CommandeFournisseur commande = new CommandeFournisseur();
-		commande.setNumero_commande(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
-		commande.setBon_commande(df.parse(doc.getElementsByTagName("DATEBC").item(0).getTextContent()));
-		commande.setBon_livraion(df.parse(doc.getElementsByTagName("DATEBL").item(0).getTextContent()));
+		commande.setNumero_commande(doc.getElementsByTagName("NUMERO").item(0)
+				.getTextContent());
+		commande.setBon_commande(df.parse(doc.getElementsByTagName("DATEBC")
+				.item(0).getTextContent()));
+		commande.setBon_livraion(df.parse(doc.getElementsByTagName("DATEBL")
+				.item(0).getTextContent()));
 
 		List<Articles> articles = new ArrayList<Articles>();
 		List<String> quantities = new ArrayList<String>();
 		NodeList nList = doc.getElementsByTagName("ARTICLE");
-		for (int temp = 0; temp < nList.getLength(); temp++) 
-		{
+		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
-			
-			//Récupéraction du noeud à traiter
+
+			// Récupéraction du noeud à traiter
 			Node nNode = nList.item(temp);
-			//Conversion en element
+			// Conversion en element
 			Element eElement = (Element) nNode;
 
-			
-			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-			
-			
-			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
+					.getTextContent());
+
+			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0)
+					.getTextContent());
+			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
+					.getTextContent());
 			articles.add(a);
 		}
 		commande.setArticles(articles);
 		commande.setquantity(quantities);
-		//FIXME SAVEBDD
+		// FIXME SAVEBDD
 	}
-	
-	public String getexpeditionclientfromEntrepot(String message, Document doc) throws AsyncMessageException
-	{
-		
-	}
-	public String getcommandeinternetfromInternet(String message, Document doc) throws AsyncMessageException
-	{
-	
-		CommandeInternet commande = new CommandeInternet();
-		
-		commande.setCommandNumber(doc.getElementsByTagName("numero").item(0).getTextContent());
-		commande.setCustomerRef(doc.getElementsByTagName("refclient").item(0).getTextContent());
-	commande.setDateBC(doc.getElementsByTagName("datebc").item(0).getTextContent());
-	commande.setDateBL(doc.getElementsByTagName("datebl").item(0).getTextContent());
-	commande.setCustomerAddress(doc.getElementsByTagName("adresseClient").item(0).getTextContent());
-	commande.setCustomerLastname(doc.getElementsByTagName("nom").item(0).getTextContent());
-	commande.setCustomerFirstname(doc.getElementsByTagName("prenom").item(0).getTextContent());
-	
-	List<Articles> articles = new ArrayList<Articles>();
-	List<String> quantities = new ArrayList<String>();
-	NodeList nList = doc.getElementsByTagName("ARTICLE");
-	for (int temp = 0; temp < nList.getLength(); temp++) 
-	{
-		Articles a = new Articles();
-		
-		//Récupéraction du noeud à traiter
-		Node nNode = nList.item(temp);
-		//Conversion en element
-		Element eElement = (Element) nNode;
 
-		a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-		a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-		
-		
-		quantities.add(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-		
-		articles.add(a);
+	public String getexpeditionclientfromEntrepot(String message, Document doc)
+			throws AsyncMessageException {
+
 	}
-	commande.setArticles(articles);
-	commande.setquantity(quantities);
-	//FIXME SAVEBDD
-		
+
+	public String getcommandeinternetfromInternet(String message, Document doc)
+			throws AsyncMessageException {
+
+		CommandeInternet commande = new CommandeInternet();
+
+		commande.setCommandNumber(doc.getElementsByTagName("numero").item(0)
+				.getTextContent());
+		commande.setCustomerRef(doc.getElementsByTagName("refclient").item(0)
+				.getTextContent());
+		commande.setDateBC(doc.getElementsByTagName("datebc").item(0)
+				.getTextContent());
+		commande.setDateBL(doc.getElementsByTagName("datebl").item(0)
+				.getTextContent());
+		commande.setCustomerAddress(doc.getElementsByTagName("adresseClient")
+				.item(0).getTextContent());
+		commande.setCustomerLastname(doc.getElementsByTagName("nom").item(0)
+				.getTextContent());
+		commande.setCustomerFirstname(doc.getElementsByTagName("prenom")
+				.item(0).getTextContent());
+
+		List<Articles> articles = new ArrayList<Articles>();
+		List<String> quantities = new ArrayList<String>();
+		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+			Articles a = new Articles();
+
+			// Récupéraction du noeud à traiter
+			Node nNode = nList.item(temp);
+			// Conversion en element
+			Element eElement = (Element) nNode;
+
+			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
+					.getTextContent());
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
+					.getTextContent());
+
+			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0)
+					.getTextContent());
+
+			articles.add(a);
+		}
+		commande.setArticles(articles);
+		commande.setquantity(quantities);
+		// FIXME SAVEBDD
+
 	}
-	public String getniveauStockfromBO(String message, Document doc) throws AsyncMessageException
-	{
-		
+
+	public List<StockMagasin> getniveauStockfromBO(String message, Document doc)
+			throws AsyncMessageException {
+		List<StockMagasin> stocks = new ArrayList<StockMagasin>();
+		String idmagasin = doc.getElementsByTagName("REFMAGASIN").item(0)
+				.getTextContent();
+
+		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+			StockMagasin s = new StockMagasin();
+			Articles a = new Articles();
+
+			// Récupéraction du noeud à traiter
+			Node nNode = nList.item(temp);
+			// Conversion en element
+			Element eElement = (Element) nNode;
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
+					.getTextContent());
+			a.setStock_max_mag(eElement.getElementsByTagName("CAPACITE")
+					.item(0).getTextContent());
+			s.setArticle(a);
+			s.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0)
+					.getTextContent());
+			s.setIdmag(idmagasin);
+			stocks.add(s);
+		}
+		return stocks;
+
 	}
-	
-	
-	
+
 	// ENVOI !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	
-	
-	
-	public String envoipromotoRef(List<Articles> articles)
-	{
+
+	public String envoipromotoRef(List<Articles> articles) {
 		return null;
 	}
-	public String envoiprixventetoRef(List<Articles> articles)
-	{
+
+	public String envoiprixventetoRef(List<Articles> articles) {
 		return null;
 	}
-	public String envoiniveaustocktoInternet(List<Articles> articles)
-	{
+
+	public String envoiniveaustocktoInternet(List<Articles> articles) {
 		return null;
 	}
-	
-	public String envoicommandeinternettoEntrepot(CommandeInternet commande)
-	{
+
+	public String envoicommandeinternettoEntrepot(CommandeInternet commande) {
 		int i = 0;
-		String xml = "<commande_internet>"+
-				"<commande>" +
-				"<numero>" + commande.getCommandNumber() + "</numero>" +
-				"<refclient>" + commande.getCustomerRef() + "</refclient>" +
-				"<datebc>"+ commande.getDateBC() + "</datebc>" +
-				"<datebl>"+ commande.getDateBL() +"</datebl>" +
-				"<adresseClient" + commande.getCustomerAddress() +"</adresseClient>" +
-				"<nom>" + commande.getCustomerLastname() + "</nom>" +
-				"<prenom>" + commande.getCustomerFirstname() + "</prenom>" + "<articles>";
-				
-				while (i< commande.getArticles().size())
-				{
-					xml += "<article>" + "<CATEGORIE>"
-				+ commande.getArticles().get(i).getCategory() + "</CATEGORIE>" +
-							"<reference>" + commande.getArticles().get(i).getRef_article() + "</reference>"
-							+ "<quantite>" + commande.getquantity().get(i) +  "</quantite>" + "</article>";
-				}
-				xml += "</articles></commande></commande_internet>";
-								
-				return xml;
-	
+		String xml = "<commande_internet>" + "<commande>" + "<numero>"
+				+ commande.getCommandNumber() + "</numero>" + "<refclient>"
+				+ commande.getCustomerRef() + "</refclient>" + "<datebc>"
+				+ commande.getDateBC() + "</datebc>" + "<datebl>"
+				+ commande.getDateBL() + "</datebl>" + "<adresseClient"
+				+ commande.getCustomerAddress() + "</adresseClient>" + "<nom>"
+				+ commande.getCustomerLastname() + "</nom>" + "<prenom>"
+				+ commande.getCustomerFirstname() + "</prenom>" + "<articles>";
+
+		while (i < commande.getArticles().size()) {
+			xml += "<article>" + "<CATEGORIE>"
+					+ commande.getArticles().get(i).getCategory()
+					+ "</CATEGORIE>" + "<reference>"
+					+ commande.getArticles().get(i).getRef_article()
+					+ "</reference>" + "<quantite>"
+					+ commande.getquantity().get(i) + "</quantite>"
+					+ "</article>";
+		}
+		xml += "</articles></commande></commande_internet>";
+
+		return xml;
+
 	}
-	
-	public String envoicommandefournisseurtoEntrepot(CommandeFournisseur commande)
-	{
+
+	public String envoicommandefournisseurtoEntrepot(
+			CommandeFournisseur commande) {
 		return null;
 	}
-	public String envoidemandereassorttoEntrepot(DemandeReassort demand)
-	{
+
+	public String envoidemandereassorttoEntrepot(DemandeReassort demand) {
 		return null;
 	}
-	
-	
-	public String envoidemandeniveaudestocktoBO(List<Articles> articles)
-	{
+
+	public String envoidemandeniveaudestocktoBO(List<Articles> articles) {
 		return null;
 	}
-	
-	
-	public String envoiStockToBI (StockEntrepot entrepot, StockMagasin magasin)
-	{
+
+	public String envoiStockToBI(StockEntrepot entrepot, StockMagasin magasin) {
 		return null;
 	}
-	
-	
-//	public String getCommandeFournisseur(String message, Document doc) throws AsyncMessageException
-//	{
-//		LivraisonFournisseur command = new LivraisonFournisseur();
-//		
-//		command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
-//		command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
-//		
-//		List<Article> articles = new ArrayList<Article>();
-//		NodeList nList = doc.getElementsByTagName("ARTICLE");
-//		for (int temp = 0; temp < nList.getLength(); temp++) 
-//		{
-//			Article a = new Article();
-//			
-//			//Récupéraction du noeud à traiter
-//			Node nNode = nList.item(temp);
-//			//Conversion en element
-//			Element eElement = (Element) nNode;
-//
-//			a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-//			a.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-//			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-//			 
-//			articles.add(a);
-//		}
-//		command.setArticles(articles);
-//		
-//		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-//		command.setDateBL(df.format(ClockClient.getClock().getHour()));
-//		
-//		//TODO sauvergarde en base
-//		//JdbcConnection.getInstance().insertLivraisonFournisseur(command);
-//		
-//		//Construction du xml
-//		String bl = "<LIVRAISONSCOMMANDEFOURNISSEUR>"
-//					+ "<LIVRAISON>"
-//						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
-//						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
-//						+ "<DATEBL>" + command.getDateBL() + "</DATEBL>";
-//		
-//		for (Article a : articles)
-//			bl += "<ARTICLE>"
-//					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-//					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-//					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-//				+ "</ARTICLE>";
-//							
-//		bl+= "</LIVRAISON></LIVRAISONSCOMMANDEFOURNISSEUR>";
-//		
-//		return bl;
-//	}
-//	
-//	public String getReassortBO(String message, Document doc) throws AsyncMessageException
-//	{
-//		ReassortBO command = new ReassortBO();
-//		
-//		command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
-//		command.setBackOfficeRef(doc.getElementsByTagName("REFBO").item(0).getTextContent());
-//		command.setBackOfficeAddress(doc.getElementsByTagName("ADRESSEBO").item(0).getTextContent()); 
-//		command.setBackOfficePhone(doc.getElementsByTagName("TELBO").item(0).getTextContent());
-//		command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
-//		
-//		List<Article> articles = new ArrayList<Article>();
-//		NodeList nList = doc.getElementsByTagName("ARTICLE");
-//		for (int temp = 0; temp < nList.getLength(); temp++) 
-//		{
-//			Article a = new Article();
-//			
-//			//Récupéraction du noeud à traiter
-//			Node nNode = nList.item(temp);
-//			//Conversion en element
-//			Element eElement = (Element) nNode;
-//
-//			a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-//			a.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-//			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-//			 
-//			articles.add(a);
-//		}
-//		command.setArticles(articles);
-//		
-//		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-//		command.setDateBL(df.format(ClockClient.getClock().getHour()));
-//		
-//		//TODO sauvergarde en base
-//		//JdbcConnection.getInstance().insertReassortBO(command);
-//		
-//		//Construction du xml
-//		String bl = "<LIVRAISONS>"
-//					+ "<LIVRAISON>"
-//						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
-//						+ "<REFMAGASIN>"+ command.getBackOfficeRef() + "</REFMAGASIN>"
-//						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
-//						+ "<DATEBL>" + command.getDateBL() + "</DATEBL>";
-//		
-//		for (Article a : articles)
-//			bl += "<ARTICLE>"
-//					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-//					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-//				+ "</ARTICLE>";
-//		
-//		bl += "</LIVRAISON></LIVRAISONS>";
-//		
-//		return bl;
-//	}
+
+	// public String getCommandeFournisseur(String message, Document doc) throws
+	// AsyncMessageException
+	// {
+	// LivraisonFournisseur command = new LivraisonFournisseur();
+	//
+	// command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
+	// command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
+	//
+	// List<Article> articles = new ArrayList<Article>();
+	// NodeList nList = doc.getElementsByTagName("ARTICLE");
+	// for (int temp = 0; temp < nList.getLength(); temp++)
+	// {
+	// Article a = new Article();
+	//
+	// //Récupéraction du noeud à traiter
+	// Node nNode = nList.item(temp);
+	// //Conversion en element
+	// Element eElement = (Element) nNode;
+	//
+	// a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
+	// a.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
+	// a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
+	//
+	// articles.add(a);
+	// }
+	// command.setArticles(articles);
+	//
+	// DateFormat df = new SimpleDateFormat("yyyyMMdd");
+	// command.setDateBL(df.format(ClockClient.getClock().getHour()));
+	//
+	// //TODO sauvergarde en base
+	// //JdbcConnection.getInstance().insertLivraisonFournisseur(command);
+	//
+	// //Construction du xml
+	// String bl = "<LIVRAISONSCOMMANDEFOURNISSEUR>"
+	// + "<LIVRAISON>"
+	// + "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
+	// + "<DATEBC>" + command.getDateBC() + "</DATEBC>"
+	// + "<DATEBL>" + command.getDateBL() + "</DATEBL>";
+	//
+	// for (Article a : articles)
+	// bl += "<ARTICLE>"
+	// + "<REFERENCE>" + a.getReference() + "</REFERENCE>"
+	// + "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
+	// + "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
+	// + "</ARTICLE>";
+	//
+	// bl+= "</LIVRAISON></LIVRAISONSCOMMANDEFOURNISSEUR>";
+	//
+	// return bl;
+	// }
+	//
+	// public String getReassortBO(String message, Document doc) throws
+	// AsyncMessageException
+	// {
+	// ReassortBO command = new ReassortBO();
+	//
+	// command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
+	// command.setBackOfficeRef(doc.getElementsByTagName("REFBO").item(0).getTextContent());
+	// command.setBackOfficeAddress(doc.getElementsByTagName("ADRESSEBO").item(0).getTextContent());
+	// command.setBackOfficePhone(doc.getElementsByTagName("TELBO").item(0).getTextContent());
+	// command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
+	//
+	// List<Article> articles = new ArrayList<Article>();
+	// NodeList nList = doc.getElementsByTagName("ARTICLE");
+	// for (int temp = 0; temp < nList.getLength(); temp++)
+	// {
+	// Article a = new Article();
+	//
+	// //Récupéraction du noeud à traiter
+	// Node nNode = nList.item(temp);
+	// //Conversion en element
+	// Element eElement = (Element) nNode;
+	//
+	// a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
+	// a.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
+	// a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
+	//
+	// articles.add(a);
+	// }
+	// command.setArticles(articles);
+	//
+	// DateFormat df = new SimpleDateFormat("yyyyMMdd");
+	// command.setDateBL(df.format(ClockClient.getClock().getHour()));
+	//
+	// //TODO sauvergarde en base
+	// //JdbcConnection.getInstance().insertReassortBO(command);
+	//
+	// //Construction du xml
+	// String bl = "<LIVRAISONS>"
+	// + "<LIVRAISON>"
+	// + "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
+	// + "<REFMAGASIN>"+ command.getBackOfficeRef() + "</REFMAGASIN>"
+	// + "<DATEBC>" + command.getDateBC() + "</DATEBC>"
+	// + "<DATEBL>" + command.getDateBL() + "</DATEBL>";
+	//
+	// for (Article a : articles)
+	// bl += "<ARTICLE>"
+	// + "<REFERENCE>" + a.getReference() + "</REFERENCE>"
+	// + "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
+	// + "</ARTICLE>";
+	//
+	// bl += "</LIVRAISON></LIVRAISONS>";
+	//
+	// return bl;
+	// }
 }
