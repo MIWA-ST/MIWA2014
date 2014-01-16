@@ -292,4 +292,44 @@ public class JdbcConnection
 			e.printStackTrace();
 		}
 	}
+	
+	public void insertDemandeNiveauStock(DemandeNiveauStock dmd) {
+		try
+		{
+			System.out.println("Insert demande niveau stock");
+			if (connection != null)
+			{
+				String request = "INSERT INTO demande_niveau_stock (numero_demande, date_demande, date_reponse, ref_bo) VALUES (?, ?, ?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, dmd.getCommandNumber());
+				statement.setString(2, dmd.getDatedemand());
+				statement.setString(3, dmd.getDaterep());
+				statement.setString(4, dmd.getRefbo());
+				
+				statement.executeUpdate();
+				
+				/// Si y a un bug, ça vient de là
+				ResultSet res = statement.getGeneratedKeys();
+				int id = res.getInt(1);
+				int indice = 0;
+				for (Articles a : dmd.getArticles()) {
+				String request2 = "INSERT INTO articles_map (ref_article, id_demande, quantite) VALUES (?, ?, ?)";
+							
+				PreparedStatement statement2 = connection.prepareStatement(request2);
+				statement.setString(1, a.getRef_article());
+				statement.setString(2, Integer.toString(id));
+				statement.setString(3, dmd.getQuantity().get(indice));
+				
+				statement2.executeUpdate();
+				indice++;
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}		
+	}
 }
