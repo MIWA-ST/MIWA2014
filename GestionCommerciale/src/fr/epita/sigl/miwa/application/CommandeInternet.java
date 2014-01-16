@@ -12,6 +12,7 @@ public class CommandeInternet {
 	private String customerAddress;
 	private List<Articles> articles;
 	private List<String> quantity;
+	private String traite;
 	
 	public String getCommandNumber() {
 		return commandNumber;
@@ -66,6 +67,12 @@ public class CommandeInternet {
 	}
 	public void setquantity(List<String> quantity) {
 		this.quantity = quantity;
+	}
+	public String getTraite() {
+		return traite;
+	}
+	public void setTraite(String traite) {
+		this.traite = traite;
 	}
 	
 	

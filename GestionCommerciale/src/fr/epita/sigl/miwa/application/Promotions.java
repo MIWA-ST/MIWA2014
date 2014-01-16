@@ -1,11 +1,9 @@
 package fr.epita.sigl.miwa.application;
 
-import java.util.Date;
-
 public class Promotions {
 private Articles article;
-private Date begin;
-private Date end;
+private String begin;
+private String end;
 private String pourcentage;
 public Articles getArticle() {
 	return article;
@@ -13,16 +11,16 @@ public Articles getArticle() {
 public void setArticle(Articles article) {
 	this.article = article;
 }
-public Date getBegin() {
+public String getBegin() {
 	return begin;
 }
-public void setBegin(Date begin) {
+public void setBegin(String begin) {
 	this.begin = begin;
 }
-public Date getEnd() {
+public String getEnd() {
 	return end;
 }
-public void setEnd(Date end) {
+public void setEnd(String end) {
 	this.end = end;
 }
 public String getPourcentage() {

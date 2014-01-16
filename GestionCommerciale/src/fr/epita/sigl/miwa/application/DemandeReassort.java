@@ -10,8 +10,9 @@ public class DemandeReassort {
 	private String backOfficePhone;
 	private String backOfficeAddress;
 	private List<Articles> articles;
-	private List<String> quatity;
-	private Boolean traité;
+	private List<String> quantity;
+	private String traite;
+	
 	public String getCommandNumber() {
 		return commandNumber;
 	}
@@ -54,18 +55,20 @@ public class DemandeReassort {
 	public void setArticles(List<Articles> articles) {
 		this.articles = articles;
 	}
-	public List<String> getQuatity() {
-		return quatity;
+	
+	public List<String> getQuantity() {
+		return quantity;
 	}
-	public void setQuatity(List<String> quatity) {
-		this.quatity = quatity;
+	public void setQuantity(List<String> quantity) {
+		this.quantity = quantity;
 	}
-	public Boolean getTraité() {
-		return traité;
+	public String getTraite() {
+		return traite;
 	}
-	public void setTraité(Boolean traité) {
-		this.traité = traité;
+	public void setTraite(String traite) {
+		this.traite = traite;
 	}
+	
 	
 	
 }

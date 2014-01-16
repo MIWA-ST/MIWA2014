@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.application;
 public class StockEntrepot {
 private Articles article;
 private String quantity;
+private String max_q;
 private String identrepot;
 
 public Articles getArticle() {
@@ -23,6 +24,13 @@ public String getIdentrepot() {
 public void setIdentrepot(String identrepot) {
 	this.identrepot = identrepot;
 }
+public String getMax_q() {
+	return max_q;
+}
+public void setMax_q(String max_q) {
+	this.max_q = max_q;
+}
+
 
 
 }
