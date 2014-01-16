@@ -122,6 +122,11 @@ public class XMLManager {
 				promosf.add(p);
 			}
 		}
+		for (Articles articles2 : articles) {
+			JdbcConnection.getInstance().getConnection();
+			JdbcConnection.getInstance().insertArticle(articles2);	
+			JdbcConnection.getInstance().closeConnection();
+		}
 		return articles;
 		// FIXME sauvegarder les pomo et les prix des articles
 	}
@@ -164,6 +169,9 @@ public class XMLManager {
 		demand.setArticles(articles);
 		demand.setQuantity(quantities);
 		// FIXME SAVEBDD
+		JdbcConnection.getInstance().getConnection();
+		JdbcConnection.getInstance().insertDemandeReassort(demand);
+		JdbcConnection.getInstance().closeConnection();
 		return demand;
 	}
 
@@ -187,8 +195,10 @@ public class XMLManager {
 			articles.add(a);
 		}
 		demande.setArticles(articles);
-		
-		//FIXME SAVE BDD
+		JdbcConnection.getInstance().getConnection();
+		JdbcConnection.getInstance().insertDemandeNiveauStock(demande);
+		JdbcConnection.getInstance().closeConnection();
+	
 
 	}
 
@@ -226,6 +236,9 @@ public class XMLManager {
 		commande.setArticles(articles);
 		commande.setquantity(quantities);
 		// FIXME SAVEBDD
+		JdbcConnection.getInstance().getConnection();
+		JdbcConnection.getInstance().insertCommandeFournisseur(commande);
+		JdbcConnection.getInstance().closeConnection();
 	}
 
 	public CommandeInternet getexpeditionclientfromEntrepot(String message, Document doc)
@@ -256,7 +269,9 @@ for (int temp = 0; temp < nList.getLength(); temp++) {
 }
 command.setArticles(articles);
 command.setquantity(quantities);
-
+JdbcConnection.getInstance().getConnection();
+JdbcConnection.getInstance().insertCommandeInternet(command);
+JdbcConnection.getInstance().closeConnection();
 	return command;
 	}
 
@@ -304,6 +319,9 @@ command.setquantity(quantities);
 		commande.setArticles(articles);
 		commande.setquantity(quantities);
 		// FIXME SAVEBDD
+		JdbcConnection.getInstance().getConnection();
+		JdbcConnection.getInstance().insertCommandeInternet(commande);
+		JdbcConnection.getInstance().closeConnection();
 return commande;
 	}
 
@@ -331,6 +349,12 @@ return commande;
 					.getTextContent());
 			s.setIdmag(idmagasin);
 			stocks.add(s);
+		}
+		for (StockMagasin stockMagasin : stocks) {
+			JdbcConnection.getInstance().getConnection();
+			JdbcConnection.getInstance().insertStockMagasin(stockMagasin);
+			JdbcConnection.getInstance().closeConnection();
+			
 		}
 		// FIXME sauvegarder chaque stock dans la bdd
 	}
