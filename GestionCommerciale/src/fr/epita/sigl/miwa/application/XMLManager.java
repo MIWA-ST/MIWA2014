@@ -243,7 +243,7 @@ public class XMLManager {
 
 	}
 
-	public List<StockMagasin> getniveauStockfromBO(String message, Document doc)
+	public void getniveauStockfromBO(String message, Document doc)
 			throws AsyncMessageException {
 		List<StockMagasin> stocks = new ArrayList<StockMagasin>();
 		String idmagasin = doc.getElementsByTagName("REFMAGASIN").item(0)
@@ -268,18 +268,33 @@ public class XMLManager {
 			s.setIdmag(idmagasin);
 			stocks.add(s);
 		}
-		return stocks;
-
+		// FIXME sauvegarder chaque stock dans la bdd
 	}
 
 	// ENVOI !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	public String envoipromotoRef(List<Articles> articles) {
-		return null;
+	public String envoipromotoRef(List<Promotions> promos) {
+	 String xml = "<PROMOTIONS>";
+	 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	 for (Promotions promotions : promos) {
+		 xml += "<PROMOTION datedebut=\"" + df.format(promotions.getBegin()) + "\" datefin=\"" + df.format(promotions.getEnd())
+				 + "\" promotion_pourcentage=\"" + promotions.getPourcentage() + "\"></ARTICLES>"+
+				"<ARTICLE reference=\"" +promotions.getArticle().getRef_article() + "\" /></ARTICLES></PROMOTION>";
+				}
+	 
+	 xml += "</PROMOTIONS>";
+	 return xml;
+			 
 	}
 
 	public String envoiprixventetoRef(List<Articles> articles) {
-		return null;
+		String xml = "<PRIXVENTE></ARTICLES>";
+		for (Articles article : articles) {
+			xml += "<ARTICLE reference=\"" +article.getRef_article() + 
+					"\" prix_vente=\"" + article.getPrix_vente() + "\"/>";	
+		}
+		xml += "</ARTICLES></PRIXVENTE>";
+		return xml;
 	}
 
 	public String envoiniveaustocktoInternet(List<Articles> articles) {
