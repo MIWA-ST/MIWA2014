@@ -8,7 +8,8 @@ private String numero_commande;
 private Date bon_commande;
 private Date bon_livraion;
 private List<Articles> articles;
-private List<String> prix;
+private List<String> quantity;
+
 public String getNumero_commande() {
 	return numero_commande;
 }
@@ -33,11 +34,11 @@ public List<Articles> getArticles() {
 public void setArticles(List<Articles> articles) {
 	this.articles = articles;
 }
-public List<String> getPrix() {
-	return prix;
+public List<String> getquantity() {
+	return quantity;
 }
-public void setPrix(List<String> prix) {
-	this.prix = prix;
+public void setquantity(List<String> quantity) {
+	this.quantity = quantity;
 }
 
 

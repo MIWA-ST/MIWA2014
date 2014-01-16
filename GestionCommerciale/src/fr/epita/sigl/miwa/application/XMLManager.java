@@ -102,7 +102,6 @@ public class XMLManager
 	{
 		
 	}
-	
 	public String getexpeditionclientfromEntrepot(String message, Document doc) throws AsyncMessageException
 	{
 		

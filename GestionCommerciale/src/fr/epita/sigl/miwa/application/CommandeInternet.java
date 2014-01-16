@@ -11,7 +11,7 @@ public class CommandeInternet {
 	private String customerFirstname;
 	private String customerAddress;
 	private List<Articles> articles;
-	private List<String> prix;
+	private List<String> quantity;
 	
 	public String getCommandNumber() {
 		return commandNumber;
@@ -61,11 +61,11 @@ public class CommandeInternet {
 	public void setArticles(List<Articles> articles) {
 		this.articles = articles;
 	}
-	public List<String> getPrix() {
-		return prix;
+	public List<String> getquantity() {
+		return quantity;
 	}
-	public void setPrix(List<String> prix) {
-		this.prix = prix;
+	public void setquantity(List<String> quantity) {
+		this.quantity = quantity;
 	}
 	
 	
