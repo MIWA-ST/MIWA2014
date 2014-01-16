@@ -31,66 +31,66 @@ public class XMLManager {
 		return instance;
 	}
 
-	public String getCommandeInternet(String message, Document doc)
-			throws AsyncMessageException {
-		CommandeInternet command = new CommandeInternet();
-
-		command.setCommandNumber(doc.getElementsByTagName("numero").item(0)
-				.getTextContent());
-		command.setCustomerRef(doc.getElementsByTagName("refclient").item(0)
-				.getTextContent());
-		command.setCustomerLastname(doc.getElementsByTagName("nom").item(0)
-				.getTextContent());
-		command.setCustomerFirstname(doc.getElementsByTagName("prenom").item(0)
-				.getTextContent());
-		command.setCustomerAddress(doc.getElementsByTagName("adresseClient")
-				.item(0).getTextContent());
-		command.setDateBC(doc.getElementsByTagName("datebc").item(0)
-				.getTextContent());
-
-		List<Article> articles = new ArrayList<Article>();
-		NodeList nList = doc.getElementsByTagName("article");
-		for (int temp = 0; temp < nList.getLength(); temp++) {
-			Article a = new Article();
-
-			// Récupéraction du noeud à traiter
-			Node nNode = nList.item(temp);
-			// Conversion en element
-			Element eElement = (Element) nNode;
-
-			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
-					.getTextContent());
-			a.setReference(eElement.getElementsByTagName("reference").item(0)
-					.getTextContent());
-			a.setQuantity(eElement.getElementsByTagName("quantite").item(0)
-					.getTextContent());
-
-			articles.add(a);
-		}
-		command.setArticles(articles);
-
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		command.setDateBL(df.format(ClockClient.getClock().getHour()));
-
-		// TODO sauvergarde en base
-		// JdbcConnection.getInstance().insertCommandeInternet(command);
-
-		// Construction du xml
-		String bl = "<EXPEDITIONCLIENT>" + "<LIVRAISON>" + "<NUMERO>"
-				+ command.getCommandNumber() + "</NUMERO>" + "<DATEBC>"
-				+ command.getDateBC() + "</DATEBC>" + "<DATEBL>"
-				+ command.getDateBL() + "</DATEBL>";
-
-		for (Article a : articles)
-			bl += "<ARTICLE>" + "<REFERENCE>" + a.getReference()
-					+ "</REFERENCE>" + "<QUANTITE>" + a.getQuantity()
-					+ "</QUANTITE>" + "<CATEGORIE>" + a.getCategory()
-					+ "</CATEGORIE>" + "</ARTICLE>";
-
-		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
-
-		return bl;
-	}
+//	public String getCommandeInternet(String message, Document doc)
+//			throws AsyncMessageException {
+//		CommandeInternet command = new CommandeInternet();
+//
+//		command.setCommandNumber(doc.getElementsByTagName("numero").item(0)
+//				.getTextContent());
+//		command.setCustomerRef(doc.getElementsByTagName("refclient").item(0)
+//				.getTextContent());
+//		command.setCustomerLastname(doc.getElementsByTagName("nom").item(0)
+//				.getTextContent());
+//		command.setCustomerFirstname(doc.getElementsByTagName("prenom").item(0)
+//				.getTextContent());
+//		command.setCustomerAddress(doc.getElementsByTagName("adresseClient")
+//				.item(0).getTextContent());
+//		command.setDateBC(doc.getElementsByTagName("datebc").item(0)
+//				.getTextContent());
+//
+//		List<Article> articles = new ArrayList<Article>();
+//		NodeList nList = doc.getElementsByTagName("article");
+//		for (int temp = 0; temp < nList.getLength(); temp++) {
+//			Article a = new Article();
+//
+//			// Récupéraction du noeud à traiter
+//			Node nNode = nList.item(temp);
+//			// Conversion en element
+//			Element eElement = (Element) nNode;
+//
+//			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
+//					.getTextContent());
+//			a.setReference(eElement.getElementsByTagName("reference").item(0)
+//					.getTextContent());
+//			a.setQuantity(eElement.getElementsByTagName("quantite").item(0)
+//					.getTextContent());
+//
+//			articles.add(a);
+//		}
+//		command.setArticles(articles);
+//
+//		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+//		command.setDateBL(df.format(ClockClient.getClock().getHour()));
+//
+//		// TODO sauvergarde en base
+//		// JdbcConnection.getInstance().insertCommandeInternet(command);
+//
+////		// Construction du xml
+////		String bl = "<EXPEDITIONCLIENT>" + "<LIVRAISON>" + "<NUMERO>"
+////				+ command.getCommandNumber() + "</NUMERO>" + "<DATEBC>"
+////				+ command.getDateBC() + "</DATEBC>" + "<DATEBL>"
+////				+ command.getDateBL() + "</DATEBL>";
+////
+////		for (Article a : articles)
+////			bl += "<ARTICLE>" + "<REFERENCE>" + a.getReference()
+////					+ "</REFERENCE>" + "<QUANTITE>" + a.getQuantity()
+////					+ "</QUANTITE>" + "<CATEGORIE>" + a.getCategory()
+////					+ "</CATEGORIE>" + "</ARTICLE>";
+////
+////		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
+////
+////		return bl;
+//	}
 
 	public List<Articles> getprixfournisseurs(String message, Document doc)
 			throws AsyncMessageException {
