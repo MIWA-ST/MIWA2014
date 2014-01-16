@@ -1,14 +1,19 @@
 package fr.epita.sigl.miwa.application;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+
 
 //import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 //import fr.epita.sigl.miwa.application.bo.Article;
@@ -87,9 +92,9 @@ public class XMLManager
 	
 	public String getprixfournisseurs(String message, Document doc) throws AsyncMessageException
 	{
-		
+		//FIXME
 	}
-	public String getdemandereassortfromBO(String message, Document doc) throws AsyncMessageException
+	public void getdemandereassortfromBO(String message, Document doc) throws AsyncMessageException
 	{
 		DemandeReassort demand = new DemandeReassort();
 		
@@ -112,7 +117,7 @@ public class XMLManager
 			Element eElement = (Element) nNode;
 
 			
-			a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
 			
 			
 			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
@@ -121,16 +126,57 @@ public class XMLManager
 		}
 		demand.setArticles(articles);
 		demand.setQuatity(quantities);
-				
+				//FIXME SAVEBDD
 	}
 	
-	public String getdemandeniveaustockfromInternet(String message, Document doc) throws AsyncMessageException
+	public List<Articles> getdemandeniveaustockfromInternet(String message, Document doc) throws AsyncMessageException
 	{
+		List<Articles> articles = new ArrayList<Articles>();
+		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		for (int temp = 0; temp < nList.getLength(); temp++) 
+		{
+			Articles a = new Articles();
+			//Récupéraction du noeud à traiter
+			Node nNode = nList.item(temp);
+			//Conversion en element
+			Element eElement = (Element) nNode;
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());		
+			articles.add(a);
+		}
+		return articles;
 		
 	}
-	public String getbonlivraisonfromEntrepot(String message, Document doc) throws AsyncMessageException
+	public void getbonlivraisonfromEntrepot(String message, Document doc) throws AsyncMessageException, DOMException, ParseException
 	{
-		
+		SimpleDateFormat df= new SimpleDateFormat("yyyyMMdd");
+		CommandeFournisseur commande = new CommandeFournisseur();
+		commande.setNumero_commande(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
+		commande.setBon_commande(df.parse(doc.getElementsByTagName("DATEBC").item(0).getTextContent()));
+		commande.setBon_livraion(df.parse(doc.getElementsByTagName("DATEBL").item(0).getTextContent()));
+
+		List<Articles> articles = new ArrayList<Articles>();
+		List<String> quantities = new ArrayList<String>();
+		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		for (int temp = 0; temp < nList.getLength(); temp++) 
+		{
+			Articles a = new Articles();
+			
+			//Récupéraction du noeud à traiter
+			Node nNode = nList.item(temp);
+			//Conversion en element
+			Element eElement = (Element) nNode;
+
+			
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
+			
+			
+			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
+			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
+			articles.add(a);
+		}
+		commande.setArticles(articles);
+		commande.setquantity(quantities);
+		//FIXME SAVEBDD
 	}
 	
 	public String getexpeditionclientfromEntrepot(String message, Document doc) throws AsyncMessageException
@@ -139,6 +185,40 @@ public class XMLManager
 	}
 	public String getcommandeinternetfromInternet(String message, Document doc) throws AsyncMessageException
 	{
+	
+		CommandeInternet commande = new CommandeInternet();
+		
+		commande.setCommandNumber(doc.getElementsByTagName("numero").item(0).getTextContent());
+		commande.setCustomerRef(doc.getElementsByTagName("refclient").item(0).getTextContent());
+	commande.setDateBC(doc.getElementsByTagName("datebc").item(0).getTextContent());
+	commande.setDateBL(doc.getElementsByTagName("datebl").item(0).getTextContent());
+	commande.setCustomerAddress(doc.getElementsByTagName("adresseClient").item(0).getTextContent());
+	commande.setCustomerLastname(doc.getElementsByTagName("nom").item(0).getTextContent());
+	commande.setCustomerFirstname(doc.getElementsByTagName("prenom").item(0).getTextContent());
+	
+	List<Articles> articles = new ArrayList<Articles>();
+	List<String> quantities = new ArrayList<String>();
+	NodeList nList = doc.getElementsByTagName("ARTICLE");
+	for (int temp = 0; temp < nList.getLength(); temp++) 
+	{
+		Articles a = new Articles();
+		
+		//Récupéraction du noeud à traiter
+		Node nNode = nList.item(temp);
+		//Conversion en element
+		Element eElement = (Element) nNode;
+
+		a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
+		a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
+		
+		
+		quantities.add(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
+		
+		articles.add(a);
+	}
+	commande.setArticles(articles);
+	commande.setquantity(quantities);
+	//FIXME SAVEBDD
 		
 	}
 	public String getniveauStockfromBO(String message, Document doc) throws AsyncMessageException
