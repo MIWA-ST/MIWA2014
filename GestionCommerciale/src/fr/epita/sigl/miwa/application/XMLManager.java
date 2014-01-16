@@ -92,9 +92,38 @@ public class XMLManager {
 		return bl;
 	}
 
-	public String getprixfournisseurs(String message, Document doc)
+	public List<Articles> getprixfournisseurs(String message, Document doc)
 			throws AsyncMessageException {
-		// FIXME
+		List<Articles> articles = new ArrayList<Articles>();
+		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+			Articles a = new Articles();
+
+			// Récupéraction du noeud à traiter
+			Node nNode = nList.item(temp);
+			// Conversion en element
+			Element eElement = (Element) nNode;
+			a.setRef_article(eElement.getAttribute("reference"));
+			a.setPrix_fournisseur(eElement.getAttribute("prix_fournisseur"));
+			
+			List<PromoFournisseur> promosf = new ArrayList<PromoFournisseur>();
+			NodeList nList2 = doc.getElementsByTagName("PROMOTION");
+			for (int temp2 = 0; temp2 < nList.getLength(); temp2++) {
+				PromoFournisseur p = new PromoFournisseur();
+				/ Récupéraction du noeud à traiter
+				Node nNode2 = nList2.item(temp2);
+				// Conversion en element
+				Element eElement2 = (Element) nNode2;
+				p.setDateDebut(eElement2.getAttribute("debut"));
+				p.setDateFin(eElement2.getAttribute("fin"));
+				p.setPourcentage(eElement2.getAttribute("pourcent"));
+				p.setMinquantite(eElement2.getAttribute("nb_min_promo"));
+				p.setRef_article(a.getRef_article());
+				promosf.add(p);
+			}
+		}
+		
+		// FIXME sauvegarder les pomo et les prix des articles
 	}
 
 	public DemandeReassort getdemandereassortfromBO(String message, Document doc)
