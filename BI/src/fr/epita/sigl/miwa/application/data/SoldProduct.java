@@ -7,17 +7,14 @@ package fr.epita.sigl.miwa.application.data;
 
 public class SoldProduct {
 	private Product product;
-	private DetailSale detailSale;
 	private Integer quantity;
 	
 	public SoldProduct() {
 		super();
 	}
 	
-	public SoldProduct(Product product, DetailSale detailSale, Integer quantity) {
-		super();
+	public SoldProduct(Product product, Integer quantity) {
 		this.product = product;
-		this.detailSale = detailSale;
 		this.quantity = quantity;
 	}
 
@@ -27,14 +24,6 @@ public class SoldProduct {
 
 	public void setProduct(Product product) {
 		this.product = product;
-	}
-
-	public DetailSale getDetailSale() {
-		return detailSale;
-	}
-
-	public void setDetailSale(DetailSale detailSale) {
-		this.detailSale = detailSale;
 	}
 
 	public Integer getQuantity() {

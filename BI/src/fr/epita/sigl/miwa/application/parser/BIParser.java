@@ -65,7 +65,7 @@ public class BIParser {
 	 * @param file Le fichier envoyé par le référentiel
 	 * @return La liste des données envoyées par le référentiel (promos + catégorie + produits)
 	 */
-	public List<MDMData> parseMDMFile(File file) {
+	public MDMData parseMDMFile(File file) {
 		return null;		
 	}
 

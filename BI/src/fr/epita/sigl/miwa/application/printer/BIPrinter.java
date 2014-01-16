@@ -1,10 +1,8 @@
 package fr.epita.sigl.miwa.application.printer;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,13 +15,11 @@ import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.criteres.AgeValue;
 import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.enums.EAlerteType;
 import fr.epita.sigl.miwa.application.enums.ECritereType;
 import fr.epita.sigl.miwa.application.statistics.CategorieStatistic;
-import fr.epita.sigl.miwa.application.statistics.FidelityStatistic;
 import fr.epita.sigl.miwa.application.statistics.PaiementStatistic;
 import fr.epita.sigl.miwa.application.statistics.SaleStatistic;
 import fr.epita.sigl.miwa.application.statistics.Segmentation;
@@ -34,7 +30,7 @@ import fr.epita.sigl.miwa.st.clock.ClockFactory;
 
 public class BIPrinter {
 
-	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(BIPrinter.class.getName());
 
 	private static final String ENTREPOT = "entrepot";
 
@@ -93,10 +89,6 @@ public class BIPrinter {
 		builderEvo.append("\n");
 		System.out.println(builderEvo.toString());
 		System.out.println(builderRep.toString());
-	}
-
-	public void publishFidelityStatistics(List<FidelityStatistic> fidelityStatistics){
-		initConsole();		
 	}
 
 	public String createSegmentationFile(List<Critere> criteres, List<Segmentation> segmentations){

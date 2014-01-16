@@ -18,14 +18,7 @@ public class BIComputer {
    }
    
    /** @param stocks */
-   public List<SaleStatistic> computeSaleStatistics(List<Sale> stocks) {
-      // TODO: implement
-      return null;
-   }
-   
-   /** @param clients 
-    * @param detailSales */
-   public List<FidelityStatistic> computeFidelityStatistic(List<Client> clients, List<DetailSale> detailSales) {
+   public List<SaleStatistic> computeSaleStatistics(List<DetailSale> detailSale, List<SaleStatistic> lastSaleStatistics) {
       // TODO: implement
       return null;
    }
