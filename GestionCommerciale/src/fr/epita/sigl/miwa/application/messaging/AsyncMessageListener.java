@@ -47,17 +47,13 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				if (root.toLowerCase().equals("REASSORT")) {
 					LOGGER.info("BO envoi demande de reassort");
 					
-					//A faire envoyer à entrepot demande reassort
-					//content = "<REASSORTSBO><REASSORT><NUMERO>CV398719873</NUMERO><REFBO>20131225</REFBO><ADRESSEBO>XXXXXX</ADRESSEBO><TELBO>0133333333</TELBO><DATEBC>20130427</DATEBC><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>265000</QUANTITE><CATEGORIE>001</CATEGORIE></ARTICLE><ARTICLE><REFERENCE>AU736823</REFERENCE><QUANTITE>12</QUANTITE><CATEGORIE>001</CATEGORIE></ARTICLE><ARTICLES></REASSORT></REASSORTSBO>";
-					
-					//On parse l'envoie :
-					content = XMLManager.getInstance().getdemandereassortfromBO(message, doc);
+					//A faire envoyer à entrepot demande reassort => GOOD
+					content = XMLManager.getInstance().envoidemandereassorttoEntrepot(XMLManager.getInstance().getdemandereassortfromBO(message, doc));
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.ENTREPOT);
 					LOGGER.info("Envoi de la demande de reassort à l'entrepot");
 					
-					//Commande fournisseur + envoi bon de commande fournisseur à l'entrepot
-					content ="<COMMANDESFOURNISSEUR><COMMANDE><NUMERO>CV398719873</NUMERO><DATEBC>20130427</DATEBC><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>265000</QUANTITE><CATEGORIE>XXXX</CATEGORIE></ARTICLE><ARTICLE><REFERENCE>AU736823</REFERENCE><QUANTITE>12</QUANTITE><CATEGORIE>XXXX</CATEGORIE></ARTICLE></ARTICLES></COMMANDE></COMMANDESFOURNISSEUR>" ;
-					
+					//Commande fournisseur + envoi bon de commande fournisseur à l'entrepot => JE SAIS PAS QUOI METTRE EN PARAMETRE
+					content = XMLManager.getInstance().envoicommandefournisseurtoEntrepot(commande);
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.ENTREPOT);
 					LOGGER.info("Envoi de la commande fournisseur à l'entrepot");
 				}
@@ -69,14 +65,12 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					LOGGER.info("Entrepot envoi bon de livraison fournisseur");
 				}
 				
-//				if (root.toLowerCase().equals("commande_internet")) {
-//					LOGGER.info("On envoie la commande internet à l'entrepot");
-//					content = "<commande_internet><commande><numero>CV398719856</numero><refclient>CV398719456</refclient><datebc>20130923</datebc><datebl>20130924</datebl><adresseClient>36 rue de la noise</adresseClient><nom>picsou</nom><prenom>jacki</prenom><articles><article><CATEGORIE>001</CATEGORIE><reference>AU736827</reference><quantite>263000</quantite></article></articles><articles><article><CATEGORIE>023</CATEGORIE><reference>AU734577</reference><quantite>12000</quantite></article></articles>	</commande></commande_internet>";
-//
-//					AsyncMessageFactory.getInstance().getAsyncMessageManager()
-//							.send(content, EApplication.ENTREPOT);
-//					LOGGER.info("Envoi de la commande internet  à l'entrepot");
-//				}
+				if (root.toLowerCase().equals("commande_internet")) {
+					LOGGER.info("On envoie la commande internet à l'entrepot");
+					content = XMLManager.getInstance().envoicommandeinternettoEntrepot(XMLManager.getInstance().getcommandeinternetfromInternet(message, doc));
+					AsyncMessageFactory.getInstance().getAsyncMessageManager()
+							.send(content, EApplication.ENTREPOT);
+					LOGGER.info("Envoi de la commande internet  à l'entrepot");				}
 				
 				else if (root.toLowerCase().equals("EXPEDITIONCLIENT")) {
 					LOGGER.info("Entrepot envoi expedition client");
@@ -85,25 +79,22 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCKINTERNET")) {
 					LOGGER.info("On envoie les niveaux de stock à internet");
 
-					content = "<DEMANDENIVEAUDESTOCKINTERNET><NUMERO>CV398719873</NUMERO><DATE>20131225</DATE><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>7</QUANTITE></ARTICLE><ARTICLE><REFERENCE>AU736829</REFERENCE><QUANTITE>3</QUANTITE></ARTICLE></ARTICLES></DEMANDENIVEAUDESTOCKINTERNET>";
-
+					content = XMLManager.getInstance().envoiniveaustocktoInternet(demande);
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.INTERNET);
 					LOGGER.info("Envoi des stocks à internet");
 				}
 			} else if (source == EApplication.MDM) {
 					//A faire envoyer au ref les prix des articles
 						LOGGER.info("prix de vente des articles reçus par le référentiel");
-						content = "<XML><PRIXVENTE></ARTICLES><ARTICLE reference=\"AU736827\" prix_vente=\"15\"/></ARTICLES></ARTICLES><ARTICLE reference=\"BZ758887\" prix_vente=\"80\"/></ARTICLES></PRIXVENTE></XML>";
 						
-						//content = XMLManager.getInstance().getCommandeFournisseur(message, doc);
+						content = XMLManager.getInstance().envoiprixventetoRef(articles);
 						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
 						LOGGER.info("Envoi des prix de vente des articles au référentiel effectué");
 					
 					//Envoyer promotions au ref
 						LOGGER.info("promotion des articles par le référentiel");
-						//content = "<XML><PROMOTIONS><PROMOTION datedebut=\"2012-09-17\" datefin=\"2012-09-25\" promotion_pourcentage=\"23\"></ARTICLES><ARTICLE reference=\"FR145687\" /></ARTICLES></PROMOTION><PROMOTION datedebut=\"2013-11-01\" datefin=\"2013-12-30\" promotion_pourcentage=\"50\"></ARTICLES><ARTICLE reference=\"FD123456\" /></ARTICLES></ARTICLES><ARTICLE reference=\"GT789562\" /></ARTICLES></PROMOTION></PROMOTIONS></XML>";
 						
-						//content = XMLManager.getInstance().getCommandeFournisseur(message, doc);
+						content = XMLManager.getInstance().envoipromotoRef(promos);
 						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
 						LOGGER.info("Envoi des promotions des articles au référentiel effectué");					
 			}			
