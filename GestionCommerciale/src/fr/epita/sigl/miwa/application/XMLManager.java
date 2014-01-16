@@ -137,8 +137,13 @@ public class XMLManager {
 		// FIXME SAVEBDD
 	}
 
-	public List<Articles> getdemandeniveaustockfromInternet(String message,
+	public void getdemandeniveaustockfromInternet(String message,
 			Document doc) throws AsyncMessageException {
+		
+		DemandeNiveauStock demande = new DemandeNiveauStock();
+		demande.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
+		demande.setDatedemand(doc.getElementsByTagName("DATE").item(0).getTextContent());
+	
 		List<Articles> articles = new ArrayList<Articles>();
 		NodeList nList = doc.getElementsByTagName("ARTICLE");
 		for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -151,7 +156,9 @@ public class XMLManager {
 					.getTextContent());
 			articles.add(a);
 		}
-		return articles;
+		demande.setArticles(articles);
+		
+		//FIXME SAVE BDD
 
 	}
 
@@ -297,9 +304,21 @@ public class XMLManager {
 		return xml;
 	}
 
-	public String envoiniveaustocktoInternet(List<Articles> articles) {
-		return null;
-	}
+	public String envoiniveaustocktoInternet(DemandeNiveauStock demande) {
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		String xml = "<DEMANDENIVEAUDESTOCKINTERNET><NUMERO>" +demande.getnum 
+				+ "</NUMERO><REFMAGASIN>" + demande.get + "</REFMAGASIN><DATE>" 
+				+ df.format(ClockClient.getClock().getHour()) + "</DATE><ARTICLES>";
+		int i = 0;
+		while (i< demande.getArticles().size())
+		{
+			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i)  + "</REFERENCE>";
+			xml += "<QUANTITE>" + demande.getQuantity().get(i) + "</QUANTITE></ARTICLE>";
+					
+		}
+		xml += "</ARTICLES></DEMANDENIVEAUDESTOCKINTERNET>"
+		
++ 	}
 
 	public String envoicommandeinternettoEntrepot(CommandeInternet commande) {
 		int i = 0;

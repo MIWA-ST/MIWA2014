@@ -5,6 +5,13 @@ import java.util.List;
 public class DemandeNiveauStock {
 	
 	private String commandNumber;
+	private String refbo;
+	public String getRefbo() {
+		return refbo;
+	}
+	public void setRefbo(String refbo) {
+		this.refbo = refbo;
+	}
 	private String datedemand;
 	private String daterep;
 	private List<Articles> articles;
