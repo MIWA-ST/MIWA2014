@@ -18,12 +18,13 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 	@Override
 	public void onMessage(String message, EApplication source) {
-		LOGGER.severe(message);		
+		LOGGER.severe(message);
 	}
 
 	@Override
 	public void onFile(File file, EApplication source) {
-		LOGGER.severe(source + " : " + file.getAbsolutePath());		
+		LOGGER.severe(source + " : " + file.getAbsolutePath());	
+		
 	}
 
 }
