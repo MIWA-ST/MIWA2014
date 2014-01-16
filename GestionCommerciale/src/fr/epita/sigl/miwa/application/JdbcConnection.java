@@ -99,6 +99,31 @@ public class JdbcConnection
 		}
 	}
 	
+	public void insertPromoFournisseur(PromoFournisseur article) {
+		try
+		{
+			System.out.println("Insert Articles");
+			if (connection != null)
+			{
+				String request = "INSERT INTO articles (ref_article, datedebut, datefin, pourcentage, quantite_min_application) VALUES (?, ?, ?, ?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, article.getRef_article());
+				statement.setString(2, article.getDateDebut());
+				statement.setString(3, article.getDateFin());
+				statement.setString(4, article.getPourcentage());
+				statement.setString(5, article.getMinquantite());
+			
+				statement.executeUpdate();
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
 	public void insertCommandeFournisseur(CommandeFournisseur cmd) {
 		try
 		{
