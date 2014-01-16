@@ -198,10 +198,10 @@ public class XMLManager {
 		CommandeFournisseur commande = new CommandeFournisseur();
 		commande.setNumero_commande(doc.getElementsByTagName("NUMERO").item(0)
 				.getTextContent());
-		commande.setBon_commande(df.parse(doc.getElementsByTagName("DATEBC")
-				.item(0).getTextContent()));
-		commande.setBon_livraion(df.parse(doc.getElementsByTagName("DATEBL")
-				.item(0).getTextContent()));
+		commande.setBon_commande(doc.getElementsByTagName("DATEBC")
+				.item(0).getTextContent());
+		commande.setBon_livraion(doc.getElementsByTagName("DATEBL")
+				.item(0).getTextContent());
 
 		List<Articles> articles = new ArrayList<Articles>();
 		List<String> quantities = new ArrayList<String>();
@@ -260,7 +260,7 @@ command.setquantity(quantities);
 	return command;
 	}
 
-	public String getcommandeinternetfromInternet(String message, Document doc)
+	public CommandeInternet getcommandeinternetfromInternet(String message, Document doc)
 			throws AsyncMessageException {
 
 		CommandeInternet commande = new CommandeInternet();
@@ -304,7 +304,7 @@ command.setquantity(quantities);
 		commande.setArticles(articles);
 		commande.setquantity(quantities);
 		// FIXME SAVEBDD
-
+return commande;
 	}
 
 	public void getniveauStockfromBO(String message, Document doc)
