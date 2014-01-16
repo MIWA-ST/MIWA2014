@@ -97,7 +97,7 @@ public class XMLManager {
 		// FIXME
 	}
 
-	public void getdemandereassortfromBO(String message, Document doc)
+	public DemandeReassort getdemandereassortfromBO(String message, Document doc)
 			throws AsyncMessageException {
 		DemandeReassort demand = new DemandeReassort();
 
@@ -135,6 +135,7 @@ public class XMLManager {
 		demand.setArticles(articles);
 		demand.setQuatity(quantities);
 		// FIXME SAVEBDD
+		return demand;
 	}
 
 	public void getdemandeniveaustockfromInternet(String message,
@@ -306,8 +307,8 @@ public class XMLManager {
 
 	public String envoiniveaustocktoInternet(DemandeNiveauStock demande) {
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		String xml = "<DEMANDENIVEAUDESTOCKINTERNET><NUMERO>" +demande.getnum 
-				+ "</NUMERO><REFMAGASIN>" + demande.get + "</REFMAGASIN><DATE>" 
+		String xml = "<DEMANDENIVEAUDESTOCKINTERNET><NUMERO>" +demande.getCommandNumber()
+				+ "</NUMERO><DATE>" 
 				+ df.format(ClockClient.getClock().getHour()) + "</DATE><ARTICLES>";
 		int i = 0;
 		while (i< demande.getArticles().size())
@@ -316,9 +317,11 @@ public class XMLManager {
 			xml += "<QUANTITE>" + demande.getQuantity().get(i) + "</QUANTITE></ARTICLE>";
 					
 		}
-		xml += "</ARTICLES></DEMANDENIVEAUDESTOCKINTERNET>"
+		xml += "</ARTICLES></DEMANDENIVEAUDESTOCKINTERNET>";
 		
-+ 	}
+		return xml;
+		
+	}
 
 	public String envoicommandeinternettoEntrepot(CommandeInternet commande) {
 		int i = 0;
@@ -355,7 +358,21 @@ public class XMLManager {
 		return null;
 	}
 
-	public String envoidemandeniveaudestocktoBO(List<Articles> articles) {
+	public String envoidemandeniveaudestocktoBO(DemandeNiveauStock demande) {
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		String xml = "<DEMANDENIVEAUDESTOCK><NUMERO>" +demande.getCommandNumber()
+				+ "</NUMERO><REFMAGASIN>" + demande.getRefbo() + "</REFMAGASIN><DATE>" 
+				+ df.format(ClockClient.getClock().getHour()) + "</DATE><ARTICLES>";
+		int i = 0;
+		while (i< demande.getArticles().size())
+		{
+			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i)  + "</REFERENCE>";
+					
+		}
+		xml += "</ARTICLES></DEMANDENIVEAUDESTOCK>";
+		
+		return xml;
+		
 		return null;
 	}
 
