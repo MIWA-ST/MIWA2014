@@ -91,7 +91,37 @@ public class XMLManager
 	}
 	public String getdemandereassortfromBO(String message, Document doc) throws AsyncMessageException
 	{
+		DemandeReassort demand = new DemandeReassort();
 		
+		demand.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
+		demand.setBackOfficeRef(doc.getElementsByTagName("REFBO").item(0).getTextContent());
+		demand.setBackOfficeAddress(doc.getElementsByTagName("ADRESSEBO").item(0).getTextContent());
+		demand.setBackOfficePhone(doc.getElementsByTagName("TELBO").item(0).getTextContent());
+		demand.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
+		
+		List<Articles> articles = new ArrayList<Articles>();
+		List<String> quantities = new ArrayList<String>();
+		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		for (int temp = 0; temp < nList.getLength(); temp++) 
+		{
+			Articles a = new Articles();
+			
+			//Récupéraction du noeud à traiter
+			Node nNode = nList.item(temp);
+			//Conversion en element
+			Element eElement = (Element) nNode;
+
+			
+			a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
+			
+			
+			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
+			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
+			articles.add(a);
+		}
+		demand.setArticles(articles);
+		demand.setQuatity(quantities);
+				
 	}
 	
 	public String getdemandeniveaustockfromInternet(String message, Document doc) throws AsyncMessageException
@@ -102,6 +132,7 @@ public class XMLManager
 	{
 		
 	}
+	
 	public String getexpeditionclientfromEntrepot(String message, Document doc) throws AsyncMessageException
 	{
 		
@@ -134,9 +165,30 @@ public class XMLManager
 		return null;
 	}
 	
-	public String envoicommandeinternetrtoEntrepot(CommandeInternet commande)
+	public String envoicommandeinternettoEntrepot(CommandeInternet commande)
 	{
-		return null;
+		int i = 0;
+		String xml = "<commande_internet>"+
+				"<commande>" +
+				"<numero>" + commande.getCommandNumber() + "</numero>" +
+				"<refclient>" + commande.getCustomerRef() + "</refclient>" +
+				"<datebc>"+ commande.getDateBC() + "</datebc>" +
+				"<datebl>"+ commande.getDateBL() +"</datebl>" +
+				"<adresseClient" + commande.getCustomerAddress() +"</adresseClient>" +
+				"<nom>" + commande.getCustomerLastname() + "</nom>" +
+				"<prenom>" + commande.getCustomerFirstname() + "</prenom>" + "<articles>";
+				
+				while (i< commande.getArticles().size())
+				{
+					xml += "<article>" + "<CATEGORIE>"
+				+ commande.getArticles().get(i).getCategory() + "</CATEGORIE>" +
+							"<reference>" + commande.getArticles().get(i).getRef_article() + "</reference>"
+							+ "<quantite>" + commande.getquantity().get(i) +  "</quantite>" + "</article>";
+				}
+				xml += "</articles></commande></commande_internet>";
+								
+				return xml;
+	
 	}
 	
 	public String envoicommandefournisseurtoEntrepot(CommandeFournisseur commande)
@@ -154,18 +206,7 @@ public class XMLManager
 		return null;
 	}
 	
-	public String envoicommandeinternetaentrepot(CommandeInternet command)
-	{
-		String xml = "<commande_internet>"+
-				"<commande>" +
-				"<numero>" + command.getCommandNumber() + "</numero>" +
-				"<refclient>" + command.getCustomerRef() + "</refclient>" +
-				"<datebc>"+ command.getDateBC() + "</datebc>" +
-				"<datebl>"+ command.getDateBL() +"</datebl>" +
-				"<adresseClient" + command.getCustomerAddress() +"</adresseClient>";
-				
-				return xml;
-	}
+	
 	public String envoiStockToBI (StockEntrepot entrepot, StockMagasin magasin)
 	{
 		return null;
