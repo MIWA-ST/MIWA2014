@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
-import fr.epita.sigl.miwa.application.crm.CommandeInternet;
+import fr.epita.sigl.miwa.application.crm.Client;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.crm.ReassortBO;
 
@@ -76,7 +76,7 @@ public class JdbcConnection
 		}
 	}
 	
-	public void insertCommandeInternet(CommandeInternet command)
+	public void insertCommandeInternet(Client command)
 	{
 		try
 		{

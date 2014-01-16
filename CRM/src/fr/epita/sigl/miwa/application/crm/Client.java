@@ -2,7 +2,7 @@ package fr.epita.sigl.miwa.application.crm;
 
 import java.util.List;
 
-public class CommandeInternet
+public class Client
 {
 	private String commandNumber;
 	private String dateBC;

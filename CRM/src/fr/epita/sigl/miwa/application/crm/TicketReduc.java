@@ -6,9 +6,8 @@ public class TicketReduc
 {
 	private String client;
 	private int montantTotal;
-	private String quantity;
 	private String date;
-	private List<Article> articles;
+	private List<ArticleReduc> articles;
 	
 	public String getClient() {
 		return client;
@@ -22,22 +21,16 @@ public class TicketReduc
 	public void setMontantTotal(int montantTotal) {
 		this.montantTotal = montantTotal;
 	}
-	public String getQuantity() {
-		return quantity;
-	}
-	public void setQuantity(String quantity) {
-		this.quantity = quantity;
-	}
 	public String getDate() {
 		return date;
 	}
 	public void setDateBC(String date) {
 		this.date = date;
 	}
-	public List<Article> getArticles() {
+	public List<ArticleReduc> getArticles() {
 		return articles;
 	}
-	public void setArticles(List<Article> articles) {
+	public void setArticles(List<ArticleReduc> articles) {
 		this.articles = articles;
 	}
 }

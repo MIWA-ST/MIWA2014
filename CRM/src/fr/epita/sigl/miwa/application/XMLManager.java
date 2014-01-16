@@ -12,7 +12,7 @@ import org.w3c.dom.NodeList;
 
 import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
-import fr.epita.sigl.miwa.application.crm.CommandeInternet;
+import fr.epita.sigl.miwa.application.crm.Client;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.crm.ReassortBO;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
@@ -32,7 +32,7 @@ public class XMLManager
 	
 	public String getCommandeInternet(String message, Document doc) throws AsyncMessageException
 	{
-		CommandeInternet command = new CommandeInternet();
+		Client command = new Client();
 		
 		command.setCommandNumber(doc.getElementsByTagName("numero").item(0).getTextContent());
 		command.setCustomerRef(doc.getElementsByTagName("refclient").item(0).getTextContent());
