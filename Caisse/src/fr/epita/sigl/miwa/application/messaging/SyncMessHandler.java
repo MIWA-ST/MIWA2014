@@ -16,6 +16,9 @@ public class SyncMessHandler {
 		
 		// A APPELER DANS NOS FONCTIONS POUR UN SYNCHRONE FICHIER A ENVOYER A QQUN (ET ATTENDRE UN RETOUR)
 		//LEUR RETOUR XML (FORMAT XML) = SyncMessHandler.getSyncMessSender().requestXML(EApplication.BACK_OFFICE, MON XML format string)
+	
+		// ENVOYER UN MESSAGE ASYNCHRONE A QQUN
+		//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.GESTION_COMMERCIALE);
 	}
 
 	/*
