@@ -110,7 +110,7 @@ public class XMLManager {
 			NodeList nList2 = doc.getElementsByTagName("PROMOTION");
 			for (int temp2 = 0; temp2 < nList.getLength(); temp2++) {
 				PromoFournisseur p = new PromoFournisseur();
-				/ Récupéraction du noeud à traiter
+				// Récupéraction du noeud à traiter
 				Node nNode2 = nList2.item(temp2);
 				// Conversion en element
 				Element eElement2 = (Element) nNode2;
@@ -122,7 +122,7 @@ public class XMLManager {
 				promosf.add(p);
 			}
 		}
-		
+		return articles;
 		// FIXME sauvegarder les pomo et les prix des articles
 	}
 
@@ -162,7 +162,7 @@ public class XMLManager {
 			articles.add(a);
 		}
 		demand.setArticles(articles);
-		demand.setQuatity(quantities);
+		demand.setQuantity(quantities);
 		// FIXME SAVEBDD
 		return demand;
 	}
@@ -194,7 +194,7 @@ public class XMLManager {
 
 	public void getbonlivraisonfromEntrepot(String message, Document doc)
 			throws AsyncMessageException, DOMException, ParseException {
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+
 		CommandeFournisseur commande = new CommandeFournisseur();
 		commande.setNumero_commande(doc.getElementsByTagName("NUMERO").item(0)
 				.getTextContent());
@@ -407,11 +407,38 @@ return commande;
 
 	public String envoicommandefournisseurtoEntrepot(
 			CommandeFournisseur commande) {
-		return null;
+		
+		String xml = "<COMMANDESFOURNISSEUR><COMMANDE><NUMERO>";
+		xml += commande.getNumero_commande() + "</NUMERO><DATEBC>" +
+		commande.getBon_commande() + "</DATEBC><ARTICLES>";
+		int i = 0;
+		while (i < commande.getArticles().size())
+		{
+			xml += "<ARTICLE><REFERENCE>" +commande.getArticles().get(i).getRef_article() + 
+					"</REFERENCE><QUANTITE>"+ commande.getquantity().get(i) 
+					+ "</QUANTITE><CATEGORIE>" 
+					+ commande.getArticles().get(i).getCategory() 
+					+ "</CATEGORIE></ARTICLE>";
+		}
+		xml += "</ARTICLES></COMMANDE></COMMANDESFOURNISSEUR>";
+		return xml;
 	}
 
 	public String envoidemandereassorttoEntrepot(DemandeReassort demand) {
-		return null;
+		String xml = "<REASSORTSBO><REASSORT><NUMERO>" + demand.getCommandNumber() +
+				"</NUMERO><REFBO>" + demand.getBackOfficeRef() +"</REFBO><ADRESSEBO>"
+				+ demand.getBackOfficeAddress() + "</ADRESSEBO><TELBO>" + 
+				demand.getBackOfficePhone() + "</TELBO><DATEBC>" + demand.getDateBC() +
+				"</DATEBC><ARTICLES>";
+				int i = 0;
+				while (i < demand.getArticles().size())
+				{
+					xml += "<ARTICLE><REFERENCE>" + demand.getArticles().get(i).getRef_article() 
+							+ "</REFERENCE><QUANTITE>" + demand.getQuantity().get(i) + "</QUANTITE><CATEGORIE>"
+							+ demand.getArticles().get(i).getCategory() + "</CATEGORIE></ARTICLE>";
+				}
+				xml += "</ARTICLES></REASSORT></REASSORTSBO>";
+				return xml;
 	}
 
 	public String envoidemandeniveaudestocktoBO(DemandeNiveauStock demande) {
@@ -429,7 +456,6 @@ return commande;
 		
 		return xml;
 		
-		return null;
 	}
 
 	public String envoiStockToBI(StockEntrepot entrepot, StockMagasin magasin) {
