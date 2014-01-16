@@ -13,6 +13,9 @@ public class SyncMessHandler {
 	 */
 	static public ISyncMessSender getSyncMessSender() {
 		return SyncMessFactory.getSyncMessSender();
+		
+		// A APPELER DANS NOS FONCTIONS POUR UN SYNCHRONE FICHIER A ENVOYER A QQUN (ET ATTENDRE UN RETOUR)
+		//LEUR RETOUR XML (FORMAT XML) = SyncMessHandler.getSyncMessSender().requestXML(EApplication.BACK_OFFICE, MON XML format string)
 	}
 
 	/*
