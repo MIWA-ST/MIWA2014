@@ -228,9 +228,36 @@ public class XMLManager {
 		// FIXME SAVEBDD
 	}
 
-	public String getexpeditionclientfromEntrepot(String message, Document doc)
+	public CommandeInternet getexpeditionclientfromEntrepot(String message, Document doc)
 			throws AsyncMessageException {
+CommandeInternet command = new CommandeInternet();
+command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
+command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
+command.setDateBL(doc.getElementsByTagName("DATEBL").item(0).getTextContent());
+List<Articles> articles = new ArrayList<Articles>();
+List<String> quantities = new ArrayList<String>();
+NodeList nList = doc.getElementsByTagName("ARTICLE");
+for (int temp = 0; temp < nList.getLength(); temp++) {
+	Articles a = new Articles();
 
+	// Récupéraction du noeud à traiter
+	Node nNode = nList.item(temp);
+	// Conversion en element
+	Element eElement = (Element) nNode;
+
+	a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
+			.getTextContent());
+
+	quantities.add(eElement.getElementsByTagName("QUANTITE").item(0)
+			.getTextContent());
+	a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
+			.getTextContent());
+	articles.add(a);
+}
+command.setArticles(articles);
+command.setquantity(quantities);
+
+	return command;
 	}
 
 	public String getcommandeinternetfromInternet(String message, Document doc)
