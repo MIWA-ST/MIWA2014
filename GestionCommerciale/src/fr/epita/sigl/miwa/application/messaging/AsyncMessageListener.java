@@ -14,6 +14,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.XMLManager;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.AAsyncMessageListener;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
@@ -41,13 +42,16 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 			Document doc = db.parse(is);
 			root = doc.getFirstChild().getNodeName();
+			
 			if (source == EApplication.BACK_OFFICE) {
 				if (root.toLowerCase().equals("REASSORT")) {
 					LOGGER.info("BO envoi demande de reassort");
 					
 					//A faire envoyer à entrepot demande reassort
-					content = "<REASSORTSBO><REASSORT><NUMERO>CV398719873</NUMERO><REFBO>20131225</REFBO><ADRESSEBO>XXXXXX</ADRESSEBO><TELBO>0133333333</TELBO><DATEBC>20130427</DATEBC><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>265000</QUANTITE><CATEGORIE>001</CATEGORIE></ARTICLE><ARTICLE><REFERENCE>AU736823</REFERENCE><QUANTITE>12</QUANTITE><CATEGORIE>001</CATEGORIE></ARTICLE><ARTICLES></REASSORT></REASSORTSBO>";
+					//content = "<REASSORTSBO><REASSORT><NUMERO>CV398719873</NUMERO><REFBO>20131225</REFBO><ADRESSEBO>XXXXXX</ADRESSEBO><TELBO>0133333333</TELBO><DATEBC>20130427</DATEBC><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>265000</QUANTITE><CATEGORIE>001</CATEGORIE></ARTICLE><ARTICLE><REFERENCE>AU736823</REFERENCE><QUANTITE>12</QUANTITE><CATEGORIE>001</CATEGORIE></ARTICLE><ARTICLES></REASSORT></REASSORTSBO>";
 					
+					//On parse l'envoie :
+					content = XMLManager.getInstance().getdemandereassortfromBO(message, doc);
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.ENTREPOT);
 					LOGGER.info("Envoi de la demande de reassort à l'entrepot");
 					
