@@ -77,7 +77,7 @@ public class JdbcConnection
 			System.out.println("Insert Articles");
 			if (connection != null)
 			{
-				String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, article.getRef_article());
@@ -87,6 +87,7 @@ public class JdbcConnection
 				statement.setString(5, article.getStock_max_entre());
 				statement.setString(6, article.getStock_max_mag());
 				statement.setString(7, article.getCategory());
+				statement.setString(8, article.getQuantite_min_fournisseur());
 			
 				statement.executeUpdate();
 			}

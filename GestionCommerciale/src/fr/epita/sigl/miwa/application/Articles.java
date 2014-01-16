@@ -8,6 +8,8 @@ private String prix_vente;
 private String stock_max_entre;
 private String stock_max_mag;
 private String category;
+private String quantite_min_fournisseur;
+
 public String getRef_article() {
 	return ref_article;
 }
@@ -49,6 +51,12 @@ public String getCategory() {
 }
 public void setCategory(String category) {
 	this.category = category;
+}
+public String getQuantite_min_fournisseur() {
+	return quantite_min_fournisseur;
+}
+public void setQuantite_min_fournisseur(String quantite_min_fournisseur) {
+	this.quantite_min_fournisseur = quantite_min_fournisseur;
 }
 
 
