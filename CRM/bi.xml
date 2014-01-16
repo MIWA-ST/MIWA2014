@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ENTETE objet="information-client" source="crm" date="2013/12/29">
+  <CLIENTS>
+    <CLIENT id="01" civilite="M" naissance="AAAAA-MM-JJ" codepostal="75000" situationfam="Marie" nbenfant="3" typecarte="Super+" />
+  </CLIENTS>
+</ENTETE>
