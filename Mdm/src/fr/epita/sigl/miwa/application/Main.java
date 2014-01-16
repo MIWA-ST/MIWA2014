@@ -24,8 +24,11 @@ public class Main {
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
 		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "Coucou GC");
-		CsvParser parser = new CsvParser("testFile.csv");
+		CsvParser parser = new CsvParser("testFile1.csv");
 		parser.parse();
+		
+		XmlWriter xmlWriter = new XmlWriter("outputFile.xml");
+		xmlWriter.generateFileForG();
 		
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */

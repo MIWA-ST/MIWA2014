@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -52,14 +53,21 @@ public class CsvParser {
 				}
 				
 				String buyPrice = Integer.toString(buyPriceWithoutVat * vat / 100);
-				this.dbHandler.addNewProduct(EAN, description, buyPrice);
+				
+				String nbMin = fields[5].replaceAll(",", ".");
+				Product p = new Product(EAN, description, buyPrice, nbMin, "");
+				this.dbHandler.addNewProduct(p);
 				
 			}
 			
+		} catch (NoSuchFileException e) {
+			System.out.println("File not found !");
+			e.printStackTrace();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 	
 
