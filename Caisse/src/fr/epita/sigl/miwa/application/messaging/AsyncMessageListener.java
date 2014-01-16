@@ -16,6 +16,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 	MA - BO vers Caisse (mise à jour des articles, prix et promotions en cours de journée)
 	MS - Caisse vers BO (ticket de vente au fil de l’eau)
 	FA - Caisse vers BO (tous les tickets de vente en fin de journée)
+	MS - Caisse vers Monétique pour CB
+	MS - Caisse vers Monétique pour fidélité
 	*/
 	
 	@Override
