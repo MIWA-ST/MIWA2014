@@ -48,69 +48,76 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 			Document doc = db.parse(is);
 			root = doc.getFirstChild().getNodeName();
-			
+
 			if (source == EApplication.BACK_OFFICE) {
 				if (root.toLowerCase().equals("REASSORT")) {
 					LOGGER.info("BO envoi demande de reassort");
-					
-					//A faire envoyer à entrepot demande reassort => GOOD
-					DemandeReassort demandereassort = XMLManager.getInstance().getdemandereassortfromBO(message, doc);
-					
-					//FIXME vérifier l'état des stocks et traiter une commande fournisseur ou pas
-					//Commande fournisseur + envoi bon de commande fournisseur à l'entrepot => JE SAIS PAS QUOI METTRE EN PARAMETRE
-					//content = XMLManager.getInstance().envoicommandefournisseurtoEntrepot(commande);
-					//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.ENTREPOT);
-					//LOGGER.info("Envoi de la commande fournisseur à l'entrepot");
-					
-					content = XMLManager.getInstance().envoidemandereassorttoEntrepot(demandereassort);
-					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.ENTREPOT);
+
+					// A faire envoyer à entrepot demande reassort => GOOD
+					DemandeReassort demandereassort = XMLManager.getInstance()
+							.getdemandereassortfromBO(message, doc);
+
+					// FIXME vérifier l'état des stocks et traiter une commande
+					// fournisseur ou pas
+					// Commande fournisseur + envoi bon de commande fournisseur
+					// à l'entrepot => JE SAIS PAS QUOI METTRE EN PARAMETRE
+					// content =
+					// XMLManager.getInstance().envoicommandefournisseurtoEntrepot(commande);
+					// AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content,
+					// EApplication.ENTREPOT);
+					// LOGGER.info("Envoi de la commande fournisseur à l'entrepot");
+
+					content = XMLManager.getInstance()
+							.envoidemandereassorttoEntrepot(demandereassort);
+					AsyncMessageFactory.getInstance().getAsyncMessageManager()
+							.send(content, EApplication.ENTREPOT);
 					LOGGER.info("Envoi de la demande de reassort à l'entrepot");
-					
-					
-				}
-				else if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCK")) {
-					
+
+				} else if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCK")) {
+
 					XMLManager.getInstance().getniveauStockfromBO(message, doc);
-					
+
 					LOGGER.info("BO envoi niveau stock");
 				}
 			} else if (source == EApplication.ENTREPOT) {
-				if (root.toLowerCase().equals("LIVRAISONSCOMMANDEFOURNISSEUR")) {
+				if (root.toLowerCase().equals("livraisonscommandefournisseur")) {
+					
 					XMLManager.getInstance().getbonlivraisonfromEntrepot(message, doc);
-					
-							
-					//FIXME incrémenter les stocks
-					
+
+					// FIXME incrémenter les stocks
+
 					LOGGER.info("Entrepot envoi bon de livraison fournisseur");
-					
+
 				}
-				
-				if (root.toLowerCase().equals("commande_internet")) {
-					LOGGER.info("On envoie la commande internet à l'entrepot");
-					
-					
-					content = XMLManager.getInstance().envoicommandeinternettoEntrepot(XMLManager.getInstance().getcommandeinternetfromInternet(message, doc));
-					AsyncMessageFactory.getInstance().getAsyncMessageManager()
-							.send(content, EApplication.ENTREPOT);
-					LOGGER.info("Envoi de la commande internet  à l'entrepot");				}
-				
-				else if (root.toLowerCase().equals("EXPEDITIONCLIENT")) {
-					LOGGER.info("Entrepot envoi expedition client");
+
+				else if (root.toLowerCase().equals("expeditionclient")) {
+					LOGGER.info("on recoit l'expedition client de l'entrpot");
+					XMLManager.getInstance().getexpeditionclientfromEntrepot(
+							message, doc);
+
 				}
+
 			} else if (source == EApplication.INTERNET) {
-				if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCKINTERNET")) {
+				if (root.toLowerCase().equals("demandeniveaudestockinternet")) {
 					LOGGER.info("On envoie les niveaux de stock à internet");
 					
+					DemandeNiveauStock dns = XMLManager.getInstance()
+							.getdemandeniveaustockfromInternet(message, doc);
+
 					JdbcConnection.getInstance().getConnection();
-					DemandeNiveauStock demande = JdbcConnection.getInstance().envoiStock(dns);
+					DemandeNiveauStock demande = JdbcConnection.getInstance()
+							.envoiStock(dns);
 					JdbcConnection.getInstance().closeConnection();
-					
-					content = XMLManager.getInstance().envoiniveaustocktoInternet(demande);
-					
-					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.INTERNET);
+
+					content = XMLManager.getInstance()
+							.envoiniveaustocktoInternet(demande);
+
+					AsyncMessageFactory.getInstance().getAsyncMessageManager()
+							.send(content, EApplication.INTERNET);
 					LOGGER.info("Envoi des stocks à internet");
 				}
 			} else if (source == EApplication.MDM) {
+
 					//A faire envoyer au ref les prix des articles
 						LOGGER.info("prix de vente des articles reçus par le référentiel");
 						
@@ -133,11 +140,13 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
 						LOGGER.info("Envoi des promotions des articles au référentiel effectué");					
 			}			
+
 		} catch (AsyncMessageException | ParserConfigurationException
 				| SAXException | IOException e) {
 			LOGGER.severe(e.getMessage());
 		}
 	}
+
 	@Override
 	public void onFile(File file, EApplication source) {
 		LOGGER.severe(source + " : " + file.getAbsolutePath());
