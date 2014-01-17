@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class JdbcConnection
 {
@@ -357,5 +358,46 @@ public class JdbcConnection
 			System.out.println("Erreur insertion en base");
 			e.printStackTrace();
 		}		
+	}
+	
+	public DemandeNiveauStock envoiStock(DemandeNiveauStock dns)
+	{
+		DemandeNiveauStock res = new DemandeNiveauStock();
+		
+		res = dns;
+		
+		try
+		{
+			System.out.println("Insert demande niveau stock");
+			if (connection != null)
+			{
+				int indice = 0;
+				for (Articles a : dns.getArticles()) {
+				
+					String request = "SELECT quantite FROM stock_entrepot WHERE ref_article = ?";
+				
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, a.getRef_article());
+				
+					statement.executeUpdate();
+				
+					/// Si y a un bug, ça vient de là
+					
+					ResultSet ret = statement.getGeneratedKeys();
+					int qt = ret.getInt(1);
+					List<String> nouv = dns.getQuantity();
+					nouv.add(Integer.toString(qt));
+					res.setQuantity(nouv);
+					indice++;
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}	
+		
+		return res;
 	}
 }

@@ -6,16 +6,18 @@ public class DemandeNiveauStock {
 	
 	private String commandNumber;
 	private String refbo;
+	private String datedemand;
+	private String daterep;
+	private List<Articles> articles;
+	private List<String> quantity;
+	
 	public String getRefbo() {
 		return refbo;
 	}
 	public void setRefbo(String refbo) {
 		this.refbo = refbo;
 	}
-	private String datedemand;
-	private String daterep;
-	private List<Articles> articles;
-	private List<String> quantity;
+	
 	public String getCommandNumber() {
 		return commandNumber;
 	}
