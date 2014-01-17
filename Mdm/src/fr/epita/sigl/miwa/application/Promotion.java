@@ -26,6 +26,11 @@ public class Promotion {
 		this.pourcentage = pourcentage;
 	}
 	
+	public Promotion(Date startDate, Date endDate, int rebate) {
+		this.date_debut = startDate;
+		this.date_fin = endDate;
+		this.pourcentage = rebate;
+	}
 
 }
 

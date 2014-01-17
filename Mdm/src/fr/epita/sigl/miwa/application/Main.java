@@ -1,6 +1,8 @@
 package fr.epita.sigl.miwa.application;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
@@ -28,21 +30,26 @@ public class Main {
 		/* CODE HERE */
 		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "Coucou GC");
 		
+		LOGGER.severe("*****" + "Lancement de l'application MDM");
+		LOGGER.severe("*****" + "Réception et parsing du fichier fournisseur");
 		CsvParser parser = new CsvParser("testFile1.csv");
 		parser.parse();
 	
-		XmlWriter xmlWriter;
-
+	
 		try {
 			String fileGC = Conf.getInstance().getLocalRepository() + File.separator + EApplication.MDM.getShortName() + File.separator + "outputFileGC.xml";
-			xmlWriter = new XmlWriter(fileGC);
+			XmlWriter xmlWriter = new XmlWriter(fileGC);
 			xmlWriter.generateFileForGC();
-		} catch (ConfigurationException e) {
+			
+			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xmlWriter.readFile(fileGC, StandardCharsets.UTF_8), EApplication.INTERNET);
+			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xmlWriter.readFile(fileGC, StandardCharsets.UTF_8), EApplication.GESTION_COMMERCIALE);
+			
+		} catch (ConfigurationException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		AsyncFileFactory.getInstance().getFileHelper().send("outputFileGC.xml", EApplication.GESTION_COMMERCIALE);
+		//AsyncFileFactory.getInstance().getFileHelper().send("outputFileGC.xml", EApplication.GESTION_COMMERCIALE);
 		
 		XmlReader xmlReader = new XmlReader("testFileGC.xml");
 		xmlReader.parseProducts();

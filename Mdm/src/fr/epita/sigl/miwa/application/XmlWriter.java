@@ -1,6 +1,11 @@
 package fr.epita.sigl.miwa.application;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -112,6 +117,13 @@ public class XmlWriter {
 			e.printStackTrace();
 		}
 	}
+	
+	public String readFile(String path, Charset encoding) 
+			  throws IOException 
+			{
+			  byte[] encoded = Files.readAllBytes(Paths.get(path));
+			  return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+			}
 
 
 }

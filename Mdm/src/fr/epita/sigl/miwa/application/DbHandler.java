@@ -119,6 +119,58 @@ public class DbHandler {
 		return productList;
 	}
 	
+	public ArrayList<Promotion> getPromotionsForDeltaForProduct(String reference) {
+		ArrayList<Promotion> promoList = new ArrayList<Promotion>();
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+
+			conn = DriverManager.getConnection(dbUrl, user, password);
+
+			stmt = conn.createStatement();
+
+			String sql = "select idPromotion, rebate, startDate, endDate from promotion INNER JOIN Product_has_Promotion ON promotion.idPromotion = Product_has_Promotion.Promotion_idPromotion where Product_has_Promotion.Product_reference ='" + reference + "';";
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while(rs.next()){
+				int pourcent = rs.getInt("rebate");
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd");
+				Date startDate = formatter.parse(rs.getString("startDate"));
+				Date endDate  = formatter.parse(rs.getString("endDate"));
+				
+				Promotion p = new Promotion(startDate, endDate, pourcent);
+				promoList.add(p);
+			}
+
+			rs.close();
+			stmt.close();
+			conn.close();
+
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
+
+		return promoList;
+	}
+
+	
 	public ArrayList<PromotionForGC> getPromotionsForGCForProduct(String reference) {
 		ArrayList<PromotionForGC> promoList = new ArrayList<PromotionForGC>();
 		Connection conn = null;
