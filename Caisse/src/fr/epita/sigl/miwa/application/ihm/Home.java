@@ -131,12 +131,7 @@ public class Home {
 				listproduct.add(select + "-*" + nbtext.getText() );
 				
 			}
-		});
-		
-		
-		
-		
-		
+		});	
 		
 		shlApplicationCaisse.open();
 		shlApplicationCaisse.layout();

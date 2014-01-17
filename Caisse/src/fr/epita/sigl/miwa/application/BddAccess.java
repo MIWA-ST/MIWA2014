@@ -14,7 +14,7 @@ public class BddAccess {
 	public BddAccess ()
 	{}
 	public void connect () {
-		url = "jdbc:postgresql://:5432/miwa";
+		url = "jdbc:postgresql://localhost:5432/miwa";
 		Connection db;
 		try {
 			db = DriverManager.getConnection(url, "user", "user");
