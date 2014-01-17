@@ -6,16 +6,8 @@ import java.util.List;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticlesGC;
 
 public class PromotionClientCR {
-	private Integer solde;
 	private List<PromotionArticleCR> promotions = new ArrayList<PromotionArticleCR>();
 	
-	
-	public Integer getSolde() {
-		return solde;
-	}
-	public void setSolde(Integer solde) {
-		this.solde = solde;
-	}
 	public List<PromotionArticleCR> getPromotions() {
 		return promotions;
 	}
@@ -26,10 +18,6 @@ public class PromotionClientCR {
 	public void print()
 	{
 		System.out.println("Promotion Client : INFORMATIONS : [");
-		if (this.solde != null)
-			System.out.println("	Solde : " + this.solde);
-		else
-			System.out.println("	Solde : NULL");
 		
 		if (promotions != null || !promotions.isEmpty())
 		{

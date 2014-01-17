@@ -1,5 +1,8 @@
 package fr.epita.sigl.miwa.application;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -25,18 +28,22 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
+		
 		try {
 			//ClockClient.getClock().wakeMeUp(new Date("12/13/2013 23:12:13"), "Test");
 			EApplication to = EApplication.INTERNET;
-			ClockClient.wakeUp(new Date("12/13/2013 23:12:13"), to.toString());
-
+//			ClockClient.getClock().wakeMeUp(date, message);
 			
-			ParseXML parser = new ParseXML("src/fr/epita/sigl/miwa/application/MDM/Envoi_produits_MDM_to_IN.xml");
-			parser.readXML2();
-			parser.parseMDM("stream");
+			//AsyncMessageFactory.getInstance().getAsyncMessageManager().send("coucou", EApplication.MDM);
+			new BufferedReader(new InputStreamReader(System.in)).readLine();
+			
+			// ENvoi des messages (wakeMeUp...)
 			
 			Thread.sleep(40000);
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

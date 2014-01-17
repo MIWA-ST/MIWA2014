@@ -1,0 +1,16 @@
+﻿<!--
+Objet : Connection du client fidélisé 
+Provenance : Internet 
+Destination : CRM
+Fréquence : au fil de l'eau
+
+Champs du XML :
+    ENTETE
+        objet : ne pas modifier  
+-->
+
+<XML>
+    <ENTETE objet="connection_client" source="" date="" />
+        <COMPTE matricule="">
+        </COMPTE>
+</XML>

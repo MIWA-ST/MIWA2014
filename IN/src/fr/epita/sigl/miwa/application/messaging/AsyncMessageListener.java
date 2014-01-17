@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.ParseXML;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.AAsyncMessageListener;
 
@@ -18,7 +19,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 	@Override
 	public void onMessage(String message, EApplication source) {
-		LOGGER.severe(message);		
+		//LOGGER.severe(message);
+		//System.out.println(message);
 	}
 
 	@Override

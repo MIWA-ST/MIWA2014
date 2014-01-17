@@ -20,8 +20,8 @@ import fr.epita.sigl.miwa.application.MDM.PromotionArticleMDM;
 
 // Parser des fichiers XML
 public class ParseXML {
-	private static Document document;
-	private static Element root;
+	private Document document;
+	private Element root;
 	private String filename;
 	
 	public ParseXML()
@@ -51,15 +51,27 @@ public class ParseXML {
 		return null;
 	}
 	
-	public void readXML()
+	public void readXML(String inputStream)
 	{
 		SAXBuilder saxBuilder = new SAXBuilder();
-		File file = new File(filename);
 		
-		try {
-			document = saxBuilder.build(file);
-		} catch (Exception e) {
-			System.out.println("Fichier introuvable : " + filename);
+		if (document == null)
+		{
+			if (inputStream == null || !inputStream.equals(""))
+			{
+				try {
+					File file = new File(filename);
+					document = saxBuilder.build(file);
+				} catch (Exception e) {
+					System.out.println("Fichier introuvable : " + filename);
+				}
+			} else
+				try {
+					document = saxBuilder.build(inputStream);
+				} catch (JDOMException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 		
 		root = document.getRootElement();
@@ -77,15 +89,27 @@ public class ParseXML {
 			System.out.println("Parse error. File : " + filename);
 	}
 
-	public void readXML2()
+	public void readXML2(String inputStream)
 	{
 		SAXBuilder saxBuilder = new SAXBuilder();
-		File file = new File(filename);
 		
-		try {
-			document = saxBuilder.build(file);
-		} catch (Exception e) {
-			System.out.println("Fichier introuvable : " + filename);
+		if (document == null)
+		{
+			if (inputStream == null || !inputStream.equals(""))
+			{
+				try {
+					File file = new File(filename);
+					document = saxBuilder.build(file);
+				} catch (Exception e) {
+					System.out.println("Fichier introuvable : " + filename);
+				}
+			} else
+				try {
+					document = saxBuilder.build(inputStream);
+				} catch (JDOMException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 		
 		root = document.getRootElement();
@@ -180,7 +204,8 @@ public class ParseXML {
 	{
 		if (stream.equals("stream"))
 		{
-			if (!root.getName().equals("INFORMATIONS"))
+			Element e = root.getChild("INFORMATIONS");
+			if (e == null || e.getName().equals(""))
 			{
 				System.out.println("Parse error. File : " + filename);
 				return;
@@ -190,9 +215,9 @@ public class ParseXML {
 		PromotionClientCR promotionClient = new PromotionClientCR();
 		
 		// Récupération des informations du fichier XML
-		Element solde = root.getChild("SOLDE");
-		
-		promotionClient.setSolde(Integer.parseInt(solde.getAttributeValue("restant")));
+//		Element solde = root.getChild("SOLDE");
+//		
+//		promotionClient.setSolde(Integer.parseInt(solde.getAttributeValue("restant")));
 		Element promotions = root.getChild("PROMOTIONS");
 		
 		List<Element> listPromotions = promotions.getChildren("PROMOTION");
@@ -227,5 +252,29 @@ public class ParseXML {
 			demandeNiveauStock.getArticles().add(new DemandeNiveauStockArticlesGC(e.getChildText("REFERENCE"),
 					Integer.parseInt(e.getChildText("QUANTITE"))));
 		// demandeNiveauStock.print();
+	}
+
+	public  Document getDocument() {
+		return document;
+	}
+
+	public  void setDocument(Document document) {
+		document = document;
+	}
+
+	public  Element getRoot() {
+		return root;
+	}
+
+	public  void setRoot(Element root) {
+		root = root;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 }

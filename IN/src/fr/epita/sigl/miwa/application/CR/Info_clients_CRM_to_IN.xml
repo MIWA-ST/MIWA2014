@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<ENETE objet="information-client" source="crm" date="2014-12-23"/>
 <INFORMATIONS>
-	<SOLDE restant="55" />
+	<CLIENT matricule="" />
 	<PROMOTIONS>
 		<PROMOTION article="Tarte aux pommes" fin="20140123" reduc="57" />
 		<PROMOTION article="Tarte aux daims" fin="20141209" reduc="95" />

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Paiement Carte fidélité Internet à Monétique -->
-
-<Paiement_fidélité>
-	<Montant>XX...XX</Montant>
-	<Coordonnées_carte>
-		<numéro_carte>XXXXXXX</numéro_carte>
-	</Coordonnées_carte>
-</Paiement_fidélité>

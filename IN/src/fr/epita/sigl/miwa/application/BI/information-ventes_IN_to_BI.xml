@@ -1,0 +1,29 @@
+<!--
+Objet : Ventes par catégorie d'article
+Provenance : Internet ou BO
+Destination : BI
+Fréquence : toutes les 15 minutes
+
+Champs du XML :
+    Entête
+        objet : ne pas modifier
+        source : mettre "bo" ou "internet" selon l'émetteur
+        date : format AAAA-MM-JJ HH:mm:SS
+    Ventes
+        lieu : référence du magasin ou string "internet" (string; max 32)
+        ref-categorie : référence de la catégorie d'article (string; max 32)
+        quantité_vendue : quantité vendue d'articles de la catégorie (int)
+        montant_fournisseur : somme totale vendue en prix fournisseur (numeric 2)
+        montant_vente : somme totale vendue en prix de vente (numeric 2)
+-->
+
+<XML>
+    <ENTETE objet="ventes 15min" source="" date="" />
+    <VENTES lieu="">
+        <CATEGORIE ref-categorie="" quantité_vendue="" montant_fournisseur="" montant_vente="" />
+        <CATEGORIE ref-categorie="" quantité_vendue="" montant_fournisseur="" montant_vente="" />
+        <CATEGORIE ref-categorie="" quantité_vendue="" montant_fournisseur="" montant_vente="" />
+        <!-- plusieurs catégories -->
+    </STOCKS>
+</XML>
+

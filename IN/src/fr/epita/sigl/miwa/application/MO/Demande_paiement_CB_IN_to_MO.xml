@@ -1,0 +1,11 @@
+﻿<!-- Demande de paiement par carte bancaire -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<monetique service="paiement_cb">
+	<montant>XX.XX</montant>
+	<cb>
+		<numero>XXXXXXXXXXXXXXXX</numero>
+		<date_validite>MMAA</date_validite>
+		<pictogramme>XXX</pictogramme>
+	</cb>
+</monetique>

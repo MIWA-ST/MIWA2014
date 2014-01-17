@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Objet : Envoi création compte
+Provenance : Internet
+Destination : CRM
+Fréquence : au fil de l'eau
+
+Champs du XML :
+    ENTETE
+        objet : ne pas modifier 
+-->
+
+<XML>
+    <ENTETE objet="creation_compte" source="" date="" />
+        <COMPTE nom="" prenom="" adresse="" code_postal="" email="" telephone="">
+        </COMPTE>
+</XML>

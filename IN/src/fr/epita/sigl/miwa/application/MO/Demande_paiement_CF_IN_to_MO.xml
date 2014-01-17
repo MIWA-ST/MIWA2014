@@ -1,0 +1,7 @@
+<!-- Demande paiement par carte fidelite -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<monetique service="paiement_cf">
+	<montant>XX.XX</montant>
+	<matricule_client>XXXXXXX</matricule_client>
+</monetique>

@@ -1,7 +1,9 @@
 package fr.epita.sigl.miwa.application.messaging;
 
+import org.jdom2.input.DOMBuilder;
 import org.w3c.dom.Document;
 
+import fr.epita.sigl.miwa.application.ParseXML;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.sync.ISyncMessSender;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
@@ -22,6 +24,10 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
+		// Envoi de message classqiue (XML en String ou messge)
+		System.out.println(message);
+
+		
 		return false;
 	}
 
@@ -33,7 +39,7 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public String answerToRequestMessage(EApplication sender, String request){
-		// TODO Auto-generated method stub
+		// Réponse à la request demandée ... Renvoi laString (XML ou info...)
 		return null;
 	}
 	
@@ -45,6 +51,16 @@ public class SyncMessHandler {
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
 		// TODO Auto-generated method stub
+		ParseXML parser = new ParseXML();
+		
+		org.jdom2.Document document;
+		
+		DOMBuilder d = new DOMBuilder();
+		
+		parser.setDocument(d.build(xml));
+		parser.readXML2(null);
+		parser.parseCRM("stream");
+		
 		return false;
 	}
 
