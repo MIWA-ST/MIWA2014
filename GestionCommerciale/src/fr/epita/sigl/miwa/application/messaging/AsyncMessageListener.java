@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.DemandeNiveauStock;
 import fr.epita.sigl.miwa.application.DemandeReassort;
+import fr.epita.sigl.miwa.application.JdbcConnection;
 import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.XMLManager;
 import fr.epita.sigl.miwa.st.EApplication;
@@ -74,6 +75,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				if (root.toLowerCase().equals("LIVRAISONSCOMMANDEFOURNISSEUR")) {
 					XMLManager.getInstance().getbonlivraisonfromEntrepot(message, doc);
 					
+							
 					//FIXME incrémenter les stocks
 					
 					LOGGER.info("Entrepot envoi bon de livraison fournisseur");
@@ -96,7 +98,14 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCKINTERNET")) {
 					LOGGER.info("On envoie les niveaux de stock à internet");
 
+					
+					
+					JdbcConnection.getInstance().getConnection();
+					DemandeNiveauStock demande = JdbcConnection.getInstance().envoiStock(dns);
+					JdbcConnection.getInstance().closeConnection();
+					
 					content = XMLManager.getInstance().envoiniveaustocktoInternet(demande);
+					
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.INTERNET);
 					LOGGER.info("Envoi des stocks à internet");
 				}
