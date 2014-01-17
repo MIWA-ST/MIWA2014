@@ -26,7 +26,7 @@ import fr.epita.sigl.miwa.application.data.Stock;
 import fr.epita.sigl.miwa.application.enums.EBOMessageType;
 import fr.epita.sigl.miwa.application.parser.BIParser;
 import fr.epita.sigl.miwa.application.printer.BIPrinter;
-import fr.epita.sigl.miwa.application.statistics.PaiementStatistic;
+import fr.epita.sigl.miwa.application.statistics.PaymentStatistic;
 import fr.epita.sigl.miwa.application.statistics.SaleStatistic;
 import fr.epita.sigl.miwa.application.statistics.Segmentation;
 import fr.epita.sigl.miwa.application.statistics.StockStatistic;
@@ -58,11 +58,7 @@ public class BIController {
 
 	private boolean hasPromoBO = false;
 
-	private boolean hasDetailSaleBOForSale = false;
-
 	private boolean hasDetailSaleBOForSegmentation = false;
-
-	private boolean hasDetailSaleInternetForSale = false;
 
 	private boolean hasDetailSaleInternetSegmentation = false;
 
@@ -86,7 +82,7 @@ public class BIController {
 
 	/** @param message */
 	public void generateSaleStatistic(String message) {
-		while (!hasDetailSaleBOForSale && !hasDetailSaleInternetForSale){
+		while (!hasSaleBO){
 			try {
 				wait(10000);
 			} catch (InterruptedException e) {
@@ -94,11 +90,11 @@ public class BIController {
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
-		List<DetailSale> detailSales = BIDao.getLastDetailSales();
+		List<Sale> sales = BIDao.getSalesOfToday();
 		List<SaleStatistic> lastSaleStatistics = BIDao.getLastSaleStatistics();
-		List<SaleStatistic> saleStatistics = computer.computeSaleStatistics(detailSales, lastSaleStatistics);
-		hasDetailSaleBOForSale = false;
-		hasDetailSaleInternetForSale = false;
+		List<SaleStatistic> saleStatistics = computer.computeSaleStatistics(sales, lastSaleStatistics);
+		hasSaleBO = false;
+		hasSaleInternet = false;
 		BIDao.insertSaleStatistics(saleStatistics);
 		printer.publishSaleStatistics(saleStatistics);
 	}
@@ -132,7 +128,7 @@ public class BIController {
 			}
 		}
 		List<DetailSale> detailSales = BIDao.getAllDetailSales();
-		List<PaiementStatistic> paiementStatistics = computer.computePaymentStatistics(detailSales);
+		List<PaymentStatistic> paiementStatistics = computer.computePaymentStatistics(detailSales);
 		hasDetailSaleBOForPayment = false;
 		hasDetailSaleInternetForPayment = false;
 		BIDao.insertPaiementStatistics(paiementStatistics);
@@ -205,7 +201,6 @@ public class BIController {
 		List<DetailSale> detailSales = parser.parseDetailSale(file);
 		BIDao.insertDetailSales(detailSales);
 		hasDetailSaleBOForPayment = true;
-		hasDetailSaleBOForSale = true;
 		hasDetailSaleBOForSegmentation = true;
 	}
 
@@ -213,7 +208,6 @@ public class BIController {
 		List<DetailSale> detailSales = parser.parseDetailSale(file);
 		BIDao.insertDetailSales(detailSales);
 		hasDetailSaleInternetForPayment = true;
-		hasDetailSaleInternetForSale = true;
 		hasDetailSaleInternetSegmentation = true;
 	}
 }

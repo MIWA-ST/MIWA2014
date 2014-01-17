@@ -20,7 +20,7 @@ import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.enums.EAlerteType;
 import fr.epita.sigl.miwa.application.enums.ECritereType;
 import fr.epita.sigl.miwa.application.statistics.CategorieStatistic;
-import fr.epita.sigl.miwa.application.statistics.PaiementStatistic;
+import fr.epita.sigl.miwa.application.statistics.PaymentStatistic;
 import fr.epita.sigl.miwa.application.statistics.SaleStatistic;
 import fr.epita.sigl.miwa.application.statistics.Segmentation;
 import fr.epita.sigl.miwa.application.statistics.StockStatistic;
@@ -118,10 +118,10 @@ public class BIPrinter {
 		return fileName;
 	}
 
-	public void publishPaiementStatistics(List<PaiementStatistic> paiementStatistics){
+	public void publishPaiementStatistics(List<PaymentStatistic> paiementStatistics){
 		initConsole();
 		System.out.println("**** REPARTITION DU CHIFFRE D\'AFFAIRES PAR MOYEN DE PAIEMENT");
-		for (PaiementStatistic statistic : paiementStatistics){
+		for (PaymentStatistic statistic : paiementStatistics){
 			System.out.println(statistic.toString());
 		}		
 	}
@@ -137,12 +137,6 @@ public class BIPrinter {
 		builder.append("CATEGORIE ");
 		builder.append(statistic.getCategorie());
 		builder.append(" : ");
-		if (statistic.isHausse()){
-			builder.append("+ ");
-		}
-		else {
-			builder.append("- ");
-		}
 		builder.append(statistic.getEvolution());
 		builder.append(" %\n");
 		return builder.toString();
@@ -227,7 +221,7 @@ public class BIPrinter {
 			Element categorieArticles = new Element("CATEGORIEARTICLES");
 			for (CategorieStatistic statistic : segmentation.getCategorieStatistics()){
 				Element categorie = new Element("CATEGORIE");
-				Attribute ref = new Attribute("ref", statistic.getRef().toString());
+				Attribute ref = new Attribute("ref", statistic.getRef());
 				Attribute achat = new Attribute("achat", statistic.getAchat().toString());
 				categorie.setAttribute(ref);
 				categorie.setAttribute(achat);

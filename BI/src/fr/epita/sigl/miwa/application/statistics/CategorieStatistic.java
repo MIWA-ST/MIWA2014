@@ -2,20 +2,20 @@ package fr.epita.sigl.miwa.application.statistics;
 
 public class CategorieStatistic {
 
-	private Integer ref;
+	private String ref;
 	
 	private Integer achat;
 
-	public CategorieStatistic(Integer ref, Integer achat) {
+	public CategorieStatistic(String ref, Integer achat) {
 		this.ref = ref;
 		this.achat = achat;
 	}
 
-	public Integer getRef() {
+	public String getRef() {
 		return ref;
 	}
 
-	public void setRef(Integer ref) {
+	public void setRef(String ref) {
 		this.ref = ref;
 	}
 

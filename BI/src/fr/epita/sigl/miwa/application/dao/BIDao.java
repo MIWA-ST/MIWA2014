@@ -9,7 +9,7 @@ import fr.epita.sigl.miwa.application.data.ProductCategory;
 import fr.epita.sigl.miwa.application.data.Promotion;
 import fr.epita.sigl.miwa.application.data.Sale;
 import fr.epita.sigl.miwa.application.data.Stock;
-import fr.epita.sigl.miwa.application.statistics.PaiementStatistic;
+import fr.epita.sigl.miwa.application.statistics.PaymentStatistic;
 import fr.epita.sigl.miwa.application.statistics.SaleStatistic;
 import fr.epita.sigl.miwa.application.statistics.Segmentation;
 import fr.epita.sigl.miwa.application.statistics.StockStatistic;
@@ -68,7 +68,7 @@ public class BIDao {
 	}
 
 	public static void insertPaiementStatistics(
-			List<PaiementStatistic> paiementStatistics) {
+			List<PaymentStatistic> paiementStatistics) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -86,12 +86,13 @@ public class BIDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public static List<DetailSale> getLastDetailSales() {
+
+	public static List<SaleStatistic> getLastSaleStatistics() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public static List<SaleStatistic> getLastSaleStatistics() {
+	public static List<Sale> getSalesOfToday() {
 		// TODO Auto-generated method stub
 		return null;
 	}
