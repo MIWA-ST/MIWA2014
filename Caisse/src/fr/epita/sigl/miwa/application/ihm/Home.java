@@ -68,7 +68,7 @@ public class Home {
 		listproduct.setBounds(10, 160, 284, 169);
 
 		Button btnNewButton = new Button(grpTransaction, SWT.NONE);
-		
+
 		btnNewButton.setBounds(110, 394, 184, 44);
 		btnNewButton.setText("Nouveau client");
 
@@ -146,7 +146,7 @@ public class Home {
 				// je chope litem de la combox
 				int index = produitcombo.getSelectionIndex();
 				String select = produitcombo.getItem(index);
-				// je l'add dans ma liste d'objet produit 
+				// je l'add dans ma liste d'objet produit
 				String prod = select.split("-")[0];
 				Iterator<Produit> e = tabproduct.iterator();
 				Produit current = new Produit();
@@ -166,7 +166,7 @@ public class Home {
 				prixtotal += (Float.parseFloat(upprix) * Integer
 						.parseInt(nbtext.getText()));
 				lblPrixTotal.setText(Float.toString(prixtotal) + "€");
-				
+
 				// update du reste à payer
 				aPayer = prixtotal;
 
@@ -185,92 +185,135 @@ public class Home {
 				// fidtext.getText() = payé en carte de fidelité (string)
 				// esptext.getText() = payé en especèce (string)
 				// numtest.getText() = numéro du client
-				// utiliser la fonction Float.parseFloat(mastring) pour avoir un flat
-				JOptionPane.showMessageDialog(null, "Salut tu veux payer !", null, 1, null);
-				
+				// utiliser la fonction Float.parseFloat(mastring) pour avoir un
+				// flat
+				JOptionPane.showMessageDialog(null,
+						"reste à payer = " + aPayer, null, 1, null);
+
 				// si on essaye de payer mais que le reste à payer est nul
-				if (aPayer == 0)
-				{
-					JOptionPane.showMessageDialog(null, "L'achat a déjà été totalement réglé !", null, 1, null);
+				if (aPayer == 0) {
+					JOptionPane.showMessageDialog(null,
+							"L'achat a déjà été totalement réglé !", null, 1,
+							null);
 					return;
 				}
-				
-				// pas fidélisé
-				if (numtext.getText() == "")
-				{
-					System.out.println("LOOOOOOOOOOOL");
-					
-					// si on essaye de payé par carte fidélité alors qu'on est pas fidélisé
-					if (fidtext.getText() != "")
-					{
-						JOptionPane.showMessageDialog(null, "Le client n'a pas de carte fidélité !", null, 1, null);
-						return;
-					}
-					
-					// paiement en espèce
-					if (esptext.getText() != "")
-					{
-						if (Float.parseFloat(esptext.getText()) >= aPayer)
-						{
-							String monnaie = Float.toString(Float.parseFloat(esptext.getText()) - aPayer);
-							aPayer = 0;
-							JOptionPane.showMessageDialog(null, "Paiement en espèces validé ! Achat totalement réglé. Monnaie : " + monnaie + "€", null, 1, null);
-						}
-						else
-						{
-							aPayer -= Float.parseFloat(esptext.getText());
-							JOptionPane.showMessageDialog(null, "Paiement en espèces validé ! Reste à payer = " + Float.toString(aPayer), null, 1, null);
-						}
-						return;
-					}
-					
-					// paiement en CB
-					if (cbtext.getText() != "")
-					{
-						if (Float.parseFloat(cbtext.getText()) <= aPayer)
-						{
-							// TODO AJOUTER DES CHAMPS POUR NUMEROCB
-							String numeroCB = "";
-							String dateValidite = "";
-							String picto = "";
-							String message = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>"
-									+ Float.parseFloat(cbtext.getText())
-									+ "</montant><cb><numero>"
-									+ numeroCB
-									+ "</numero><date_validite>"
-									+ dateValidite
-									+ "</date_validite><pictogramme>"
-									+ picto
-									+ "</pictogramme></cb></monetique>";
-							boolean result = SyncMessFactory.getSyncMessSender().sendMessage(EApplication.MONETIQUE, message);
-							if (result)
-							{
-								aPayer -= Float.parseFloat(cbtext.getText());
-								
+
+				System.out.println("LOOOOOOOOOOOL");
+
+				// paiement par carte de fidélité
+				if (fidtext.getText() != "") {
+					if (numtext.getText() == "") {
+						JOptionPane.showMessageDialog(null,
+								"Le client n'a pas de carte fidélité !", null,
+								1, null);
+					} else {
+						if (Float.parseFloat(fidtext.getText()) <= aPayer) {
+							String message = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>"
+									+ fidtext.getText()
+									+ "</montant><matricule_client>"
+									+ numtext.getText()
+									+ "</matricule_client></monetique>";
+							boolean result = SyncMessFactory
+									.getSyncMessSender().sendMessage(
+											EApplication.MONETIQUE, message);
+							if (result) {
+								aPayer -= Float.parseFloat(fidtext.getText());
+
 								if (aPayer == 0)
-									JOptionPane.showMessageDialog(null, "Paiement en CB validé ! Achat totalement réglé.", null, 1, null);
+									JOptionPane
+											.showMessageDialog(
+													null,
+													"Paiement fidélité validé ! Achat totalement réglé.",
+													null, 1, null);
 								else
-									JOptionPane.showMessageDialog(null, "Paiement en CB validé ! Reste à payer = " + Float.toString(aPayer), null, 1, null);
-							}
-							else
-								JOptionPane.showMessageDialog(null, "Paiement en CB refusé ! Reste à payer = " + Float.toString(aPayer), null, 1, null);
-						}
-						else
-							JOptionPane.showMessageDialog(null, "Le montant indiqué pour le paiement par CB est incorrect.", null, 1, null);
-						return;
+									JOptionPane.showMessageDialog(null,
+											"Paiement fidélité validé ! Reste à payer = "
+													+ Float.toString(aPayer),
+											null, 1, null);
+							} else
+								JOptionPane.showMessageDialog(null,
+										"Paiement fidélité refusé ! Reste à payer = "
+												+ Float.toString(aPayer), null,
+										1, null);
+						} else
+							JOptionPane
+									.showMessageDialog(
+											null,
+											"Le montant indiqué pour le paiement fidélité est incorrect.",
+											null, 1, null);
 					}
+					return;
 				}
-				else
-				{
-					// TODO LE CLIENT EST FIDELISE
-					// - contact BO pour MAJ PRIX
-					// - contact MONETIQUE pour PAYER EN CARTE FIDELITE
-					System.out.println("LUUUUUUUUUUL");
+
+				// paiement en espèce
+				if (esptext.getText() != "") {
+					if (Float.parseFloat(esptext.getText()) >= aPayer) {
+						String monnaie = Float.toString(Float
+								.parseFloat(esptext.getText()) - aPayer);
+						aPayer = 0;
+						JOptionPane.showMessageDialog(null,
+								"Paiement en espèces validé ! Achat totalement réglé. Monnaie : "
+										+ monnaie + "€", null, 1, null);
+					} else {
+						aPayer -= Float.parseFloat(esptext.getText());
+						JOptionPane
+								.showMessageDialog(null,
+										"Paiement en espèces validé ! Reste à payer = "
+												+ Float.toString(aPayer), null,
+										1, null);
+					}
+					return;
+				}
+
+				// paiement en CB
+				if (cbtext.getText() != "") {
+					if (Float.parseFloat(cbtext.getText()) <= aPayer) {
+						// TODO AJOUTER DES CHAMPS POUR NUMEROCB
+						String numeroCB = "";
+						String dateValidite = "";
+						String picto = "";
+						String message = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>"
+								+ cbtext.getText()
+								+ "</montant><cb><numero>"
+								+ numeroCB
+								+ "</numero><date_validite>"
+								+ dateValidite
+								+ "</date_validite><pictogramme>"
+								+ picto
+								+ "</pictogramme></cb></monetique>";
+						boolean result = SyncMessFactory.getSyncMessSender()
+								.sendMessage(EApplication.MONETIQUE, message);
+						if (result) {
+							aPayer -= Float.parseFloat(cbtext.getText());
+
+							if (aPayer == 0)
+								JOptionPane
+										.showMessageDialog(
+												null,
+												"Paiement en CB validé ! Achat totalement réglé.",
+												null, 1, null);
+							else
+								JOptionPane.showMessageDialog(null,
+										"Paiement en CB validé ! Reste à payer = "
+												+ Float.toString(aPayer), null,
+										1, null);
+						} else
+							JOptionPane.showMessageDialog(null,
+									"Paiement en CB refusé ! Reste à payer = "
+											+ Float.toString(aPayer), null, 1,
+									null);
+					} else
+						JOptionPane
+								.showMessageDialog(
+										null,
+										"Le montant indiqué pour le paiement par CB est incorrect.",
+										null, 1, null);
+					return;
 				}
 			}
 		});
-		
-		//bouton nouveau client
+
+		// bouton nouveau client
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent arg0) {
@@ -282,7 +325,9 @@ public class Home {
 				nbtext.setText("");
 				listproduct.removeAll();
 				lblPrixTotal.setText("Prix total");
-				JOptionPane.showMessageDialog(null, "Nouveau client", null, 1, null);
+				aPayer = 0;
+				JOptionPane.showMessageDialog(null, "Nouveau client", null, 1,
+						null);
 			}
 		});
 
