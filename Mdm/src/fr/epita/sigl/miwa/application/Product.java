@@ -1,6 +1,11 @@
 package fr.epita.sigl.miwa.application;
 
+import java.util.ArrayList;
+
 public class Product {
+	
+	private ArrayList<Promotion> promotionList;
+	private ArrayList<PromotionForGC> promotionGCList; 
 	
 	private String categorie;
 	
@@ -71,6 +76,20 @@ public class Product {
 		this.nbMin = nbMin;
 		this.reference = reference;
 		this.providerNumber = origine;
+		promotionList = new ArrayList<Promotion>();
+		promotionGCList = new ArrayList<PromotionForGC>();
 	}
-
+	
+	public ArrayList<PromotionForGC> getPromotionGCList() {
+		return promotionGCList;
+	}
+	public void setPromotionGCList(ArrayList<PromotionForGC> promotionGCList) {
+		this.promotionGCList = promotionGCList;
+	}
+	public ArrayList<Promotion> getPromotionList() {
+		return promotionList;
+	}
+	public void setPromotionList(ArrayList<Promotion> promotionList) {
+		this.promotionList = promotionList;
+	}
 }
