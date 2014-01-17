@@ -6,7 +6,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 public class DbHandler {
@@ -63,7 +65,7 @@ public class DbHandler {
 			}
 		}
 	}
-
+	
 	public ArrayList<Product>  getAllProducts() {
 		ArrayList<Product> productList = new ArrayList<Product>();
 		Connection conn = null;
@@ -115,6 +117,59 @@ public class DbHandler {
 		}
 
 		return productList;
+	}
+	
+	public ArrayList<PromotionForGC> getPromotionsForGCForProduct(String reference) {
+		ArrayList<PromotionForGC> promoList = new ArrayList<PromotionForGC>();
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+
+			conn = DriverManager.getConnection(dbUrl, user, password);
+
+			stmt = conn.createStatement();
+
+			String sql = "select idPromotionGC, nbMin, rebate, startDate, endDate from promotionGC INNER JOIN Product_has_PromotionGC ON promotionGC.idPromotionGC = Product_has_PromotionGC.PromotionGC_idPromotionGC where Product_has_PromotionGC.Product_reference ='" + reference + "';";
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while(rs.next()){
+				String idPromotionGC = rs.getString("idPromotionGC");
+				int nbMin = rs.getInt("nbMin");				
+				int pourcent = rs.getInt("rebate");
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd");
+				Date startDate = formatter.parse(rs.getString("startDate"));
+				Date endDate  = formatter.parse(rs.getString("endDate"));
+				
+				PromotionForGC p = new PromotionForGC(idPromotionGC, nbMin, pourcent, startDate, endDate);
+				promoList.add(p);
+			}
+
+			rs.close();
+			stmt.close();
+			conn.close();
+
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
+
+		return promoList;
 	}
 	
 	public void clearProductsForProvider(Integer providerNumber) {

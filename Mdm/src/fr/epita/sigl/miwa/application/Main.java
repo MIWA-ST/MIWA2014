@@ -1,11 +1,14 @@
 package fr.epita.sigl.miwa.application;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.st.Conf;
+import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -27,9 +30,19 @@ public class Main {
 		
 		CsvParser parser = new CsvParser("testFile1.csv");
 		parser.parse();
+	
+		XmlWriter xmlWriter;
+
+		try {
+			String fileGC = Conf.getInstance().getLocalRepository() + File.separator + EApplication.MDM.getShortName() + File.separator + "outputFileGC.xml";
+			xmlWriter = new XmlWriter(fileGC);
+			xmlWriter.generateFileForGC();
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		XmlWriter xmlWriter = new XmlWriter("outputFile.xml");
-		xmlWriter.generateFileForGC();
+		AsyncFileFactory.getInstance().getFileHelper().send("outputFileGC.xml", EApplication.GESTION_COMMERCIALE);
 		
 		XmlReader xmlReader = new XmlReader("testFileGC.xml");
 		xmlReader.parseProducts();
