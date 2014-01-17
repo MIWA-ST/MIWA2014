@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.ReadXMLFile;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
@@ -20,7 +21,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 	liste des messages/fichiers :
 	FA - BO vers Caisse (articles, prix et promotions)
 	MA - BO vers Caisse (mise à jour des articles, prix et promotions en cours de journée)
-	MS - Caisse vers BO (ticket de vente au fil de l’eau)
+	MS - à confirmer - Caisse vers BO (demande de mise à jour du prix final si client fidélisé)
+	MA - Caisse vers BO (ticket de vente au fil de l’eau)
 	FA - Caisse vers BO (tous les tickets de vente en fin de journée)
 	MS - Caisse vers Monétique pour CB
 	MS - Caisse vers Monétique pour fidélité
@@ -57,6 +59,13 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		if (source == EApplication.BACK_OFFICE){
 			LOGGER.info("Message reçu du Back Office");
 			LOGGER.info("Le message est : " + message);
+			// message de màj des prix
+			ReadXMLFile.ParseBOString(message);
+		}
+		else
+		{
+			LOGGER.severe("From Caisse : La source de ce message (" + source + ") est inconnue et ne devrait pas communiquer avec nous !");
+			LOGGER.severe("Le message est : " + message);
 		}
 	}
 
@@ -65,7 +74,11 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		if (source == EApplication.BACK_OFFICE){
 			LOGGER.info("Fichier reçu du Back Office");
 			LOGGER.info("Le path du fichier est : " + file.getAbsolutePath());
+			// fichier de listing des produits
+			ReadXMLFile.ParseBOFile(file);
 		}
+		else
+			LOGGER.severe("From Caisse : La source de ce fichier (" + source + ") est inconnue et ne devrait pas communiquer avec nous !");
 	}
 
 }
