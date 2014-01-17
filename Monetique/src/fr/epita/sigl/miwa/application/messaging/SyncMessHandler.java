@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.sync.ISyncMessSender;
@@ -49,30 +50,46 @@ public class SyncMessHandler {
 	* Elle est automatiquement appel�e lorsqu'une application vous contacte
 	*/
 	@Deprecated
-	static public boolean receiveXML(EApplication sender, Document xml){		
-		LOGGER.info("***** Recepting message.");
+	static public boolean receiveXML(EApplication sender, Document xml){
 		xml.getDocumentElement().normalize();
-		LOGGER.info("***** Getting message informations.");
 		String serviceToPerform = xml.getDocumentElement().getAttribute("service");
 		String actionToPerform = xml.getDocumentElement().getAttribute("action");
-		LOGGER.info("***** Message received.");
 		
-		LOGGER.info("***** Decoding message");
-		LOGGER.info("***** Retrieving service.");
 		if (serviceToPerform.equals("paiement_cb"))
 		{
 			LOGGER.info("***** Paiement by CB service started.");
-			Boolean bankResponse = getRandomPaiement7030motherfucker();
+			
+			String montant = "";
+			String[] cb = {"", "", ""};
+			
+			NodeList nl = xml.getDocumentElement().getChildNodes();
+			NodeList cnl = null;
+			for (int i = 0; i < nl.getLength(); ++i)
+			{
+				if (nl.item(i).getNodeName().equals("montant"))
+					montant = nl.item(i).getTextContent();
+				if (nl.item(i).getNodeName().equals("cb"))
+					cnl = nl.item(i).getChildNodes();
+			}
+			for (int i = 0; i < cnl.getLength(); ++i) 
+			{
+				if (cnl.item(i).getNodeName().equals("numero"))
+					cb[i] = cnl.item(i).getTextContent();
+				if (cnl.item(i).getNodeName().equals("date_validite"))
+					cb[i] = cnl.item(i).getTextContent();
+				if (cnl.item(i).getNodeName().equals("pictogramme"))
+					cb[i] = cnl.item(i).getTextContent();
+			}
+			LOGGER.info("***** REQUEST -> " + montant + "€ for the credit card : " + cb[0]);
+			Boolean bankResponse = getBankPaiement();
 			LOGGER.info("***** Paiement by CB service terminated normally with : " + bankResponse + ".");
-			LOGGER.info("***** Sending response.");
 			return bankResponse;
 		}
 		else if (serviceToPerform.equals("paiement_cf"))
 		{
 			LOGGER.info("***** Paiement by fidelity service started.");
-			Boolean bankResponse = getRandomPaiement7030motherfucker();
+			Boolean bankResponse = getBankPaiement();
 			LOGGER.info("***** Paiement by fidelity service terminated normally with : " + bankResponse + ".");
-			LOGGER.info("***** Sending response.");
 			return bankResponse;
 		}
 		else if (serviceToPerform.equals("cms_type_carte"))
@@ -130,17 +147,13 @@ public class SyncMessHandler {
 		}
 	}
 
-	private static boolean getRandomPaiement7030motherfucker() 
+	private static boolean getBankPaiement() 
 	{
-		LOGGER.info("Reading card information.");
-		LOGGER.info("Asking bank");
-		LOGGER.info("Processing banking treatment.");
-		
+		LOGGER.info("***** Bank Paiement started.");		
 		Random rnd = new Random();
 		Integer jaimelesfrites = rnd.nextInt(100);
 		
-		LOGGER.info("Treatment finished.");
-		LOGGER.info("Retrieving bank response.");
+		LOGGER.info("***** Bank Paiement stopped.");
 		return jaimelesfrites < 70;
 	}
 
