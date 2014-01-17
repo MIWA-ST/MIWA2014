@@ -70,4 +70,31 @@ public class XmlReader {
 			e.printStackTrace();
 		}
 	}
+
+	public void parseDelta() {
+		try {
+
+			SAXParserFactory factory = SAXParserFactory.newInstance();
+			SAXParser saxParser = factory.newSAXParser();
+
+			DefaultHandler handler = new DefaultHandler() {
+
+
+				public void startElement(String uri, String localName,String qName, 
+						Attributes attributes) throws SAXException {
+
+					if (qName.equalsIgnoreCase("PRODUCT")) {
+						String ref = attributes.getValue("reference");
+						Integer sellPrice = Integer.parseInt(attributes.getValue("prix_vente"));
+						dbHandler.updateProduct(ref, sellPrice);
+					}
+				}
+			};
+
+			saxParser.parse(this.filename, handler);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
