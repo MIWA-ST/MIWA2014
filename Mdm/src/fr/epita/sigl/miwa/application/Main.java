@@ -24,12 +24,18 @@ public class Main {
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
 		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "Coucou GC");
+		
 		CsvParser parser = new CsvParser("testFile1.csv");
 		parser.parse();
 		
 		XmlWriter xmlWriter = new XmlWriter("outputFile.xml");
-		xmlWriter.generateFileForG();
+		xmlWriter.generateFileForGC();
 		
+		XmlReader xmlReader = new XmlReader("testFileGC.xml");
+		xmlReader.parseProducts();
+		
+		XmlWriter xmlWriter2 = new XmlWriter("outputFileBI.xml");
+		xmlWriter2.generateFileForBI();
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()

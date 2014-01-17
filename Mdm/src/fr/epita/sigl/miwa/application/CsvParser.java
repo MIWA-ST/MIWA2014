@@ -55,7 +55,8 @@ public class CsvParser {
 				String buyPrice = Integer.toString(buyPriceWithoutVat * vat / 100);
 				
 				String nbMin = fields[5].replaceAll(",", ".");
-				Product p = new Product(EAN, description, buyPrice, nbMin, "");
+				Product p = new Product(EAN, description, buyPrice, nbMin, "", 1);
+				this.dbHandler.clearProductsForProvider(1);
 				this.dbHandler.addNewProduct(p);
 				
 			}

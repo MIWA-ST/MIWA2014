@@ -35,8 +35,9 @@ public class DbHandler {
 			String ref = id.toString();
 			if (ref.length() < 32)
 				ref += p.getEAN();
-			String sql = "INSERT INTO PRODUCT (reference, description, buyPrice, nbMin) "
-					+ "VALUES ('" + ref.substring(0, 32) + "', '" + p.getDescription() + "', " + p.getBuyPrice() + ", " + p.getNbMin() + ");";
+			String sql = "INSERT INTO PRODUCT (EAN, reference, description, buyPrice, nbMin, providerNumber) "
+					+ "VALUES ('" + p.getEAN() + "', '" + ref.substring(0, 32) + "', '" + p.getDescription() + "', " +
+					p.getBuyPrice() + ", " + p.getNbMin() + ", " + p.getProviderNumber() + ");";
 
 			//System.out.println(sql);
 			stmt.executeUpdate(sql);
@@ -74,7 +75,7 @@ public class DbHandler {
 
 			stmt = conn.createStatement();
 
-			String sql = "select EAN, reference, description, buyPrice, nbMin from product;";
+			String sql = "select EAN, reference, description, buyPrice, nbMin, providerNumber from product;";
 			ResultSet rs = stmt.executeQuery(sql);
 
 			while(rs.next()){
@@ -83,9 +84,9 @@ public class DbHandler {
 				String description = rs.getString("description");
 				String buyPrice  = Integer.toString(rs.getInt("buyPrice"));
 				String nbMin =  Integer.toString(rs.getInt("nbMin"));
-		
+				Integer providerNumber = rs.getInt("providerNumber");
 
-				Product p = new Product(EAN, description, buyPrice, nbMin, reference);
+				Product p = new Product(EAN, description, buyPrice, nbMin, reference, providerNumber);
 				productList.add(p);
 			}
 
@@ -114,5 +115,77 @@ public class DbHandler {
 		}
 
 		return productList;
+	}
+	
+	public void clearProductsForProvider(Integer providerNumber) {
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(dbUrl, user, password);
+			stmt = conn.createStatement();
+
+			String sql = "DELETE from Product where providerNumber = " + providerNumber + ";";
+
+			//System.out.println(sql);
+			stmt.executeUpdate(sql);
+			stmt.close();
+			conn.close();
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
+	}
+	
+	
+	public void updateProduct(String ref, Integer sellPrice)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(dbUrl, user, password);
+			stmt = conn.createStatement();
+
+			String sql = "UPDATE Product SET sellPrice=" + sellPrice + " WHERE reference='" + ref + "';";
+
+			//System.out.println(sql);
+			stmt.executeUpdate(sql);
+			stmt.close();
+			conn.close();
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
 	}
 }

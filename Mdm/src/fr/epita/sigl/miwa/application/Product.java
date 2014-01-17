@@ -1,9 +1,35 @@
 package fr.epita.sigl.miwa.application;
 
 public class Product {
+	
+	private String categorie;
+	
+	public String getCategorie() {
+		return categorie;
+	}
+	public void setCategorie(String categorie) {
+		this.categorie = categorie;
+	}
 	private String reference;
 	
+	private String sellPrice;
+	
+	public String getSellPrice() {
+		return sellPrice;
+	}
+	public void setSellPrice(String sellPrice) {
+		this.sellPrice = sellPrice;
+	}
+	// Numéro du fournisseur (1 ou 2)
+	private Integer providerNumber;
+	
 	private String EAN;
+	public Integer getProviderNumber() {
+		return providerNumber;
+	}
+	public void setProviderNumber(Integer origine) {
+		this.providerNumber = origine;
+	}
 	public String getReference() {
 		return reference;
 	}
@@ -38,12 +64,13 @@ public class Product {
 	private String buyPrice;
 	private String nbMin;
 	
-	public Product(String EAN, String description, String buyPrice, String nbMin, String reference) {
+	public Product(String EAN, String description, String buyPrice, String nbMin, String reference, Integer origine) {
 		this.EAN = EAN;
 		this.description = description;
 		this.buyPrice = buyPrice;
 		this.nbMin = nbMin;
 		this.reference = reference;
+		this.providerNumber = origine;
 	}
 
 }

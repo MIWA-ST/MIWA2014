@@ -24,7 +24,7 @@ public class XmlWriter {
 		this.dbHandler = new DbHandler("jdbc:mysql://localhost/miwa", "root", "root");
 	}
 
-	public void generateFileForG() {
+	public void generateFileForGC() {
 		try
 		{
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -59,8 +59,58 @@ public class XmlWriter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
 
+	public void generateFileForBI() {
+		try
+		{
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
+			// root elements
+			Document doc = docBuilder.newDocument();
+			Element rootElement = doc.createElement("XML");
+			doc.appendChild(rootElement);
+			
+			Element header = doc.createElement("ENTETE");
+			rootElement.appendChild(header);
+			header.setAttribute("objet", "liste-article");
+			header.setAttribute("source", "mdm");
+			
+			String format = "yyyy-MM-dd";
+			java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat(format); 
+			java.util.Date date = new java.util.Date(); 
+			header.setAttribute("date", formater.format(date));
+			
+			Element articles = doc.createElement("ARTICLES");
+			rootElement.appendChild(articles);
+
+			for (Product p : dbHandler.getAllProducts()) {
+				Element article = doc.createElement("ARTICLE");
+				articles.appendChild(article);
+				article.setAttribute("reference", p.getReference());
+				article.setAttribute("ean", p.getEAN());
+				article.setAttribute("prix_fournisseur", p.getBuyPrice());
+				article.setAttribute("prix_vente", p.getSellPrice());
+
+				Element description = doc.createElement("DESCRIPTION");
+				description.setTextContent(p.getDescription());
+				article.appendChild(description);
+			}
+			
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File(this.fileName));
+	 
+			// Output to console for testing
+			// StreamResult result = new StreamResult(System.out);
+	 
+			transformer.transform(source, result);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
