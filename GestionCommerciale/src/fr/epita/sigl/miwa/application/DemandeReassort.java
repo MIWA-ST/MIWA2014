@@ -69,6 +69,15 @@ public class DemandeReassort {
 		this.traite = traite;
 	}
 	
+	public boolean stock_suffisant() {
+		int demande = 0;
+		int stock = 0;
+		
+		if (stock >= demande)
+			return true;
+		else
+			return false;
+	}
 	
 	
 }

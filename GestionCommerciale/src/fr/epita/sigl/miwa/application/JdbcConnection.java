@@ -469,4 +469,50 @@ public class JdbcConnection
 		}
 		return res;
 	}
+	
+	public DemandeNiveauStock envoi_all_stock()
+	{
+		DemandeNiveauStock res = new DemandeNiveauStock();
+		List<Articles> art = new ArrayList<>();
+		List<String> quantites = new ArrayList<String>();
+		try
+		{
+			System.out.println("Recup niveau stock");
+			if (connection != null)
+			{
+				//int indice = 0;
+				String request = "SELECT ref_article, quantite FROM stock_entrepot";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				
+				statement.executeUpdate();
+				
+				// Si y a un bug, ça vient de là
+					
+				ResultSet ret = statement.executeQuery();
+
+				while (ret.next()) {
+					String ref_article = ret.getString("ref_article");
+					String quantite = ret.getString("quantite");
+
+					quantites.add(quantite);
+					Articles a = new Articles();
+					a.setRef_article(ref_article);
+					art.add(a);
+					
+					res.setArticles(art);
+					res.setQuantity(quantites);
+				}
+					
+				//indice++;
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}	
+		
+		return res;
+	}
 }
