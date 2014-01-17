@@ -35,12 +35,6 @@ public class Main {
 		/* CODE HERE */
 		//connect BDD		
 		bdd.connect();
-		try {
-			bdd.insert("insert into produit (produit_prix, produit_nom, produit_pourcentagepromo) values (5.5, 'chocapic', 10)");
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		//je veux etre reveillé à 9H00
 		Calendar dateouverture = Calendar.getInstance();
 		dateouverture.setTime(ClockClient.getClock().getHour());

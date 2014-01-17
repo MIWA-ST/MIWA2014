@@ -1,7 +1,11 @@
 package fr.epita.sigl.miwa.application.ihm;
 
+import java.sql.Array;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -14,10 +18,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 
+import fr.epita.sigl.miwa.application.BddAccess;
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.Produit;
+
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 public class Home {
-	private Text text;
+	private Text nbtext;
 	private Text text_1;
 	private Text text_2;
 	private Text text_3;
@@ -44,11 +53,11 @@ public class Home {
 		lblProduit.setBounds(10, 23, 55, 15);
 		lblProduit.setText("Produit");
 		
-		Combo produitcombo = new Combo(grpTransaction, SWT.READ_ONLY);
+		final Combo produitcombo = new Combo(grpTransaction, SWT.READ_ONLY);
 		produitcombo.setBounds(71, 23, 156, 23);
 		
-		List listproduct = new List(grpTransaction, SWT.BORDER);
-		listproduct.setBounds(71, 114, 184, 169);
+		final List listproduct = new List(grpTransaction, SWT.BORDER);
+		listproduct.setBounds(10, 114, 284, 169);
 		
 		Button btnNewButton = new Button(grpTransaction, SWT.NONE);
 		btnNewButton.setBounds(71, 338, 184, 25);
@@ -58,10 +67,11 @@ public class Home {
 		lblQuantit.setBounds(10, 59, 55, 15);
 		lblQuantit.setText("Quantité");
 		
-		text = new Text(grpTransaction, SWT.BORDER);
-		text.setBounds(71, 53, 76, 21);
+		nbtext = new Text(grpTransaction, SWT.BORDER);
+		nbtext.setBounds(71, 53, 76, 21);
 		
 		Button btnScanner = new Button(grpTransaction, SWT.NONE);
+		
 		btnScanner.setBounds(71, 83, 75, 25);
 		btnScanner.setText("Scanner");
 		
@@ -95,23 +105,33 @@ public class Home {
 		lblPrixTotal.setText("Prix total");
 
 		//remplissage de la combobox
+		Set<Produit> tabproduct = new HashSet<Produit>();
 		try {
-			ResultSet rs = Main.bdd.select("select (produit_nom) from produit");
+			
+			ResultSet rs = Main.bdd.select("select (produit_id,produit_prix, produit_ref, produit_nom,produit_pourcentagepromo) from produit");
 			while (rs.next())
 			{
-				produitcombo.add(rs.getString(1));
+				String[] resu = Main.bdd.parseresult(rs.getString(1));
+				Produit prod = new Produit(resu[0],resu[1],resu[2],resu[3], resu[4]);
+				tabproduct.add(prod);
+				produitcombo.add(resu[2] + "-" + resu[3] + "-" + resu[1] + "€");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		
-		
-		
-		
-		
-		
+		//bouton scanner produit, envoi du produit dans la liste et maj du prix
+		btnScanner.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				int index = produitcombo.getSelectionIndex();
+				String select = produitcombo.getItem(index);
+				//String[] tabselect = select.split("-");
+				listproduct.add(select + "-*" + nbtext.getText() );
+				
+			}
+		});	
 		
 		shlApplicationCaisse.open();
 		shlApplicationCaisse.layout();
