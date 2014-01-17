@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcConnection
@@ -368,10 +369,10 @@ public class JdbcConnection
 		
 		try
 		{
-			System.out.println("Insert demande niveau stock");
+			System.out.println("Recup niveau stock");
 			if (connection != null)
 			{
-				int indice = 0;
+				//int indice = 0;
 				for (Articles a : dns.getArticles()) {
 				
 					String request = "SELECT quantite FROM stock_entrepot WHERE ref_article = ?";
@@ -383,12 +384,12 @@ public class JdbcConnection
 				
 					/// Si y a un bug, ça vient de là
 					
-					ResultSet ret = statement.getGeneratedKeys();
+					ResultSet ret = statement.executeQuery();
 					int qt = ret.getInt(1);
 					List<String> nouv = dns.getQuantity();
 					nouv.add(Integer.toString(qt));
 					res.setQuantity(nouv);
-					indice++;
+					//indice++;
 				}
 			}
 		}
@@ -398,6 +399,38 @@ public class JdbcConnection
 			e.printStackTrace();
 		}	
 		
+		return res;
+	}
+	
+	public List<Articles> envoiPrixArticle () {
+		List<Articles> res = new ArrayList<>();
+		
+		try
+		{
+			System.out.println("Recup niveau stock");
+			if (connection != null)
+			{
+				String request = "SELECT ref_article, prix_vente FROM articles";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+													
+				ResultSet ret = statement.executeQuery();
+
+				while(ret.next()) {
+					String ref_article = ret.getString("ref_article");
+					String prix_vente = ret.getString("prix_vente");
+					Articles a = new Articles ();
+					a.setRef_article(ref_article);
+					a.setPrix_vente(prix_vente);
+					res.add(a);
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
 		return res;
 	}
 }

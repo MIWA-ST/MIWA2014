@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.application.messaging;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -13,6 +14,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import fr.epita.sigl.miwa.application.Articles;
 import fr.epita.sigl.miwa.application.DemandeNiveauStock;
 import fr.epita.sigl.miwa.application.DemandeReassort;
 import fr.epita.sigl.miwa.application.JdbcConnection;
@@ -114,23 +116,28 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					LOGGER.info("Envoi des stocks à internet");
 				}
 			} else if (source == EApplication.MDM) {
-				// A faire envoyer au ref les prix des articles
-				LOGGER.info("prix de vente des articles reçus par le référentiel");
 
-				content = XMLManager.getInstance()
-						.envoiprixventetoRef(articles);
-				AsyncMessageFactory.getInstance().getAsyncMessageManager()
-						.send(content, EApplication.MDM);
-				LOGGER.info("Envoi des prix de vente des articles au référentiel effectué");
+					//A faire envoyer au ref les prix des articles
+						LOGGER.info("prix de vente des articles reçus par le référentiel");
+						
+						JdbcConnection.getInstance().getConnection();
+						List<Articles> art = JdbcConnection.getInstance().envoiPrixArticle();
+						JdbcConnection.getInstance().closeConnection();
+						
+						content = XMLManager.getInstance().envoiprixventetoRef(art);
+						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
+						LOGGER.info("Envoi des prix de vente des articles au référentiel effectué");
+					
+					//Envoyer promotions au ref
+						LOGGER.info("promotion des articles par le référentiel");
+						
+						
+						
+						content = XMLManager.getInstance().envoipromotoRef(promos);
+						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
+						LOGGER.info("Envoi des promotions des articles au référentiel effectué");					
+			}			
 
-				// Envoyer promotions au ref
-				LOGGER.info("promotion des articles par le référentiel");
-
-				content = XMLManager.getInstance().envoipromotoRef(promos);
-				AsyncMessageFactory.getInstance().getAsyncMessageManager()
-						.send(content, EApplication.MDM);
-				LOGGER.info("Envoi des promotions des articles au référentiel effectué");
-			}
 		} catch (AsyncMessageException | ParserConfigurationException
 				| SAXException | IOException e) {
 			LOGGER.severe(e.getMessage());
