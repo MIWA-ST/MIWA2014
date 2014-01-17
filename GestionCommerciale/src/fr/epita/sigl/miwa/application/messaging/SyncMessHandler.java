@@ -29,6 +29,7 @@ public class SyncMessHandler {
 		if (sender == EApplication.BACK_OFFICE)
 		{
 			LOGGER.info("Message synchrone reçu du back office :" + message);
+			
 		}
 		else if (sender == EApplication.INTERNET)
 		{
