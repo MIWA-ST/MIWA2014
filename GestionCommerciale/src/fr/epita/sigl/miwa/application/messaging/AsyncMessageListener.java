@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.application.messaging;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -117,6 +118,12 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					LOGGER.info("Envoi des stocks à internet");
 				}
 			} else if (source == EApplication.MDM) {
+				if (root.toLowerCase().equals("xml")){
+				List<Articles> liste = new ArrayList<Articles>();
+					//a faire recepetion prix fournisseur
+					liste = XMLManager.getInstance().getprixfournisseurs(message, doc);
+				
+					//definir prix ventes et les stocker
 
 					//A faire envoyer au ref les prix des articles
 						LOGGER.info("prix de vente des articles reçus par le référentiel");
@@ -140,6 +147,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
 						LOGGER.info("Envoi des promotions des articles au référentiel effectué");					
 			}			
+			}
 
 		} catch (AsyncMessageException | ParserConfigurationException
 				| SAXException | IOException e) {
