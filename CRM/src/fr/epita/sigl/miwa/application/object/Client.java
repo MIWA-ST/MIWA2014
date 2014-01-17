@@ -24,6 +24,11 @@ public class Client {
 		this.prenom = prenom;
 		clientsList.add(this);
 	}
+	
+	public Client (int id)
+	{
+		this.matricule = id;
+	}
 
 	/**
 	 * @return the matricule

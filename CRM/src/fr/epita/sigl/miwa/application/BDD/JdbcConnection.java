@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
-import fr.epita.sigl.miwa.application.crm.CommandeInternet;
+import fr.epita.sigl.miwa.application.crm.SegmentationClient;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.crm.ReassortBO;
 
@@ -76,7 +76,7 @@ public class JdbcConnection
 		}
 	}
 	
-	public void insertCommandeInternet(CommandeInternet command)
+	public void insertCommandeInternet(SegmentationClient command)
 	{
 		try
 		{
@@ -86,14 +86,14 @@ public class JdbcConnection
 				String request = "INSERT INTO commandeinternet (commandnumber, datebc, datebl, customerref, customerlastname, customerfirstname, customeraddress) VALUES (?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
-				statement.setString(1, command.getCommandNumber());
+				/*statement.setString(1, command.getCommandNumber());
 				statement.setString(2, command.getDateBC());
 				statement.setString(3, command.getDateBL());
 				statement.setString(4, command.getCustomerRef());
 				statement.setString(5, command.getCustomerLastname());
 				statement.setString(6, command.getCustomerFirstname());
 				statement.setString(7, command.getCustomerAddress());
-
+*/
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
 				{

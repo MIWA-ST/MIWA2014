@@ -6,14 +6,14 @@ public class Segmentation {
 
 	private int id;
 	private static ArrayList<Client> clients;
-	private ArrayList<String> criteres;
+	private ArrayList<Critere> criteres;
 	
 	public Segmentation ()
 	{
 		this.clients = new ArrayList<Client>();
 	}
 	
-	public void addCritere(String critere)
+	public void addCritere(Critere critere)
 	{
 		this.criteres.add(critere);
 	}
@@ -54,14 +54,14 @@ public class Segmentation {
 	/**
 	 * @return the criteres
 	 */
-	public ArrayList<String> getCriteres() {
+	public ArrayList<Critere> getCriteres() {
 		return criteres;
 	}
 
 	/**
 	 * @param criteres the criteres to set
 	 */
-	public void setCriteres(ArrayList<String> criteres) {
+	public void setCriteres(ArrayList<Critere> criteres) {
 		this.criteres = criteres;
 	}
 	

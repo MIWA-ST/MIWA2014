@@ -40,4 +40,20 @@ public class TicketReduc
 	public void setArticles(List<Article> articles) {
 		this.articles = articles;
 	}
+	public void setCategory(String textContent) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setReference(String textContent) {
+		// TODO Auto-generated method stub
+		
+	}
+	public String getReference() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	public String getCategory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
