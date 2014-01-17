@@ -44,8 +44,60 @@ public class SyncMessHandler {
 	*/
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
-		// TODO Auto-generated method stub
-		return false;
+		xml.getDocumentElement().normalize();
+		String serviceToPerform = xml.getDocumentElement().getAttribute("service");
+		String actionToPerform = xml.getDocumentElement().getAttribute("action");
+		
+		if (serviceToPerform.equals("paiement_cb"))
+		{
+			return true;
+		}
+		else if (serviceToPerform.equals("paiement_cf"))
+		{
+			return true;
+		}
+		else if (serviceToPerform.equals("cms_type_carte"))
+		{
+			if (actionToPerform.equals("c"))
+			{
+				return true;
+			}
+			else if (actionToPerform.equals("m"))
+			{
+				return true;
+			}
+			else if (actionToPerform.equals("s"))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else if (serviceToPerform.equals("cms_compte_cf"))
+		{
+			if (actionToPerform.equals("c"))
+			{
+				return true;
+			}
+			else if (actionToPerform.equals("m"))
+			{
+				return true;
+			}
+			else if (actionToPerform.equals("s"))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}			
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/*
