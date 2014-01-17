@@ -18,13 +18,13 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 	/*
-	 * liste des messages/fichiers : FA - BO vers Caisse (articles, prix et
-	 * promotions) MA - BO vers Caisse (mise à jour des articles, prix et
-	 * promotions en cours de journée) MS - à confirmer - Caisse vers BO
-	 * (demande de mise à jour du prix final si client fidélisé) MA - Caisse
-	 * vers BO (ticket de vente au fil de l’eau) FA - Caisse vers BO (tous les
-	 * tickets de vente en fin de journée) MS - Caisse vers Monétique pour CB MS
-	 * - Caisse vers Monétique pour fidélité
+	 * liste des messages/fichiers :
+	 * (OK) FA - BO vers Caisse (articles, prix et promotions)
+	 * (OK) MA - BO vers Caisse (mise à jour des articles, prix et promotions en cours de journée)
+	 * MS - Caisse vers BO (demande de mise à jour du prix final si client fidélisé)
+	 * MA - Caisse vers BO (ticket de vente au fil de l’eau)
+	 * MS - Caisse vers Monétique pour CB
+	 * MS - Caisse vers Monétique pour fidélité
 	 */
 	/*
 	 * try { String content =

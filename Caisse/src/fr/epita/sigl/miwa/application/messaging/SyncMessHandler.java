@@ -29,6 +29,7 @@ public class SyncMessHandler {
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
 		return false;
+		// TODO LA RECEPTION DU MESSAGE DE VALIDATION OU REFUS CB PAR MONETIQUE
 	}
 
 	/*

@@ -37,44 +37,49 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		//connect BDD		
-		bdd.connect();
-		//je veux etre reveillé à 9H00
-		Calendar dateouverture = Calendar.getInstance();
-		dateouverture.setTime(ClockClient.getClock().getHour());
-		Date nextOccurence = new Date();
-		dateouverture.set(Calendar.HOUR_OF_DAY, 9);
-		dateouverture.set(Calendar.MINUTE, 0);
-		dateouverture.set(Calendar.SECOND, 0);
-		dateouverture.set(Calendar.MILLISECOND, 0);
-		if (dateouverture.get(Calendar.HOUR_OF_DAY) > 9) 
-		dateouverture.add((Calendar.DAY_OF_MONTH), 1);
-		nextOccurence = dateouverture.getTime();
-		ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "ouverture");
-		//je veux etre reveillé à 21H00
-		dateouverture = Calendar.getInstance();
-		dateouverture.setTime(ClockClient.getClock().getHour());
-		nextOccurence = new Date();
-		dateouverture.set(Calendar.HOUR_OF_DAY, 21);
-		dateouverture.set(Calendar.MINUTE, 0);
-		dateouverture.set(Calendar.SECOND, 0);
-		dateouverture.set(Calendar.MILLISECOND, 0);
-		if (dateouverture.get(Calendar.HOUR_OF_DAY) > 21) 
-		dateouverture.add((Calendar.DAY_OF_MONTH), 1);
-		nextOccurence = dateouverture.getTime();
-		ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "fermeture");
-		//Fin des réveilles
 		
-		
-		//fin de la clock
-				Home home = new Home();
-		home.open();
-		
-		//AsyncFileFactory.getInstance().getFileManager().send("toto.xml", EApplication.CAISSE);
-				//String myXML = "<?xml version=\"1.0\"?><ARTICLES><ARTICLE nomarticle=\"toto\" refarticle=\"565644\" prix=\"54.76\" promotion=\"34\" /></ARTICLES>";
-				//ReadXMLFile.ParseBOString(myXML);
 		try {
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
+			
+			//connect BDD		
+			bdd.connect();
+			//je veux etre reveillé à 9H00
+			Calendar dateouverture = Calendar.getInstance();
+			dateouverture.setTime(ClockClient.getClock().getHour());
+			Date nextOccurence = new Date();
+			dateouverture.set(Calendar.HOUR_OF_DAY, 9);
+			dateouverture.set(Calendar.MINUTE, 0);
+			dateouverture.set(Calendar.SECOND, 0);
+			dateouverture.set(Calendar.MILLISECOND, 0);
+			if (dateouverture.get(Calendar.HOUR_OF_DAY) > 9) 
+			dateouverture.add((Calendar.DAY_OF_MONTH), 1);
+			nextOccurence = dateouverture.getTime();
+			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "ouverture");
+			//je veux etre reveillé à 21H00
+			dateouverture = Calendar.getInstance();
+			dateouverture.setTime(ClockClient.getClock().getHour());
+			nextOccurence = new Date();
+			dateouverture.set(Calendar.HOUR_OF_DAY, 21);
+			dateouverture.set(Calendar.MINUTE, 0);
+			dateouverture.set(Calendar.SECOND, 0);
+			dateouverture.set(Calendar.MILLISECOND, 0);
+			if (dateouverture.get(Calendar.HOUR_OF_DAY) > 21) 
+			dateouverture.add((Calendar.DAY_OF_MONTH), 1);
+			nextOccurence = dateouverture.getTime();
+			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "fermeture");
+			//Fin des réveilles
+			
+			
+			//fin de la clock
+					Home home = new Home();
+			home.open();
+			
+			// CI DESSOUS TEST MANUEL POUR LE PARSING XML DEPUIS LE BO VERS NOUS
+			//AsyncFileFactory.getInstance().getFileManager().send("toto.xml", EApplication.CAISSE);
+					//String myXML = "<?xml version=\"1.0\"?><ARTICLES><ARTICLE nomarticle=\"toto\" refarticle=\"565644\" prix=\"54.76\" promotion=\"34\" /></ARTICLES>";
+					//ReadXMLFile.ParseBOString(myXML);
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
