@@ -30,6 +30,7 @@ public class Home {
 	private Text text_1;
 	private Text text_2;
 	private Text text_3;
+	private int prixtotal = 0;
 
 	/**
 	 * Launch the application.
@@ -41,67 +42,67 @@ public class Home {
 	public void open() {
 		Display display = Display.getDefault();
 		Shell shlApplicationCaisse = new Shell();
-		shlApplicationCaisse.setSize(473, 412);
+		shlApplicationCaisse.setSize(542, 487);
 		shlApplicationCaisse.setText("Application Caisse");
 		shlApplicationCaisse.setLayout(null);
 		
 		Group grpTransaction = new Group(shlApplicationCaisse, SWT.NONE);
 		grpTransaction.setText("Transaction");
-		grpTransaction.setBounds(0, 0, 463, 373);
+		grpTransaction.setBounds(0, 0, 526, 448);
 		
 		Label lblProduit = new Label(grpTransaction, SWT.NONE);
-		lblProduit.setBounds(10, 23, 55, 15);
+		lblProduit.setBounds(10, 48, 55, 15);
 		lblProduit.setText("Produit");
 		
 		final Combo produitcombo = new Combo(grpTransaction, SWT.READ_ONLY);
-		produitcombo.setBounds(71, 23, 156, 23);
+		produitcombo.setBounds(83, 45, 156, 23);
 		
 		final List listproduct = new List(grpTransaction, SWT.BORDER);
-		listproduct.setBounds(10, 114, 284, 169);
+		listproduct.setBounds(10, 160, 284, 169);
 		
 		Button btnNewButton = new Button(grpTransaction, SWT.NONE);
-		btnNewButton.setBounds(71, 338, 184, 25);
+		btnNewButton.setBounds(110, 413, 184, 25);
 		btnNewButton.setText("Nouveau client");
 		
 		Label lblQuantit = new Label(grpTransaction, SWT.NONE);
-		lblQuantit.setBounds(10, 59, 55, 15);
+		lblQuantit.setBounds(10, 92, 55, 15);
 		lblQuantit.setText("Quantité");
 		
 		nbtext = new Text(grpTransaction, SWT.BORDER);
-		nbtext.setBounds(71, 53, 76, 21);
+		nbtext.setBounds(84, 89, 76, 21);
 		
 		Button btnScanner = new Button(grpTransaction, SWT.NONE);
 		
-		btnScanner.setBounds(71, 83, 75, 25);
+		btnScanner.setBounds(84, 129, 75, 25);
 		btnScanner.setText("Scanner");
 		
 		Button btnNewButton_1 = new Button(grpTransaction, SWT.NONE);
-		btnNewButton_1.setBounds(350, 258, 100, 25);
+		btnNewButton_1.setBounds(351, 280, 100, 25);
 		btnNewButton_1.setText("Payer");
 		
 		text_1 = new Text(grpTransaction, SWT.BORDER);
 		text_1.setBounds(374, 233, 76, 21);
 		
 		text_2 = new Text(grpTransaction, SWT.BORDER);
-		text_2.setBounds(374, 206, 76, 21);
+		text_2.setBounds(374, 185, 76, 21);
 		
 		text_3 = new Text(grpTransaction, SWT.BORDER);
-		text_3.setBounds(374, 179, 76, 21);
+		text_3.setBounds(374, 137, 76, 21);
 		
 		Label lblEspece = new Label(grpTransaction, SWT.NONE);
-		lblEspece.setBounds(300, 185, 55, 15);
+		lblEspece.setBounds(310, 140, 55, 15);
 		lblEspece.setText("Espece");
 		
 		Label lblCb = new Label(grpTransaction, SWT.NONE);
-		lblCb.setBounds(300, 212, 55, 15);
+		lblCb.setBounds(313, 188, 55, 15);
 		lblCb.setText("CB");
 		
 		Label lblFid = new Label(grpTransaction, SWT.NONE);
-		lblFid.setBounds(300, 237, 55, 15);
+		lblFid.setBounds(310, 236, 55, 15);
 		lblFid.setText("Fid");
 		
 		Label lblPrixTotal = new Label(grpTransaction, SWT.NONE);
-		lblPrixTotal.setBounds(200, 289, 55, 15);
+		lblPrixTotal.setBounds(239, 351, 55, 15);
 		lblPrixTotal.setText("Prix total");
 
 		//remplissage de la combobox
@@ -129,6 +130,8 @@ public class Home {
 				String select = produitcombo.getItem(index);
 				//String[] tabselect = select.split("-");
 				listproduct.add(select + "-*" + nbtext.getText() );
+				
+				//lblPrixTotal.setText(prixtotal);
 				
 			}
 		});	
