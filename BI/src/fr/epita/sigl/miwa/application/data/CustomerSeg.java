@@ -16,12 +16,10 @@ public class CustomerSeg {
 	private String loyaltyType;
 	
 	public CustomerSeg() {
-		super();
 	}
 
 	public CustomerSeg(Integer id, String name, Integer minAge, Integer maxAge, String gender,
 			String maritalSituation, Integer childrenNb, String loyaltyType) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.minAge = minAge;

@@ -8,7 +8,6 @@ package fr.epita.sigl.miwa.application.data;
 import java.util.*;
 
 public class Promotion {
-	private Integer id;
 	private Product product;
 	private Date beginDate;
 	private Date endDate;
@@ -16,26 +15,15 @@ public class Promotion {
 	private String store;
 	
 	public Promotion() {
-		super();
 	}
 	
-	public Promotion(Integer id, Product product, Date beginDate, Date endDate,	Integer percentage,
+	public Promotion(Product product, Date beginDate, Date endDate,	Integer percentage,
 			String store) {
-		super();
-		this.id = id;
 		this.product = product;
 		this.beginDate = beginDate;
 		this.endDate = endDate;
 		this.percentage = percentage;
 		this.store = store;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public Product getProduct() {

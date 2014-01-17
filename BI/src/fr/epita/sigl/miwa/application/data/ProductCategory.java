@@ -14,11 +14,9 @@ public class ProductCategory {
 	public List<Product> product;
 
 	public ProductCategory() {
-		super();
 	}
 
 	public ProductCategory(Integer id, String name, List<Product> product) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.product = product;

@@ -10,7 +10,6 @@ public class SoldProduct {
 	private Integer quantity;
 	
 	public SoldProduct() {
-		super();
 	}
 	
 	public SoldProduct(Product product, Integer quantity) {

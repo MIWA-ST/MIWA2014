@@ -6,10 +6,10 @@
 package fr.epita.sigl.miwa.application.data;
 
 import java.util.*;
+import fr.epita.sigl.miwa.application.enums.EPaiementType;
 
 public class DetailSale {
-	private Integer id;
-	private String paymentMean;
+	private EPaiementType paymentMean;
 	private Date date;
 	private Integer total;
 	private String store;
@@ -17,13 +17,10 @@ public class DetailSale {
 	private List<SoldProduct> productList;
 	
 	public DetailSale() {
-		super();
 	}
 
-	public DetailSale(Integer id, String paymentMean, Date date, Integer total, String store,
+	public DetailSale(Integer id, EPaiementType paymentMean, Date date, Integer total, String store,
 			Client client, List<SoldProduct> productList) {
-		super();
-		this.id = id;
 		this.paymentMean = paymentMean;
 		this.date = date;
 		this.total = total;
@@ -32,19 +29,11 @@ public class DetailSale {
 		this.productList = productList;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getPaymentMean() {
+	public EPaiementType getPaymentMean() {
 		return paymentMean;
 	}
 
-	public void setPaymentMean(String paymentMean) {
+	public void setPaymentMean(EPaiementType paymentMean) {
 		this.paymentMean = paymentMean;
 	}
 

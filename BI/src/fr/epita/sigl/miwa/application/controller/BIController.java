@@ -6,14 +6,12 @@
 package fr.epita.sigl.miwa.application.controller;
 
 import java.io.File;
-import java.text.Bidi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.computer.BIComputer;
 import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.dao.BIDao;

@@ -21,7 +21,6 @@ public class Client {
 
 	public Client(Integer numero, String title, Date birthDate, Integer zipcode, String maritalStatus,
 			Integer childrenNb, String loyaltyType) {
-		super();
 		this.numero = numero;
 		this.title = title;
 		this.birthDate = birthDate;

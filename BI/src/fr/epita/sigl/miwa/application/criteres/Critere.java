@@ -8,6 +8,9 @@ public class Critere {
 
 	private Object value;
 
+	public Critere() {
+	}
+
 	public Critere(ECritereType type, Object value) {
 		this.type = type;
 		this.value = value;

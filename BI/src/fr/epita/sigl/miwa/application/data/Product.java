@@ -13,12 +13,10 @@ public class Product {
    	private Integer margin;
 
    	public Product() {
-   		super();
    	}
 
 	public Product(Integer id, Integer reference, Integer buyingPrice, Integer sellingPrice,
 			Integer margin) {
-		super();
 		this.id = id;
 		this.reference = reference;
 		this.buyingPrice = buyingPrice;

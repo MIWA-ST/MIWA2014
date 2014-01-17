@@ -6,42 +6,30 @@
 package fr.epita.sigl.miwa.application.data;
 
 public class Stock {
-	private Integer id;
-	private Product product;
+	private String productRef;
 	private Boolean ordered;
 	private Integer stockQty;
 	private Integer maxQty;
 	private String store;
 	
 	public Stock() {
-		super();
 	}
 	
-	public Stock(Integer id, Product product, Boolean ordered, Integer stockQty, Integer maxQty,
+	public Stock(String productRef, Boolean ordered, Integer stockQty, Integer maxQty,
 			String store) {
-		super();
-		this.id = id;
-		this.product = product;
+		this.productRef = productRef;
 		this.ordered = ordered;
 		this.stockQty = stockQty;
 		this.maxQty = maxQty;
 		this.store = store;
 	}
 
-	public Integer getId() {
-		return id;
+	public String getProductRef() {
+		return productRef;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProductRef(String productRef) {
+		this.productRef = productRef;
 	}
 
 	public Boolean getOrdered() {
