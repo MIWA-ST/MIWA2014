@@ -49,7 +49,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		//AsyncFileFactory.getInstance().getFileHelper().send("outputFileGC.xml", EApplication.GESTION_COMMERCIALE);
+		AsyncFileFactory.getInstance().getFileHelper().send("outputFileBI.xml", EApplication.BI);
 		
 		XmlReader xmlReader = new XmlReader("testFileGC.xml");
 		xmlReader.parseProducts();
