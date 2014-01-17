@@ -13,7 +13,6 @@ public class SyncMessHandler {
 
 	//Init logger
 	private static final Logger LOGGER = Logger.getLogger(SyncMessHandler.class.getName());
-	
 	/* 
 	 * A utiliser pour pouvoir envoyer des messages synchrones ou faire des request
 	 */
@@ -49,7 +48,7 @@ public class SyncMessHandler {
 	* Elle est automatiquement appel�e lorsqu'une application vous contacte
 	*/
 	@Deprecated
-	static public boolean receiveXML(EApplication sender, Document xml){		
+	static public boolean receiveXML(EApplication sender, Document xml){
 		LOGGER.info("***** Recepting message.");
 		xml.getDocumentElement().normalize();
 		LOGGER.info("***** Getting message informations.");
