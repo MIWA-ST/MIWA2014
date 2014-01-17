@@ -1,8 +1,11 @@
 package fr.epita.sigl.miwa.application;
 
+import java.util.ArrayList;
+
 public class Product {
 	
 	private String categorie;
+	private ArrayList<Promotion> promoList;
 	
 	public String getCategorie() {
 		return categorie;
@@ -12,6 +15,12 @@ public class Product {
 	}
 	private String reference;
 	
+	public ArrayList<Promotion> getPromoList() {
+		return promoList;
+	}
+	public void setPromoList(ArrayList<Promotion> promoList) {
+		this.promoList = promoList;
+	}
 	private String sellPrice;
 	
 	public String getSellPrice() {
@@ -71,6 +80,7 @@ public class Product {
 		this.nbMin = nbMin;
 		this.reference = reference;
 		this.providerNumber = origine;
+		this.promoList = new ArrayList<Promotion>();
 	}
 
 }
