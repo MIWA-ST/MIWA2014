@@ -83,7 +83,7 @@ public class JdbcConnection
 			System.out.println("insertion commande internet");
 			if (connection != null)
 			{
-				String request = "INSERT INTO commandeinternet (commandnumber, datebc, datebl, customerref, customerlastname, customerfirstname, customeraddress) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				String request = "INSERT INTO segmentation (commandnumber, datebc, datebl, customerref, customerlastname, customerfirstname, customeraddress) VALUES (?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				/*statement.setString(1, command.getCommandNumber());
@@ -122,7 +122,7 @@ public class JdbcConnection
 			e.printStackTrace();
 		}
 	}
-	
+	/*
 	public void insertLivraisonFournisseur(LivraisonFournisseur command)
 	{
 		try
@@ -164,8 +164,8 @@ public class JdbcConnection
 			System.out.println("Erreur insertion en base");
 			e.printStackTrace();
 		}
-	}
-	
+	}*/
+	/*
 	public void insertReassortBO(ReassortBO command)
 	{
 		try
@@ -210,5 +210,5 @@ public class JdbcConnection
 			System.out.println("Erreur insertion en base");
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

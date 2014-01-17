@@ -1,20 +1,12 @@
 package fr.epita.sigl.miwa.application;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
-import fr.epita.sigl.miwa.application.crm.TicketReduc;
-import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
-import fr.epita.sigl.miwa.application.crm.ReassortBO;
-import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Critere;
 import fr.epita.sigl.miwa.application.object.Segmentation;
@@ -87,10 +79,6 @@ public class XMLManager
 			
 			Client a = new Client(Integer.parseInt(eElement.getAttribute("numero")));
 
-			/*a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-			a.setReference(eElement.getElementsByTagName("reference").item(0).getTextContent());
-			a.setQuantity(eElement.getElementsByTagName("quantite").item(0).getTextContent());*/
-
 			clients.add(a);
 		}
 		segmentation.setClients(clients);
@@ -121,7 +109,7 @@ public class XMLManager
 		
 		return null;
 	}
-	
+	/*
 	public String getCommandeFournisseur(String message, Document doc) throws AsyncMessageException
 	{
 		LivraisonFournisseur command = new LivraisonFournisseur();
@@ -172,8 +160,8 @@ public class XMLManager
 		
 		return bl;
 	}
-	
-	public String getReassortBO(String message, Document doc) throws AsyncMessageException
+	*/
+	/*public String getReassortBO(String message, Document doc) throws AsyncMessageException
 	{
 		ReassortBO command = new ReassortBO();
 		
@@ -225,5 +213,5 @@ public class XMLManager
 		bl += "</LIVRAISON></LIVRAISONS>";
 		
 		return bl;
-	}
+	}*/
 }
