@@ -132,7 +132,7 @@ public class JdbcConnection
 			if (connection != null)
 			{
 				String request = "INSERT INTO commandes_fournisseur (numero_commande, date_bon_de_commande, date_bon_de_livraison, traitee) VALUES (?, ?, ?, ?)";
-				
+
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, cmd.getNumero_commande());
 				statement.setString(2, cmd.getBon_commande());
@@ -140,7 +140,7 @@ public class JdbcConnection
 				statement.setString(4, cmd.getTraitee());
 				
 				statement.executeUpdate();
-				
+					
 				int indice = 0;
 			
 				for (Articles a : cmd.getArticles()) {
