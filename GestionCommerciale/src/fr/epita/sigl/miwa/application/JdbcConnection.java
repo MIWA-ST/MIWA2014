@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class JdbcConnection
 {
@@ -77,7 +78,7 @@ public class JdbcConnection
 			System.out.println("Insert Articles");
 			if (connection != null)
 			{
-				String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				String request = "UPDATE OR INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?) MATCHING (ref_article)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, article.getRef_article());
@@ -102,10 +103,10 @@ public class JdbcConnection
 	public void insertPromoFournisseur(PromoFournisseur article) {
 		try
 		{
-			System.out.println("Insert Articles");
+			System.out.println("Insert promo fournisseur");
 			if (connection != null)
 			{
-				String request = "INSERT INTO articles (ref_article, datedebut, datefin, pourcentage, quantite_min_application) VALUES (?, ?, ?, ?, ?)";
+				String request = "INSERT INTO promo_fournisseur (ref_article, datedebut, datefin, pourcentage, quantite_min_application) VALUES (?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, article.getRef_article());
@@ -130,7 +131,7 @@ public class JdbcConnection
 			System.out.println("Insert commandes_fournisseur");
 			if (connection != null)
 			{
-				String request = "INSERT INTO commandes_fournisseur (numero_commande, date_bon_de_commande, date_bon_de_livraison, traitee) VALUES (?, ?, ?, ?)";
+				String request = "UPDATE OR INSERT INTO commandes_fournisseur (numero_commande, date_bon_de_commande, date_bon_de_livraison, traitee) VALUES (?, ?, ?, ?) MATCHING (numero_commande)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, cmd.getNumero_commande());
@@ -170,7 +171,7 @@ public class JdbcConnection
 			System.out.println("Insert commandes internet");
 			if (connection != null)
 			{
-				String request = "INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_client, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				String request = "UPDATE OR INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_client, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?) MATCHING (numero_commande)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, cmd.getCommandNumber());
@@ -214,7 +215,7 @@ public class JdbcConnection
 			System.out.println("Insert demande reassort");
 			if (connection != null)
 			{
-				String request = "INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traite) VALUES (?, ?, ?, ?, ?, ?)";
+				String request = "UPDATE OR INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traite) VALUES (?, ?, ?, ?, ?, ?) MATCHING (numero_demande)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, dmd.getCommandNumber());
@@ -280,7 +281,7 @@ public class JdbcConnection
 			System.out.println("Insert stock entrepôt");
 			if (connection != null)
 			{
-				String request = "INSERT INTO stock_entrepot (ref_article, quantite) VALUES (?, ?)";
+				String request = "UPDATE OR INSERT INTO stock_entrepot (ref_article, quantite) VALUES (?, ?) MATCHING (ref_article)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, stck.getArticle().getRef_article());
@@ -302,7 +303,7 @@ public class JdbcConnection
 			System.out.println("Insert stock magasin");
 			if (connection != null)
 			{
-				String request = "INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?)";
+				String request = "UPDATE OR INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?) MATCHING (ref_article, id_magasin)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, mgs.getArticle().getRef_article());
@@ -325,7 +326,7 @@ public class JdbcConnection
 			System.out.println("Insert demande niveau stock");
 			if (connection != null)
 			{
-				String request = "INSERT INTO demande_niveau_stock (numero_demande, date_demande, date_reponse, ref_bo) VALUES (?, ?, ?, ?)";
+				String request = "UPDATE OR INSERT INTO demande_niveau_stock (numero_demande, date_demande, date_reponse, ref_bo) VALUES (?, ?, ?, ?) MATCHING (numero_demande)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, dmd.getCommandNumber());
@@ -357,5 +358,46 @@ public class JdbcConnection
 			System.out.println("Erreur insertion en base");
 			e.printStackTrace();
 		}		
+	}
+	
+	public DemandeNiveauStock envoiStock(DemandeNiveauStock dns)
+	{
+		DemandeNiveauStock res = new DemandeNiveauStock();
+		
+		res = dns;
+		
+		try
+		{
+			System.out.println("Insert demande niveau stock");
+			if (connection != null)
+			{
+				int indice = 0;
+				for (Articles a : dns.getArticles()) {
+				
+					String request = "SELECT quantite FROM stock_entrepot WHERE ref_article = ?";
+				
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, a.getRef_article());
+				
+					statement.executeUpdate();
+				
+					/// Si y a un bug, ça vient de là
+					
+					ResultSet ret = statement.getGeneratedKeys();
+					int qt = ret.getInt(1);
+					List<String> nouv = dns.getQuantity();
+					nouv.add(Integer.toString(qt));
+					res.setQuantity(nouv);
+					indice++;
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}	
+		
+		return res;
 	}
 }
