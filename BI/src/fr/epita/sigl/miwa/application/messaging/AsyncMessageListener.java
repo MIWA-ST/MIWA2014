@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.controller.BIController;
+import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -27,7 +28,9 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("Message reçu du CRM");
 			// Envoi du fichier de segmentation au CRM suite à leur demande
 			try {
-				String filename = controller.generateSegmentation(message);		
+				// A décommenter quand ça marchera
+				//String filename = controller.generateSegmentation(message);
+				String filename = "/segmentation-client.xml";
 				AsyncFileFactory.getInstance().getFileManager().send(filename, EApplication.CRM);
 				LOGGER.info("Fichier " + filename + "envoyé au CRM");
 			} catch (AsyncFileException e) {

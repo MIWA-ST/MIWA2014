@@ -4,7 +4,7 @@ public class StockStatistic {
 
 	private String name;
 	
-	private int article;
+	private String article;
 	
 	private boolean plein;
 	
@@ -12,7 +12,7 @@ public class StockStatistic {
 	
 	private boolean commande;
 
-	public StockStatistic(String name, int article, boolean plein,
+	public StockStatistic(String name, String article, boolean plein,
 			boolean vide, boolean commande) {
 		super();
 		this.name = name;
@@ -30,11 +30,11 @@ public class StockStatistic {
 		this.name = name;
 	}
 
-	public int getArticle() {
+	public String getArticle() {
 		return article;
 	}
 
-	public void setArticle(int article) {
+	public void setArticle(String article) {
 		this.article = article;
 	}
 

@@ -10,14 +10,20 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import fr.epita.sigl.miwa.application.criteres.AgeValue;
+import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.data.DetailSale;
 import fr.epita.sigl.miwa.application.data.Product;
 import fr.epita.sigl.miwa.application.data.ProductCategory;
 import fr.epita.sigl.miwa.application.data.Sale;
 import fr.epita.sigl.miwa.application.data.Stock;
+import fr.epita.sigl.miwa.application.enums.ECritereType;
 import fr.epita.sigl.miwa.application.enums.EPaiementType;
+import fr.epita.sigl.miwa.application.printer.BIPrinter;
+import fr.epita.sigl.miwa.application.statistics.CategorieStatistic;
 import fr.epita.sigl.miwa.application.statistics.PaymentStatistic;
 import fr.epita.sigl.miwa.application.statistics.SaleStatistic;
+import fr.epita.sigl.miwa.application.statistics.Segmentation;
 import fr.epita.sigl.miwa.application.statistics.StockStatistic;
 
 public class BIComputerTest {
@@ -27,12 +33,9 @@ public class BIComputerTest {
 	@Test
 	public void computeStockStatisticsTest() {
 		List<Stock> stocks = new ArrayList<Stock>();
-		Product product1 = new Product(1, 1, 10, 15, 5);
-		Stock stock1 = new Stock(1, product1, true, 100, 100, "Mag 1");
-		Product product2 = new Product(2, 2, 10, 15, 5);
-		Stock stock2 = new Stock(2, product2, false, 5, 100, "Mag 1");
-		Product product3 = new Product(3, 3, 10, 15, 5);
-		Stock stock3 = new Stock(3, product3, true, 5, 100, "Mag 1");
+		Stock stock1 = new Stock("1", true, 100, 100, "Mag 1");
+		Stock stock2 = new Stock("2", false, 5, 100, "Mag 1");
+		Stock stock3 = new Stock("3", true, 5, 100, "Mag 1");
 		stocks.add(stock1);
 		stocks.add(stock2);
 		stocks.add(stock3);
@@ -45,15 +48,15 @@ public class BIComputerTest {
 	@Test
 	public void computeSaleStatisticsTest(){
 		List<Sale> sales = new ArrayList<Sale>();
-		Sale sale1 = new Sale(1, new Date(), "Mag 1", 50, new ProductCategory(1, "1", null), 100, 100000);
+		Sale sale1 = new Sale(new Date(), "Mag 1", 50, "1", 100, 100000);
 		sales.add(sale1);
-		Sale sale2 = new Sale(2, new Date(), "Mag 1", 100, new ProductCategory(2, "2", null), 100, 100000);
+		Sale sale2 = new Sale(new Date(), "Mag 1", 100, "2", 100, 100000);
 		sales.add(sale2);
-		Sale sale3 = new Sale(3, new Date(), "Mag 1", 3, new ProductCategory(3, "3", null), 100, 100000);
+		Sale sale3 = new Sale(new Date(), "Mag 1", 3, "3", 100, 100000);
 		sales.add(sale3);
-		Sale sale4 = new Sale(4, new Date(), "Mag 1", 50, new ProductCategory(1, "1", null), 100, 100000);
+		Sale sale4 = new Sale(new Date(), "Mag 1", 50, "1", 100, 100000);
 		sales.add(sale4);
-		Sale sale5 = new Sale(5, new Date(), "Mag 1", 50, new ProductCategory(5, "5", null), 100, 100000);
+		Sale sale5 = new Sale(new Date(), "Mag 1", 50, "5", 100, 100000);
 		sales.add(sale5);
 		List<SaleStatistic> lastSaleStatistics = new ArrayList<SaleStatistic>();
 		SaleStatistic stat1 = new SaleStatistic("1", 1, 100000, 10, 50);
@@ -76,24 +79,53 @@ public class BIComputerTest {
 		Assert.assertEquals(100000f / 500000f * 100, statistics.get(3).getCaPourcent(), 0);
 		Assert.assertEquals(100000f / 500000f * 100, statistics.get(4).getCaPourcent(), 0);
 	}
-	
+
 	@Test
 	public void computePaymentStatisticsTest(){
 		List<DetailSale> detailSales = new ArrayList<DetailSale>();
-		DetailSale sale1 = new DetailSale(1, EPaiementType.CB, null, 100, "Mag 1", null, null);
+		DetailSale sale1 = new DetailSale(EPaiementType.CB, null, 100, "Mag 1", null, null);
 		detailSales.add(sale1);
-		DetailSale sale2 = new DetailSale(2, EPaiementType.CB, null, 50, "Mag 1", null, null);
+		DetailSale sale2 = new DetailSale(EPaiementType.CB, null, 50, "Mag 1", null, null);
 		detailSales.add(sale2);
-		DetailSale sale3 = new DetailSale(3, EPaiementType.CQ, null, 100, "Mag 1", null, null);
+		DetailSale sale3 = new DetailSale(EPaiementType.CQ, null, 100, "Mag 1", null, null);
 		detailSales.add(sale3);
-		DetailSale sale4 = new DetailSale(4, EPaiementType.CF, null, 150, "Mag 1", null, null);
+		DetailSale sale4 = new DetailSale(EPaiementType.CF, null, 150, "Mag 1", null, null);
 		detailSales.add(sale4);
-		DetailSale sale5 = new DetailSale(5, EPaiementType.ES, null, 25, "Mag 1", null, null);
+		DetailSale sale5 = new DetailSale(EPaiementType.ES, null, 25, "Mag 1", null, null);
 		detailSales.add(sale5);
 		List<PaymentStatistic> statistics = computer.computePaymentStatistics(detailSales);
 		Assert.assertEquals(150f / 425f * 100, statistics.get(0).getCaPourcent(), 0);
 		Assert.assertEquals(100f / 425f * 100, statistics.get(1).getCaPourcent(), 0);
 		Assert.assertEquals(150f / 425f * 100, statistics.get(2).getCaPourcent(), 0);
 		Assert.assertEquals(25f / 425f * 100, statistics.get(3).getCaPourcent(), 0);
+	}
+
+	@Test
+	public void createSegmentationTest(){
+		BIPrinter printer = new BIPrinter();
+		List<Critere> criteres = new ArrayList<Critere>();
+		Critere c1 = new Critere(ECritereType.AGE, new AgeValue(30, 50));
+		criteres.add(c1);
+		Critere c2 = new Critere(ECritereType.GEO, "95");
+		criteres.add(c2);
+		Critere c3 = new Critere(ECritereType.SEXE, "M");
+		criteres.add(c3);
+		Critere c4 = new Critere(ECritereType.SF, "marie");
+		criteres.add(c4);
+		Critere c5 = new Critere(ECritereType.ENF, "true");
+		criteres.add(c5);
+		Critere c6 = new Critere(ECritereType.FID, "1");
+		criteres.add(c6);
+		List<Segmentation> segmentations = new ArrayList<Segmentation>();
+		List<CategorieStatistic> categorieStatistics = new ArrayList<CategorieStatistic>();
+		CategorieStatistic cs1 = new CategorieStatistic("1", 100);
+		categorieStatistics.add(cs1);
+		CategorieStatistic cs2 = new CategorieStatistic("2", 42);
+		categorieStatistics.add(cs2);
+		Segmentation s1 = new Segmentation(1, categorieStatistics);
+		segmentations.add(s1);
+		Segmentation s2 = new Segmentation(2, categorieStatistics);
+		segmentations.add(s2);
+		printer.createSegmentationFile(criteres, segmentations);
 	}
 }
