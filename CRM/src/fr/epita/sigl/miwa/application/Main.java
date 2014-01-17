@@ -1,8 +1,15 @@
 package fr.epita.sigl.miwa.application;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
@@ -28,24 +35,32 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		Client.clientsList = new ArrayList<>();
+		//Client.clientsList = new ArrayList<>();
 		
-		Date date = new Date();
-		date.getDate();
+		//Date date = ClockClient.getClock().getHour();
 		
 		//JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
 	//	JDOM.createXML("monetique");
 		//JDOM.createXML("bi-segmentation");
 		
-		System.out.println(ClockClient.getClock().getHour());
-		ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
+		//System.out.println(ClockClient.getClock().getHour());
+		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
-		//SyncMessHandler.getSyncMessSender().sendMessage(
-		//		EApplication.GESTION_COMMERCIALE, "Coucou GC");
+		//JDOM.createXML("bi");
+		//DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//		DocumentBuilder builder = factory.newDocumentBuilder();
 		
-		AsyncMessageFactory.getInstance().getAsyncMessageManager().send("Message Async vers GC", EApplication.GESTION_COMMERCIALE);
+		//Document doc = new DocumentBuilderFactory.newDocumentBuilder().parse(new InputSource(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ENTETE objet=\"information-client\" source=\"crm\" date=\"2014/01/17\"> <CLIENTS>  <CLIENT id=\"01\" civilite=\"M\" naissance=\"AAAAA-MM-JJ\" codepostal=\"75000\" situationfam=\"Marie\" nbenfant=\"3\" typecarte=\"Super+\" /> </CLIENTS> </ENTETE>")));
+		//Document doc = builder.parse(new InputSource(new StringReader()));  
 		
-		//AsyncFileFactory.getInstance().getFileManager().send("/test.png", EApplication.GESTION_COMMERCIALE);
+		SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.INTERNET, "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ENETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\"/> <INFORMATIONS> <CLIENT matricule=\"0001\" nom=\"Doe\" prenom=\"John\" /> </INFORMATIONS>");
+		
+		//AsyncMessageFactory.getInstance().getAsyncMessageManager().send("Message Async vers GC", EApplication.GESTION_COMMERCIALE);
+		
+		//AsyncFileFactory.getInstance().getFileManager().send("bi.xml", EApplication.BI);
+		
+		
 		
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */

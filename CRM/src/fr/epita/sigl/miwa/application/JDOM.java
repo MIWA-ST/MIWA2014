@@ -113,7 +113,7 @@ public class JDOM
 		if (type.equals("monetique"))
 		{
 			Element entete = new Element("ENTETE");
-			String date = new SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE).format(new Date());
+			String date = new SimpleDateFormat("YYYY/MM/DD", Locale.FRANCE).format(new Date());
 			
 			Attribute objet = new Attribute("objet","information-client");
 			entete.setAttribute(objet);
@@ -143,7 +143,7 @@ public class JDOM
 		else if (type.equals("bi"))
 		{
 			Element entete = new Element("ENTETE");
-			String date = new SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE).format(new Date());
+			String date = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE).format(new Date());
 			
 			Attribute objet = new Attribute("objet","information-client");
 			entete.setAttribute(objet);
@@ -172,7 +172,7 @@ public class JDOM
 			client.setAttribute(situationfam);
 			Attribute nbenfant = new Attribute("nbenfant","3");
 			client.setAttribute(nbenfant);
-			Attribute typecarte = new Attribute("typecarte","Super+");
+			Attribute typecarte = new Attribute("typecarte","1");
 			client.setAttribute(typecarte);
 
 			affiche(doc);
@@ -181,7 +181,7 @@ public class JDOM
 		else if (type.equals("bi-segmentation"))
 		{
 			Element entete = new Element("ENTETE");
-			String date = new SimpleDateFormat("yyyy/MM/dd", Locale.FRANCE).format(new Date());
+			String date = new SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE).format(new Date());
 			
 			Attribute objet = new Attribute("objet","demande-segmentation-client");
 			entete.setAttribute(objet);
