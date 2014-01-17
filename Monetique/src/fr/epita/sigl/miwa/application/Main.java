@@ -41,6 +41,9 @@ public class Main {
 		}
 		SyncMessHandler.getSyncMessSender().sendMessage(
 				EApplication.BI, "Coucou BI");
+		/*AsyncMessageFactory.getInstance().getAsyncMessageManager().send(message, destination);
+		SyncMessFactory.getSyncMessSender().sendMessage(to, message)
+		ClockClient.getClock().wakeMeUp(date, message);*/
 		/* !CODE HERE */
 		
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
