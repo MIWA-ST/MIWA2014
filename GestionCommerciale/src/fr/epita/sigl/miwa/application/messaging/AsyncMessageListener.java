@@ -13,6 +13,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import fr.epita.sigl.miwa.application.DemandeNiveauStock;
+import fr.epita.sigl.miwa.application.DemandeReassort;
 import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.XMLManager;
 import fr.epita.sigl.miwa.st.EApplication;
@@ -48,25 +50,40 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					LOGGER.info("BO envoi demande de reassort");
 					
 					//A faire envoyer à entrepot demande reassort => GOOD
-					content = XMLManager.getInstance().envoidemandereassorttoEntrepot(XMLManager.getInstance().getdemandereassortfromBO(message, doc));
+					DemandeReassort demandereassort = XMLManager.getInstance().getdemandereassortfromBO(message, doc);
+					
+					//FIXME vérifier l'état des stocks et traiter une commande fournisseur ou pas
+					//Commande fournisseur + envoi bon de commande fournisseur à l'entrepot => JE SAIS PAS QUOI METTRE EN PARAMETRE
+					//content = XMLManager.getInstance().envoicommandefournisseurtoEntrepot(commande);
+					//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.ENTREPOT);
+					//LOGGER.info("Envoi de la commande fournisseur à l'entrepot");
+					
+					content = XMLManager.getInstance().envoidemandereassorttoEntrepot(demandereassort);
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.ENTREPOT);
 					LOGGER.info("Envoi de la demande de reassort à l'entrepot");
 					
-					//Commande fournisseur + envoi bon de commande fournisseur à l'entrepot => JE SAIS PAS QUOI METTRE EN PARAMETRE
-					content = XMLManager.getInstance().envoicommandefournisseurtoEntrepot(commande);
-					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.ENTREPOT);
-					LOGGER.info("Envoi de la commande fournisseur à l'entrepot");
+					
 				}
 				else if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCK")) {
+					
+					XMLManager.getInstance().getniveauStockfromBO(message, doc);
+					
 					LOGGER.info("BO envoi niveau stock");
 				}
 			} else if (source == EApplication.ENTREPOT) {
 				if (root.toLowerCase().equals("LIVRAISONSCOMMANDEFOURNISSEUR")) {
+					XMLManager.getInstance().getbonlivraisonfromEntrepot(message, doc);
+					
+					//FIXME incrémenter les stocks
+					
 					LOGGER.info("Entrepot envoi bon de livraison fournisseur");
+					
 				}
 				
 				if (root.toLowerCase().equals("commande_internet")) {
 					LOGGER.info("On envoie la commande internet à l'entrepot");
+					
+					
 					content = XMLManager.getInstance().envoicommandeinternettoEntrepot(XMLManager.getInstance().getcommandeinternetfromInternet(message, doc));
 					AsyncMessageFactory.getInstance().getAsyncMessageManager()
 							.send(content, EApplication.ENTREPOT);
