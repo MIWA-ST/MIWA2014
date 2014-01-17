@@ -7,14 +7,18 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Logger;
+
 import javax.xml.ws.Holder;
+
 import org.eclipse.swt.widgets.DateTime;
+
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.ihm.Home;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -65,6 +69,10 @@ public class Main {
 		//fin de la clock
 				Home home = new Home();
 		home.open();
+		
+		//AsyncFileFactory.getInstance().getFileManager().send("toto.xml", EApplication.CAISSE);
+				//String myXML = "<?xml version=\"1.0\"?><ARTICLES><ARTICLE nomarticle=\"toto\" refarticle=\"565644\" prix=\"54.76\" promotion=\"34\" /></ARTICLES>";
+				//ReadXMLFile.ParseBOString(myXML);
 		try {
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
 		} catch (IOException e) {
