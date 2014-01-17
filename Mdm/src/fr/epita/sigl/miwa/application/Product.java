@@ -6,6 +6,15 @@ public class Product {
 	
 	private String categorie;
 	private ArrayList<Promotion> promoList;
+	private String description;
+	//Description longue
+	private String long_desc;
+	//Prix TTC
+	private String buyPrice;
+	private String nbMin;
+	private String name;
+	//Ajout, suppression, maj
+	private String modification;
 	
 	public String getCategorie() {
 		return categorie;
@@ -69,9 +78,7 @@ public class Product {
 	public void setNbMin(String nbMin) {
 		this.nbMin = nbMin;
 	}
-	private String description;
-	private String buyPrice;
-	private String nbMin;
+
 	
 	public Product(String EAN, String description, String buyPrice, String nbMin, String reference, Integer origine) {
 		this.EAN = EAN;

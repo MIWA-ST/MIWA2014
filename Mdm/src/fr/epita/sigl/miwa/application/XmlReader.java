@@ -84,9 +84,15 @@ public class XmlReader {
 						Attributes attributes) throws SAXException {
 
 					if (qName.equalsIgnoreCase("PRODUCT")) {
-						String ref = attributes.getValue("reference");
-						Integer sellPrice = Integer.parseInt(attributes.getValue("prix_vente"));
-						dbHandler.updateProduct(ref, sellPrice);
+						String name = attributes.getValue("name");
+						String description = attributes.getValue("description");
+						Integer priceTTC = Integer.parseInt(attributes.getValue("priceTTC"));
+						//dbHandler.updateProduct(ref, sellPrice);
+					}
+					
+					if (qName.equalsIgnoreCase("DESCRIPTION")) {
+						String long_desc = attributes.getValue("name");
+						//dbHandler.updateProduct(ref, sellPrice);
 					}
 				}
 			};
