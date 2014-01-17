@@ -1,13 +1,10 @@
 package fr.epita.sigl.miwa.application;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -202,8 +199,7 @@ public class XMLManager {
 
 	}
 
-	public void getbonlivraisonfromEntrepot(String message, Document doc)
-			throws AsyncMessageException, DOMException, ParseException {
+	public void getbonlivraisonfromEntrepot(String message, Document doc) {
 
 		CommandeFournisseur commande = new CommandeFournisseur();
 		commande.setNumero_commande(doc.getElementsByTagName("NUMERO").item(0)

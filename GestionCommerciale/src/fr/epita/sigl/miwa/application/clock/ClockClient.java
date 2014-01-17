@@ -32,7 +32,8 @@ public class ClockClient {
 	 * Elle est automatiquement appel�e lorsque l'horloge vous contacte
 	 */
 	@Deprecated
-	static public void wakeUp(Date date, Object message) throws AsyncMessageException {
+	static public void wakeUp(Date date, Object message) {
+		try {
 		if (message instanceof String) {
 			if (message.equals("Hello World!")) {
 				System.out.println(date.toString() + " : Hello dear client!");
@@ -45,8 +46,9 @@ public class ClockClient {
 					LOGGER.info("On demande les niveaux de stock à Back office");
 					// A faire envoi niveau de stock
 					content = "<DEMANDENIVEAUDESTOCK><NUMERO>CV398719873</NUMERO><REFMAGASIN>PA218765</REFMAGASIN><DATE>20131225</DATE><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE></ARTICLE><ARTICLE><REFERENCE>AU736829</REFERENCE></ARTICLE></ARTICLES></DEMANDENIVEAUDESTOCK>";
-					AsyncMessageFactory.getInstance().getAsyncMessageManager()
-							.send(content, EApplication.BACK_OFFICE);
+
+						AsyncMessageFactory.getInstance().getAsyncMessageManager()
+								.send(content, EApplication.BACK_OFFICE);
 					LOGGER.info("Envoi des stocks au back office");
 				} catch (ParserConfigurationException e) {
 					// TODO Auto-generated catch block
@@ -57,5 +59,9 @@ public class ClockClient {
 				System.out.println(date.toString() + " : " + message);
 			}
 		}
-	}	
+		} catch (AsyncMessageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
