@@ -244,7 +244,7 @@ class FTPHelper implements IAsyncFileHelper {
 		if (!localRepo.exists()) {
 			localRepo.mkdirs();
 		}
-		
+
 		return retrieve(remoteFolder + '/' + filename,
 				localRepository + File.separatorChar + filename);
 	}
