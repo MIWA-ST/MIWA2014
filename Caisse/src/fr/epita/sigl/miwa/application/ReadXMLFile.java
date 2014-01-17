@@ -40,7 +40,7 @@ public class ReadXMLFile {
 				String prix = eElement.getAttribute("prix");
 				String promotion = eElement.getAttribute("promotion");
 				
-				//insert into produit (produit_prix, produit_ref, produit_nom, produit_pourcentagepromo) values (10, 678765434567, 'Pates', 5)
+				Main.bdd.insert("insert into produit (produit_prix, produit_ref, produit_nom, produit_pourcentagepromo) values (" + nom + "," + ref + "," + prix + "," + promotion + ")");
 			}
 		}
 	    } catch (Exception e) {
