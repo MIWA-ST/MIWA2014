@@ -22,7 +22,6 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
-		System.out.println("Message reçu chez le GC");
 		return false;
 	}
 
