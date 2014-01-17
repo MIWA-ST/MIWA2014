@@ -214,9 +214,9 @@ public class BIParser {
 				tmpInfo = promotionNode.getAttributes().getNamedItem("ref-article").getNodeValue();
 				// TODO : promotion.setProduct(BIDao.getProductByRef(tmpInfo));
 				tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
-				promotion.setBeginDate((new SimpleDateFormat("AAAA-MM-JJ HH:mm:SS")).parse(tmpInfo));
+				promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
 				tmpInfo = promotionNode.getAttributes().getNamedItem("fin").getNodeValue();
-				promotion.setEndDate((new SimpleDateFormat("AAAA-MM-JJ HH:mm:SS")).parse(tmpInfo));
+				promotion.setEndDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
 				tmpInfo = promotionNode.getAttributes().getNamedItem("pourcent").getNodeValue();
 				promotion.setPercentage(Integer.valueOf(tmpInfo));
 				promotion.setStore(storeId);
@@ -243,7 +243,7 @@ public class BIParser {
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = saleFile.getElementsByTagName("ENTETE");
 			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("dateHeure").getNodeValue();
-			Date saleDate = (new SimpleDateFormat("AAAA-MM-JJ HH:mm:SS")).parse(dateStr);
+			Date saleDate = (new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(dateStr);
 				
 			// Parsage du fichier : Partie corps
 			NodeList bodyNodes = saleFile.getElementsByTagName("VENTES");
@@ -371,7 +371,7 @@ public class BIParser {
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = saleFile.getElementsByTagName("ENTETE");
 			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("dateHeure").getNodeValue();
-			Date saleDate = (new SimpleDateFormat("AAAA-MM-JJ HH:mm:SS")).parse(dateStr);
+			Date saleDate = (new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(dateStr);
 				
 			// Parsage du fichier : Partie corps
 			NodeList saleNodes = saleFile.getElementsByTagName("CATEGORIE");
@@ -437,7 +437,7 @@ public class BIParser {
 				client.setId(Integer.valueOf(tmpInfo));
 				client.setTitle(clientNode.getAttributes().getNamedItem("civilite").getNodeValue());
 				tmpInfo = clientNode.getAttributes().getNamedItem("naissance").getNodeValue();
-				client.setBirthDate((new SimpleDateFormat("AAAA-MM-JJ")).parse(tmpInfo));
+				client.setBirthDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
 				tmpInfo = clientNode.getAttributes().getNamedItem("codepostal").getNodeValue();
 				client.setId(Integer.valueOf(tmpInfo));
 				client.setMaritalStatus(clientNode.getAttributes().getNamedItem("situationfam").getNodeValue());
@@ -502,7 +502,7 @@ public class BIParser {
 					detailSale.setPaymentMean(EPaiementType.ES);
 				
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("dateHeure").getNodeValue();
-				detailSale.setDate((new SimpleDateFormat("AAAA-MM-JJ HH:mm:SS")).parse(tmpInfo));
+				detailSale.setDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
 				
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("montant").getNodeValue();
 				detailSale.setTotal(Integer.valueOf(tmpInfo));

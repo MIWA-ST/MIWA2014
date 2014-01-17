@@ -64,7 +64,12 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		// Fichier du CRM pour informations clients
 		if (source == EApplication.CRM){
 			LOGGER.info("Fichier reçu du CRM");
+			try {
 			controller.parseCRMFile(file);
+			} catch (Exception e){
+				LOGGER.severe("Erreur de parsing");
+				e.printStackTrace();
+			}
 		}
 		// Fichier du référentiel (liste produits)
 		else if (source == EApplication.MDM){

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.enums.EClockMessage;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
+import fr.epita.sigl.miwa.application.parser.BIParser;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
