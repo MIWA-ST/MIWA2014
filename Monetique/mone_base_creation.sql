@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     17/01/2014 15:37:53                          */
+/* Created on:     17/01/2014 16:16:53                          */
 /*==============================================================*/
 
 
@@ -17,11 +17,11 @@ create table FIDELITY_CREDIT
 (
    ID_FIDELITY_CREDIT   int not null auto_increment,
    ID_FIDELITY_CREDIT_ACCOUNT int not null,
-   FIDELITY_CREDIT_DATE datetime not null,
-   AMOUNT               numeric(8,0) not null,
-   REPAID_AMOUNT        numeric(8,0) not null,
-   IS_REPAID            bool not null,
-   ECHELON_NB           numeric(8,0) not null,
+   FIDELITY_CREDIT_DATE datetime,
+   AMOUNT               numeric(8,0),
+   REPAID_AMOUNT        numeric(8,0),
+   IS_REPAID            bool,
+   ECHELON_NB           numeric(8,0),
    primary key (ID_FIDELITY_CREDIT)
 );
 
@@ -32,11 +32,11 @@ create table FIDELITY_CREDIT_ACCOUNT
 (
    ID_FIDELITY_CREDIT_ACCOUNT int not null auto_increment,
    ID_LOYALTY_CARD_TYPE int not null,
-   CUSTOMER_CODE        varchar(255) not null,
-   IS_BLACKLISTED       bool not null,
+   CUSTOMER_CODE        varchar(255),
+   IS_BLACKLISTED       bool,
    BLAKLISTED_DATE      datetime,
-   TOTAL_CREDIT_AMOUNT  numeric(8,0) not null,
-   TOTAL_REPAID_CREDIT__AMOUNT numeric(8,0) not null,
+   TOTAL_CREDIT_AMOUNT  numeric(8,0),
+   TOTAL_REPAID_CREDIT__AMOUNT numeric(8,0),
    primary key (ID_FIDELITY_CREDIT_ACCOUNT),
    key AK_CUSTOMER_CODE (CUSTOMER_CODE)
 );
@@ -47,10 +47,10 @@ create table FIDELITY_CREDIT_ACCOUNT
 create table LOYALTY_CARD_TYPE
 (
    ID_LOYALTY_CARD_TYPE int not null auto_increment,
-   CARD_TYPE_CODE       varchar(255) not null,
-   MONTLY_CREDIT_LIMIT  numeric(8,0) not null,
-   TOTAL_CREDIT_LIMIT   numeric(8,0) not null,
-   ECHELON_NB           numeric(8,0) not null,
+   CARD_TYPE_CODE       varchar(255),
+   MONTLY_CREDIT_LIMIT  numeric(8,0),
+   TOTAL_CREDIT_LIMIT   numeric(8,0),
+   ECHELON_NB           numeric(8,0),
    primary key (ID_LOYALTY_CARD_TYPE),
    key AK_CARD_TYPE_CODE (CARD_TYPE_CODE)
 );

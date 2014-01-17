@@ -13,9 +13,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
+import java.sql.*;
+
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
+import fr.epita.sigl.miwa.db.DbHandler;
+import fr.epita.sigl.miwa.db.InitMysqlConnector;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -37,11 +41,35 @@ public class Main {
 		
 		/* CODE HERE */
 		new BufferedReader(new InputStreamReader(System.in));
+	
+		// Init MySQL connector
+		InitMysqlConnector.init();
+		
+		/*DbHandler dbHandler = new DbHandler();
+
+        try {
+            Connection connection = dbHandler.open();
+
+            PreparedStatement pS = connection.prepareStatement("SELECT id_loyalty_card_type as id, card_type_code as type FROM loyalty_card_type;");
+            //pS.setInt(1, idEM);
+            ResultSet result = pS.executeQuery();
+
+            while (result.next()) {
+                Integer id = result.getInt("id");
+                String nom = result.getString("type");
+                System.out.println("*****" + id + " -- " + nom);
+            }
+
+            dbHandler.close();
+
+        } catch ( SQLException e ) {
+            System.err.println("ERROR : " + e.getMessage());
+        }*/
 		
 		Date clockDate = ClockClient.getClock().getHour();
 		System.out.println(clockDate);
 
-	    DocumentBuilder db;
+	    /*DocumentBuilder db;
 		try {
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
