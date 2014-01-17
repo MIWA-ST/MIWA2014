@@ -37,6 +37,13 @@ public class BddAccess {
 		state = connection.createStatement();
 		state.executeUpdate(sqlQuery);
 	}
+	public int update (String sqlQuery) throws SQLException {
+		Statement state = null;
+		state = connection.createStatement();
+		int n = state.executeUpdate(sqlQuery);
+		return n;
+		// n = 1 because one row had a change in it
+	}
 	
 	public String[] parseresult (String string)
 	{

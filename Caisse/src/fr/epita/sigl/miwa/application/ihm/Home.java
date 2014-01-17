@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -24,14 +25,15 @@ import fr.epita.sigl.miwa.application.Produit;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.custom.ScrolledComposite;
 
 public class Home {
 	private Text nbtext;
-	private Text text_1;
-	private Text text_2;
-	private Text text_3;
-	private int prixtotal = 0;
-	private Text text;
+	private Text fidtext;
+	private Text cbtext;
+	private Text esptext;
+	private float prixtotal = 0;
+	private Text numtext;
 
 	/**
 	 * Launch the application.
@@ -58,7 +60,7 @@ public class Home {
 		final Combo produitcombo = new Combo(grpTransaction, SWT.READ_ONLY);
 		produitcombo.setBounds(84, 45, 156, 31);
 		
-		final List listproduct = new List(grpTransaction, SWT.BORDER);
+		final List listproduct = new List(grpTransaction, SWT.BORDER | SWT.V_SCROLL);
 		listproduct.setBounds(10, 160, 284, 169);
 		
 		Button btnNewButton = new Button(grpTransaction, SWT.NONE);
@@ -78,17 +80,18 @@ public class Home {
 		btnScanner.setText("Scanner");
 		
 		Button btnNewButton_1 = new Button(grpTransaction, SWT.NONE);
+		
 		btnNewButton_1.setBounds(351, 280, 119, 49);
 		btnNewButton_1.setText("Payer");
 		
-		text_1 = new Text(grpTransaction, SWT.BORDER);
-		text_1.setBounds(374, 225, 76, 29);
+		fidtext = new Text(grpTransaction, SWT.BORDER);
+		fidtext.setBounds(374, 225, 76, 29);
 		
-		text_2 = new Text(grpTransaction, SWT.BORDER);
-		text_2.setBounds(374, 177, 76, 29);
+		cbtext = new Text(grpTransaction, SWT.BORDER);
+		cbtext.setBounds(374, 177, 76, 29);
 		
-		text_3 = new Text(grpTransaction, SWT.BORDER);
-		text_3.setBounds(374, 129, 76, 29);
+		esptext = new Text(grpTransaction, SWT.BORDER);
+		esptext.setBounds(374, 129, 76, 29);
 		
 		Label lblEspece = new Label(grpTransaction, SWT.NONE);
 		lblEspece.setBounds(310, 129, 55, 26);
@@ -102,19 +105,20 @@ public class Home {
 		lblFid.setBounds(310, 225, 55, 26);
 		lblFid.setText("Fid");
 		
-		Label lblPrixTotal = new Label(grpTransaction, SWT.NONE);
+		final Label lblPrixTotal = new Label(grpTransaction, SWT.NONE);
 		lblPrixTotal.setBounds(218, 351, 76, 29);
 		lblPrixTotal.setText("Prix total");
 		
-		text = new Text(grpTransaction, SWT.BORDER);
-		text.setBounds(375, 77, 76, 35);
+		numtext = new Text(grpTransaction, SWT.BORDER);
+		numtext.setBounds(375, 77, 76, 35);
 		
 		Label lblNumClient = new Label(grpTransaction, SWT.NONE);
-		lblNumClient.setBounds(297, 81, 82, 26);
+		lblNumClient.setBounds(297, 81, 76, 26);
 		lblNumClient.setText("Num client");
 
 		//remplissage de la combobox
-		Set<Produit> tabproduct = new HashSet<Produit>();
+		final Set<Produit> tabproduct = new HashSet<Produit>();
+		final Set<Produit> selectedproducts = new HashSet<Produit>();
 		try {
 			
 			ResultSet rs = Main.bdd.select("select (produit_id,produit_prix, produit_ref, produit_nom,produit_pourcentagepromo) from produit");
@@ -134,15 +138,30 @@ public class Home {
 		btnScanner.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent arg0) {
+				//je chope litem de la combox
 				int index = produitcombo.getSelectionIndex();
 				String select = produitcombo.getItem(index);
-				//String[] tabselect = select.split("-");
-				listproduct.add(select + "-*" + nbtext.getText() );
-				
-				//lblPrixTotal.setText(prixtotal);
+				//je l'add dans ma liste d'objet produit
+				String prod = select.split("-")[0];
+				Iterator e = tabproduct.iterator();
+				//je l'add dans la liste visuel
+				listproduct.add(select + "-*" + nbtext.getText());
+				//j'update le prix total
+				String upprix =  select.split("-")[2];
+				upprix = upprix.replace("€","");
+				prixtotal += (Float.parseFloat(upprix) * Integer.parseInt(nbtext.getText())) ;
+				lblPrixTotal.setText(Float.toString(prixtotal) + "€");
 				
 			}
 		});	
+		
+		//paiement listner j'envoi tous les élément pour une vente
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				float prix = prixtotal;
+			}
+		});
 		
 		shlApplicationCaisse.open();
 		shlApplicationCaisse.layout();

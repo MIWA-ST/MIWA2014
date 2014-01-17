@@ -6,6 +6,7 @@ public class Produit {
 	private long ref = 0;
 	private float prix = 0;
 	private int promo = 0;
+	private int quantite = 0;
 	
 	public Produit(String string, String string2, String string3, String string4, String string5) {
 		this.id = Integer.parseInt(string);
@@ -63,6 +64,14 @@ public class Produit {
 
 	public void setRef(long ref) {
 		this.ref = ref;
+	}
+
+	public int getQuantite() {
+		return quantite;
+	}
+
+	public void setQuantite(int quantite) {
+		this.quantite = quantite;
 	}
 	
 }
