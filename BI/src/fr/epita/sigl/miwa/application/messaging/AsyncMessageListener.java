@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.controller.BIController;
-import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -14,7 +13,7 @@ import fr.epita.sigl.miwa.st.async.message.AAsyncMessageListener;
 public class AsyncMessageListener extends AAsyncMessageListener {
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
-	private BIController controller = new BIController();
+	private BIController controller = BIController.getInstance();
 	
 	@Override
 	public void onException(Exception e) {

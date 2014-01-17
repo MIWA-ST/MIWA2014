@@ -2,29 +2,36 @@ package fr.epita.sigl.miwa.application.clock;
 
 import java.util.Date;
 
+import fr.epita.sigl.miwa.application.controller.BIController;
+import fr.epita.sigl.miwa.application.enums.EClockMessage;
 import fr.epita.sigl.miwa.st.clock.ClockFactory;
 import fr.epita.sigl.miwa.st.clock.IExposedClock;
 
 public class ClockClient {
 
+	private static BIController controller = BIController.getInstance();
 	/*
-	 * Récupère l'horloge serveur pour faire des requêtes dessus (getHour, wakeMeUp, ...)
+	 * Rï¿½cupï¿½re l'horloge serveur pour faire des requï¿½tes dessus (getHour, wakeMeUp, ...)
 	 */
 	static public IExposedClock getClock() {
 		return ClockFactory.getServerClock();
 	}
 	
 	/*
-	 * Vous ne devez faire aucun appel à cette fonction, seulement remplir le code
-	 * Elle est automatiquement appelée lorsque l'horloge vous contacte
+	 * Vous ne devez faire aucun appel ï¿½ cette fonction, seulement remplir le code
+	 * Elle est automatiquement appelï¿½e lorsque l'horloge vous contacte
 	 */
 	@Deprecated
 	static public void wakeUp(Date date, Object message) {
-		if (message instanceof String) {
-			if (message.equals("Hello World!")) {
-				System.out.println(date.toString() + " : Hello dear client!");
-			} else {
-				System.out.println(date.toString() + " : " + message);
+		if (message instanceof EClockMessage) {
+			EClockMessage clockMessage = (EClockMessage) message;
+			switch (clockMessage) {
+			case STOCK:
+				controller.generateStockStatistic();
+				break;
+
+			default:
+				break;
 			}
 		}
 	}	

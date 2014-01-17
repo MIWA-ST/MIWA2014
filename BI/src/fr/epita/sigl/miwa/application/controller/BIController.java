@@ -60,8 +60,17 @@ public class BIController {
 
 	private boolean hasDetailSaleInternetSegmentation = false;
 
-	/** @param message */
-	public void generateStockStatistic(String message) {
+	private BIController(){
+	}
+
+	private static class BIControllerHolder{
+		private final static BIController instance = new BIController();
+	}
+	
+	public static BIController getInstance(){
+		return BIControllerHolder.instance;
+	}
+	public void generateStockStatistic() {
 		while (!hasStockBO && !hasStockGC){
 			try {
 				wait(10000);
@@ -78,8 +87,7 @@ public class BIController {
 		printer.publishStockStatistics(stockStatistics);
 	}
 
-	/** @param message */
-	public void generateSaleStatistic(String message) {
+	public void generateSaleStatistic() {
 		while (!hasSaleBO){
 			try {
 				wait(10000);
