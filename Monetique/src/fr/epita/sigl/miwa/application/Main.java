@@ -8,17 +8,13 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import java.sql.*;
-
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
-import fr.epita.sigl.miwa.db.DbHandler;
 import fr.epita.sigl.miwa.db.InitMysqlConnector;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
@@ -67,7 +63,6 @@ public class Main {
         } catch ( SQLException e ) {
             System.err.println("ERROR : " + e.getMessage());
         }*/
-		
 		
 	    DocumentBuilder db;
 		try {
