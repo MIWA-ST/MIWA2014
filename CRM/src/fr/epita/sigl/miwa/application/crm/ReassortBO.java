@@ -4,54 +4,44 @@ import java.util.List;
 
 public class ReassortBO
 {
-	private String commandNumber;
-	private String dateBC;
-	private String dateBL;
-	private String BackOfficeRef;
-	private String backOfficePhone;
-	private String backOfficeAddress;
-	private List<TicketReduc> articles;
+	private String civilite;
+	private String naissance;
+	private String codepostal;
+	private String situationfam;
+	private int nbenfant;
+	private String typecarte;
 	
-	public String getCommandNumber() {
-		return commandNumber;
+	public String getCivilite() {
+		return civilite;
 	}
-	public void setCommandNumber(String commandNumber) {
-		this.commandNumber = commandNumber;
+	public void setCivilite(String civilite) {
+		this.civilite = civilite;
 	}
-	public String getDateBC() {
-		return dateBC;
+	public String getNaissance() {
+		return naissance;
 	}
-	public void setDateBC(String dateBC) {
-		this.dateBC = dateBC;
+	public void setCodepostal(String codepostal) {
+		this.codepostal = codepostal;
 	}
-	public String getDateBL() {
-		return dateBL;
+	public String getCodepostal() {
+		return codepostal;
 	}
-	public void setDateBL(String dateBL) {
-		this.dateBL = dateBL;
+	public void setSituationfam(String situationfam) {
+		this.situationfam = situationfam;
 	}
-	public String getBackOfficeRef() {
-		return BackOfficeRef;
+	public String getSituationfam() {
+		return situationfam;
 	}
-	public void setBackOfficeRef(String backOfficeRef) {
-		BackOfficeRef = backOfficeRef;
+	public void setNbenfant(int nbenfant) {
+		this.nbenfant = nbenfant;
 	}
-	public String getBackOfficePhone() {
-		return backOfficePhone;
+	public int getNbenfant() {
+		return nbenfant;
 	}
-	public void setBackOfficePhone(String backOfficePhone) {
-		this.backOfficePhone = backOfficePhone;
+	public String getTypecarte() {
+		return typecarte;
 	}
-	public String getBackOfficeAddress() {
-		return backOfficeAddress;
-	}
-	public void setBackOfficeAddress(String backOfficeAddress) {
-		this.backOfficeAddress = backOfficeAddress;
-	}
-	public List<TicketReduc> getArticles() {
-		return articles;
-	}
-	public void setArticles(List<TicketReduc> articles) {
-		this.articles = articles;
+	public void setBackOfficeAddress(String typecarte) {
+		this.typecarte = typecarte;
 	}
 }

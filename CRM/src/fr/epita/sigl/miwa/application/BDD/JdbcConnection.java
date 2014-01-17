@@ -6,9 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
-import fr.epita.sigl.miwa.application.crm.SegmentationClient;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.crm.ReassortBO;
+import fr.epita.sigl.miwa.application.object.Segmentation;
 
 
 public class JdbcConnection
@@ -76,7 +76,7 @@ public class JdbcConnection
 		}
 	}
 	
-	public void insertCommandeInternet(SegmentationClient command)
+	public void insertCommandeInternet(Segmentation command)
 	{
 		try
 		{
@@ -94,7 +94,7 @@ public class JdbcConnection
 				statement.setString(6, command.getCustomerFirstname());
 				statement.setString(7, command.getCustomerAddress());
 */
-				int rowsInserted = statement.executeUpdate();
+				/*int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
 				{
 					System.out.println("Nouvelle commande ajoutée en base !");
@@ -113,7 +113,7 @@ public class JdbcConnection
 						statement.setString(2, command.getCommandNumber());
 						statement.executeUpdate();
 					}
-				}
+				}*/
 			}
 		}
 		catch (SQLException e)

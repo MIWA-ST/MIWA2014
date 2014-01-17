@@ -46,6 +46,7 @@ public class XMLManager
 		// Récupération des critères
 		ArrayList<Critere> criteres = new ArrayList<Critere>();
 		NodeList nList = doc.getElementsByTagName("CRITERE");
+
 		for (int temp = 0; temp < nList.getLength(); temp++) 
 		{
 			
