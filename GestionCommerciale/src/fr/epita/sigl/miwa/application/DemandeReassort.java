@@ -11,7 +11,7 @@ public class DemandeReassort {
 	private String backOfficeAddress;
 	private List<Articles> articles;
 	private List<String> quantity;
-	private String traite;
+	private String traite = "false";
 	
 	public String getCommandNumber() {
 		return commandNumber;
@@ -72,6 +72,12 @@ public class DemandeReassort {
 	public boolean stock_suffisant() {
 		int demande = 0;
 		int stock = 0;
+		
+		JdbcConnection.getInstance().getConnection();
+		DemandeNiveauStock dns = JdbcConnection.getInstance().envoi_all_stock();
+		JdbcConnection.getInstance().closeConnection();
+		
+		dns = dns;
 		
 		if (stock >= demande)
 			return true;

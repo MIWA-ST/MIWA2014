@@ -12,7 +12,7 @@ public class CommandeInternet {
 	private String customerAddress;
 	private List<Articles> articles;
 	private List<String> quantity;
-	private String traite;
+	private String traite = "false";
 	
 	public String getCommandNumber() {
 		return commandNumber;

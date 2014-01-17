@@ -9,7 +9,7 @@ private String bon_commande;
 private String bon_livraion;
 private List<Articles> articles;
 private List<String> quantity;
-private String traitee;
+private String traitee = "false";
 
 public String getNumero_commande() {
 	return numero_commande;

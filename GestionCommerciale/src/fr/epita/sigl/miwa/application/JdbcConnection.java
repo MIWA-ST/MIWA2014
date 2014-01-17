@@ -28,7 +28,6 @@ public class JdbcConnection
 		try
 		{
 			Class.forName("org.postgresql.Driver");
- 
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -79,7 +78,7 @@ public class JdbcConnection
 			System.out.println("Insert Articles");
 			if (connection != null)
 			{
-				String request = "UPDATE OR INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?) MATCHING (ref_article)";
+				String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, article.getRef_article());
@@ -132,7 +131,7 @@ public class JdbcConnection
 			System.out.println("Insert commandes_fournisseur");
 			if (connection != null)
 			{
-				String request = "UPDATE OR INSERT INTO commandes_fournisseur (numero_commande, date_bon_de_commande, date_bon_de_livraison, traitee) VALUES (?, ?, ?, ?) MATCHING (numero_commande)";
+				String request = "INSERT INTO commandes_fournisseur (numero_commande, date_bon_de_commande, date_bon_de_livraison, traitee) VALUES (?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, cmd.getNumero_commande());
@@ -142,20 +141,18 @@ public class JdbcConnection
 				
 				statement.executeUpdate();
 				
-				/// Si y a un bug, ça vient de là
-				ResultSet res = statement.getGeneratedKeys();
-				int id = res.getInt(1);
 				int indice = 0;
+			
 				for (Articles a : cmd.getArticles()) {
-				String request2 = "INSERT INTO commande_fournisseur_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
+					String request2 = "INSERT INTO commande_fournisseur_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
 							
-				PreparedStatement statement2 = connection.prepareStatement(request2);
-				statement.setString(1, Integer.toString(id));
-				statement.setString(2, a.getRef_article());
-				statement.setString(3, cmd.getquantity().get(indice));
+					PreparedStatement statement2 = connection.prepareStatement(request2);
+					statement2.setString(1, cmd.getNumero_commande());
+					statement2.setString(2, a.getRef_article());
+					statement2.setString(3, cmd.getquantity().get(indice));
 				
-				statement2.executeUpdate();
-				indice++;
+					statement2.executeUpdate();
+					indice++;
 				}
 			}
 		}
@@ -172,7 +169,7 @@ public class JdbcConnection
 			System.out.println("Insert commandes internet");
 			if (connection != null)
 			{
-				String request = "UPDATE OR INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_client, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?) MATCHING (numero_commande)";
+				String request = "INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_client, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, cmd.getCommandNumber());
@@ -216,7 +213,7 @@ public class JdbcConnection
 			System.out.println("Insert demande reassort");
 			if (connection != null)
 			{
-				String request = "UPDATE OR INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traite) VALUES (?, ?, ?, ?, ?, ?) MATCHING (numero_demande)";
+				String request = "INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traite) VALUES (?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, dmd.getCommandNumber());
@@ -282,7 +279,7 @@ public class JdbcConnection
 			System.out.println("Insert stock entrepôt");
 			if (connection != null)
 			{
-				String request = "UPDATE OR INSERT INTO stock_entrepot (ref_article, quantite) VALUES (?, ?) MATCHING (ref_article)";
+				String request = "INSERT INTO stock_entrepot (ref_article, quantite) VALUES (?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, stck.getArticle().getRef_article());
@@ -304,7 +301,7 @@ public class JdbcConnection
 			System.out.println("Insert stock magasin");
 			if (connection != null)
 			{
-				String request = "UPDATE OR INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?) MATCHING (ref_article, id_magasin)";
+				String request = " INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?) MATCHING (ref_article, id_magasin)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, mgs.getArticle().getRef_article());
@@ -327,7 +324,7 @@ public class JdbcConnection
 			System.out.println("Insert demande niveau stock");
 			if (connection != null)
 			{
-				String request = "UPDATE OR INSERT INTO demande_niveau_stock (numero_demande, date_demande, date_reponse, ref_bo) VALUES (?, ?, ?, ?) MATCHING (numero_demande)";
+				String request = "INSERT INTO demande_niveau_stock (numero_demande, date_demande, date_reponse, ref_bo) VALUES (?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, dmd.getCommandNumber());
