@@ -67,7 +67,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					// AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content,
 					// EApplication.ENTREPOT);
 					// LOGGER.info("Envoi de la commande fournisseur à l'entrepot");
-					
+
 					// Demande Reassort
 					// Stock Suffisant ?
 					// Si oui > Suite
@@ -87,8 +87,9 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				}
 			} else if (source == EApplication.ENTREPOT) {
 				if (root.toLowerCase().equals("livraisonscommandefournisseur")) {
-					
-					XMLManager.getInstance().getbonlivraisonfromEntrepot(message, doc);
+
+					XMLManager.getInstance().getbonlivraisonfromEntrepot(
+							message, doc);
 
 					// FIXME incrémenter les stocks
 
@@ -106,7 +107,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			} else if (source == EApplication.INTERNET) {
 				if (root.toLowerCase().equals("demandeniveaudestockinternet")) {
 					LOGGER.info("On envoie les niveaux de stock à internet");
-					
+
 					DemandeNiveauStock dns = XMLManager.getInstance()
 							.getdemandeniveaustockfromInternet(message, doc);
 
@@ -123,35 +124,40 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					LOGGER.info("Envoi des stocks à internet");
 				}
 			} else if (source == EApplication.MDM) {
-				if (root.toLowerCase().equals("xml")){
-				List<Articles> liste = new ArrayList<Articles>();
-					//a faire recepetion prix fournisseur
-					liste = XMLManager.getInstance().getprixfournisseurs(message, doc);
-				
-					//definir prix ventes et les stocker
+				if (root.toLowerCase().equals("xml")) {
+					List<Articles> liste = new ArrayList<Articles>();
+					// a faire recepetion prix fournisseur
+					liste = XMLManager.getInstance().getprixfournisseurs(
+							message, doc);
 
-					//A faire envoyer au ref les prix des articles
-						LOGGER.info("prix de vente des articles reçus par le référentiel");
-						
-						JdbcConnection.getInstance().getConnection();
-						List<Articles> art = JdbcConnection.getInstance().envoiPrixArticle();
-						JdbcConnection.getInstance().closeConnection();
-						
-						content = XMLManager.getInstance().envoiprixventetoRef(art);
-						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
-						LOGGER.info("Envoi des prix de vente des articles au référentiel effectué");
-					
-					//Envoyer promotions au ref
-						LOGGER.info("promotion des articles par le référentiel");
-						
-						JdbcConnection.getInstance().getConnection();
-						List<Promotions> prom = JdbcConnection.getInstance().envoiPromotions();
-						JdbcConnection.getInstance().closeConnection();
-						
-						content = XMLManager.getInstance().envoipromotoRef(prom);
-						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
-						LOGGER.info("Envoi des promotions des articles au référentiel effectué");					
-			}			
+					// definir prix ventes et les stocker
+
+					// A faire envoyer au ref les prix des articles
+					LOGGER.info("prix de vente des articles reçus par le référentiel");
+
+					JdbcConnection.getInstance().getConnection();
+					List<Articles> art = JdbcConnection.getInstance()
+							.envoiPrixArticle();
+					JdbcConnection.getInstance().closeConnection();
+
+					content = XMLManager.getInstance().envoiprixventetoRef(art);
+					AsyncMessageFactory.getInstance().getAsyncMessageManager()
+							.send(content, EApplication.MDM);
+					LOGGER.info("Envoi des prix de vente des articles au référentiel effectué");
+
+					// Envoyer promotions au ref
+					LOGGER.info("promotion des articles par le référentiel");
+
+					JdbcConnection.getInstance().getConnection();
+					List<Promotions> prom = JdbcConnection.getInstance()
+							.envoiPromotions();
+					JdbcConnection.getInstance().closeConnection();
+
+					content = XMLManager.getInstance().envoipromotoRef(prom);
+					AsyncMessageFactory.getInstance().getAsyncMessageManager()
+							.send(content, EApplication.MDM);
+					LOGGER.info("Envoi des promotions des articles au référentiel effectué");
+				}
 			}
 
 		} catch (AsyncMessageException | ParserConfigurationException
