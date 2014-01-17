@@ -66,6 +66,11 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					// AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content,
 					// EApplication.ENTREPOT);
 					// LOGGER.info("Envoi de la commande fournisseur à l'entrepot");
+					
+					// Demande Reassort
+					// Stock Suffisant ?
+					// Si oui > Suite
+					// Si non > Commande Fournisseur
 
 					content = XMLManager.getInstance()
 							.envoidemandereassorttoEntrepot(demandereassort);
