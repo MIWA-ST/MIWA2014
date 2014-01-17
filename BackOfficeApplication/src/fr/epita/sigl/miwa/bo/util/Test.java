@@ -12,7 +12,7 @@ import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
 import fr.epita.sigl.miwa.bo.plug.PlugReferential;
 import fr.epita.sigl.miwa.bo.plug.PlugWarehouse;
 import fr.epita.sigl.miwa.bo.xmlconstructor.BusinessIntelligenceXMLConstructor;
-import fr.epita.sigl.miwa.bo.xmlconstructor.BusinessManagementXMLConstructor;
+import fr.epita.sigl.miwa.bo.xmlconstructor.StoreManagementXMLConstructor;
 import fr.epita.sigl.miwa.bo.xmlconstructor.CashRegisterXMLConstructor;
 
 public class Test
@@ -86,7 +86,7 @@ public class Test
 		System.out.println("* TEST - CONSTRUCT RESTOCK REQUEST RECEPTION XML*");
 		System.out.println("*************************************************");
 		
-		BusinessManagementXMLConstructor xmlConstructor = new BusinessManagementXMLConstructor();
+		StoreManagementXMLConstructor xmlConstructor = new StoreManagementXMLConstructor();
 		System.out.println(xmlConstructor.restockRequestReception(PlugBusinessManagement.restockRequestReceptionObject()));
 	}
 	
@@ -96,7 +96,7 @@ public class Test
 		System.out.println("* TEST - CONSTRUCT RESTOCK REQUEST XML*");
 		System.out.println("***************************************");
 		
-		BusinessManagementXMLConstructor xmlConstructor = new BusinessManagementXMLConstructor();
+		StoreManagementXMLConstructor xmlConstructor = new StoreManagementXMLConstructor();
 		System.out.println(xmlConstructor.restockRequest(PlugBusinessManagement.restockRequestObject()));
 	}
 	

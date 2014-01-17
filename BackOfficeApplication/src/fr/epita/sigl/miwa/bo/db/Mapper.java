@@ -6,101 +6,116 @@ import java.sql.SQLException;
 
 public class Mapper
 {
-	private String sqlRequest = "";
+	private static String sqlRequest = "";
 	
-	public int add(String table, String columnsClause, String valuesClause)
+	public static int add(String table, String columnsClause, String valuesClause)
 	{
+		JdbcConnection.getInstance().OpenConnection();
 		try
 		{
-			this.sqlRequest = "INSERT INTO " + table + "(" + columnsClause + ") VALUES (" + valuesClause + ")";
+			sqlRequest = "INSERT INTO " + table + "(" + columnsClause + ") VALUES (" + valuesClause + ")";
 			
-			PreparedStatement ps = JdbcConnection.getInstance().getConnection().prepareStatement(this.sqlRequest);
+			PreparedStatement ps = JdbcConnection.getInstance().getConnection().prepareStatement(sqlRequest);
 			
             int i = ps.executeUpdate();
 
             if (i != 0)
             {
-            	System.out.println("Request: " + this.sqlRequest);
+            	System.out.println("Request: " + sqlRequest);
             	System.out.println("Inserted in table " + table);
+            	JdbcConnection.getInstance().closeConnection();
             	return i;
             } 
             else
             {
               System.out.println("not Inserted");
+              JdbcConnection.getInstance().closeConnection();
               return -1;
             }
          }
          catch (Exception e)
          {
+        	 JdbcConnection.getInstance().closeConnection();
+        	 e.printStackTrace();
              return -1;
          }
 	}
 	
-	public void delete(String table, int id)
+	public static void delete(String table, String idName,int id)
 	{
+		JdbcConnection.getInstance().OpenConnection();
 		try
 		{
-			PreparedStatement ps = JdbcConnection.getInstance().getConnection().prepareStatement("DELETE FROM " + table + " WHERE ID=" + id);
+			PreparedStatement ps = JdbcConnection.getInstance().getConnection().prepareStatement("DELETE FROM " + table + " WHERE " + idName + "=" + id);
  
             int i = ps.executeUpdate();
             if (i != 0)
             {
-            	System.out.println("Request: " + this.sqlRequest);
+            	System.out.println("Request: " + sqlRequest);
                 System.out.println("Deleted in table " + table);
             }
             else
             {
                 System.out.println("not deleted");
             }
+            JdbcConnection.getInstance().closeConnection();
         }
 		catch (Exception e)
         {
+			JdbcConnection.getInstance().closeConnection();
              e.printStackTrace();
         }		
 	}
 
-	public void update(String table, String setClause, String whereClause)
+	public static void update(String table, String setClause, String whereClause)
 	{
+		JdbcConnection.getInstance().OpenConnection();
 		try
 		{
-			this.sqlRequest = "UPDATE " + table + " SET " + setClause + " WHERE " + whereClause;
-			PreparedStatement ps = JdbcConnection.getInstance().getConnection().prepareStatement(this.sqlRequest);
+			sqlRequest = "UPDATE " + table + " SET " + setClause + " WHERE " + whereClause;
+			PreparedStatement ps = JdbcConnection.getInstance().getConnection().prepareStatement(sqlRequest);
 
             int i = ps.executeUpdate();
             if (i != 0)
             {
-            	System.out.println("request: " + this.sqlRequest);
+            	System.out.println("request: " + sqlRequest);
             	System.out.println("updated table " + table);
             }
             else
             {
                 System.out.println("not updated");
             }
+            JdbcConnection.getInstance().closeConnection();
         }
 		catch (Exception e)
 		{
-            
+			JdbcConnection.getInstance().closeConnection();
+            e.printStackTrace();
         }
 	}
 
-	public ResultSet get(String selectClause, String table, String whereClause)
-	{		
+	public static ResultSet get(String selectClause, String table, String whereClause)
+	{
+		JdbcConnection.getInstance().OpenConnection();
 		try
 		{
-			this.sqlRequest = "SELECT " + selectClause + " FROM " + table + " WHERE " + whereClause;
-			PreparedStatement ps = JdbcConnection.getInstance().getConnection().prepareStatement(this.sqlRequest);				
+			sqlRequest = "SELECT " + selectClause + " FROM " + table + " WHERE " + whereClause;
+			PreparedStatement ps = JdbcConnection.getInstance().getConnection().prepareStatement(sqlRequest);				
 			
             ResultSet res = ps.executeQuery();
        
             if (res.next())
             {
+            	JdbcConnection.getInstance().closeConnection();
             	return res;
             }
-            
+            JdbcConnection.getInstance().closeConnection();
             return null;
         }
 		catch (SQLException e)
         {
+			JdbcConnection.getInstance().closeConnection();
+			e.printStackTrace();
             return null;
         }
 	}

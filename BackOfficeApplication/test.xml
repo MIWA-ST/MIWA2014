@@ -1,0 +1,5 @@
+<ENTETE objet='article-prix-promo' source='bo' date='2013-12-18'/>
+<ARTICLES>
+  <ARTICLE nomarticle='poire' refarticle='P456' prix='11' promotion='25' />
+</ARTICLES>
+

@@ -43,7 +43,7 @@ public class JdbcConnection
  
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/miwa", "postgres", "root");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/miwabo", "postgres", "root");
 		}
 		catch (SQLException e)
 		{
