@@ -1,6 +1,10 @@
 package fr.epita.sigl.miwa.application;
 
 //import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -19,7 +23,13 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		//JdbcConnection.getInstance().getConnection();
+		try {
+			new BufferedReader(new InputStreamReader(System.in)).readLine();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//TODO JdbcConnection.getInstance().getConnection();
 		
 		try
 		{
@@ -30,7 +40,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		//JdbcConnection.getInstance().closeConnection();
+		//TODO JdbcConnection.getInstance().closeConnection();
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()

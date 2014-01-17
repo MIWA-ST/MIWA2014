@@ -162,9 +162,11 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
+			log.severe("toto");
 			if (!Conf.getInstance().clockIsLocal()) {
 				try {
 					LocateRegistry.createRegistry(1099);
+					log.severe("registry runned");
 				} catch (RemoteException e1) {
 					log.severe("Failed to create Registry" + e1.getMessage());
 				}
