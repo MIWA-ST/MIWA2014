@@ -1,0 +1,68 @@
+package fr.epita.sigl.miwa.application;
+
+public class Produit {
+	private int id = 0;
+	private String nom = "";
+	private long ref = 0;
+	private float prix = 0;
+	private int promo = 0;
+	
+	public Produit(String string, String string2, String string3, String string4, String string5) {
+		this.id = Integer.parseInt(string);
+		this.prix = Float.parseFloat(string2);
+		this.setRef(Long.parseLong(string3));
+		this.nom = string4;
+		this.promo = Integer.parseInt(string5);
+		
+	}
+
+	public void produit(int id, float prix, String nom, int promo)
+	{
+		this.id = id;
+		this.nom = nom;
+		this.prix = prix;
+		this.promo = promo;
+		
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getNom() {
+		return nom;
+	}
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
+	public float getPrix() {
+		return prix;
+	}
+
+	public void setPrix(float prix) {
+		this.prix = prix;
+	}
+
+	public int getPromo() {
+		return promo;
+	}
+
+	public void setPromo(int promo) {
+		this.promo = promo;
+	}
+
+	public long getRef() {
+		return ref;
+	}
+
+	public void setRef(long ref) {
+		this.ref = ref;
+	}
+	
+}

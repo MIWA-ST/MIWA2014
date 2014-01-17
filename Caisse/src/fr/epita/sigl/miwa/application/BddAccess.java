@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BddAccess {
 	private String url;
@@ -34,6 +36,14 @@ public class BddAccess {
 		Statement state = null;
 		state = connection.createStatement();
 		state.executeUpdate(sqlQuery);
+	}
+	
+	public String[] parseresult (String string)
+	{
+		string = string.replace("(", "");
+		string = string.replace(")", "");
+		String[] str1Array =  string.split(",");
+		return str1Array;
 	}
 
 }
