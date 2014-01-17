@@ -1,0 +1,121 @@
+:BaseRootDAOSessionMethods
+the methods related to session factory retrieval and initialization
+	protected static Map sessionFactoryMap = new HashMap();
+	protected static ThreadLocal threadedSessions = new ThreadLocal();
+
+	/**
+	 * Configure the session factory by reading hibernate config file
+	 */
+	public static void initialize () throws HibernateException {
+		initialize((String) null);
+	}
+	
+	/**
+	 * Configure the session factory by reading hibernate config file
+	 * @param configFileName the name of the configuration file
+	 */
+	public static void initialize (String configFileName) throws HibernateException {
+		if (null == configFileName && sessionFactoryMap.size() > 0) return;
+		else if (null != sessionFactoryMap.get(configFileName)) return;
+		else {
+			Configuration cfg = new Configuration();
+			if (null == configFileName)
+				cfg.configure();
+			else
+				cfg.configure(configFileName);
+			setSessionFactory(configFileName, cfg.buildSessionFactory());
+		}
+	}
+
+	/**
+	 * Set the session factory
+	 */
+	protected static void setSessionFactory (SessionFactory sessionFactory) {
+		setSessionFactory((String) null, sessionFactory);
+	}
+
+	/**
+	 * Set the session factory
+	 */
+	protected static void setSessionFactory (String configFileName, SessionFactory sessionFactory) {
+		sessionFactoryMap.put(configFileName, sessionFactory);
+	}
+
+	/**
+	 * Return the SessionFactory that is to be used by these DAOs.  Change this
+	 * and implement your own strategy if you, for example, want to pull the SessionFactory
+	 * from the JNDI tree.
+	 */
+	protected SessionFactory getSessionFactory() throws HibernateException {
+		return getSessionFactory (getConfigurationFileName());
+	}
+
+	private static SessionFactory getSessionFactory(String configFile) throws HibernateException {
+		if (sessionFactoryMap.size() == 1) return (SessionFactory) sessionFactoryMap.values().toArray()[0];
+		else {
+    		SessionFactory sessionFactory = (SessionFactory) sessionFactoryMap.get(configFile);
+    		if (null == sessionFactory)
+    			if (null == configFile)
+    				throw new RuntimeException("The session factory has not been initialized.");
+    			else
+    				throw new RuntimeException("The session factory for '" + configFile + "' has not been initialized.");
+    		else
+    			return sessionFactory;
+		}
+	}
+
+	/**
+	 * Return a new Session object that must be closed when the work has been completed.
+	 * @return the active Session
+	 */
+	protected Session getSession() throws HibernateException {
+		return createSession();
+	}
+
+	/**
+	 * Return a new Session object that must be closed when the work has been completed.
+	 * @return the active Session
+	 */
+	public static Session createSession() throws HibernateException {
+		return createSession(null);
+	}
+
+	/**
+	 * Return a new Session object that must be closed when the work has been completed.
+	 * @param configFile the config file must match the meta attribute "config-file" in the hibernate mapping file
+	 * @return the active Session
+	 */
+	public static Session createSession(String configFile) throws HibernateException {
+		java.util.Stack sessionStack = (java.util.Stack) threadedSessions.get();
+		Session session = null;
+		if (null == sessionStack) {
+			sessionStack = new java.util.Stack();
+			threadedSessions.set(sessionStack);
+		}
+		if (sessionStack.size() > 0) {
+			Object[] arr = (Object[]) sessionStack.peek();
+			String cf = (String) arr[0];
+			if (null == cf) {
+				session = (Session) arr[1];
+			}
+			else if (null != cf && null != configFile) {
+				if (cf.equals(configFile)) session = (Session) arr[1];
+			}
+			if (null == session) {
+				session = getSessionFactory(configFile).openSession();
+				arr = new Object[2];
+				arr[0] = configFile;
+				arr[1] = session;
+				sessionStack.push(arr);
+			}
+		}
+		else {
+			session = getSessionFactory(configFile).openSession();
+			Object[] arr = new Object[2];
+			arr = new Object[2];
+			arr[0] = configFile;
+			arr[1] = session;
+			sessionStack.push(arr);
+		}
+		return session;
+	}

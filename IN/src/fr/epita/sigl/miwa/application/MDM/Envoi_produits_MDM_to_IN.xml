@@ -1,23 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!-- 
 Référentiel => BO, BI, Internet
+	objet : VARCHAR(256) -> liste-article
+	source : VARCHAR(20) -> mdm
+	date : date (AAAA-MM-JJ)
 	reference : CHAR(32)
 	ean : CHAR(13)
 	categorie : CHAR(32)
 	prix_fournisseur : Numeric(2)
 	prix_vente : Numeric(2)
-	debut : date
-	fin : date
+	debut : date (AAAA-MM-JJ)
+	fin : date (AAAA-MM-JJ)
 	percent : integer
 	DESCRIPTION : VARCHAR(2048)
 -->
-<PRODUCTS>
-	<PRODUCT reference="VX566655D" ean="EaN" categorie="CATEGORIE" prix_fournisseur="512" prix_vente="1024">
-		<DESCRIPTION>qsd</DESCRIPTION>
-		<PROMOTIONS>
-			<PROMOTION debut="20140101" fin="20140102" percent="33" />
-			<PROMOTION debut="20140102" fin="20140103" percent="66" />
-			<PROMOTION debut="20140103" fin="20140104" percent="99" />
-		</PROMOTIONS>
-	</PRODUCT>
-</PRODUCTS>
+<XML>
+<ENTETE objet="obj" source="MDM" date="01172014"/>
+	<ARTICLES>
+		<ARTICLE reference="REF" ean="EAN" categorie="CAT" prix_fournisseur="32" prix_vente="67">
+			<DESCRIPTION><![CDATA[<Texte multi lignes de description du produit.>]]> </DESCRIPTION>
+			<PROMOTIONS>
+				<PROMOTION debut="01022014" fin="01172014" pourcent="37" />
+			</PROMOTIONS>
+		</ARTICLE>
+				<ARTICLE reference="REF" ean="EAN" categorie="CAT" prix_fournisseur="32" prix_vente="67">
+			<DESCRIPTION><![CDATA[<Texte multi lignes de description du produit.>]]> </DESCRIPTION>
+			<PROMOTIONS>
+				<PROMOTION debut="01022014" fin="01172014" pourcent="37" />
+			</PROMOTIONS>
+		</ARTICLE>
+	</ARTICLES>
+</XML>

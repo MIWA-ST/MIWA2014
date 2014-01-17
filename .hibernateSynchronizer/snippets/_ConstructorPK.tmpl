@@ -1,0 +1,16 @@
+:ConstructorPK
+This is the constructor for the primary key object
+	public Base${class.Id.Property.ClassName} () {}
+	
+	public Base${class.Id.Property.ClassName} (
+#set ($countT = 1)
+#foreach ($prop in $class.Id.Properties)
+		${prop.SignatureFullClassName} ${prop.JavaName}#if ($countT < $class.Id.Properties.size()),
+#end
+#set ($countT = $countT + 1)
+#end) {
+
+#foreach ($prop in $class.Id.Properties)
+		this.${prop.SetterName}(${prop.JavaName});
+#end
+	}

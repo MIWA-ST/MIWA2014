@@ -1,0 +1,56 @@
+:HashCode
+Method for the retrieving the object hash code
+#if ($class.Id || $class.AlternateKeys.size() > 0)
+#if ($class.Id.hasExternalClass())
+	public int hashCode () {
+		if (Integer.MIN_VALUE == this.hashCode) {
+#if ($class.AlternateKeys.size() == 0)
+#if ($class.Id.Property.isPrimitive())
+			return (int) this.${class.Id.Property.GetterName}();
+#else
+			if (null == this.${class.Id.Property.GetterName}()) return super.hashCode();
+			else {
+				String hashStr = this.getClass().getName() + ":" + this.${class.Id.Property.GetterName}().hashCode();
+				this.hashCode = hashStr.hashCode();
+			}
+#end
+#else
+			StringBuffer hashStr = new StringBuffer();
+			hashStr.append(this.getClass().getName() + ":");
+#foreach ($prop in $class.AlternateKeys)
+#if ($prop.isPrimitive())
+			hashStr.append(new ${prop.ObjectClass}(this.${prop.GetterName}()).toString() + ":");
+#else
+			if (null == this.${prop.GetterName}()) return super.hashCode();
+			else hashStr.append(this.${prop.GetterName}().toString() + ":");
+#end
+#end
+			this.hashCode = hashStr.toString().hashCode();
+#end
+		}
+		return this.hashCode;
+	}
+#else
+	public int hashCode () {
+		if (Integer.MIN_VALUE == this.hashCode) {
+			StringBuffer sb = new StringBuffer();
+#foreach ($prop in $class.Id.Properties)
+#if ($prop.isPrimitive())
+			sb.append(new $!{prop.ObjectClass}(this.${prop.GetterName}()).hashCode());
+			sb.append(":");
+#else
+			if (null != this.${prop.GetterName}()) {
+				sb.append(this.${prop.GetterName}().hashCode());
+				sb.append(":");
+			}
+			else {
+				return super.hashCode();
+			}
+#end
+#end
+			this.hashCode = sb.toString().hashCode();
+		}
+		return this.hashCode;
+	}
+#end
+#end

@@ -1,0 +1,11 @@
+:CustomProps
+the meta data related to a property
+#foreach ($entry in $prop.CustomProperties.entrySet())
+
+	/**
+	 * Custom property
+	 */
+	public static String get${prop.PropName}${entry.Key} () {
+		return "${entry.Value}";
+	}
+#end

@@ -1,0 +1,39 @@
+:BaseRootDAOHelperMethods
+root DAO utility methods
+	/**
+	 * Close the session
+	 */
+	public void closeSession () throws HibernateException {
+		java.util.Stack sessionStack = (java.util.Stack) threadedSessions.get();
+		if (null != sessionStack) {
+			Object[] arr = (Object[]) sessionStack.peek();
+			String cf = (String) arr[0];
+			if (null == cf) {
+				Session session = (Session) arr[1];
+				session.close();
+				sessionStack.pop();
+			}
+			else {
+				String configurationFile = getConfigurationFileName();
+				if (null != configurationFile && configurationFile.equals(cf)) {
+					Session session = (Session) arr[1];
+					session.close();
+					sessionStack.pop();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Begin the transaction related to the session
+	 */
+	public Transaction beginTransaction(Session s) throws HibernateException {
+		return s.beginTransaction();
+	}
+
+	/**
+	 * Commit the given transaction
+	 */
+	public void commitTransaction(Transaction t) throws HibernateException {
+		t.commit();
+	}

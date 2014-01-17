@@ -29,9 +29,11 @@ public class Main {
 			//ClockClient.getClock().wakeMeUp(new Date("12/13/2013 23:12:13"), "Test");
 			EApplication to = EApplication.INTERNET;
 			ClockClient.wakeUp(new Date("12/13/2013 23:12:13"), to.toString());
+
 			
 			ParseXML parser = new ParseXML("src/fr/epita/sigl/miwa/application/MDM/Envoi_produits_MDM_to_IN.xml");
-			parser.readXML();
+			parser.readXML2();
+			parser.parseMDM("stream");
 			
 			Thread.sleep(40000);
 		} catch (InterruptedException e) {

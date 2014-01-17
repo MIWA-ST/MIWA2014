@@ -1,0 +1,164 @@
+:BaseRootDAOActionMethods
+root DAO action methods
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Load object matching the given key and return it.
+	 */
+	protected Object load(Class refClass, Serializable key) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return load(refClass, key, s);
+		} finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Load object matching the given key and return it.
+	 */
+	protected Object load(Class refClass, Serializable key, Session s) throws HibernateException {
+		return s.load(refClass, key);
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Persist the given transient instance, first assigning a generated identifier. 
+	 * (Or using the current value of the identifier property if the assigned generator is used.) 
+	 */
+	protected Serializable save(Object obj) throws HibernateException {
+		Transaction t = null;
+		Session s = null;
+		try {
+			s = getSession();
+			t = beginTransaction(s);
+			Serializable rtn = save(obj, s);
+			commitTransaction(t);
+			return rtn;
+		}
+		catch (HibernateException e) {
+			if (null != t) t.rollback();
+            throw e;
+		}
+		finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Persist the given transient instance, first assigning a generated identifier. 
+	 * (Or using the current value of the identifier property if the assigned generator is used.) 
+	 */
+	protected Serializable save(Object obj, Session s) throws HibernateException {
+		return s.save(obj);
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Either save() or update() the given instance, depending upon the value of its
+	 * identifier property.
+	 */
+	protected void saveOrUpdate(Object obj) throws HibernateException {
+		Transaction t = null;
+		Session s = null;
+		try {
+			s = getSession();
+			t = beginTransaction(s);
+			saveOrUpdate(obj, s);
+			commitTransaction(t);
+		}
+		catch (HibernateException e) {
+			if (null != t) t.rollback();
+            throw e;
+		}
+		finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Either save() or update() the given instance, depending upon the value of its
+	 * identifier property.
+	 */
+	protected void saveOrUpdate(Object obj, Session s) throws HibernateException {
+		s.saveOrUpdate(obj);
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Update the persistent state associated with the given identifier. An exception is thrown if there is a persistent
+	 * instance with the same identifier in the current session.
+	 * @param obj a transient instance containing updated state
+	 */
+	protected void update(Object obj) throws HibernateException {
+		Transaction t = null;
+		Session s = null;
+		try {
+			s = getSession();
+			t = beginTransaction(s);
+			update(obj, s);
+			commitTransaction(t);
+		}
+		catch (HibernateException e) {
+			if (null != t) t.rollback();
+            throw e;
+		}
+		finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Update the persistent state associated with the given identifier. An exception is thrown if there is a persistent
+	 * instance with the same identifier in the current session.
+	 * @param obj a transient instance containing updated state
+	 * @param s the Session
+	 */
+	protected void update(Object obj, Session s) throws HibernateException {
+		s.update(obj);
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Remove a persistent instance from the datastore. The argument may be an instance associated with the receiving
+	 * Session or a transient instance with an identifier associated with existing persistent state. 
+	 */
+	protected void delete(Object obj) throws HibernateException {
+		Transaction t = null;
+		Session s = null;
+		try {
+			s = getSession();
+			t = beginTransaction(s);
+			delete(obj, s);
+			commitTransaction(t);
+		}
+		catch (HibernateException e) {
+			if (null != t) t.rollback();
+            throw e;
+		}
+		finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Remove a persistent instance from the datastore. The argument may be an instance associated with the receiving
+	 * Session or a transient instance with an identifier associated with existing persistent state. 
+	 */
+	protected void delete(Object obj, Session s) throws HibernateException {
+		s.delete(obj);
+	}
+
+	/**
+	 * Used by the base DAO classes but here for your modification
+	 * Re-read the state of the given instance from the underlying database. It is inadvisable to use this to implement
+	 * long-running sessions that span many business tasks. This method is, however, useful in certain special circumstances.
+	 */
+	protected void refresh(Object obj, Session s) throws HibernateException {
+		s.refresh(obj);
+	}

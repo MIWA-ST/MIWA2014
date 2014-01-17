@@ -1,0 +1,23 @@
+:HashCodePK
+Method for the retrieving the object hash code in the primary key class
+	public int hashCode () {
+		if (Integer.MIN_VALUE == this.hashCode) {
+			StringBuffer sb = new StringBuffer();
+#foreach ($prop in $class.Id.Properties)
+#if ($prop.isPrimitive())
+			sb.append(new $!{prop.ObjectClass}(this.${prop.GetterName}()).hashCode());
+			sb.append(":");
+#else
+			if (null != this.${prop.GetterName}()) {
+				sb.append(this.${prop.GetterName}().hashCode());
+				sb.append(":");
+			}
+			else {
+				return super.hashCode();
+			}
+#end
+#end
+			this.hashCode = sb.toString().hashCode();
+		}
+		return this.hashCode;
+	}

@@ -75,7 +75,6 @@ public class ArticleAVendreMDM {
 	
 	public void print()
 	{
-		System.out.println("Article A Vendre - PRODUCTS : [");
 		if (this.reference != null)
 			System.out.println("	reference : " + this.reference);
 		else
@@ -111,10 +110,9 @@ public class ArticleAVendreMDM {
 			System.out.println("	PROMOTIONS : [");
 			for(PromotionArticleMDM promotion : promotions)
 				promotion.print();
-			System.out.println("	]");
+			System.out.println("			]");
 		}
 		else
 			System.out.println("	PROMOTIONS : NULL");
-		System.out.println("]");
 	}
 }

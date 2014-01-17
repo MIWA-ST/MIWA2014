@@ -1,0 +1,125 @@
+:VariableDeclarations
+all variable declarations
+#if ($class.Id)
+
+	private int hashCode = Integer.MIN_VALUE;
+#end
+#if ($class.Id)
+
+	// primary key
+#if ($class.Id.hasExternalClass())
+	private ${class.Id.Property.FullClassName} ${class.Id.Property.JavaName};
+#else
+#foreach ($prop in $class.Id.Properties)
+#set ($desc = "")
+#set ($desc = $prop.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#end
+	private ${prop.SignatureFullClassName} ${prop.JavaName};
+#end
+#end
+#end
+#if ($class.Version)
+
+#set ($desc = "")
+#set ($desc = $prop.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#else
+	// version
+#end
+	private ${class.Version.FullClassName} ${class.Version.JavaName};
+#end
+#if ($class.Timestamp)
+
+#set ($desc = "")
+#set ($desc = $prop.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#else
+	// timestamp
+#end
+	private ${class.Timestamp.FullClassName} ${class.Timestamp.JavaName};
+#end
+#if ($class.ComponentParent)
+	
+	// component parent reference
+	private $class.Parent.FullClassName ${class.ComponentParent.JavaName};
+#end
+#if ($class.Properties.size() > 0)
+
+	// fields
+#foreach ($prop in $class.Properties)
+#set ($desc = "")
+#set ($desc = $prop.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#end
+	private ${prop.FullClassName} ${prop.JavaName};
+#end
+#end
+#if ($class.ComponentList.size() > 0)
+
+	// components
+#foreach ($component in $class.ComponentList)
+#set ($desc = "")
+#set ($desc = $component.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#end
+	private ${component.FullClassName} ${component.JavaName};
+#end
+#end
+#if ($class.OneToOneList.size() > 0)
+
+	// one to one
+#foreach ($prop in $class.OneToOneList)
+#set ($desc = "")
+#set ($desc = $prop.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#end
+	private ${prop.FullClassName} ${prop.JavaName};
+#end
+#end
+#if ($class.ManyToOneList.size() > 0)
+
+	// many to one
+#foreach ($prop in $class.ManyToOneList)
+#set ($desc = "")
+#set ($desc = $prop.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#end
+	private ${prop.SignatureFullClassName} ${prop.JavaName};
+#end
+#end
+#if ($class.CollectionList.size() > 0)
+
+	// collections
+#foreach ($prop in $class.CollectionList)
+#set ($desc = "")
+#set ($desc = $prop.getJavaDoc("FieldDescription", "	 "))
+#if ($desc && $desc != "")
+	/*
+$desc
+	 */
+#end
+	private ${prop.FullClassName} ${prop.JavaName};
+#end
+#end

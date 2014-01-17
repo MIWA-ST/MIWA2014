@@ -1,0 +1,7 @@
+:BaseDAOImport
+the import statements for the base DAO
+#if ($class.ParentRoot.Id)
+import net.sf.hibernate.Hibernate;
+#end
+import net.sf.hibernate.Session;
+import ${class.DAOPackageName}.${class.DAOClassName};

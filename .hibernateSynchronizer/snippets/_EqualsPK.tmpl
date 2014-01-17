@@ -1,0 +1,30 @@
+:EqualsPK
+Method for the base objects to determine equality in the primary key class
+	public boolean equals (Object obj) {
+		if (null == obj) return false;
+		if (!(obj instanceof ${class.Id.Property.FullClassName})) return false;
+		else {
+			${class.Id.Property.FullClassName} mObj = (${class.Id.Property.FullClassName}) obj;
+#foreach ($prop in $class.Id.Properties)
+#if ($prop.isPrimitive())
+			if (this.${prop.GetterName}() != mObj.${prop.GetterName}()) {
+				return false;
+			}
+#else
+			if (null != this.${prop.GetterName}() && null != mObj.${prop.GetterName}()) {
+				if (!this.${prop.GetterName}().equals(mObj.${prop.GetterName}())) {
+					return false;
+				}
+			}
+			else {
+				return false;
+			}
+#end
+#end
+#if ($class.Id.Properties.size() > 0)
+			return true;
+#else
+			return super.equals(obj);
+#end
+		}
+	}

@@ -1,0 +1,6 @@
+:IdSetter
+the "setter" method for the value object properties that is part of the primary key
+	public void ${prop.SetterName} (${prop.SignatureFullClassName} ${prop.JavaName}) {
+		hashCode = Integer.MIN_VALUE;
+		this.${prop.JavaName} = ${prop.JavaName};
+	}

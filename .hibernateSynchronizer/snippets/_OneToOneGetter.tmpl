@@ -1,0 +1,12 @@
+:OneToOneGetter
+the "getter" method for the value object one-to-one entries
+	/**
+     * @hibernate.property
+     *  column=${prop.Column}
+#if ($prop.isNotNull())
+	 * not-null=true
+#end
+	 */
+	public ${prop.FullClassName} ${prop.GetterName} () {
+		return this.${prop.JavaName};
+	}

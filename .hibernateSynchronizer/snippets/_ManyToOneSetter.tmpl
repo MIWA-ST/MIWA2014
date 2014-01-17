@@ -1,0 +1,12 @@
+:ManyToOneSetter
+the "setter" method for the value object many-to-one entries
+	/**
+	 * Set the value related to the column: ${prop.Column}
+	 * @param ${prop.JavaName} the ${prop.Column} value
+	 */
+	public void ${prop.SetterName} (${prop.SignatureFullClassName} ${prop.JavaName}) {
+		this.${prop.JavaName} = ${prop.JavaName};
+#if ($prop.isAlternateKey())
+		this.hashCode = Integer.MIN_VALUE;
+#end
+	}

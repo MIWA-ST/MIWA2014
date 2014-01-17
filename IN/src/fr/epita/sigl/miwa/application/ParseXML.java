@@ -14,6 +14,7 @@ import fr.epita.sigl.miwa.application.CR.PromotionClientCR;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockGC;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticlesGC;
 import fr.epita.sigl.miwa.application.MDM.ArticleAVendreMDM;
+import fr.epita.sigl.miwa.application.MDM.ProductsClientEnteteMDM;
 import fr.epita.sigl.miwa.application.MDM.ProductsClientMDM;
 import fr.epita.sigl.miwa.application.MDM.PromotionArticleMDM;
 
@@ -32,7 +33,24 @@ public class ParseXML {
 		this.filename = filename;
 	}
 	
-	@SuppressWarnings("deprecation")
+	public String createXML(String destination, String feedName)
+	{
+		if (destination.equals("BI"))
+			createXMLBI(feedName);
+		
+		return null;
+	}
+	
+	public String createXMLBI(String feedName)
+	{
+		if (feedName.equals("ventes détaillées"))
+		{
+			
+		}
+		
+		return null;
+	}
+	
 	public void readXML()
 	{
 		SAXBuilder saxBuilder = new SAXBuilder();
@@ -44,19 +62,86 @@ public class ParseXML {
 			System.out.println("Fichier introuvable : " + filename);
 		}
 		
-		// Parse de la GC
 		root = document.getRootElement();
+		
+		// Parse de la GC
 		if (root.getName().equals("DEMANDENIVEAUDESTOCKINTERNET"))
-			parseGC();
+			parseGC("");
 		// Parse du CRM
 		else if (root.getName().equals("INFORMATIONS"))
-			parseCRM();
+			parseCRM("");
 		// Parse du MDM
 		else if (root.getName().equals("PRODUCTS"))
-			parseMDM();
+			parseMDM("");
+		else
+			System.out.println("Parse error. File : " + filename);
+	}
+
+	public void readXML2()
+	{
+		SAXBuilder saxBuilder = new SAXBuilder();
+		File file = new File(filename);
+		
+		try {
+			document = saxBuilder.build(file);
+		} catch (Exception e) {
+			System.out.println("Fichier introuvable : " + filename);
+		}
+		
+		root = document.getRootElement();
 	}
 	
-	public void parseMDM()
+	public void parseMDM(String stream)
+	{
+		if (stream.equals("stream"))
+		{
+			if (!root.getName().equals("XML"))
+			{
+				System.out.println("Parse error. File : " + filename);
+				return;
+			}
+		}
+		// Creation de l'objet correspondant
+		ProductsClientMDM productsClient = new ProductsClientMDM();
+		
+		// Récupération des informations du fichier XML
+		
+		// Récupération de l'entete
+		Element e1 = root.getChild("ENTETE");
+		productsClient.setEntete(new ProductsClientEnteteMDM(e1.getAttributeValue("objet"),
+															e1.getAttributeValue("source"),
+															e1.getAttributeValue("date")));
+		
+		Element articlesProductClient = root.getChild("ARTICLES");
+		
+		List<Element> listProducts = articlesProductClient.getChildren("ARTICLE");
+		// Element product = root.getChild("ARTICLE");
+		for(Element e : listProducts)
+		{
+			ArticleAVendreMDM articleAVendre = new ArticleAVendreMDM();
+			
+			articleAVendre.setReference(e.getAttributeValue("reference"));
+			articleAVendre.setEan(e.getAttributeValue("ean"));
+			articleAVendre.setCategorie(e.getAttributeValue("categorie"));
+			articleAVendre.setPrix_fournisseur(Integer.parseInt(e.getAttributeValue("prix_fournisseur")));
+			articleAVendre.setPrix_vente(Integer.parseInt(e.getAttributeValue("prix_vente")));
+			
+			articleAVendre.setDescription(e.getChildText("DESCRIPTION"));
+			
+			Element promitions = e.getChild("PROMOTIONS");
+			List<Element> listPromotions = promitions.getChildren("PROMOTION");
+
+			for(Element elt : listPromotions)
+				articleAVendre.getPromotions().add(new PromotionArticleMDM(elt.getAttributeValue("debut"),
+						elt.getAttributeValue("fin"),
+						Integer.parseInt(elt.getAttributeValue("pourcent"))));
+			
+			productsClient.getArticles().add(articleAVendre);
+		}
+		productsClient.print();
+	}
+	
+/*	public void parseMDM()
 	{
 		// Creation de l'objet correspondant
 		ProductsClientMDM productsClient = new ProductsClientMDM();
@@ -89,9 +174,18 @@ public class ParseXML {
 		}
 		productsClient.print();
 	}
+	*/
 	
-	public void parseCRM()
+	public void parseCRM(String stream)
 	{
+		if (stream.equals("stream"))
+		{
+			if (!root.getName().equals("INFORMATIONS"))
+			{
+				System.out.println("Parse error. File : " + filename);
+				return;
+			}
+		}
 		// Creation de l'objet correspondant
 		PromotionClientCR promotionClient = new PromotionClientCR();
 		
@@ -110,8 +204,16 @@ public class ParseXML {
 		//promotionClient.print();
 	}
 	
-	public void parseGC()
+	public void parseGC(String stream)
 	{
+		if (stream.equals("stream"))
+		{
+			if (!root.getName().equals("DEMANDENIVEAUDESTOCKINTERNET"))
+			{
+				System.out.println("Parse error. File : " + filename);
+				return;
+			}
+		}
 		// Creation de l'objet correspondant
 		DemandeNiveauStockGC demandeNiveauStock = new DemandeNiveauStockGC();
 		

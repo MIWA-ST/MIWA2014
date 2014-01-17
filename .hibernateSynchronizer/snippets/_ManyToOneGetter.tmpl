@@ -1,0 +1,12 @@
+:ManyToOneGetter
+the "getter" method for the value object many-to-one entries
+	/**
+     * @hibernate.property
+     *  column=${prop.Column}
+#if ($prop.isNotNull())
+	 * not-null=true
+#end
+	 */
+	public ${prop.SignatureFullClassName} ${prop.GetterName} () {
+		return this.${prop.JavaName};
+	}

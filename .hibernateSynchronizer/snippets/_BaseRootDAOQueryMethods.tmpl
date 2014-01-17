@@ -1,0 +1,370 @@
+:BaseRootDAOQueryMethods
+root DAO query methods
+	/**
+	 * Execute a query. 
+	 * @param query a query expressed in Hibernate's query language
+	 * @return a distinct list of instances (or arrays of instances)
+	 */
+	public java.util.List find(String query) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return find(query, s);
+		} finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Perform a find but use the session given instead of creating a new one.
+	 * @param query a query expressed in Hibernate's query language
+	 * @s the Session to use
+	 */
+	public java.util.List find(String query, Session s) throws HibernateException {
+		return s.find(query);
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with no filter.
+	 */
+	public java.util.List findAll () throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+    		return findAll(s);
+		}
+		finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with no filter.
+	 * Use the session given.
+	 * @param s the Session
+	 */
+	public java.util.List findAll (Session s) throws HibernateException {
+   		return findAll(s, getDefaultOrderProperty());
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with no filter.
+	 */
+	public java.util.List findAll (String orderProperty) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return findAll(s, orderProperty);
+		}
+		finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with no filter.
+	 * Use the session given.
+	 * @param s the Session
+	 */
+	public java.util.List findAll (Session s, String orderProperty) throws HibernateException {
+		Criteria crit = createCriteria(s);
+		if (null != orderProperty) crit.addOrder(Order.asc(orderProperty));
+		return crit.list();
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with a filter.
+	 * Use the session given.
+	 * @param propName the name of the property to use for filtering
+	 * @param filter the value of the filter
+	 */
+	protected java.util.List findFiltered (String propName, Object filter) throws HibernateException {
+		return findFiltered(propName, filter, getDefaultOrderProperty());
+	}
+
+	/**
+	 * Return all objects related to the implementation of this DAO with a filter.
+	 * Use the session given.
+	 * @param propName the name of the property to use for filtering
+	 * @param filter the value of the filter
+	 * @param orderProperty the name of the property used for ordering
+	 */
+	protected java.util.List findFiltered (String propName, Object filter, String orderProperty) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return findFiltered(s, propName, filter, getDefaultOrderProperty());
+		}
+		finally {
+			closeSession();
+		}
+	}
+	
+	/**
+	 * Return all objects related to the implementation of this DAO with a filter.
+	 * Use the session given.
+	 * @param s the Session
+	 * @param propName the name of the property to use for filtering
+	 * @param filter the value of the filter
+	 * @param orderProperty the name of the property used for ordering
+	 */
+	protected java.util.List findFiltered (Session s, String propName, Object filter, String orderProperty) throws HibernateException {
+		Criteria crit = createCriteria(s);
+		crit.add(Expression.eq(propName, filter));
+		if (null != orderProperty) crit.addOrder(Order.asc(orderProperty));
+		return crit.list();
+	}
+	
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * @param name the name of a query defined externally 
+	 * @return Query
+	 */
+	public java.util.List getNamedQuery(String name) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getNamedQuery(name, s);
+		} finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the session given.
+	 * @param name the name of a query defined externally 
+	 * @param s the Session
+	 * @return Query
+	 */
+	public java.util.List getNamedQuery(String name, Session s) throws HibernateException {
+		Query q = s.getNamedQuery(name);
+		return q.list();
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given.
+	 * @param name the name of a query defined externally 
+	 * @param params the parameter array
+	 * @return Query
+	 */
+	public java.util.List getNamedQuery(String name, Serializable[] params)
+		throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getNamedQuery(name, params, s);
+		} finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given and the Session given.
+	 * @param name the name of a query defined externally 
+	 * @param params the parameter array
+	 * @s the Session
+	 * @return Query
+	 */
+	public java.util.List getNamedQuery(String name, Serializable[] params, Session s)
+		throws HibernateException {
+		Query q = s.getNamedQuery(name);
+		if (null != params) {
+			for (int i = 0; i < params.length; i++) {
+				setParameterValue(q, i, params[i]);
+			}
+		}
+		return q.list();
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given.
+	 * @param name the name of a query defined externally 
+	 * @param params the parameter Map
+	 * @return Query
+	 */
+	public java.util.List getNamedQuery(String name, Map params)
+		throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return getNamedQuery(name, params, s);
+		} finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Obtain an instance of Query for a named query string defined in the mapping file.
+	 * Use the parameters given and the Session given.
+	 * @param name the name of a query defined externally 
+	 * @param params the parameter Map
+	 * @s the Session
+	 * @return Query
+	 */
+	public java.util.List getNamedQuery(String name, Map params, Session s)
+		throws HibernateException {
+		Query q = s.getNamedQuery(name);
+		if (null != params) {
+			for (Iterator i=params.entrySet().iterator(); i.hasNext(); ) {
+				Map.Entry entry = (Map.Entry) i.next();
+				setParameterValue(q, (String) entry.getKey(), entry.getValue());
+			}
+		}
+		return q.list();
+	}
+
+	/**
+	 * Execute a query.
+	 * @param query a query expressed in Hibernate's query language
+	 * @return a distinct list of instances (or arrays of instances)
+	 */
+	public java.util.List find(String query, Object obj, Type type) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return find(query, obj, type, s);
+		}
+		finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Perform a find but use the session given instead of creating a new one.
+	 * @param query a query expressed in Hibernate's query language
+	 * @s the Session to use
+	 */
+	public java.util.List find(String query, Object obj, Type type, Session s) throws HibernateException {
+		return s.find(query, obj, type);
+	}
+
+	/**
+	 * Execute a query.
+	 * @param query a query expressed in Hibernate's query language
+	 * @return a distinct list of instances (or arrays of instances)
+	 */
+	public java.util.List find(String query, Object[] obj, Type[] type) throws HibernateException {
+		Session s = null;
+		try {
+			s = getSession();
+			return find(query, obj, type, s);
+		}
+		finally {
+			closeSession();
+		}
+	}
+
+	/**
+	 * Perform a find but use the session given instead of creating a new one.
+	 * @param query a query expressed in Hibernate's query language
+	 * @s the Session to use
+	 */
+	public java.util.List find(String query, Object[] obj, Type[] type, Session s) throws HibernateException {
+		return s.find(query, obj, type);
+	}
+
+	/**
+	 * Return a Criteria object that relates to the DAO's table.
+	 * A session will be created if an open one is not located.  This session must be closed!
+	 */
+	protected Criteria createCriteria () throws HibernateException {
+		Session s = getSession();
+		return createCriteria(s);
+	}
+
+	/**
+	 * Return a Criteria object that relates to the DAO's table
+	 */
+	 protected Criteria createCriteria (Session s) throws HibernateException {
+	 	return s.createCriteria(getReferenceClass());
+	 }
+
+	/**
+	 * Return the property of the class you would like to use for default ordering
+	 * @return the property name
+	 */
+	public String getDefaultOrderProperty () {
+		return null;
+	}
+
+	/**
+	 * Convenience method to set paramers in the query given based on the actual object type in passed in as the value.
+	 * You may need to add more functionaly to this as desired (or not use this at all).
+	 * @param query the Query to set
+	 * @param position the ordinal position of the current parameter within the query
+	 * @param value the object to set as the parameter
+	 */
+	protected void setParameterValue(Query query, int position, Object value) {
+		if (null == value) {
+			return;
+		} else if (value instanceof Boolean) {
+			query.setBoolean(position, ((Boolean) value).booleanValue());
+		} else if (value instanceof String) {
+			query.setString(position, (String) value);
+		} else if (value instanceof Integer) {
+			query.setInteger(position, ((Integer) value).intValue());
+		} else if (value instanceof Long) {
+			query.setLong(position, ((Long) value).longValue());
+		} else if (value instanceof Float) {
+			query.setFloat(position, ((Float) value).floatValue());
+		} else if (value instanceof Double) {
+			query.setDouble(position, ((Double) value).doubleValue());
+		} else if (value instanceof BigDecimal) {
+			query.setBigDecimal(position, (BigDecimal) value);
+		} else if (value instanceof Byte) {
+			query.setByte(position, ((Byte) value).byteValue());
+		} else if (value instanceof Calendar) {
+			query.setCalendar(position, (Calendar) value);
+		} else if (value instanceof Character) {
+			query.setCharacter(position, ((Character) value).charValue());
+		} else if (value instanceof Timestamp) {
+			query.setTimestamp(position, (Timestamp) value);
+		} else if (value instanceof Date) {
+			query.setDate(position, (Date) value);
+		} else if (value instanceof Short) {
+			query.setShort(position, ((Short) value).shortValue());
+		}
+	}
+
+	/**
+	 * Convenience method to set paramers in the query given based on the actual object type in passed in as the value.
+	 * You may need to add more functionaly to this as desired (or not use this at all).
+	 * @param query the Query to set
+	 * @param key the key name
+	 * @param value the object to set as the parameter
+	 */
+	protected void setParameterValue(Query query, String key, Object value) {
+		if (null == key || null == value) {
+			return;
+		} else if (value instanceof Boolean) {
+			query.setBoolean(key, ((Boolean) value).booleanValue());
+		} else if (value instanceof String) {
+			query.setString(key, (String) value);
+		} else if (value instanceof Integer) {
+			query.setInteger(key, ((Integer) value).intValue());
+		} else if (value instanceof Long) {
+			query.setLong(key, ((Long) value).longValue());
+		} else if (value instanceof Float) {
+			query.setFloat(key, ((Float) value).floatValue());
+		} else if (value instanceof Double) {
+			query.setDouble(key, ((Double) value).doubleValue());
+		} else if (value instanceof BigDecimal) {
+			query.setBigDecimal(key, (BigDecimal) value);
+		} else if (value instanceof Byte) {
+			query.setByte(key, ((Byte) value).byteValue());
+		} else if (value instanceof Calendar) {
+			query.setCalendar(key, (Calendar) value);
+		} else if (value instanceof Character) {
+			query.setCharacter(key, ((Character) value).charValue());
+		} else if (value instanceof Timestamp) {
+			query.setTimestamp(key, (Timestamp) value);
+		} else if (value instanceof Date) {
+			query.setDate(key, (Date) value);
+		} else if (value instanceof Short) {
+			query.setShort(key, ((Short) value).shortValue());
+		}
+	}

@@ -1,0 +1,59 @@
+:IdProps
+Getter and Setter methods for the Id method(s) in the value object class
+#if ($class.Id)
+#if ($class.Id.hasExternalClass())
+
+	/**
+	 * Return the unique identifier of this class
+     * @hibernate.id
+#if ($class.Id.Generator)
+     *  generator-class="${class.Id.Generator.GeneratorClass}"
+#end
+#if (!$class.Id.isComposite())
+     *  column="$!{class.Id.Property.Column}"
+#end
+     */
+	public ${class.Id.Property.FullClassName} ${class.Id.Property.GetterName} () {
+		return ${class.Id.Property.JavaName};
+	}
+
+	/**
+	 * Set the unique identifier of this class
+	 * @param ${class.Id.Property.JavaName} the new ID
+	 */
+	public void ${class.Id.Property.SetterName} (${class.Id.Property.FullClassName} ${class.Id.Property.JavaName}) {
+		this.${class.Id.Property.JavaName} = ${class.Id.Property.JavaName};
+		this.hashCode = Integer.MIN_VALUE;
+	}
+#else
+#foreach ($prop in $class.Id.Properties)
+
+	/**
+     * @hibernate.property
+     *  column=${prop.Column}
+	 * not-null=true
+	 */
+	public ${prop.SignatureFullClassName} ${prop.GetterName} () {
+		return this.${prop.JavaName};
+	}
+
+	/**
+	 * Set the value related to the column: ${prop.Column}
+	 * @param ${prop.JavaName} the ${prop.Column} value
+	 */
+	public void ${prop.SetterName} (${prop.SignatureFullClassName} ${prop.JavaName}) {
+		this.${prop.JavaName} = ${prop.JavaName};
+		this.hashCode = Integer.MIN_VALUE;
+	}
+#foreach ($entry in $prop.CustomProperties.entrySet())
+
+	/**
+	 * Custom property
+	 */
+	public static String get${prop.PropName}${entry.Key} () {
+		return "${entry.Value}";
+	}
+#end
+#end
+#end
+#end

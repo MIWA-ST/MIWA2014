@@ -1,0 +1,6 @@
+:BaseClassImport
+the import statements for the base value object
+import java.io.Serializable;
+#if ($class.hasProxy())
+import $class.FullProxyClassName;
+#end

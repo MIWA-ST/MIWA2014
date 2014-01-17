@@ -1,0 +1,4 @@
+databaseUrl=jdbc:jtds:sqlserver://localhost:5432/MiniGRC_Stockhlom
+driver=net.sourceforge.jtds.jdbc.Driver
+username=postgres
+ConfigurationFile=\IN\hibernate.cfg.xml

@@ -1,0 +1,16 @@
+:CollectionSetter
+the "setter" method for the value object many-to-one entries
+	/**
+	 * Set the value related to the column: ${prop.Column}
+	 * @param ${prop.JavaName} the ${prop.Column} value
+	 */
+	public void ${prop.SetterName} (${prop.FullClassName} ${prop.JavaName}) {
+		this.${prop.JavaName} = ${prop.JavaName};
+	}
+#if ($prop.isSet() || $prop.isList() || $prop.isBag())
+	
+	public void addTo${prop.PropName} (Object obj) {
+		if (null == this.${prop.JavaName}) this.${prop.JavaName} = new $!{prop.Implementation}();
+		this.${prop.JavaName}.add(obj);
+	}
+#end
