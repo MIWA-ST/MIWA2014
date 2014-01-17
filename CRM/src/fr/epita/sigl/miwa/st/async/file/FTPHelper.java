@@ -244,7 +244,7 @@ class FTPHelper implements IAsyncFileHelper {
 		if (!localRepo.exists()) {
 			localRepo.mkdirs();
 		}
-		return retrieve(remoteFolder + File.separatorChar + filename,
+		return retrieve(remoteFolder + '/' + filename,
 				localRepository + File.separatorChar + filename);
 	}
 
@@ -279,6 +279,6 @@ class FTPHelper implements IAsyncFileHelper {
 
 		connect(host, port, username, password);
 		send(localRepository + File.separatorChar + filename, remoteFolder
-				+ File.separatorChar + filename);
+				+ '/' + filename);
 	}
 }
