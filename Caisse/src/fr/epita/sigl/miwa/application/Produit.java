@@ -14,16 +14,20 @@ public class Produit {
 		this.setRef(Long.parseLong(string3));
 		this.nom = string4;
 		this.promo = Integer.parseInt(string5);
-		
 	}
 
-	public void produit(int id, float prix, String nom, int promo)
+	public Produit(int id, float prix, Long ref, String nom, int promo)
 	{
 		this.id = id;
+		this.ref = ref;
 		this.nom = nom;
 		this.prix = prix;
 		this.promo = promo;
 		
+	}
+
+	public Produit() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public int getId() {
