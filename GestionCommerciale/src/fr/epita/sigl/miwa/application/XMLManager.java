@@ -175,7 +175,7 @@ public class XMLManager {
 		return demand;
 	}
 
-	public void getdemandeniveaustockfromInternet(String message,
+	public DemandeNiveauStock getdemandeniveaustockfromInternet(String message,
 			Document doc) throws AsyncMessageException {
 		
 		DemandeNiveauStock demande = new DemandeNiveauStock();
@@ -198,7 +198,7 @@ public class XMLManager {
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertDemandeNiveauStock(demande);
 		JdbcConnection.getInstance().closeConnection();
-	
+	return demande;
 
 	}
 
