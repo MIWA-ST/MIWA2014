@@ -30,7 +30,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.BI, "Coucou BI");
+				EApplication.CRM, "Coucou CRM");
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()

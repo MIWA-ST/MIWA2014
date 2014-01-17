@@ -22,7 +22,9 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
+
 		System.out.println(message);
+
 		return false;
 	}
 

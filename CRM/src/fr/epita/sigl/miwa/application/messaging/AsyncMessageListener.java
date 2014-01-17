@@ -12,18 +12,35 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 	@Override
 	public void onException(Exception e) {
-		// TODO Auto-generated method stub
-		
+		LOGGER.severe("Erreur : " + e);		
 	}
 
 	@Override
-	public void onMessage(String message, EApplication source) {
-		LOGGER.severe(message);		
+	public void onMessage(String message, EApplication source) {	
+		//Message du Back-office
+		if (source == EApplication.BACK_OFFICE){
+			LOGGER.info("Message reçu du Back-office");
+			LOGGER.info("Le message est : " + message);
+		}
+		// Message pas attendu
+		else {
+			LOGGER.info("Message qui ne nous intÃ©resse pas de " + source);
+			LOGGER.info("Le message est : " + message);
+		}
 	}
 
 	@Override
 	public void onFile(File file, EApplication source) {
-		LOGGER.severe(source + " : " + file.getAbsolutePath());		
+		//Message du BI
+		if (source == EApplication.BI){
+			LOGGER.info("Fichier reçu du BI");
+			LOGGER.info("Le path du fichier est : " + file.getAbsolutePath());
+		}	
+		// Fichier non attendu
+		else {
+			LOGGER.severe("Fichier non attendu de " + source);
+			LOGGER.severe("Le path du fichier est : " + file.getAbsolutePath());
+		}
 	}
 
 }

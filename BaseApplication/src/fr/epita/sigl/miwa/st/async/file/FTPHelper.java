@@ -48,16 +48,16 @@ class FTPHelper implements IAsyncFileHelper {
 					+ String.valueOf(port) + "...");
 			ftpClient.connect(address, port);
 
-			LOGGER.info("Login to FTP server " + address + ":"
+			LOGGER.fine("Login to FTP server " + address + ":"
 					+ String.valueOf(port) + "...");
 			ftpClient.login(username, password);
-			LOGGER.info("Login successful to FTP server " + address + ":"
+			LOGGER.fine("Login successful to FTP server " + address + ":"
 					+ String.valueOf(port));
 			int reply = ftpClient.getReplyCode();
 			if (FTPReply.isPositiveCompletion(reply)) {
 				LOGGER.info("Connection established with FTP server " + address
 						+ ":" + String.valueOf(port));
-				LOGGER.info("FTP Welcome message : "
+				LOGGER.fine("FTP Welcome message : "
 						+ ftpClient.getReplyString());
 			} else {
 				disconnect();
@@ -164,9 +164,13 @@ class FTPHelper implements IAsyncFileHelper {
 		OutputStream outputStream = null;
 		File localFile = null;
 		try {
-			LOGGER.info("Trying to retrieve file " + remoteFilepath + " to "
+			LOGGER.fine("Trying to retrieve file " + remoteFilepath + " to "
 					+ localFilepath + "...");
 			localFile = new File(localFilepath);
+			if (!localFile.exists())
+			{
+				localFile.createNewFile();
+			}
 			outputStream = new FileOutputStream(localFile);
 			if (ftpClient != null && ftpClient.isConnected()) {
 				LOGGER.info("Retrieving file " + remoteFilepath + " to "
@@ -221,8 +225,9 @@ class FTPHelper implements IAsyncFileHelper {
 		String username = null;
 		String password = null;
 		try {
-			localRepository = Conf.getInstance()
-					.getLocalRepository();
+			localRepository = Conf.getInstance().getLocalRepository()
+					+ File.separatorChar
+					+ Conf.getInstance().getCurrentApplication().getShortName();
 			host = Conf.getInstance().getFTPHost();
 			port = Conf.getInstance().getFTPPort();
 			username = Conf.getInstance().getFTPUsername();
@@ -231,12 +236,16 @@ class FTPHelper implements IAsyncFileHelper {
 			LOGGER.severe("Failed to load configuration");
 			throw new AsyncFileException("Failed to load configuration", e);
 		}
-		String remoteFolder = Conf.getInstance()
-				.getCurrentApplication().getShortName();
+		String remoteFolder = Conf.getInstance().getCurrentApplication()
+				.getShortName();
 
 		connect(host, port, username, password);
-		return retrieve(remoteFolder + File.separatorChar + filename, localRepository
-				+ File.separatorChar + filename);
+		File localRepo = new File(localRepository);
+		if (!localRepo.exists()) {
+			localRepo.mkdirs();
+		}
+		return retrieve(remoteFolder + '/' + filename,
+				localRepository + File.separatorChar + filename);
 	}
 
 	/*
@@ -256,8 +265,9 @@ class FTPHelper implements IAsyncFileHelper {
 		String username = null;
 		String password = null;
 		try {
-			localRepository = Conf.getInstance()
-					.getLocalRepository();
+			localRepository = Conf.getInstance().getLocalRepository()
+					+ File.separatorChar
+					+ Conf.getInstance().getCurrentApplication().getShortName();
 			host = Conf.getInstance().getFTPHost();
 			port = Conf.getInstance().getFTPPort();
 			username = Conf.getInstance().getFTPUsername();
@@ -269,6 +279,6 @@ class FTPHelper implements IAsyncFileHelper {
 
 		connect(host, port, username, password);
 		send(localRepository + File.separatorChar + filename, remoteFolder
-				+ File.separatorChar + filename);
+				+ '/' + filename);
 	}
 }
