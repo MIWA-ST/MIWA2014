@@ -102,7 +102,7 @@ class LocalFileHelper implements IAsyncFileHelper {
 			throw new AsyncFileException("Failed to find " + from.getPath());
 		}
 		try {
-			LOGGER.fine("Retrieving " + from + " to " + to + "...");
+			LOGGER.info("Retrieving " + from + " to " + to + "...");
 			copy(from.toPath(), to.toPath());
 			LOGGER.info("File " + filename + " retrieved " + to + " !");
 		} catch (IOException e) {
@@ -134,7 +134,7 @@ class LocalFileHelper implements IAsyncFileHelper {
 			throw new AsyncFileException("Failed to find " + from.getPath());
 		}
 		try {
-			LOGGER.fine("Sending " + from + " to " + to + "...");
+			LOGGER.info("Sending " + from + " to " + to + "...");
 			copy(from.toPath(), to.toPath());
 			LOGGER.info("File " + filename + " sent " + to + " !");
 		} catch (IOException e) {

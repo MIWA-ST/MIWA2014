@@ -48,16 +48,16 @@ class FTPHelper implements IAsyncFileHelper {
 					+ String.valueOf(port) + "...");
 			ftpClient.connect(address, port);
 
-			LOGGER.fine("Login to FTP server " + address + ":"
+			LOGGER.info("Login to FTP server " + address + ":"
 					+ String.valueOf(port) + "...");
 			ftpClient.login(username, password);
-			LOGGER.fine("Login successful to FTP server " + address + ":"
+			LOGGER.info("Login successful to FTP server " + address + ":"
 					+ String.valueOf(port));
 			int reply = ftpClient.getReplyCode();
 			if (FTPReply.isPositiveCompletion(reply)) {
 				LOGGER.info("Connection established with FTP server " + address
 						+ ":" + String.valueOf(port));
-				LOGGER.fine("FTP Welcome message : "
+				LOGGER.info("FTP Welcome message : "
 						+ ftpClient.getReplyString());
 			} else {
 				disconnect();
@@ -164,7 +164,7 @@ class FTPHelper implements IAsyncFileHelper {
 		OutputStream outputStream = null;
 		File localFile = null;
 		try {
-			LOGGER.fine("Trying to retrieve file " + remoteFilepath + " to "
+			LOGGER.info("Trying to retrieve file " + remoteFilepath + " to "
 					+ localFilepath + "...");
 			localFile = new File(localFilepath);
 			outputStream = new FileOutputStream(localFile);
