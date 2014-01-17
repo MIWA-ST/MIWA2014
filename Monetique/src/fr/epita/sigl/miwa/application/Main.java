@@ -1,5 +1,7 @@
 package fr.epita.sigl.miwa.application;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -24,7 +26,10 @@ public class Main {
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
+		
 		/* CODE HERE */
+		new BufferedReader(new InputStreamReader(System.in));
+		
 		Date clockDate = ClockClient.getClock().getHour();
 		System.out.println(clockDate);
 		SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "Coucou");
@@ -37,6 +42,7 @@ public class Main {
 		SyncMessHandler.getSyncMessSender().sendMessage(
 				EApplication.BI, "Coucou BI");
 		/* !CODE HERE */
+		
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
 				.stopListener();
