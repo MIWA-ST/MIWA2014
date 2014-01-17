@@ -19,6 +19,7 @@ import fr.epita.sigl.miwa.application.DemandeNiveauStock;
 import fr.epita.sigl.miwa.application.DemandeReassort;
 import fr.epita.sigl.miwa.application.JdbcConnection;
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.Promotions;
 import fr.epita.sigl.miwa.application.XMLManager;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.AAsyncMessageListener;
@@ -99,8 +100,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			} else if (source == EApplication.INTERNET) {
 				if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCKINTERNET")) {
 					LOGGER.info("On envoie les niveaux de stock à internet");
-
-					
 					
 					JdbcConnection.getInstance().getConnection();
 					DemandeNiveauStock demande = JdbcConnection.getInstance().envoiStock(dns);
@@ -126,9 +125,11 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					//Envoyer promotions au ref
 						LOGGER.info("promotion des articles par le référentiel");
 						
+						JdbcConnection.getInstance().getConnection();
+						List<Promotions> prom = JdbcConnection.getInstance().envoiPromotions();
+						JdbcConnection.getInstance().closeConnection();
 						
-						
-						content = XMLManager.getInstance().envoipromotoRef(promos);
+						content = XMLManager.getInstance().envoipromotoRef(prom);
 						AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.MDM);	
 						LOGGER.info("Envoi des promotions des articles au référentiel effectué");					
 			}			

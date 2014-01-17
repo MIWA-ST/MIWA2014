@@ -407,7 +407,7 @@ public class JdbcConnection
 		
 		try
 		{
-			System.out.println("Recup niveau stock");
+			System.out.println("Recup prix article");
 			if (connection != null)
 			{
 				String request = "SELECT ref_article, prix_vente FROM articles";
@@ -422,6 +422,42 @@ public class JdbcConnection
 					Articles a = new Articles ();
 					a.setRef_article(ref_article);
 					a.setPrix_vente(prix_vente);
+					res.add(a);
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public List<Promotions> envoiPromotions () {
+		List<Promotions> res = new ArrayList<>();
+		
+		try
+		{
+			System.out.println("Recup promotions");
+			if (connection != null)
+			{
+				String request = "SELECT ref_article, date_debut, date_fin, pourcentage FROM promotions";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+													
+				ResultSet ret = statement.executeQuery();
+
+				while(ret.next()) {
+					String ref_article = ret.getString("ref_article");
+					String date_debut = ret.getString("date_debut");
+					String date_fin = ret.getString("date_fin");
+					String pourcentage = ret.getString("pourcentage");
+					Promotions a = new Promotions ();
+					a.setRef_article(ref_article);
+					a.setBegin(date_debut);
+					a.setEnd(date_fin);
+					a.setPourcentage(pourcentage);
 					res.add(a);
 				}
 			}
