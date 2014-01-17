@@ -10,7 +10,7 @@ import fr.epita.sigl.miwa.bo.object.NodeAttribute;
 
 public class CashRegisterXMLConstructor extends XMLConstructor
 {
-	/*
+	/* LOG : ***** 
 	NOTRE PROPOSITION CORRIGEE
 	BO => Caisse (Envoi article prix et promo local)
 	fréquence = une fois par jour
@@ -53,7 +53,7 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 		return this.xml;
 	}
 	
-	/*
+	/* LOG : ***** nom article, % promo, prix vente 
 	NOTRE PROPOSITION CORRIGEE
 	BO => Caisse (Envoi correctif prix)
 	fréquence = en live

@@ -12,7 +12,7 @@ import fr.epita.sigl.miwa.bo.object.RestockRequestReception;
 
 public class StoreManagementXMLConstructor extends XMLConstructor
 {
-	/* 
+	/* LOG : ***** 
 	BO => GC (Récéption réassort)
 		numéro de commande : integer (id)
 		date & heure de livraison : timestamp
@@ -92,7 +92,7 @@ public class StoreManagementXMLConstructor extends XMLConstructor
 		return this.xml;
 	}
 	
-	/* 
+	/* LOG : ***** afficher article envoyé + quantité
 	BO => GC (Demande de réassort)
 		numero : CHAR(32)
 		refbo : CHAR(32)

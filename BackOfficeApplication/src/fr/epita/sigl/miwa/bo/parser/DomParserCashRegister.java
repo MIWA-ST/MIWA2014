@@ -18,7 +18,7 @@ public class DomParserCashRegister extends DomParser
 	{
 	}
 	
-	/*
+	/*  LOG : *****
 		Caisse => BO (Envoi tickets de vente)
 		fréquence = une fois par jour
 		<ENTETE objet="ticket-vente-journee" source="caisse" date="AAAAA-MM-JJ"/>

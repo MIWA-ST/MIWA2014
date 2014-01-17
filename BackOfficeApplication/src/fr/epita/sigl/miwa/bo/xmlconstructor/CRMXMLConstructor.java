@@ -10,7 +10,7 @@ import fr.epita.sigl.miwa.bo.object.Sale;
 
 public class CRMXMLConstructor extends XMLConstructor
 {
-	/*
+	/* LOG : ***** 
 	 * <ENETE objet="ticket-client-fidelise" source="bo" date="AAAAA-MM-JJ"/>
 	 * <TICKETVENTE client="" moyenpayement="" >
 	 * 		<ARTICLE refarticle="" quantite="" prix="" />

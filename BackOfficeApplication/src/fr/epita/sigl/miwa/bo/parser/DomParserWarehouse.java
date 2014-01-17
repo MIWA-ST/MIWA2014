@@ -19,7 +19,7 @@ public class DomParserWarehouse extends DomParser
 	{
 	}
 	
-	/* 
+	/* LOG : ***** 
 	Entrepôt => BO
 	numero : CHAR(32)
 	refmagasin: CHAR(32)

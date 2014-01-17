@@ -13,7 +13,7 @@ import fr.epita.sigl.miwa.bo.object.Sale;
 
 public class BusinessIntelligenceXMLConstructor extends XMLConstructor
 {
-	/*
+	/* LOG : *****
 	Objet : Ventes détaillées
 	Provenance : Internet ou BO
 	Destination : BI
@@ -95,7 +95,7 @@ public class BusinessIntelligenceXMLConstructor extends XMLConstructor
 		return this.xml;
 	}
 	
-	/*
+	/* LOG : *****
 	Objet : Ventes par catégorie d'article
 	Provenance : Internet ou BO
 	Destination : BI

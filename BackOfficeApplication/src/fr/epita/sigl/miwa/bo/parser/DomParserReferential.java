@@ -16,7 +16,7 @@ public class DomParserReferential extends DomParser
 	{
 	}
 	
-	/* 
+	/* LOG : ***** [Nombre d'article] articles reçu
 	Référentiel => BO, BI, Internet
 		objet : VARCHAR(256) -> liste-article
 		source : VARCHAR(20) -> mdm
