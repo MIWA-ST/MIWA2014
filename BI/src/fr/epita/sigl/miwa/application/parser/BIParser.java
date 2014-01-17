@@ -261,8 +261,7 @@ public class BIParser {
 				sale.setStore(storeId);
 				tmpInfo = saleNode.getAttributes().getNamedItem("quantité_vendue").getNodeValue();
 				sale.setSoldQty(Integer.valueOf(tmpInfo));
-				tmpInfo = saleNode.getAttributes().getNamedItem("ref-categorie").getNodeValue();
-				// TODO : sale.setProductCategory(BIDao.getCategoryByRef(tmpInfo));
+				sale.setProductCategory(saleNode.getAttributes().getNamedItem("ref-categorie").getNodeValue());
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_fournisseur").getNodeValue();
 				sale.setSupplierTotal(Integer.valueOf(tmpInfo));
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_vente").getNodeValue();
@@ -388,8 +387,7 @@ public class BIParser {
 				sale.setStore("internet");
 				tmpInfo = saleNode.getAttributes().getNamedItem("quantité_vendue").getNodeValue();
 				sale.setSoldQty(Integer.valueOf(tmpInfo));
-				tmpInfo = saleNode.getAttributes().getNamedItem("ref-categorie").getNodeValue();
-				// TODO : sale.setProductCategory(BIDao.getCategoryByRef(tmpInfo));
+				sale.setProductCategory(saleNode.getAttributes().getNamedItem("ref-categorie").getNodeValue());
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_fournisseur").getNodeValue();
 				sale.setSupplierTotal(Integer.valueOf(tmpInfo));
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_vente").getNodeValue();
@@ -512,7 +510,7 @@ public class BIParser {
 				detailSale.setStore(storeId);
 				
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("numero_client").getNodeValue();
-				// TODO : detailSale.setClient(BIDao.getClientById(Integer.valueOf(tmpInfo)));
+				detailSale.setClientNb(Integer.valueOf(tmpInfo));
 				
 				// Construction de la liste des produits vendus pour le ticket
 				NodeList soldProductNodes = detailSaleNode.getChildNodes();
@@ -520,8 +518,7 @@ public class BIParser {
 					Node soldProductNode = soldProductNodes.item(j);
 					SoldProduct soldProduct = new SoldProduct();
 					
-					tmpInfo = soldProductNode.getAttributes().getNamedItem("ref-article").getNodeValue();
-					// TODO : soldProduct.setProduct(BIDao.getProductByRef(tmpInfo));
+					soldProduct.setProductRef(soldProductNode.getAttributes().getNamedItem("ref-article").getNodeValue());
 					tmpInfo = soldProductNode.getAttributes().getNamedItem("quantité").getNodeValue();
 					soldProduct.setQuantity(Integer.valueOf(tmpInfo));
 					

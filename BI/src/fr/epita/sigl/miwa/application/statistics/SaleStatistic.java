@@ -2,30 +2,30 @@ package fr.epita.sigl.miwa.application.statistics;
 
 public class SaleStatistic {
 
-	private int categorie;
+	private String categorie;
 	
 	private float evolution;
 	
-	private boolean hausse;
-	
-	private int ca;
+	private float ca;
 	
 	private float caPourcent;
+	
+	private int nbSoldProducts;
 
-	public SaleStatistic(int categorie, float evolution, boolean hausse, int ca,
-			float caPourcent) {
+	public SaleStatistic(String categorie, float evolution, float ca,
+			float caPourcent, int nbSoldProducts) {
 		this.categorie = categorie;
 		this.evolution = evolution;
-		this.hausse = hausse;
 		this.ca = ca;
 		this.caPourcent = caPourcent;
+		this.nbSoldProducts = nbSoldProducts;
 	}
-
-	public int getCategorie() {
+	
+	public String getCategorie() {
 		return categorie;
 	}
 
-	public void setCategorie(int categorie) {
+	public void setCategorie(String categorie) {
 		this.categorie = categorie;
 	}
 
@@ -37,19 +37,11 @@ public class SaleStatistic {
 		this.evolution = evolution;
 	}
 
-	public boolean isHausse() {
-		return hausse;
-	}
-
-	public void setHausse(boolean hausse) {
-		this.hausse = hausse;
-	}
-
-	public int getCa() {
+	public float getCa() {
 		return ca;
 	}
 
-	public void setCa(int ca) {
+	public void setCa(float ca) {
 		this.ca = ca;
 	}
 
@@ -59,6 +51,14 @@ public class SaleStatistic {
 
 	public void setCaPourcent(float caPourcent) {
 		this.caPourcent = caPourcent;
+	}
+
+	public int getNbSoldProducts() {
+		return nbSoldProducts;
+	}
+
+	public void setNbSoldProducts(int nbSoldProducts) {
+		this.nbSoldProducts = nbSoldProducts;
 	}
 	
 }

@@ -2,7 +2,7 @@ package fr.epita.sigl.miwa.application.statistics;
 
 import fr.epita.sigl.miwa.application.enums.EPaiementType;
 
-public class PaiementStatistic {
+public class PaymentStatistic {
 	
 	private EPaiementType type;
 
@@ -10,7 +10,7 @@ public class PaiementStatistic {
 
 	private float caPourcent;
 
-	public PaiementStatistic(EPaiementType type, int ca, float caPourcent) {
+	public PaymentStatistic(EPaiementType type, int ca, float caPourcent) {
 		this.type = type;
 		this.ca = ca;
 		this.caPourcent = caPourcent;

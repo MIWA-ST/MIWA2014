@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.st.application_locator.IApplicationLocator;
-import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 
 public class Conf {
 

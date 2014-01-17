@@ -11,14 +11,14 @@ public class Sale {
    private Date dateTime;
    private String store;
    private Integer soldQty;
-   private ProductCategory productCategory;
+   private String productCategory;
    private Integer supplierTotal;
    private Integer salesTotal;
    
 	public Sale() {
 	}
 	
-	public Sale(Date dateTime, String store, Integer soldQty, ProductCategory productCategory,
+	public Sale(Date dateTime, String store, Integer soldQty, String productCategory,
 			Integer supplierTotal, Integer salesTotal) {
 		this.dateTime = dateTime;
 		this.store = store;
@@ -52,11 +52,11 @@ public class Sale {
 		this.soldQty = soldQty;
 	}
 
-	public ProductCategory getProductCategory() {
+	public String getProductCategory() {
 		return productCategory;
 	}
 
-	public void setProductCategory(ProductCategory productCategory) {
+	public void setProductCategory(String productCategory) {
 		this.productCategory = productCategory;
 	}
 

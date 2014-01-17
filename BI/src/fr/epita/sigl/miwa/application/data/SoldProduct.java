@@ -6,23 +6,23 @@
 package fr.epita.sigl.miwa.application.data;
 
 public class SoldProduct {
-	private Product product;
+	private String productRef;
 	private Integer quantity;
 	
 	public SoldProduct() {
 	}
 	
-	public SoldProduct(Product product, Integer quantity) {
-		this.product = product;
+	public SoldProduct(String productRef, Integer quantity) {
+		this.productRef = productRef;
 		this.quantity = quantity;
 	}
 
-	public Product getProduct() {
-		return product;
+	public String getProductRef() {
+		return productRef;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProductRef(String productRef) {
+		this.productRef = productRef;
 	}
 
 	public Integer getQuantity() {
