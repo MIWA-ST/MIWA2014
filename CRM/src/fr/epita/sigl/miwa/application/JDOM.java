@@ -86,7 +86,6 @@ public class JDOM
 			 	    	System.out.println(articleCourant.getAttributeValue("ref"));
 				    }
 			    }
-		      
 		    }
 	    }
 	    if (tmp.equals("ticket-client-fidelise"))
