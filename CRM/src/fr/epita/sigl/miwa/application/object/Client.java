@@ -6,6 +6,8 @@ package fr.epita.sigl.miwa.application.object;
 import java.util.Date;
 import java.util.List;
 
+import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
+
 /**
  * @author clementlavigne
  *

@@ -14,6 +14,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
@@ -49,6 +50,7 @@ public class Main {
 		//XMLManager.getInstance().getSegmentationClient("coucou");
 		XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
 		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");
+		JdbcConnection.getInstance().GetClientInternet("831356");
 		//System.out.println(ClockClient.getClock().getHour());
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		

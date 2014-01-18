@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.application.BDD;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
@@ -155,6 +156,38 @@ public class JdbcConnection
 			System.out.println("Erreur insertion en base");
 			e.printStackTrace();
 		}
+	}
+	
+	public Client GetClientInternet(String id)
+	{
+		Client client = new Client();
+		try
+		{
+			if (connection != null)
+			{
+				String request = "SELECT * FROM Client WHERE matricule = '" + id + "'";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+
+				ResultSet result = statement.executeQuery();
+				while(result.next())
+				{
+					client.setNom(result.getString(2));
+					client.setPrenom(result.getString(3));
+					client.setCodePostal(result.getString(4));
+					client.setAdresse(result.getString(5));
+					client.setMail(result.getString(6));
+					client.setTelephone(result.getString(7));
+					client.setMatricule(Integer.parseInt(result.getString(8)));
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+		return client;
 	}
 	
 	/*
