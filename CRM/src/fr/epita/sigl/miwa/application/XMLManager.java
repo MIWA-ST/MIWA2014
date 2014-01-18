@@ -316,11 +316,6 @@ public class XMLManager
 		{
 			System.out.println("Impossible de contacter la monétique pour la création d'un compte crédit carte");
 		}
-		if (SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.MONETIQUE, getCreationTypeCarte(client)) == false)
-		{
-			System.out.println("Impossible de contacter la monétique pour la création d'un type de carte");
-		}
 		
 		return bl;
 	}
@@ -406,11 +401,6 @@ public class XMLManager
 		if (matricule != 0)
 		{
 			if (SyncMessHandler.getSyncMessSender().sendMessage(
-					EApplication.MONETIQUE, getSupprTypeCarte(matricule)) == false)
-			{
-				System.out.println("Impossible de contacter la monétique pour la suppression d'un compte crédit carte");
-			}
-			if (SyncMessHandler.getSyncMessSender().sendMessage(
 					EApplication.MONETIQUE, getSupprCompteCreditFed(matricule)) == false)
 			{
 				System.out.println("Impossible de contacter la monétique pour la suppression d'un type de carte");
@@ -420,19 +410,26 @@ public class XMLManager
 	}
 	
 	
-	public String getCreationTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	public String getCreationTypeCarte(String type) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		CarteFidelite fed = new CarteFidelite();
-		fed.setEchellon(3);
-		fed.setLimite_m(3000);
-		fed.setLimite_tot(10000);
-		
-		client.setCarteFed(fed);
+		CarteFidelite fed = new CarteFidelite(type);
+		if (type == "Silver")
+		{
+			fed.setEchellon(3);
+			fed.setLimite_m(3000);
+			fed.setLimite_tot(10000);
+		}
+		else if (type == "Gold")
+		{
+			fed.setEchellon(5);
+			fed.setLimite_m(5000);
+			fed.setLimite_tot(15000);
+		}
 		
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_type_carte\" action=\"c\">" +
 					"<type_cf>" +
-					"<id>" + client.getMatricule() + "</id>" +
+					"<id>" + fed.getType() + "</id>" +
 					"<limite_mesuelle>" + fed.getLimite_m() + "</limite_mesuelle>" +
 					"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
 					"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
@@ -444,16 +441,16 @@ public class XMLManager
 	
 	public String getModifTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		CarteFidelite fed = new CarteFidelite();
-		fed.setEchellon(5);
+		CarteFidelite fed = new CarteFidelite("Silver");
+		fed.setEchellon(3);
 		fed.setLimite_m(4000);
-		fed.setLimite_tot(15000);
+		fed.setLimite_tot(10000);
 		
 		client.setCarteFed(fed);
 		
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_type_carte\" action=\"m\">" +
-					"<type_cf id=\"" + client.getMatricule() + "\">" +
+					"<type_cf id=\"" + fed.getType() + "\">" +
 					"<limite_mesuelle>" + fed.getLimite_m() + "</limite_mesuelle>" +
 					"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
 					"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
@@ -463,11 +460,11 @@ public class XMLManager
 		return bl;
 	}
 	
-	public String getSupprTypeCarte(int mat) throws AsyncMessageException, IOException, SAXException, ParseException
+	public String getSupprTypeCarte(String type) throws AsyncMessageException, IOException, SAXException, ParseException
 	{	
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_type_carte\" action=\"s\">" +
-					"<type_cf id=\"" + Integer.toString(mat) + "\">" +
+					"<type_cf id=\"" + type + "\">" +
 					"<nouvel_id></nouvel_id>" +
 					"</type_cf>" +
 					"</monetique>";
@@ -478,7 +475,7 @@ public class XMLManager
 	
 	public String getCreationCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		CarteFidelite fed = new CarteFidelite();
+		CarteFidelite fed = new CarteFidelite("Silver");
 		fed.setEchellon(3);
 		fed.setLimite_m(3000);
 		fed.setLimite_tot(10000);
@@ -489,9 +486,9 @@ public class XMLManager
 					"<monetique service=\"cms_compte_cf\" action=\"c\">" +
 					"<compte_cf>" +
 					"<matricule_client>" + client.getMatricule() + "</matricule_client>" +
-					"<BIC></BIC>" +
-					"<IBAN></IBAN>" +
-					"<id_type_cf></id_type_cf>" +
+					"<BIC>" + client.getBIC() + "</BIC>" +
+					"<IBAN>" + client.getIBAN() + "</IBAN>" +
+					"<id_type_cf>" + fed.getType() + "</id_type_cf>" +
 					"</compte_cf>" +
 					"</monetique>";
 		
@@ -500,19 +497,16 @@ public class XMLManager
 	
 	public String getModifCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		CarteFidelite fed = new CarteFidelite();
-		fed.setEchellon(5);
-		fed.setLimite_m(4000);
-		fed.setLimite_tot(15000);
+		CarteFidelite fed = new CarteFidelite("Gold");
 		
 		client.setCarteFed(fed);
 		
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_compte_cf\" action=\"m\">" +
 					"<compte_cf matricule_client=\"" + client.getMatricule() + "\">" +
-					"<BIC></BIC>" +
-					"<IBAN></IBAN>" +
-					"<id_type_cf></id_type_cf>" +
+					"<BIC>" + client.getBIC() + "</BIC>" +
+					"<IBAN>" + client.getIBAN() + "</IBAN>" +
+					"<id_type_cf>" + fed.getType() + "</id_type_cf>" +
 					"</compte_cf>" +
 					"</monetique>";
 		
@@ -631,7 +625,9 @@ public class XMLManager
 		
 		ticketCaisse.setDate(seqDate);
 		List<Article> list = new  ArrayList<>();
+		List<Article> listReduc = new  ArrayList<>();
 		ticketCaisse.setArticle(list);
+		int totalPrice = 0;
 		
 
 		NodeList ticketCaisseNodes = ticketCaisseFile.getElementsByTagName("TICKETVENTE");
@@ -648,147 +644,30 @@ public class XMLManager
 			{
 				Node artNodes = articlesNodes.item(j);
 				Article article = new Article();
+				Article articleReduc = new Article();
 				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
 				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
 				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
 				ticketCaisse.getArticle().add(article);
+				articleReduc.setRef(article.getRef());
+				articleReduc.setQuantite(article.getQuantite());
+				articleReduc.setPrix(article.getPrix() - 1);
+				listReduc.add(articleReduc);
+				totalPrice = totalPrice + (article.getPrix() - 1);
 			}
 		}
+		Date date = null;
+		//DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		//(df.format(ClockClient.getClock().getHour()));
 		
-		String bl = "<EXPEDITIONCLIENT>";
-		/*	+ "<LIVRAISON>"
-				+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
-				+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
-				+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
-				
-		for (TicketReduc a : clients)
-			bl += "<ARTICLE>"
-					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";*/
-							
-		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
+		String bl = "<ENTETE objet=\"facture-client\" source=\"crm\" date=\"" + date + "\"/>" +
+						"<FACTURE refclient=\"" + ticketCaisse.getRefclient() + "\" montanttotal=\"" + totalPrice + "\" >";
+						   for (int k = 0; k < listReduc.size(); k++)
+						   {
+							   bl = bl + "<ARTICLE refarticle=\"" + listReduc.get(k).getRef() + "\" quantite=\"" + listReduc.get(k).getQuantite() + "\" nvprix=\"" + listReduc.get(k).getPrix() + "\" />";
+						   }
+						bl = bl + "</FACTURE>";
 		
 		return bl;
 	}
-	
-	public String SendAfterFedelityAccount()
-	{
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String date = df.format(ClockClient.getClock().getHour());
-		String bl = "";
-		
-		bl = "<ENTETE objet='matricule-client' source='crm' date=" + date + "/>"
-				+ "<INFORMATIONS>";
-			
-				/*	<CLIENT matricule="" nom="" prenom="" />
-		</INFORMATIONS>*/
-		return bl;
-	}
-	
-	/*public String getCommandeFournisseur(String message, Document doc) throws AsyncMessageException
-	{
-		LivraisonFournisseur command = new LivraisonFournisseur();
-		
-		command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
-		command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
-		
-		List<TicketReduc> articles = new ArrayList<TicketReduc>();
-		NodeList nList = doc.getElementsByTagName("ARTICLE");
-		for (int temp = 0; temp < nList.getLength(); temp++) 
-		{
-			TicketReduc a = new TicketReduc();
-			
-			//Récupéraction du noeud à traiter
-			Node nNode = nList.item(temp);
-			//Conversion en element
-			Element eElement = (Element) nNode;
-
-			a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-			a.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-			 
-			articles.add(a);
-		}
-		command.setArticles(articles);
-		
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		command.setDateBL(df.format(ClockClient.getClock().getHour()));
-		
-		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertLivraisonFournisseur(command);
-		
-		//Construction du xml
-		String bl = "<LIVRAISONSCOMMANDEFOURNISSEUR>"
-					+ "<LIVRAISON>"
-						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
-						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
-						+ "<DATEBL>" + command.getDateBL() + "</DATEBL>";
-		
-		for (TicketReduc a : articles)
-			bl += "<ARTICLE>"
-					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";
-							
-		bl+= "</LIVRAISON></LIVRAISONSCOMMANDEFOURNISSEUR>";
-		
-		return bl;
-	}
-	
-	public String getReassortBO(String message, Document doc) throws AsyncMessageException
-	{
-		ReassortBO command = new ReassortBO();
-		
-		command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
-		command.setBackOfficeRef(doc.getElementsByTagName("REFBO").item(0).getTextContent());
-		command.setBackOfficeAddress(doc.getElementsByTagName("ADRESSEBO").item(0).getTextContent()); 
-		command.setBackOfficePhone(doc.getElementsByTagName("TELBO").item(0).getTextContent());
-		command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
-		
-		List<TicketReduc> articles = new ArrayList<TicketReduc>();
-		NodeList nList = doc.getElementsByTagName("ARTICLE");
-		for (int temp = 0; temp < nList.getLength(); temp++) 
-		{
-			TicketReduc a = new TicketReduc();
-			
-			//Récupéraction du noeud à traiter
-			Node nNode = nList.item(temp);
-			//Conversion en element
-			Element eElement = (Element) nNode;
-
-			a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-			a.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-			 
-			articles.add(a);
-		}
-		command.setArticles(articles);
-		
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		command.setDateBL(df.format(ClockClient.getClock().getHour()));
-		
-		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertReassortBO(command);
-		
-		//Construction du xml
-		String bl = "<LIVRAISONS>"
-					+ "<LIVRAISON>"
-						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
-						+ "<REFMAGASIN>"+ command.getBackOfficeRef() + "</REFMAGASIN>"
-						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
-						+ "<DATEBL>" + command.getDateBL() + "</DATEBL>";
-		
-		for (TicketReduc a : articles)
-			bl += "<ARTICLE>"
-					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-				+ "</ARTICLE>";
-		
-		bl += "</LIVRAISON></LIVRAISONS>";
-		
-		return bl;
-	}*/
 }

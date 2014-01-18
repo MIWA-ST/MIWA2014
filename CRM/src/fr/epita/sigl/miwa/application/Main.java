@@ -47,7 +47,9 @@ public class Main {
 		//XMLManager.getInstance().getSegmentationClient("coucou");
 		Client.clientsList = new ArrayList<Client>();
 		//XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
-		XMLManager.getInstance().dispatchXML("coucou", "suppr compte internet.xml");
+		XMLManager.getInstance().getCreationTypeCarte("Silver");
+		XMLManager.getInstance().getCreationTypeCarte("Gold");
+		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");
 		JdbcConnection.getInstance().GetClientInternet("831356");
 		//System.out.println(ClockClient.getClock().getHour());
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");

@@ -6,8 +6,26 @@ public class CarteFidelite {
 	private int limite_tot;
 	private int echellon;
 	private int solde;
+	private String type;
+	
+	public CarteFidelite(String str)
+	{
+		setType(str);
+	}
 	
 	
+	public String getType() {
+		return type;
+	}
+
+
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+
+
 	public int getSolde() {
 		return solde;
 	}

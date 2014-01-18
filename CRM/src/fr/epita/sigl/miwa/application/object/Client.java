@@ -21,6 +21,8 @@ public class Client {
 	private String codePostal;
 	private String telephone;
 	private String mail;
+	private String IBAN;
+	private String BIC;
 	private Date date;
 	private CarteFidelite carteFed;
 	
@@ -45,6 +47,23 @@ public class Client {
 	
 	
 	
+	
+	public String getIBAN() {
+		return IBAN;
+	}
+
+	public void setIBAN(String iBAN) {
+		IBAN = iBAN;
+	}
+
+	public String getBIC() {
+		return BIC;
+	}
+
+	public void setBIC(String bIC) {
+		BIC = bIC;
+	}
+
 	public CarteFidelite getCarteFed() {
 		return carteFed;
 	}
