@@ -44,9 +44,6 @@ public class Main {
 		
 		//Date date = ClockClient.getClock().getHour();
 		
-		//JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
-	//	JDOM.createXML("monetique");
-		//JDOM.createXML("bi-segmentation");
 		//XMLManager.getInstance().getSegmentationClient("coucou");
 		XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
 		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");
@@ -54,7 +51,6 @@ public class Main {
 		//System.out.println(ClockClient.getClock().getHour());
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
-		//JDOM.createXML("bi");
 		//DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 //		DocumentBuilder builder = factory.newDocumentBuilder();
 		

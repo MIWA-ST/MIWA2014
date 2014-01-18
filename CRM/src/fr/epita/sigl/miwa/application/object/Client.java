@@ -22,6 +22,7 @@ public class Client {
 	private String telephone;
 	private String mail;
 	private Date date;
+	private CarteFidelite carteFed;
 	
 	public static List<Client> clientsList;
 	
@@ -42,6 +43,16 @@ public class Client {
 	{
 	}
 	
+	
+	
+	public CarteFidelite getCarteFed() {
+		return carteFed;
+	}
+
+	public void setCarteFed(CarteFidelite carteFed) {
+		this.carteFed = carteFed;
+	}
+
 	public String getAdresse() {
 		return adresse;
 	}

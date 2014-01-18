@@ -27,6 +27,7 @@ import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.object.Article;
+import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Critere;
 import fr.epita.sigl.miwa.application.object.Group;
@@ -291,6 +292,69 @@ public class XMLManager
 		String bl = "<ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
 				+ "<INFORMATION><CLIENT matricule=\"\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
 		bl += "</INFORMATION></ENTETE>";
+		
+		return bl;
+	}
+	
+	
+	public String getCreationTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		CarteFidelite fed = new CarteFidelite();
+		fed.setEchellon(3);
+		fed.setLimite_m(3000);
+		fed.setLimite_tot(10000);
+		
+		client.setCarteFed(fed);
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_type_carte\" action=\"c\">" +
+					"<type_cf>" +
+					"<id>" + client.getMatricule() + "</id>" +
+					"<limite_mesuelle>" + fed.getLimite_m() + "</limite_mesuelle>" +
+					"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
+					"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
+					"</type_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	public String getModifTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		CarteFidelite fed = new CarteFidelite();
+		fed.setEchellon(5);
+		fed.setLimite_m(4000);
+		fed.setLimite_tot(15000);
+		
+		client.setCarteFed(fed);
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_type_carte\" action=\"m\">" +
+					"<type_cf id=\"" + client.getMatricule() + "\">" +
+					"<limite_mesuelle>" + fed.getLimite_m() + "</limite_mesuelle>" +
+					"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
+					"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
+					"</type_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	public String getSupprTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		CarteFidelite fed = new CarteFidelite();
+		fed.setEchellon(5);
+		fed.setLimite_m(4000);
+		fed.setLimite_tot(15000);
+		
+		client.setCarteFed(fed);
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_type_carte\" action=\"s\">" +
+					"<type_cf id=\"" + client.getMatricule() + "\">" +
+					"<nouvel_id></nouvel_id>" +
+					"</type_cf>" +
+					"</monetique>";
 		
 		return bl;
 	}
