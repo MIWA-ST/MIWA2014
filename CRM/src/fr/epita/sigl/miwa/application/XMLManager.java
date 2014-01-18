@@ -56,11 +56,40 @@ public class XMLManager
 		return instance;
 	}
 	
-	public String getSegmentationClient(String message) throws AsyncMessageException, IOException, SAXException, ParseException
+	
+	public String dispatchXML(String message, String xml) throws SAXException, IOException, AsyncMessageException, ParseException
+	{
+		File file = new File (xml);
+
+		// Parsage du fichier	
+		Document criteriaFile = dBuilder.parse(file);
+		String XMLReturn = "";
+		
+		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
+		String object = headerNodes.item(0).getAttributes().getNamedItem("objet").getNodeValue();
+
+		switch (object) 
+		{
+			case "ticket-caisse":
+				XMLReturn = getTicketCaisse(message, xml);
+				break;
+			case "ticket-client-fidelise":
+				XMLReturn = getTicketClientFidelise(message, xml);
+				break;
+			case "segmentation-client":
+				XMLReturn = getSegmentationClient(message, xml);
+				break;
+
+		}
+		return XMLReturn;
+	}
+	
+	
+	public String getSegmentationClient(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		Segmentation segmentation = new Segmentation();
 		
-		File file = new File ("criteria.xml");
+		File file = new File (xml);
 		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
 		output.write(message);
 		output.close();
@@ -227,11 +256,11 @@ public class XMLManager
 		
 	}
 	
-	public String getTicketClientFidelise(String message) throws AsyncMessageException, IOException, SAXException, ParseException
+	public String getTicketClientFidelise(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		TicketVente ticketVente = new TicketVente();
 		
-		File file = new File ("BO ticket client fidelise.xml");
+		File file = new File (xml);
 		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
 		output.write(message);
 		output.close();
@@ -287,11 +316,11 @@ public class XMLManager
 		return bl;
 	}
 	
-	public String getTicketCaisse(String message) throws AsyncMessageException, IOException, SAXException, ParseException
+	public String getTicketCaisse(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		TicketCaisse ticketCaisse = new TicketCaisse();
 		
-		File file = new File ("BO ticket caisse.xml");
+		File file = new File (xml);
 		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
 		output.write(message);
 		output.close();

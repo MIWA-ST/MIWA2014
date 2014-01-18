@@ -47,8 +47,7 @@ public class Main {
 	//	JDOM.createXML("monetique");
 		//JDOM.createXML("bi-segmentation");
 		//XMLManager.getInstance().getSegmentationClient("coucou");
-		XMLManager.getInstance().getTicketClientFidelise("coucou");
-		XMLManager.getInstance().getTicketCaisse("coucou");
+		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");
 		//System.out.println(ClockClient.getClock().getHour());
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
