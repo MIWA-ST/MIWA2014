@@ -7,11 +7,14 @@ public class MDMData {
 
 	private List<Promotion> promotions;
 	
-	private List<ProductCategory> categories;
+	private List<Product> products;
 
-	public MDMData(List<ProductCategory> categories, List<Promotion> promotions) {
+	public MDMData() {
+	}
+	
+	public MDMData(List<Product> products, List<Promotion> promotions) {
 		this.promotions = promotions;
-		this.categories = categories;
+		this.products = products;
 	}
 
 	public List<Promotion> getPromotions() {
@@ -22,19 +25,42 @@ public class MDMData {
 		this.promotions = promotions;
 	}
 
-	public List<ProductCategory> getCategories() {
-		return categories;
+	public List<Product> getProducts() {
+		return products;
 	}
 
-	public void setCategories(List<ProductCategory> categories) {
-		this.categories = categories;
+	public void setProducts(List<Product> products) {
+		this.products = products;
 	}
 	
-	public List<Product> getProducts(){
-		List<Product> products = new ArrayList<Product>();
-		for (ProductCategory category : categories){
-			products.addAll(category.getProduct());
+	public List<ProductCategory> getCategories() {
+		ArrayList<ProductCategory> productCategoryList = new ArrayList<ProductCategory>();
+		
+		for (Product product : this.products) {
+			// Est-ce que la catégorie du produit existe déjà dans la liste en construction ?
+			Boolean categoryExists = false;
+			
+			for (ProductCategory pCat : productCategoryList) {	
+				// Si la catégorie existe déjà
+				if (pCat.getName().equalsIgnoreCase(product.getCategoryName())) {
+					pCat.getProduct().add(product);
+					categoryExists = true;
+					break;
+				}
+			}
+			
+			// Si la catégorie n'existe pas
+			if (!categoryExists) {
+				ProductCategory productCategory = new ProductCategory();
+				
+				productCategory.setName(product.getCategoryName());
+				productCategory.setProduct(new ArrayList<Product>());
+				productCategory.getProduct().add(product);
+				
+				productCategoryList.add(productCategory);
+			}
 		}
-		return products;
+		
+		return productCategoryList;
 	}
 }

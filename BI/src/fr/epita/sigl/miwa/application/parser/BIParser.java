@@ -27,6 +27,7 @@ import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.data.Client;
 import fr.epita.sigl.miwa.application.data.DetailSale;
 import fr.epita.sigl.miwa.application.data.MDMData;
+import fr.epita.sigl.miwa.application.data.Product;
 import fr.epita.sigl.miwa.application.data.Promotion;
 import fr.epita.sigl.miwa.application.data.Sale;
 import fr.epita.sigl.miwa.application.data.SoldProduct;
@@ -464,7 +465,74 @@ public class BIParser {
 	 * @return La liste des données envoyées par le référentiel (promos + catégorie + produits)
 	 */
 	public MDMData parseMDMFile(File file) {
-		return null;		
+		MDMData mdmData = null;
+		
+		try {
+			Document refFile = dBuilder.parse(file);
+				
+			// Parsage du fichier : Partie corps
+			NodeList articleNodes = refFile.getElementsByTagName("ARTICLE");
+			ArrayList<Product> productList = new ArrayList<Product>();
+			ArrayList<Promotion> promotionList = new ArrayList<Promotion>();
+			mdmData = new MDMData();
+				
+			// Création des éléments Product
+			for (int i = 0; i < articleNodes.getLength(); i++) {
+				Node articleNode = articleNodes.item(i);
+				String tmpInfo;
+				Product product = new Product();
+				
+				// Lecture de la partie "Article"
+				product.setReference(articleNode.getAttributes().getNamedItem("reference").getNodeValue());
+				product.setCategoryName(articleNode.getAttributes().getNamedItem("categorie").getNodeValue());
+				tmpInfo = articleNode.getAttributes().getNamedItem("prix_fournisseur").getNodeValue();
+				product.setBuyingPrice(Float.valueOf(tmpInfo));
+				tmpInfo = articleNode.getAttributes().getNamedItem("prix_vente").getNodeValue();
+				product.setSellingPrice(Float.valueOf(tmpInfo));
+				productList.add(product);
+				
+				// Lecture des sous-balises de "Article"
+				NodeList childNodes = articleNode.getChildNodes();
+				
+				for (int j = 0; j < childNodes.getLength(); j++) {
+					Node childNode = childNodes.item(j);
+					
+					// Récupération de la liste des promotions d'un article
+					if (childNode.getNodeName().equalsIgnoreCase("PROMOTIONS")) {
+						NodeList promotionNodes = childNode.getChildNodes();
+						
+						// Parsage de l'ensemble des promotions appliquées à l'article
+						for (int k = 0; k < promotionNodes.getLength(); k++) {
+							Node promotionNode = promotionNodes.item(k);
+							Promotion promotion = new Promotion();
+							
+							promotion.setProduct(product);
+							tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
+							promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
+							tmpInfo = promotionNode.getAttributes().getNamedItem("fin").getNodeValue();
+							promotion.setEndDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
+							tmpInfo = promotionNode.getAttributes().getNamedItem("pourcent").getNodeValue();
+							promotion.setPercentage(Integer.valueOf(tmpInfo));
+							promotion.setStore("");
+							
+							promotionList.add(promotion);
+						}
+					}
+				}
+			}
+			
+			mdmData.setProducts(productList);
+			mdmData.setPromotions(promotionList);
+			
+		} catch (IOException | SAXException e1) {
+			LOGGER.severe("Erreur : impossible de parser le fichier");
+			LOGGER.severe("L'erreur est : " + e1);
+		} catch (ParseException e2) {
+			LOGGER.severe("Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("L'erreur est : " + e2);
+		}
+		
+		return mdmData;		
 	}
 
 	/**

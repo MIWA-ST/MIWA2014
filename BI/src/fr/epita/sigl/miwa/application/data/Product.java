@@ -7,21 +7,23 @@ package fr.epita.sigl.miwa.application.data;
 
 public class Product {
 	private Integer id;
-	private Integer reference;
-	private Integer buyingPrice;
-	private Integer sellingPrice;
-   	private Integer margin;
+	private String reference;
+	private Float buyingPrice;
+	private Float sellingPrice;
+   	private Float margin;
+   	private String categoryName;
 
    	public Product() {
    	}
 
-	public Product(Integer id, Integer reference, Integer buyingPrice, Integer sellingPrice,
-			Integer margin) {
+	public Product(Integer id, String reference, Float buyingPrice, Float sellingPrice,
+			Float margin, String categoryName) {
 		this.id = id;
 		this.reference = reference;
 		this.buyingPrice = buyingPrice;
 		this.sellingPrice = sellingPrice;
 		this.margin = margin;
+		this.categoryName = categoryName;
 	}
 
 	public Integer getId() {
@@ -32,35 +34,43 @@ public class Product {
 		this.id = id;
 	}
 
-	public Integer getReference() {
+	public String getReference() {
 		return reference;
 	}
 
-	public void setReference(Integer reference) {
+	public void setReference(String reference) {
 		this.reference = reference;
 	}
 
-	public Integer getBuyingPrice() {
+	public Float getBuyingPrice() {
 		return buyingPrice;
 	}
 
-	public void setBuyingPrice(Integer buyingPrice) {
+	public void setBuyingPrice(Float buyingPrice) {
 		this.buyingPrice = buyingPrice;
 	}
 
-	public Integer getSellingPrice() {
+	public Float getSellingPrice() {
 		return sellingPrice;
 	}
 
-	public void setSellingPrice(Integer sellingPrice) {
+	public void setSellingPrice(Float sellingPrice) {
 		this.sellingPrice = sellingPrice;
 	}
 
-	public Integer getMargin() {
+	public Float getMargin() {
 		return margin;
 	}
 
-	public void setMargin(Integer margin) {
+	public void setMargin(Float margin) {
 		this.margin = margin;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}   
 }
