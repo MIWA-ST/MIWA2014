@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.crm.ReassortBO;
+import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Segmentation;
 
 
@@ -44,7 +45,7 @@ public class JdbcConnection
  
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/miwa", "postgres", "root");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/postgres", "postgres", "root");
 		}
 		catch (SQLException e)
 		{
@@ -122,6 +123,39 @@ public class JdbcConnection
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public void insertClientInternet(Client client)
+	{
+		try
+		{
+			System.out.println("insertion client internet");
+			if (connection != null)
+			{
+				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel) VALUES (?, ?, ?, ?, ?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, client.getNom());
+				statement.setString(2, client.getPrenom());
+				statement.setString(3, client.getCodePostal());
+				statement.setString(4, client.getAdresse());
+				statement.setString(5, client.getMail());
+				statement.setString(6, client.getTelephone());
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouveau client internet ajouté en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
 	/*
 	public void insertLivraisonFournisseur(LivraisonFournisseur command)
 	{

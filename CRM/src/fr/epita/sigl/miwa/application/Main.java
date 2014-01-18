@@ -47,7 +47,7 @@ public class Main {
 	//	JDOM.createXML("monetique");
 		//JDOM.createXML("bi-segmentation");
 		//XMLManager.getInstance().getSegmentationClient("coucou");
-		XMLManager.getInstance().SendAfterFedelityAccount();
+		XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
 		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");
 		XMLManager.getInstance().getDemandeCreationCompte("ajout", "creation compte internet.xml");
 		//System.out.println(ClockClient.getClock().getHour());
