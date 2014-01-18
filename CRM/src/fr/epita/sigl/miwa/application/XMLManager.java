@@ -1,20 +1,51 @@
 package fr.epita.sigl.miwa.application;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
+import fr.epita.sigl.miwa.application.crm.TicketReduc;
+import fr.epita.sigl.miwa.application.object.Article;
 import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Critere;
+import fr.epita.sigl.miwa.application.object.Group;
 import fr.epita.sigl.miwa.application.object.Segmentation;
+import fr.epita.sigl.miwa.application.object.TicketVente;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
 public class XMLManager
 {
 	private static XMLManager instance = null;
+	private DocumentBuilderFactory dBFactory;
+	private DocumentBuilder dBuilder;
+	
+	public XMLManager() {
+		try {
+			dBFactory = DocumentBuilderFactory.newInstance();
+			dBuilder = dBFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			
+			
+		}
+	}
 	
 	public static XMLManager getInstance()
 	{
@@ -24,53 +55,139 @@ public class XMLManager
 		return instance;
 	}
 	
-	public String getSegmentationClient(String message, Document doc) throws AsyncMessageException
+	public String getSegmentationClient(String message) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		Segmentation segmentation = new Segmentation();
 		
-		/*segmentation.setCommandNumber(doc.getElementsByTagName("numero").item(0).getTextContent());
-		segmentation.setCustomerRef(doc.getElementsByTagName("refclient").item(0).getTextContent());
-		segmentation.setCustomerLastname(doc.getElementsByTagName("nom").item(0).getTextContent());
-		segmentation.setCustomerFirstname(doc.getElementsByTagName("prenom").item(0).getTextContent());
-		segmentation.setCustomerAddress(doc.getElementsByTagName("adresseClient").item(0).getTextContent());
-		segmentation.setDateBC(doc.getElementsByTagName("datebc").item(0).getTextContent());*/
+		File file = new File ("criteria.xml");
+		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
+		output.write(message);
+		output.close();
+		*/
+		// Parsage du fichier	
+		Document criteriaFile = dBuilder.parse(file);
 		
-		// Récupération des critères
+		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		
+		segmentation.setDate(seqDate);
+		
+		
 		ArrayList<Critere> criteres = new ArrayList<Critere>();
-		NodeList nList = doc.getElementsByTagName("CRITERE");
 
-		for (int temp = 0; temp < nList.getLength(); temp++) 
+		NodeList groupsNodes = criteriaFile.getElementsByTagName("GROUPES");
+		
+		// Création des éléments Critere
+		for (int i = 0; i < groupsNodes.getLength(); i++) 
 		{
 			
-			//Récupéraction du noeud à traiter
-			Node nNode = nList.item(temp);
-			//Conversion en element
-			Element eElement = (Element) nNode;
+			Node groupNode = groupsNodes.item(i);
+			Group group = new Group();
+			List<Critere> list = new  ArrayList<>();
+			group.setCriteres(list);
+			String tmpInfo;
+			
+			NodeList childNodes = groupNode.getChildNodes();
+			for (int j = 0; j < childNodes.getLength(); j++) 
+			{
+				Node cNode = childNodes.item(j);
+				if (cNode instanceof Element) 
+				{
+					String content = cNode.getLastChild().getTextContent().trim();
+					if (cNode.getNodeName() == "CRITERE")
+					{
+						NodeList criteriasNodes = cNode.getChildNodes();
+						for (int k = 0; k < criteriasNodes.getLength(); k++) 
+						{
+							Node criteriaNodes = criteriasNodes.item(k);
+							Critere c = new Critere();
+							String type = criteriaNodes.getAttributes().getNamedItem("type").getNodeValue();
+							switch (type) 
+							{
+								case "age":
+									c.setType(type);
+									c.setMax(Integer.parseInt(criteriaNodes.getAttributes().getNamedItem("max").getNodeValue()));
+									c.setMin(Integer.parseInt(criteriaNodes.getAttributes().getNamedItem("min").getNodeValue()));
+									break;
+								case "geographie":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+								case "sexe":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+								case "situation-familiale":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+								case "enfant":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+								case "fidelite":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+							}
+							group.getCriteres().add(c);
+						}
+					}
+					else if (cNode.getNodeName() == "CLIENTS")
+					{
+						NodeList clientsNodes = cNode.getChildNodes();
+						for (int k = 0; k < clientsNodes.getLength(); k++) 
+						{
+							Node clientNodes = clientsNodes.item(k);
+							Critere c = new Critere();
+							String type = clientNodes.getAttributes().getNamedItem("type").getNodeValue();
+							// FIXME
 
-			Critere a = new Critere( eElement.getAttribute("type"));
-			//a = eElement.getAttribute("");
-			
-			// TODO check si min/max ou valeur
-			String tmp= eElement.getAttribute("type");
-			
-			if (tmp == null)
-			{
-				a.setMin(Integer.parseInt(eElement.getAttribute("min")));
-				a.setMax(Integer.parseInt(eElement.getAttribute("max")));				
+						}
+					}
+				}
 			}
-			else
-			{
-				a.setValue(eElement.getAttribute("valeur"));
-			}
-			
-			criteres.add(a);
 		}
-		segmentation.setCriteres(criteres);
+			
+			
+			/*tmpInfo = criteriaNode.getAttributes().getNamedItem("type").getNodeValue();
+			criteria.setType(tmpInfo);
+			if (tmpInfo.equalsIgnoreCase("age")) {
+				String min = criteriaNode.getAttributes().getNamedItem("min").getNodeValue();
+				String max = criteriaNode.getAttributes().getNamedItem("max").getNodeValue();
+				criteria.setMax(Integer.valueOf(max));
+				criteria.setMin(Integer.valueOf(min));
+			}
+			else if (tmpInfo.equalsIgnoreCase("geographie")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			else if (tmpInfo.equalsIgnoreCase("sexe")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			else if (tmpInfo.equalsIgnoreCase("situation-familiale")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			else if (tmpInfo.equalsIgnoreCase("enfant")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			else if (tmpInfo.equalsIgnoreCase("fidelite")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			
+			criteres.add(criteria);
+		}
+		segmentation.setCriteres(criteres);*/
 		
-		//Récuération des clients
+		//Récupération des clients
 		ArrayList<Client> clients = new ArrayList<Client>();
-		NodeList mList = doc.getElementsByTagName("CLIENT");
-		for (int temp = 0; temp < mList.getLength(); temp++) 
+		NodeList mList = criteriaFile.getElementsByTagName("CLIENT");
+		for (int temp = 0; temp < mList.getLength(); temp++)
 		{
 			//Récupéraction du noeud à traiter
 			Node nNode = mList.item(temp);
@@ -83,15 +200,15 @@ public class XMLManager
 		}
 		segmentation.setClients(clients);
 		
-		/*DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		segmentation.setDateBL(df.format(ClockClient.getClock().getHour()));
-		*/
+		//DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		//segmentation.setDateBL(df.format(ClockClient.getClock().getHour()));
+		
 		//TODO sauvergarde en base
 		//JdbcConnection.getInstance().insertCommandeInternet(command);
 		
 		//Construction du xml
-		/*String bl = "<EXPEDITIONCLIENT>"
-					+ "<LIVRAISON>"
+		String bl = "<EXPEDITIONCLIENT>";
+				/*	+ "<LIVRAISON>"
 						+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
 						+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
 						+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
@@ -101,16 +218,68 @@ public class XMLManager
 					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
 					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
 					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";
+				+ "</ARTICLE>";*/
 							
-		bl += "</LIVRAISON></EXPEDITIONCLIENT>";*/
+		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
 		
-		//return bl;
+		return bl;
 		
-		return null;
 	}
-	/*
-	public String getCommandeFournisseur(String message, Document doc) throws AsyncMessageException
+	
+	public String getTicketClientFidelise(String message) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		TicketVente ticketVente = new TicketVente();
+		
+		File file = new File ("BO ticket client fidelise.xml");
+		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
+		output.write(message);
+		output.close();
+		*/
+		// Parsage du fichier	
+		Document criteriaFile = dBuilder.parse(file);
+		
+		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		
+		ticketVente.setDate(seqDate);
+		List<Article> list = new  ArrayList<>();
+		ticketVente.setArticle(list);
+		
+
+		NodeList ticketVenteNodes = criteriaFile.getElementsByTagName("TICKETVENTE");
+		
+		// Création des éléments Critere
+		for (int i = 0; i < ticketVenteNodes.getLength(); i++) 
+		{
+			Node articleNodes = ticketVenteNodes.item(i);
+			Article article = new Article();
+			
+			article.setRef(articleNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
+			article.setQuantite(Integer.parseInt(articleNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
+			article.setPrix(Integer.parseInt(articleNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+			ticketVente.getArticle().add(article);
+		}
+		
+		String bl = "<EXPEDITIONCLIENT>";
+		/*	+ "<LIVRAISON>"
+				+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
+				+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
+				+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
+				
+		for (TicketReduc a : clients)
+			bl += "<ARTICLE>"
+					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
+					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
+					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
+				+ "</ARTICLE>";*/
+							
+		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
+		
+		return bl;
+	}
+	
+	/*public String getCommandeFournisseur(String message, Document doc) throws AsyncMessageException
 	{
 		LivraisonFournisseur command = new LivraisonFournisseur();
 		
@@ -160,8 +329,8 @@ public class XMLManager
 		
 		return bl;
 	}
-	*/
-	/*public String getReassortBO(String message, Document doc) throws AsyncMessageException
+	
+	public String getReassortBO(String message, Document doc) throws AsyncMessageException
 	{
 		ReassortBO command = new ReassortBO();
 		

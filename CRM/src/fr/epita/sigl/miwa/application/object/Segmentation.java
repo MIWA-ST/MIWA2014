@@ -1,10 +1,21 @@
 package fr.epita.sigl.miwa.application.object;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Segmentation {
 
 	private int id;
+	private Date date;
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+
 	private static ArrayList<Client> clients;
 	private ArrayList<Critere> criteres;
 	

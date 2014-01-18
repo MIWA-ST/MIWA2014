@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entete objet="ticket-client-fidelise" source="crm" date="AAAAA-MM-JJ">
-	<ticketvente client="" moyenpayement="" >
-		<article refarticle="article 1" quantite="" nvprix="" />
-		<article refarticle="article 2" quantite="" nvprix="" />
-	</ticketvente>
+	<TICKETVENTE refclient="" moyenpayement="" >
+   	 <ARTICLE refarticle="" quantite="" prix="" />
+   	 <ARTICLE refarticle="" quantite="" prix="" />
+	</TICKETVENTE>
 </entete>

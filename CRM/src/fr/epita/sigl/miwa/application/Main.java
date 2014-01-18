@@ -1,6 +1,8 @@
 package fr.epita.sigl.miwa.application;
 
+import java.io.IOException;
 import java.io.StringReader;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -10,11 +12,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.application.object.Client;
+import fr.epita.sigl.miwa.application.object.Group;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
@@ -27,12 +31,12 @@ public class Main {
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 	public static void main(String[] args) throws AsyncFileException,
-			AsyncMessageException {
+			AsyncMessageException, IOException, SAXException, ParseException {
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
-		Conf.getInstance();
+		/*Conf.getInstance();
 		SyncMessFactory.initSyncMessReceiver();	
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
-				.initListener(new AsyncMessageListener());
+				.initListener(new AsyncMessageListener());*/
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
 		//Client.clientsList = new ArrayList<>();
@@ -42,7 +46,7 @@ public class Main {
 		//JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
 	//	JDOM.createXML("monetique");
 		//JDOM.createXML("bi-segmentation");
-		
+		XMLManager.getInstance().getSegmentationClient("coucou");
 		//System.out.println(ClockClient.getClock().getHour());
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
