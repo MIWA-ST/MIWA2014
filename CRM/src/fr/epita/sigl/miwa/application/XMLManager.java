@@ -277,12 +277,12 @@ public class XMLManager
 			client.setPrenom(infoNodes.getAttributes().getNamedItem("prenom").getNodeValue());
 			client.setAdresse(infoNodes.getAttributes().getNamedItem("adresse").getNodeValue());
 			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
-			client.setMail(infoNodes.getAttributes().getNamedItem("mail").getNodeValue());
+			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
 		}	
-		String bl = "<ENTETE>";
-							
-		bl += "</ENTETE>";
+		String bl = "<ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+				+ "<INFORMATION><CLIENT matricule=\"\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
+		bl += "</INFORMATION></ENTETE>";
 		
 		return bl;
 	}
@@ -411,7 +411,7 @@ public class XMLManager
 	{
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String date = df.format(ClockClient.getClock().getHour());
-		String bl;
+		String bl = "";
 		
 		bl = "<ENTETE objet='matricule-client' source='crm' date=" + date + "/>"
 				+ "<INFORMATIONS>";
