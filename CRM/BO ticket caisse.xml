@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ENTETE objet="ticket-caisse" source="bo" date="12-01-2014">
+	<TICKETVENTE refclient="01" moyenpayement="CB" >
+    		<ARTICLE refarticle="001" quantite="2" prix="20" />
+    		<ARTICLE refarticle="003" quantite="1" prix="20" />
+	</TICKETVENTE>
+</ENTETE>

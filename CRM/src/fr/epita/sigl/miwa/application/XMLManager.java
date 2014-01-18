@@ -28,6 +28,7 @@ import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Critere;
 import fr.epita.sigl.miwa.application.object.Group;
 import fr.epita.sigl.miwa.application.object.Segmentation;
+import fr.epita.sigl.miwa.application.object.TicketCaisse;
 import fr.epita.sigl.miwa.application.object.TicketVente;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
@@ -257,7 +258,6 @@ public class XMLManager
 			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
 			
 			NodeList articlesNodes = ticketVenteFile.getElementsByTagName("ARTICLE");
-			System.out.println(articlesNodes.getLength());
 			for (int j = 0; j < articlesNodes.getLength(); j++) 
 			{
 				Node artNodes = articlesNodes.item(j);
@@ -266,6 +266,66 @@ public class XMLManager
 				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
 				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
 				ticketVente.getArticle().add(article);
+			}
+		}
+		
+		String bl = "<EXPEDITIONCLIENT>";
+		/*	+ "<LIVRAISON>"
+				+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
+				+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
+				+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
+				
+		for (TicketReduc a : clients)
+			bl += "<ARTICLE>"
+					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
+					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
+					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
+				+ "</ARTICLE>";*/
+							
+		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
+		
+		return bl;
+	}
+	
+	public String getTicketCaisse(String message) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		TicketCaisse ticketCaisse = new TicketCaisse();
+		
+		File file = new File ("BO ticket caisse.xml");
+		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
+		output.write(message);
+		output.close();
+		*/
+		// Parsage du fichier	
+		Document ticketCaisseFile = dBuilder.parse(file);
+		
+		NodeList headerNodes = ticketCaisseFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		
+		ticketCaisse.setDate(seqDate);
+		List<Article> list = new  ArrayList<>();
+		ticketCaisse.setArticle(list);
+		
+
+		NodeList ticketCaisseNodes = ticketCaisseFile.getElementsByTagName("TICKETVENTE");
+		
+		// Création des éléments ticketventes et articles
+		for (int i = 0; i < ticketCaisseNodes.getLength(); i++)
+		{
+			Node articleNodes = ticketCaisseNodes.item(i);
+			ticketCaisse.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+			ticketCaisse.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
+			
+			NodeList articlesNodes = ticketCaisseFile.getElementsByTagName("ARTICLE");
+			for (int j = 0; j < articlesNodes.getLength(); j++) 
+			{
+				Node artNodes = articlesNodes.item(j);
+				Article article = new Article();
+				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
+				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
+				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+				ticketCaisse.getArticle().add(article);
 			}
 		}
 		
