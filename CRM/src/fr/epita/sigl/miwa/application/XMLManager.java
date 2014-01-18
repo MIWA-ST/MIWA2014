@@ -26,6 +26,8 @@ import org.xml.sax.SAXException;
 import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
+import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
+import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.application.object.Article;
 import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
@@ -34,6 +36,7 @@ import fr.epita.sigl.miwa.application.object.Group;
 import fr.epita.sigl.miwa.application.object.Segmentation;
 import fr.epita.sigl.miwa.application.object.TicketCaisse;
 import fr.epita.sigl.miwa.application.object.TicketVente;
+import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
 public class XMLManager
@@ -82,6 +85,15 @@ public class XMLManager
 				break;
 			case "segmentation-client":
 				XMLReturn = getSegmentationClient(message, xml);
+				break;
+			case "creation_compte":
+				XMLReturn = getDemandeCreationCompte(message, xml);
+				break;
+			case "modif_compte":
+				XMLReturn = getDemandeModifCompte(message, xml);
+				break;
+			case "suppression_compte":
+				XMLReturn = getDemandeSupprCompte(message, xml);
 				break;
 
 		}
@@ -286,14 +298,125 @@ public class XMLManager
 
 			int random = (int)(Math.random() * (higher-lower)) + lower;
 			client.setMatricule(random);
+			Client.clientsList.add(client);
 			JdbcConnection.getInstance().getConnection();
 			JdbcConnection.getInstance().insertClientInternet(client);
 		}	
-		String bl = "<ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
 				+ "<INFORMATION><CLIENT matricule=\"\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
 		bl += "</INFORMATION></ENTETE>";
 		
+		// Retour des info à Internet
+		SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.INTERNET, bl);
+		
+		// Creation des comptes chez la monétique
+		if (SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.MONETIQUE, getCreationCompteCreditFed(client)) == false)
+		{
+			System.out.println("Impossible de contacter la monétique pour la création d'un compte crédit carte");
+		}
+		if (SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.MONETIQUE, getCreationTypeCarte(client)) == false)
+		{
+			System.out.println("Impossible de contacter la monétique pour la création d'un type de carte");
+		}
+		
 		return bl;
+	}
+	
+	
+	public String getDemandeModifCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		Client client = new Client();
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);	
+		
+		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		client.setDate(seqDate);
+		
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		for (int i = 0; i < compteNodes.getLength(); i++)
+		{
+			Node infoNodes = compteNodes.item(i);
+			client.setNom(infoNodes.getAttributes().getNamedItem("nom").getNodeValue());
+			client.setPrenom(infoNodes.getAttributes().getNamedItem("prenom").getNodeValue());
+			client.setAdresse(infoNodes.getAttributes().getNamedItem("adresse").getNodeValue());
+			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
+			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
+			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+			client.setMatricule(Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue()));
+			for (int j = 0 ; j < Client.clientsList.size(); j++)
+			{
+				if (Client.clientsList.get(j).getMatricule() == client.getMatricule())
+				{
+					Client.clientsList.remove(j);
+					break;
+				}
+			}
+			Client.clientsList.add(client);
+			JdbcConnection.getInstance().getConnection();
+			JdbcConnection.getInstance().updateClientInternet(client);
+		}
+		String bl = "true";
+		
+		// Retour des info à Internet
+		SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.INTERNET, bl);
+		
+		return bl;
+	}
+	
+	
+	public String getDemandeSupprCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);
+		
+		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		int matricule = 0;
+		
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		for (int i = 0; i < compteNodes.getLength(); i++)
+		{
+			Node infoNodes = compteNodes.item(i);
+			matricule = Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue());
+			for (int j = 0 ; j < Client.clientsList.size(); j++)
+			{
+				if (Client.clientsList.get(j).getMatricule() == matricule)
+				{
+					Client.clientsList.remove(j);
+					break;
+				}
+			}
+			JdbcConnection.getInstance().getConnection();
+			JdbcConnection.getInstance().deleteClientInternet(matricule);
+		}
+		String bl = "true";
+		
+		// Retour des info à Internet
+		SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.INTERNET, bl);
+		
+		// Suppression des comptes chez la monétique
+		if (matricule != 0)
+		{
+			if (SyncMessHandler.getSyncMessSender().sendMessage(
+					EApplication.MONETIQUE, getSupprTypeCarte(matricule)) == false)
+			{
+				System.out.println("Impossible de contacter la monétique pour la suppression d'un compte crédit carte");
+			}
+			if (SyncMessHandler.getSyncMessSender().sendMessage(
+					EApplication.MONETIQUE, getSupprCompteCreditFed(matricule)) == false)
+			{
+				System.out.println("Impossible de contacter la monétique pour la suppression d'un type de carte");
+			}
+		}
+			return bl;
 	}
 	
 	
@@ -340,7 +463,42 @@ public class XMLManager
 		return bl;
 	}
 	
-	public String getSupprTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	public String getSupprTypeCarte(int mat) throws AsyncMessageException, IOException, SAXException, ParseException
+	{	
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_type_carte\" action=\"s\">" +
+					"<type_cf id=\"" + Integer.toString(mat) + "\">" +
+					"<nouvel_id></nouvel_id>" +
+					"</type_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	
+	public String getCreationCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		CarteFidelite fed = new CarteFidelite();
+		fed.setEchellon(3);
+		fed.setLimite_m(3000);
+		fed.setLimite_tot(10000);
+		
+		client.setCarteFed(fed);
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_compte_cf\" action=\"c\">" +
+					"<compte_cf>" +
+					"<matricule_client>" + client.getMatricule() + "</matricule_client>" +
+					"<BIC></BIC>" +
+					"<IBAN></IBAN>" +
+					"<id_type_cf></id_type_cf>" +
+					"</compte_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	public String getModifCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		CarteFidelite fed = new CarteFidelite();
 		fed.setEchellon(5);
@@ -350,14 +508,28 @@ public class XMLManager
 		client.setCarteFed(fed);
 		
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-					"<monetique service=\"cms_type_carte\" action=\"s\">" +
-					"<type_cf id=\"" + client.getMatricule() + "\">" +
-					"<nouvel_id></nouvel_id>" +
-					"</type_cf>" +
+					"<monetique service=\"cms_compte_cf\" action=\"m\">" +
+					"<compte_cf matricule_client=\"" + client.getMatricule() + "\">" +
+					"<BIC></BIC>" +
+					"<IBAN></IBAN>" +
+					"<id_type_cf></id_type_cf>" +
+					"</compte_cf>" +
 					"</monetique>";
 		
 		return bl;
 	}
+	
+	public String getSupprCompteCreditFed(int mat) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_compte_cf\" action=\"s\">" +
+					"<compte_cf matricule_client=\"" + Integer.toString(mat) + "\">" +
+					"</compte_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
 	
 	public String getClientConnecteDemandeReduc(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{

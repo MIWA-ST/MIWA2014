@@ -158,6 +158,66 @@ public class JdbcConnection
 		}
 	}
 	
+	public void updateClientInternet(Client client)
+	{
+		try
+		{
+			System.out.println("update client internet");
+			if (connection != null)
+			{
+				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=? WHERE matricule = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, client.getNom());
+				statement.setString(2, client.getPrenom());
+				statement.setString(3, client.getCodePostal());
+				statement.setString(4, client.getAdresse());
+				statement.setString(5, client.getMail());
+				statement.setString(6, client.getTelephone());
+				statement.setString(7, Integer.toString(client.getMatricule()));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Client internet modifié en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur update en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void deleteClientInternet(int matricule)
+	{
+		try
+		{
+			System.out.println("suppr client internet");
+			if (connection != null)
+			{
+				String request = "DELETE FROM Client WHERE matricule = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(matricule));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Client internet suppr en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur suppr en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public Client GetClientInternet(String id)
 	{
 		Client client = new Client();
