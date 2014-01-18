@@ -297,7 +297,23 @@ public class XMLManager
 	
 	public String getClientConnecteDemandeReduc(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		String bl = "";
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);	
+		
+		String bl = "<ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+				+ "<INFORMATIONS>";
+		
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		for (int i = 0; i < compteNodes.getLength(); i++)
+		{
+			Node infoNodes = compteNodes.item(i);
+			String matricule = infoNodes.getAttributes().getNamedItem("matricule").getNodeValue();
+			Client client = JdbcConnection.getInstance().GetClientInternet(matricule);
+			bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
+					+ "<PROMOTION article=\"\" fin=\"\" reduc=\"\" />";
+		}
+		
+		bl += "</INFORMATIONS></ENTETE>";
 		return bl;
 	}
 	
