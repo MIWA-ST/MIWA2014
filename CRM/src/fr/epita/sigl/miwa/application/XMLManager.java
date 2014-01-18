@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.object.Article;
 import fr.epita.sigl.miwa.application.object.Client;
@@ -373,6 +375,20 @@ public class XMLManager
 							
 		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
 		
+		return bl;
+	}
+	
+	public String SendAfterFedelityAccount()
+	{
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String date = df.format(ClockClient.getClock().getHour());
+		String bl;
+		
+		bl = "<ENTETE objet='matricule-client' source='crm' date=" + date + "/>"
+				+ "<INFORMATIONS>";
+			
+				/*	<CLIENT matricule="" nom="" prenom="" />
+		</INFORMATIONS>*/
 		return bl;
 	}
 	
