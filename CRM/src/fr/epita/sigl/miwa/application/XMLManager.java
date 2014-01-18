@@ -258,6 +258,35 @@ public class XMLManager
 		
 	}
 	
+	public String getDemandeCreationCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		Client client = new Client();
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);	
+		
+		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		client.setDate(seqDate);
+		
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		for (int i = 0; i < compteNodes.getLength(); i++)
+		{
+			Node infoNodes = compteNodes.item(i);
+			client.setNom(infoNodes.getAttributes().getNamedItem("nom").getNodeValue());
+			client.setPrenom(infoNodes.getAttributes().getNamedItem("prenom").getNodeValue());
+			client.setAdresse(infoNodes.getAttributes().getNamedItem("adresse").getNodeValue());
+			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
+			client.setMail(infoNodes.getAttributes().getNamedItem("mail").getNodeValue());
+			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+		}	
+		String bl = "<ENTETE>";
+							
+		bl += "</ENTETE>";
+		
+		return bl;
+	}
+	
 	public String getTicketClientFidelise(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		TicketVente ticketVente = new TicketVente();
