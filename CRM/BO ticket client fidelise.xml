@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<entete objet="ticket-client-fidelise" source="crm" date="AAAAA-MM-JJ">
-	<TICKETVENTE refclient="" moyenpayement="" >
-   	 <ARTICLE refarticle="" quantite="" prix="" />
-   	 <ARTICLE refarticle="" quantite="" prix="" />
+<ENTETE objet="ticket-client-fidelise" source="crm" date="12-01-2014">
+	<TICKETVENTE refclient="01" moyenpayement="CB" >
+   	 <ARTICLE refarticle="001" quantite="1" prix="1" />
+   	 <ARTICLE refarticle="002" quantite="1" prix="2" />
 	</TICKETVENTE>
-</entete>
+</ENTETE>

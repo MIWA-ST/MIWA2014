@@ -79,7 +79,7 @@ public class XMLManager
 		NodeList groupsNodes = criteriaFile.getElementsByTagName("GROUPES");
 		
 		// Création des éléments Critere
-		for (int i = 0; i < groupsNodes.getLength(); i++) 
+		for (int i = 0; i < groupsNodes.getLength(); i++)
 		{
 			
 			Node groupNode = groupsNodes.item(i);
@@ -236,9 +236,9 @@ public class XMLManager
 		output.close();
 		*/
 		// Parsage du fichier	
-		Document criteriaFile = dBuilder.parse(file);
+		Document ticketVenteFile = dBuilder.parse(file);
 		
-		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
+		NodeList headerNodes = ticketVenteFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
 		
@@ -247,18 +247,26 @@ public class XMLManager
 		ticketVente.setArticle(list);
 		
 
-		NodeList ticketVenteNodes = criteriaFile.getElementsByTagName("TICKETVENTE");
+		NodeList ticketVenteNodes = ticketVenteFile.getElementsByTagName("TICKETVENTE");
 		
-		// Création des éléments Critere
-		for (int i = 0; i < ticketVenteNodes.getLength(); i++) 
+		// Création des éléments ticketventes et articles
+		for (int i = 0; i < ticketVenteNodes.getLength(); i++)
 		{
 			Node articleNodes = ticketVenteNodes.item(i);
-			Article article = new Article();
+			ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
 			
-			article.setRef(articleNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
-			article.setQuantite(Integer.parseInt(articleNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
-			article.setPrix(Integer.parseInt(articleNodes.getAttributes().getNamedItem("prix").getNodeValue()));
-			ticketVente.getArticle().add(article);
+			NodeList articlesNodes = ticketVenteFile.getElementsByTagName("ARTICLE");
+			System.out.println(articlesNodes.getLength());
+			for (int j = 0; j < articlesNodes.getLength(); j++) 
+			{
+				Node artNodes = articlesNodes.item(j);
+				Article article = new Article();
+				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
+				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
+				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+				ticketVente.getArticle().add(article);
+			}
 		}
 		
 		String bl = "<EXPEDITIONCLIENT>";

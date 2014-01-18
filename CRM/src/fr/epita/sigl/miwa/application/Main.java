@@ -46,7 +46,8 @@ public class Main {
 		//JDOM.browseXML("C:\\Users\\Romain\\Desktop\\miwa_env\\workspace\\MIWA2014\\CRM\\segmentation-client.xml");
 	//	JDOM.createXML("monetique");
 		//JDOM.createXML("bi-segmentation");
-		XMLManager.getInstance().getSegmentationClient("coucou");
+		//XMLManager.getInstance().getSegmentationClient("coucou");
+		XMLManager.getInstance().getTicketClientFidelise("coucou");
 		//System.out.println(ClockClient.getClock().getHour());
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
