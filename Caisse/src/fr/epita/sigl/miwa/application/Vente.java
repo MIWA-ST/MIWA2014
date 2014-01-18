@@ -15,6 +15,7 @@ public class Vente {
 		int i = 0;
 		// 1 vente
 		while (true) {
+			System.out.println("------------------------------------");
 			System.out.println("Vente : " + i);
 			final Set<Produit> tabproduct = new HashSet<Produit>();
 			final Set<Produit> selectedproducts = new HashSet<Produit>();
@@ -35,19 +36,29 @@ public class Vente {
 			// Construction de la liste des produits sélectionnée
 			float prixtotal = 0;
 			int quant = 1;
-			Boolean add = true;
 			Iterator<Produit> e = tabproduct.iterator();
 			Produit current = new Produit();
 			while (e.hasNext()) {
-				
+				int lower = 0;
+				int higher = 3;
+				int add = (int)(Math.random() * (higher-lower)) + lower;
 				current = e.next();
-				if (true) {
-					selectedproducts.add(current);
-					System.out.println("Ajout de : " + current.getRef()
+				if (add == 1) {
+					prixtotal += current.getPrix();
+					lower = 1;
+					higher = 5;
+					quant = (int)(Math.random() * (higher-lower)) + lower;
+					current.setQuantite(quant);
+					System.out.println("Ajout de : " + quant + " " + current.getNom()
 							+ " dans le panier");
+					selectedproducts.add(current);
 				}
 			}
+			if (selectedproducts.isEmpty())
+				System.out.println("Pas de produit, vente annulée");
+			System.out.println("-------------------------------------");
 			i++;
+			
 			Thread.sleep(2000);
 		}
 	}

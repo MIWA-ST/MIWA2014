@@ -69,10 +69,16 @@ public class Main {
 			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "fermeture");
 			//Fin des réveilles
 			
-			
+			Vente vente = new Vente();
+			try {
+				vente.create();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			//fin de la clock
-					Home home = new Home();
-			home.open();
+			//Home home = new Home();
+			//home.open();
 			
 			// CI DESSOUS TEST MANUEL POUR LE PARSING XML DEPUIS LE BO VERS NOUS
 			//AsyncFileFactory.getInstance().getFileManager().send("toto.xml", EApplication.CAISSE);
