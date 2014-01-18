@@ -279,6 +279,8 @@ public class XMLManager
 			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
 			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+			JdbcConnection.getInstance().getConnection();
+			JdbcConnection.getInstance().insertClientInternet(client);
 		}	
 		String bl = "<ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
 				+ "<INFORMATION><CLIENT matricule=\"\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
