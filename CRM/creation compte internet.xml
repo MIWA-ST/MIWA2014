@@ -1,0 +1,5 @@
+<XML>
+    <ENTETE objet="creation_compte" source="" date="" />
+        <COMPTE nom="" prenom="" adresse="" code_postal="" email="" telephone="">
+        </COMPTE>
+</XML>

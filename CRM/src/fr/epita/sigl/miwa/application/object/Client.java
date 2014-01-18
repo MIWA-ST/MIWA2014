@@ -3,6 +3,7 @@
  */
 package fr.epita.sigl.miwa.application.object;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,6 +15,11 @@ public class Client {
 	private int matricule;
 	private String nom;
 	private String prenom;
+	private String adresse;
+	private String codePostal;
+	private String telephone;
+	private String mail;
+	private Date date;
 	
 	public static List<Client> clientsList;
 	
@@ -28,6 +34,50 @@ public class Client {
 	public Client (int id)
 	{
 		this.matricule = id;
+	}
+
+	public Client ()
+	{
+	}
+	
+	public String getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
+	}
+
+	public String getCodePostal() {
+		return codePostal;
+	}
+
+	public void setCodePostal(String codePostal) {
+		this.codePostal = codePostal;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	/**
