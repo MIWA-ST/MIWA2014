@@ -173,6 +173,7 @@ public class Home {
 			}
 		});
 
+		//TODO si client fidélisé, faire la modification du prix total (contact BO)
 		// paiement listner j'envoi tous les élément pour une vente
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
