@@ -49,6 +49,7 @@ public class Main {
 		//XMLManager.getInstance().getSegmentationClient("coucou");
 		XMLManager.getInstance().SendAfterFedelityAccount();
 		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");
+		XMLManager.getInstance().getDemandeCreationCompte("ajout", "creation compte internet.xml");
 		//System.out.println(ClockClient.getClock().getHour());
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		

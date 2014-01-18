@@ -287,6 +287,12 @@ public class XMLManager
 		return bl;
 	}
 	
+	public String getClientConnecteDemandeReduc(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		String bl = "";
+		return bl;
+	}
+	
 	public String getTicketClientFidelise(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		TicketVente ticketVente = new TicketVente();
