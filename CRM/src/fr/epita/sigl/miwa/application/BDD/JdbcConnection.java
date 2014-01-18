@@ -132,7 +132,7 @@ public class JdbcConnection
 			System.out.println("insertion client internet");
 			if (connection != null)
 			{
-				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel) VALUES (?, ?, ?, ?, ?, ?)";
+				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule) VALUES (?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -141,6 +141,7 @@ public class JdbcConnection
 				statement.setString(4, client.getAdresse());
 				statement.setString(5, client.getMail());
 				statement.setString(6, client.getTelephone());
+				statement.setString(7, Integer.toString(client.getMatricule()));
 
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)

@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -279,6 +280,11 @@ public class XMLManager
 			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
 			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+			int lower = 1;
+			int higher = 99999999;
+
+			int random = (int)(Math.random() * (higher-lower)) + lower;
+			client.setMatricule(random);
 			JdbcConnection.getInstance().getConnection();
 			JdbcConnection.getInstance().insertClientInternet(client);
 		}	
