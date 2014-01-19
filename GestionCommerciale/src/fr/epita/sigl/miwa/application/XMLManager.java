@@ -405,7 +405,7 @@ return commande;
 				+ commande.getCommandNumber() + "</numero>" + "<refclient>"
 				+ commande.getCustomerRef() + "</refclient>" + "<datebc>"
 				+ commande.getDateBC() + "</datebc>" + "<datebl>"
-				+ commande.getDateBL() + "</datebl>" + "<adresseClient"
+				+ commande.getDateBL() + "</datebl>" + "<adresseClient>"
 				+ commande.getCustomerAddress() + "</adresseClient>" + "<nom>"
 				+ commande.getCustomerLastname() + "</nom>" + "<prenom>"
 				+ commande.getCustomerFirstname() + "</prenom>" + "<articles>";
