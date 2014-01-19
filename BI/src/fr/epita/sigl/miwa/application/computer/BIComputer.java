@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import fr.epita.sigl.miwa.application.criteres.*;
 import fr.epita.sigl.miwa.application.data.*;
 import fr.epita.sigl.miwa.application.enums.EPaiementType;
+import fr.epita.sigl.miwa.application.statistic.TemporaryDetailSale;
 import fr.epita.sigl.miwa.application.statistics.*;
 
 public class BIComputer {
@@ -65,12 +66,40 @@ public class BIComputer {
 		return saleStatistics;
 	}
 
-	/** @param clients 
-	 * @param detailSales 
-	 * @param criteria */
-	public List<Segmentation> computeSegmentation(List<Client> clients, List<DetailSale> detailSales, List<Critere> critere) {
-		// TODO: implement
-		return null;
+	public List<Segmentation> computeSegmentation(List<DetailSale> detailSales, List<Product> products) {
+		List<Segmentation> segmentations = new ArrayList<Segmentation>();
+		Map<Integer, Map<String, Integer>> categoriesByClient = new HashMap<Integer, Map<String, Integer>>();
+		for (DetailSale detailSale : detailSales){
+			Map<String, Integer> quantityByCategory = categoriesByClient.get(detailSale.getClientNb());
+			if (quantityByCategory == null){
+				quantityByCategory = new HashMap<String, Integer>();
+			}
+			for (SoldProduct soldProduct : detailSale.getProductList()){
+				String categoryRef = "";
+				for (Product product : products){
+					if (product.getReference().equals(soldProduct.getProductRef())){
+						categoryRef = product.getCategoryName();
+						break;
+					}
+				}					
+				Integer quantity = quantityByCategory.get(categoryRef);
+				if (quantity != null){
+					quantity += soldProduct.getQuantity();
+				} else {
+					quantity = new Integer(soldProduct.getQuantity());
+				}
+				quantityByCategory.put(categoryRef, quantity);
+			}
+			categoriesByClient.put(detailSale.getClientNb(), quantityByCategory);
+		}
+		for (Entry<Integer, Map<String, Integer>> clients : categoriesByClient.entrySet()){
+			List<CategorieStatistic> categoryStatistics = new ArrayList<CategorieStatistic>();
+			for (Entry<String, Integer> quantities : clients.getValue().entrySet()){
+				categoryStatistics.add(new CategorieStatistic(quantities.getKey(), quantities.getValue()));
+			}
+			segmentations.add(new Segmentation(clients.getKey(), categoryStatistics));
+		}
+		return segmentations;
 	}
 
 	/** @param detailSales */

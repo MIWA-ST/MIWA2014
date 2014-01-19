@@ -14,8 +14,8 @@ import fr.epita.sigl.miwa.application.criteres.AgeValue;
 import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.data.DetailSale;
 import fr.epita.sigl.miwa.application.data.Product;
-import fr.epita.sigl.miwa.application.data.ProductCategory;
 import fr.epita.sigl.miwa.application.data.Sale;
+import fr.epita.sigl.miwa.application.data.SoldProduct;
 import fr.epita.sigl.miwa.application.data.Stock;
 import fr.epita.sigl.miwa.application.enums.ECritereType;
 import fr.epita.sigl.miwa.application.enums.EPaiementType;
@@ -98,6 +98,41 @@ public class BIComputerTest {
 		Assert.assertEquals(100f / 425f * 100, statistics.get(1).getCaPourcent(), 0);
 		Assert.assertEquals(150f / 425f * 100, statistics.get(2).getCaPourcent(), 0);
 		Assert.assertEquals(25f / 425f * 100, statistics.get(3).getCaPourcent(), 0);
+	}
+	
+	@Test
+	public void computeSegmentationTest(){
+		List<SoldProduct> soldProducts = new ArrayList<SoldProduct>();
+		SoldProduct sp1 = new SoldProduct("1", 15);
+		soldProducts.add(sp1);
+		SoldProduct sp2 = new SoldProduct("3", 10);
+		soldProducts.add(sp2);
+		SoldProduct sp3 = new SoldProduct("2", 15);
+		soldProducts.add(sp3);
+		List<DetailSale> detailSales = new ArrayList<DetailSale>();
+		DetailSale ds1 = new DetailSale(EPaiementType.CB, null, 0, null, 1, soldProducts);
+		detailSales.add(ds1);
+		DetailSale ds2 = new DetailSale(EPaiementType.CB, null, 0, null, 1, soldProducts);
+		detailSales.add(ds2);
+		DetailSale ds3 = new DetailSale(EPaiementType.CB, null, 0, null, 2, soldProducts);
+		detailSales.add(ds3);
+		List<Product> products = new ArrayList<Product>();
+		Product p1 = new Product(1, "1", 0f, 0f, 0f, "1");
+		products.add(p1);
+		Product p2 = new Product(1, "2", 0f, 0f, 0f, "2");
+		products.add(p2);
+		Product p3 = new Product(1, "3", 0f, 0f, 0f, "2");
+		products.add(p3);
+		List<Segmentation> segmentations = computer.computeSegmentation(detailSales, products);
+		assertEquals(2, segmentations.size());
+		// Client 1
+		Segmentation client1 = segmentations.get(0);
+		assertEquals(new Integer(1), client1.getClientNumero());
+		assertEquals(2, client1.getCategorieStatistics().size());
+		// Client 2
+		Segmentation client2 = segmentations.get(1);
+		assertEquals(new Integer(2), client2.getClientNumero());
+		assertEquals(2, client2.getCategorieStatistics().size());
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package fr.epita.sigl.miwa.application.dao;
 
 import java.util.List;
 
+import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.data.Client;
 import fr.epita.sigl.miwa.application.data.DetailSale;
 import fr.epita.sigl.miwa.application.data.Product;
@@ -93,6 +94,21 @@ public class BIDao {
 	}
 
 	public static List<Sale> getSalesOfToday() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static List<Client> getClientByCriteria(List<Critere> criteres) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static List<DetailSale> getDetailSalesForClients(List<Client> clients) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static List<Product> getAllProducts() {
 		// TODO Auto-generated method stub
 		return null;
 	}

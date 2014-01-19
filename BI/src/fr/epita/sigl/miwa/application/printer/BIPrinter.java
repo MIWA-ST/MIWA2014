@@ -15,6 +15,7 @@ import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.criteres.AgeValue;
 import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.enums.EAlerteType;
@@ -129,7 +130,7 @@ public class BIPrinter {
 	private void initConsole(){
 		System.out.println("--------------------------------------------------\n--------------------------------------------------");
 		System.out.println("DATE : ");
-		System.out.println(ClockFactory.getServerClock().getHour());
+		System.out.println(ClockClient.getClock().getHour());
 	}
 
 	private String getEvolutionPart(SaleStatistic statistic){
@@ -159,7 +160,7 @@ public class BIPrinter {
 		Attribute objet = new Attribute("objet", "segmentation-client");
 		Attribute source = new Attribute("source", "bi");
 		SimpleDateFormat dateString = new SimpleDateFormat("YYYY-MM-dd");
-		Attribute date = new Attribute("date", dateString.format(ClockFactory.getServerClock().getHour()));
+		Attribute date = new Attribute("date", dateString.format(ClockClient.getClock().getHour()));
 		List<Attribute> attributes = new ArrayList<Attribute>();
 		attributes.add(objet);
 		attributes.add(source);

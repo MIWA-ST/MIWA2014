@@ -23,13 +23,17 @@ public class ClockClient {
 	 */
 	@Deprecated
 	static public void wakeUp(Date date, Object message) {
-		if (message instanceof EClockMessage) {
+		if (message instanceof String) {
 			EClockMessage clockMessage = (EClockMessage) message;
 			switch (clockMessage) {
 			case STOCK:
 				controller.generateStockStatistic();
 				break;
-
+			case VENTE:
+				controller.generateSaleStatistic();
+				break;
+			case REP_PAYMENT:
+				controller.generatePaymentStatistics();
 			default:
 				break;
 			}

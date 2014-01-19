@@ -18,6 +18,8 @@ import fr.epita.sigl.miwa.application.dao.BIDao;
 import fr.epita.sigl.miwa.application.data.Client;
 import fr.epita.sigl.miwa.application.data.DetailSale;
 import fr.epita.sigl.miwa.application.data.MDMData;
+import fr.epita.sigl.miwa.application.data.Product;
+import fr.epita.sigl.miwa.application.data.ProductCategory;
 import fr.epita.sigl.miwa.application.data.Promotion;
 import fr.epita.sigl.miwa.application.data.Sale;
 import fr.epita.sigl.miwa.application.data.Stock;
@@ -116,15 +118,16 @@ public class BIController {
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
-		List<Client> clients = BIDao.getAllClients();
-		List<DetailSale> detailSales = BIDao.getAllDetailSales();
-		List<Segmentation> segmentations = computer.computeSegmentation(clients, detailSales, criteres);
+		List<Client> clients = BIDao.getClientByCriteria(criteres);
+		List<DetailSale> detailSales = BIDao.getDetailSalesForClients(clients);
+		List<Product> products = BIDao.getAllProducts();
+		List<Segmentation> segmentations = computer.computeSegmentation(detailSales, products);
 		BIDao.insertSegmentation(segmentations);
 		return printer.createSegmentationFile(criteres, segmentations);
 	}
 
 	/** @param path */
-	public void generatePaymentStatistics(String path) {
+	public void generatePaymentStatistics() {
 		while (!hasDetailSaleBOForPayment && !hasDetailSaleInternetForPayment){
 			try {
 				wait(10000);
