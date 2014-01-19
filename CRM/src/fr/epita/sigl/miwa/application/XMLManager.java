@@ -562,11 +562,12 @@ public class XMLManager
 		for (int i = 0; i < ticketVenteNodes.getLength(); i++)
 		{
 			Node articleNodes = ticketVenteNodes.item(i);
+			Element articleElement = (Element)ticketVenteNodes.item(i);
 			ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
 			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
 			LOGGER.info("***** Client " + i + ": " + ticketVente.getRefclient() + " - " + ticketVente.getMoyenpayement());
 			
-			NodeList articlesNodes = ticketVenteFile.getElementsByTagName("ARTICLE");
+			NodeList articlesNodes = articleElement.getElementsByTagName("ARTICLE");
 			for (int j = 0; j < articlesNodes.getLength(); j++) 
 			{
 				Node artNodes = articlesNodes.item(j);
