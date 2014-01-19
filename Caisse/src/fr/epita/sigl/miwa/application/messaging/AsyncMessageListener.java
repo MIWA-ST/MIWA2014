@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
-import fr.epita.sigl.miwa.application.ReadXMLFile;
+import fr.epita.sigl.miwa.application.XmlParser;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
@@ -55,7 +55,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("Message reçu du Back Office");
 			LOGGER.info("Le message est : " + message);
 			// message de màj des prix
-			ReadXMLFile.ParseBOString(message);
+			XmlParser.ParseBOString(message);
 		} else {
 			LOGGER.severe("From Caisse : La source de ce message ("
 					+ source
@@ -70,7 +70,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("Fichier reçu du Back Office");
 			LOGGER.info("Le path du fichier est : " + file.getAbsolutePath());
 			// fichier de listing des produits
-			ReadXMLFile.ParseBOFile(file);
+			XmlParser.ParseBOFile(file);
 		} else {
 			LOGGER.severe("From Caisse : La source de ce fichier ("
 					+ source

@@ -15,7 +15,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class ReadXMLFile {
+public class XmlParser {
 
 	/*SAXParserFactory factory = SAXParserFactory.newInstance();
 	   SAXParser saxParser = factory.newSAXParser();
