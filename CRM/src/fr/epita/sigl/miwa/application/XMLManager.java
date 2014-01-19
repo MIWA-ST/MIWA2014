@@ -344,13 +344,20 @@ public class XMLManager
 		bl += "</INFORMATION></ENTETE>";
 		
 		// Retour des info à Internet
-		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.INTERNET, bl);
-		LOGGER.info("***** Envoi de la réponse auprès d'Internet");
-		
-		// Creation des comptes chez la monétique
-		if (SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.MONETIQUE, getCreationCompteCreditFed(client)) == false)
+		try
+		{
+			SyncMessHandler.getSyncMessSender().sendMessage(
+					EApplication.INTERNET, bl);
+			LOGGER.info("***** Envoi de la réponse auprès d'Internet");
+			
+			// Creation des comptes chez la monétique
+			if (SyncMessHandler.getSyncMessSender().sendMessage(
+					EApplication.MONETIQUE, getCreationCompteCreditFed(client)) == false)
+			{
+				LOGGER.warning("Impossible de contacter la monétique pour la création d'un compte crédit carte");
+			}
+		}
+		catch (Exception e)
 		{
 			LOGGER.warning("Impossible de contacter la monétique pour la création d'un compte crédit carte");
 		}
@@ -587,7 +594,7 @@ public class XMLManager
 	{
 		LOGGER.info("***** Analyse du flux XML: Client Connecté (Internet)");
 		File file = new File (xml);
-		Document compteClientFile = dBuilder.parse(file);	
+		Document compteClientFile = dBuilder.parse(file);
 		LOGGER.info("***** Parsage du XML");
 		
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
@@ -600,12 +607,22 @@ public class XMLManager
 			String matricule = infoNodes.getAttributes().getNamedItem("matricule").getNodeValue();
 			LOGGER.info("***** Client connecté:" + matricule);
 			Client client = JdbcConnection.getInstance().GetClientInternet(matricule);
+			client = Client.getClient(matricule);
 			if (client != null)
+			{
 				LOGGER.info("***** Client retrouvé en BDD:" + client.getNom() + " " + client.getPrenom());
-			else
+			
+				if (client.articlesList == null)
+				{
+					Article e = new Article();
+					e.setRef("001");
+					client.articlesList = new ArrayList<>();
+					client.articlesList.add(e);
+				}
+				bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
+						+ "<PROMOTION article=\"" + client.articlesList.get(0).getRef() + "\" fin=\"2014-02-20\" reduc=\"-1\" />";
+			} else
 				LOGGER.info("***** ERREUR: Client inconnu de la part du CRM");
-			bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
-					+ "<PROMOTION article=\"\" fin=\"\" reduc=\"\" />";
 		}
 		
 		bl += "</INFORMATIONS></ENTETE>";
@@ -643,37 +660,41 @@ public class XMLManager
 		for (int i = 0; i < ticketVenteNodes.getLength(); i++)
 		{
 			Element articleNodes = (Element)ticketVenteNodes.item(i);
-			ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
-			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
-			LOGGER.info("***** Client " + i + ": " + ticketVente.getRefclient() + " - " + ticketVente.getMoyenpayement());
 			
-			NodeList articlesNodes = articleNodes.getElementsByTagName("ARTICLE");
-			for (int j = 0; j < articlesNodes.getLength(); j++) 
+			Client c = Client.getClient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+			if (c != null)
 			{
-				Node artNodes = articlesNodes.item(j);
-				Article article = new Article();
-				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
-				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
-				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
-				ticketVente.getArticle().add(article);
-				LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
+				ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+				ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
+				LOGGER.info("***** Client " + i + ": " + ticketVente.getRefclient() + " - " + ticketVente.getMoyenpayement());
+				
+				NodeList articlesNodes = articleNodes.getElementsByTagName("ARTICLE");
+				for (int j = 0; j < articlesNodes.getLength(); j++) 
+				{
+					Node artNodes = articlesNodes.item(j);
+					Article article = new Article();
+					article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
+					article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
+					article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+					ticketVente.getArticle().add(article);
+					LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
+					if (c.articlesList == null)
+					{
+						c.articlesList = new ArrayList<>();
+					}
+					c.articlesList.add(article);
+					
+					JdbcConnection.getInstance().insertArticle(article);
+				}
+				TicketVente.ticketVentesList.add(ticketVente);
+			}
+			else
+			{
+				LOGGER.info("******** Reference client inconnue dans le CRM");
 			}
 		}
 		
 		String bl = "<EXPEDITIONCLIENT>";
-		/*	+ "<LIVRAISON>"
-				+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
-				+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
-				+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
-				
-		for (TicketReduc a : clients)
-			bl += "<ARTICLE>"
-					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";*/
-							
-		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
 		
 		return bl;
 	}
@@ -684,10 +705,7 @@ public class XMLManager
 		TicketVente ticketVente = new TicketVente();
 		
 		File file = new File (xml);
-		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
-		output.write(message);
-		output.close();
-		*/
+		
 		// Parsage du fichier	
 		Document ticketVenteFile = dBuilder.parse(file);
 		LOGGER.info("***** Parsage du ticket de caisse temporaire");

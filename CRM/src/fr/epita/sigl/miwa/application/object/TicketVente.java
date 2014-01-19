@@ -10,6 +10,8 @@ public class TicketVente {
 	private Date date;
 	private List<Article> article;
 	
+	public static List<TicketVente> ticketVentesList;
+	
 	public String getRefclient() {
 		return refclient;
 	}
