@@ -3,7 +3,10 @@
  */
 package fr.epita.sigl.miwa.application.object;
 
+import java.util.Date;
 import java.util.List;
+
+import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 
 /**
  * @author clementlavigne
@@ -14,6 +17,14 @@ public class Client {
 	private int matricule;
 	private String nom;
 	private String prenom;
+	private String adresse;
+	private String codePostal;
+	private String telephone;
+	private String mail;
+	private String IBAN;
+	private String BIC;
+	private Date date;
+	private CarteFidelite carteFed;
 	
 	public static List<Client> clientsList;
 	
@@ -28,6 +39,77 @@ public class Client {
 	public Client (int id)
 	{
 		this.matricule = id;
+	}
+
+	public Client ()
+	{
+	}
+	
+	
+	
+	
+	public String getIBAN() {
+		return IBAN;
+	}
+
+	public void setIBAN(String iBAN) {
+		IBAN = iBAN;
+	}
+
+	public String getBIC() {
+		return BIC;
+	}
+
+	public void setBIC(String bIC) {
+		BIC = bIC;
+	}
+
+	public CarteFidelite getCarteFed() {
+		return carteFed;
+	}
+
+	public void setCarteFed(CarteFidelite carteFed) {
+		this.carteFed = carteFed;
+	}
+
+	public String getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
+	}
+
+	public String getCodePostal() {
+		return codePostal;
+	}
+
+	public void setCodePostal(String codePostal) {
+		this.codePostal = codePostal;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	/**

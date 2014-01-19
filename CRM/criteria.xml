@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<ENTETE objet="segmentation-client" source="bi" date="20-02-2014">
+	<GROUPES>
+		<GROUPE>
+			<CRITERES>
+				<CRITERE type="age" max="10" min="10"/>
+				<CRITERE type="geographie" valeur="Paris"/>
+				<CRITERE type="sexe" valeur=""/>
+				<CRITERE type="situation-familiale" valeur=""/>
+				<CRITERE type="enfant" valeur=""/>
+				<CRITERE type="fidelite" valeur=""/>
+			</CRITERES>
+			<CLIENTS>
+				<CLIENT numero="">
+					<CATEGORIEARTICLES>
+						<CATEGORIE ref="" achat=""/>
+					</CATEGORIEARTICLES>
+				</CLIENT>					
+			</CLIENTS>
+		</GROUPE>
+	</GROUPES>
+</ENTETE>

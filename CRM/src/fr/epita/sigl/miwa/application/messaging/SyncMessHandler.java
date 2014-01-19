@@ -1,11 +1,16 @@
 package fr.epita.sigl.miwa.application.messaging;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.XMLManager;
 import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 import fr.epita.sigl.miwa.st.sync.ISyncMessSender;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 
@@ -25,7 +30,7 @@ public class SyncMessHandler {
 	 * Elle est automatiquement appel�e lorsqu'une application vous contacte
 	 */
 	@Deprecated
-	static public boolean receiveMessage(EApplication sender, String message) {
+	static public boolean receiveMessage(EApplication sender, String message) throws SAXException, IOException, AsyncMessageException, ParseException {
 		
 		if (sender == EApplication.CAISSE)
 		{
@@ -47,7 +52,7 @@ public class SyncMessHandler {
 		{
 			LOGGER.info("Mesasage synchrone reçu de : " + sender.toString() + " non traité.");
 		}
-		
+		XMLManager.getInstance().dispatchXML("Traitement", message);
 		return false;
 	}
 

@@ -3,11 +3,13 @@ package fr.epita.sigl.miwa.application.BDD;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.crm.ReassortBO;
+import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Segmentation;
 
 
@@ -44,7 +46,7 @@ public class JdbcConnection
  
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/miwa", "postgres", "root");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/postgres", "postgres", "root");
 		}
 		catch (SQLException e)
 		{
@@ -122,6 +124,132 @@ public class JdbcConnection
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public void insertClientInternet(Client client)
+	{
+		try
+		{
+			System.out.println("insertion client internet");
+			if (connection != null)
+			{
+				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, client.getNom());
+				statement.setString(2, client.getPrenom());
+				statement.setString(3, client.getCodePostal());
+				statement.setString(4, client.getAdresse());
+				statement.setString(5, client.getMail());
+				statement.setString(6, client.getTelephone());
+				statement.setString(7, Integer.toString(client.getMatricule()));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouveau client internet ajouté en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateClientInternet(Client client)
+	{
+		try
+		{
+			System.out.println("update client internet");
+			if (connection != null)
+			{
+				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=? WHERE matricule = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, client.getNom());
+				statement.setString(2, client.getPrenom());
+				statement.setString(3, client.getCodePostal());
+				statement.setString(4, client.getAdresse());
+				statement.setString(5, client.getMail());
+				statement.setString(6, client.getTelephone());
+				statement.setString(7, Integer.toString(client.getMatricule()));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Client internet modifié en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur update en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void deleteClientInternet(int matricule)
+	{
+		try
+		{
+			System.out.println("suppr client internet");
+			if (connection != null)
+			{
+				String request = "DELETE FROM Client WHERE matricule = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(matricule));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Client internet suppr en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur suppr en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public Client GetClientInternet(String id)
+	{
+		Client client = new Client();
+		try
+		{
+			if (connection != null)
+			{
+				String request = "SELECT * FROM Client WHERE matricule = '" + id + "'";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+
+				ResultSet result = statement.executeQuery();
+				while(result.next())
+				{
+					client.setNom(result.getString(2));
+					client.setPrenom(result.getString(3));
+					client.setCodePostal(result.getString(4));
+					client.setAdresse(result.getString(5));
+					client.setMail(result.getString(6));
+					client.setTelephone(result.getString(7));
+					client.setMatricule(Integer.parseInt(result.getString(8)));
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+		return client;
+	}
+	
 	/*
 	public void insertLivraisonFournisseur(LivraisonFournisseur command)
 	{

@@ -1,20 +1,59 @@
 package fr.epita.sigl.miwa.application;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
+import fr.epita.sigl.miwa.application.clock.ClockClient;
+import fr.epita.sigl.miwa.application.crm.TicketReduc;
+import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
+import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
+import fr.epita.sigl.miwa.application.object.Article;
+import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Critere;
+import fr.epita.sigl.miwa.application.object.Group;
 import fr.epita.sigl.miwa.application.object.Segmentation;
+import fr.epita.sigl.miwa.application.object.TicketCaisse;
+import fr.epita.sigl.miwa.application.object.TicketVente;
+import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
 public class XMLManager
 {
 	private static XMLManager instance = null;
+	private DocumentBuilderFactory dBFactory;
+	private DocumentBuilder dBuilder;
+	
+	public XMLManager() {
+		try {
+			dBFactory = DocumentBuilderFactory.newInstance();
+			dBuilder = dBFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			
+			
+		}
+	}
 	
 	public static XMLManager getInstance()
 	{
@@ -24,53 +63,177 @@ public class XMLManager
 		return instance;
 	}
 	
-	public String getSegmentationClient(String message, Document doc) throws AsyncMessageException
+	
+	public String dispatchXML(String message, String xml) throws SAXException, IOException, AsyncMessageException, ParseException
+	{
+		File file = new File (xml);
+
+		// Parsage du fichier	
+		Document criteriaFile = dBuilder.parse(file);
+		String XMLReturn = "";
+		
+		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
+		String object = headerNodes.item(0).getAttributes().getNamedItem("objet").getNodeValue();
+
+		switch (object) 
+		{
+			case "ticket-caisse":
+				XMLReturn = getTicketCaisse(message, xml);
+				break;
+			case "ticket-client-fidelise":
+				XMLReturn = getTicketClientFidelise(message, xml);
+				break;
+			case "segmentation-client":
+				XMLReturn = getSegmentationClient(message, xml);
+				break;
+			case "creation_compte":
+				XMLReturn = getDemandeCreationCompte(message, xml);
+				break;
+			case "modif_compte":
+				XMLReturn = getDemandeModifCompte(message, xml);
+				break;
+			case "suppression_compte":
+				XMLReturn = getDemandeSupprCompte(message, xml);
+				break;
+
+		}
+		return XMLReturn;
+	}
+	
+	
+	public String getSegmentationClient(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		Segmentation segmentation = new Segmentation();
 		
-		/*segmentation.setCommandNumber(doc.getElementsByTagName("numero").item(0).getTextContent());
-		segmentation.setCustomerRef(doc.getElementsByTagName("refclient").item(0).getTextContent());
-		segmentation.setCustomerLastname(doc.getElementsByTagName("nom").item(0).getTextContent());
-		segmentation.setCustomerFirstname(doc.getElementsByTagName("prenom").item(0).getTextContent());
-		segmentation.setCustomerAddress(doc.getElementsByTagName("adresseClient").item(0).getTextContent());
-		segmentation.setDateBC(doc.getElementsByTagName("datebc").item(0).getTextContent());*/
+		File file = new File (xml);
+		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
+		output.write(message);
+		output.close();
+		*/
+		// Parsage du fichier	
+		Document criteriaFile = dBuilder.parse(file);
 		
-		// Récupération des critères
+		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		
+		segmentation.setDate(seqDate);
+		
+		
 		ArrayList<Critere> criteres = new ArrayList<Critere>();
-		NodeList nList = doc.getElementsByTagName("CRITERE");
 
-		for (int temp = 0; temp < nList.getLength(); temp++) 
+		NodeList groupsNodes = criteriaFile.getElementsByTagName("GROUPES");
+		
+		// Création des éléments Critere
+		for (int i = 0; i < groupsNodes.getLength(); i++)
 		{
 			
-			//Récupéraction du noeud à traiter
-			Node nNode = nList.item(temp);
-			//Conversion en element
-			Element eElement = (Element) nNode;
+			Node groupNode = groupsNodes.item(i);
+			Group group = new Group();
+			List<Critere> list = new  ArrayList<>();
+			group.setCriteres(list);
+			String tmpInfo;
+			
+			NodeList childNodes = groupNode.getChildNodes();
+			for (int j = 0; j < childNodes.getLength(); j++) 
+			{
+				Node cNode = childNodes.item(j);
+				if (cNode instanceof Element) 
+				{
+					String content = cNode.getLastChild().getTextContent().trim();
+					if (cNode.getNodeName() == "CRITERE")
+					{
+						NodeList criteriasNodes = cNode.getChildNodes();
+						for (int k = 0; k < criteriasNodes.getLength(); k++) 
+						{
+							Node criteriaNodes = criteriasNodes.item(k);
+							Critere c = new Critere();
+							String type = criteriaNodes.getAttributes().getNamedItem("type").getNodeValue();
+							switch (type) 
+							{
+								case "age":
+									c.setType(type);
+									c.setMax(Integer.parseInt(criteriaNodes.getAttributes().getNamedItem("max").getNodeValue()));
+									c.setMin(Integer.parseInt(criteriaNodes.getAttributes().getNamedItem("min").getNodeValue()));
+									break;
+								case "geographie":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+								case "sexe":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+								case "situation-familiale":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+								case "enfant":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+								case "fidelite":
+									c.setType(type);
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+								    break;
+							}
+							group.getCriteres().add(c);
+						}
+					}
+					else if (cNode.getNodeName() == "CLIENTS")
+					{
+						NodeList clientsNodes = cNode.getChildNodes();
+						for (int k = 0; k < clientsNodes.getLength(); k++) 
+						{
+							Node clientNodes = clientsNodes.item(k);
+							Critere c = new Critere();
+							String type = clientNodes.getAttributes().getNamedItem("type").getNodeValue();
+							// FIXME
 
-			Critere a = new Critere( eElement.getAttribute("type"));
-			//a = eElement.getAttribute("");
-			
-			// TODO check si min/max ou valeur
-			String tmp= eElement.getAttribute("type");
-			
-			if (tmp == null)
-			{
-				a.setMin(Integer.parseInt(eElement.getAttribute("min")));
-				a.setMax(Integer.parseInt(eElement.getAttribute("max")));				
+						}
+					}
+				}
 			}
-			else
-			{
-				a.setValue(eElement.getAttribute("valeur"));
-			}
-			
-			criteres.add(a);
 		}
-		segmentation.setCriteres(criteres);
+			
+			
+			/*tmpInfo = criteriaNode.getAttributes().getNamedItem("type").getNodeValue();
+			criteria.setType(tmpInfo);
+			if (tmpInfo.equalsIgnoreCase("age")) {
+				String min = criteriaNode.getAttributes().getNamedItem("min").getNodeValue();
+				String max = criteriaNode.getAttributes().getNamedItem("max").getNodeValue();
+				criteria.setMax(Integer.valueOf(max));
+				criteria.setMin(Integer.valueOf(min));
+			}
+			else if (tmpInfo.equalsIgnoreCase("geographie")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			else if (tmpInfo.equalsIgnoreCase("sexe")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			else if (tmpInfo.equalsIgnoreCase("situation-familiale")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			else if (tmpInfo.equalsIgnoreCase("enfant")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			else if (tmpInfo.equalsIgnoreCase("fidelite")) {
+				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
+				criteria.setValue(valeur);
+			}
+			
+			criteres.add(criteria);
+		}
+		segmentation.setCriteres(criteres);*/
 		
-		//Récuération des clients
+		//Récupération des clients
 		ArrayList<Client> clients = new ArrayList<Client>();
-		NodeList mList = doc.getElementsByTagName("CLIENT");
-		for (int temp = 0; temp < mList.getLength(); temp++) 
+		NodeList mList = criteriaFile.getElementsByTagName("CLIENT");
+		for (int temp = 0; temp < mList.getLength(); temp++)
 		{
 			//Récupéraction du noeud à traiter
 			Node nNode = mList.item(temp);
@@ -83,15 +246,15 @@ public class XMLManager
 		}
 		segmentation.setClients(clients);
 		
-		/*DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		segmentation.setDateBL(df.format(ClockClient.getClock().getHour()));
-		*/
+		//DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		//segmentation.setDateBL(df.format(ClockClient.getClock().getHour()));
+		
 		//TODO sauvergarde en base
 		//JdbcConnection.getInstance().insertCommandeInternet(command);
 		
 		//Construction du xml
-		/*String bl = "<EXPEDITIONCLIENT>"
-					+ "<LIVRAISON>"
+		String bl = "<EXPEDITIONCLIENT>";
+				/*	+ "<LIVRAISON>"
 						+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
 						+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
 						+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
@@ -101,117 +264,410 @@ public class XMLManager
 					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
 					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
 					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";
+				+ "</ARTICLE>";*/
 							
-		bl += "</LIVRAISON></EXPEDITIONCLIENT>";*/
+		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
 		
-		//return bl;
+		return bl;
 		
-		return null;
 	}
-	/*
-	public String getCommandeFournisseur(String message, Document doc) throws AsyncMessageException
+	
+	public String getDemandeCreationCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		LivraisonFournisseur command = new LivraisonFournisseur();
+		Client client = new Client();
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);	
 		
-		command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
-		command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
+		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		client.setDate(seqDate);
 		
-		List<TicketReduc> articles = new ArrayList<TicketReduc>();
-		NodeList nList = doc.getElementsByTagName("ARTICLE");
-		for (int temp = 0; temp < nList.getLength(); temp++) 
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		for (int i = 0; i < compteNodes.getLength(); i++)
 		{
-			TicketReduc a = new TicketReduc();
-			
-			//Récupéraction du noeud à traiter
-			Node nNode = nList.item(temp);
-			//Conversion en element
-			Element eElement = (Element) nNode;
+			Node infoNodes = compteNodes.item(i);
+			client.setNom(infoNodes.getAttributes().getNamedItem("nom").getNodeValue());
+			client.setPrenom(infoNodes.getAttributes().getNamedItem("prenom").getNodeValue());
+			client.setAdresse(infoNodes.getAttributes().getNamedItem("adresse").getNodeValue());
+			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
+			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
+			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+			int lower = 1;
+			int higher = 99999999;
 
-			a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-			a.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-			 
-			articles.add(a);
+			int random = (int)(Math.random() * (higher-lower)) + lower;
+			client.setMatricule(random);
+			Client.clientsList.add(client);
+			JdbcConnection.getInstance().getConnection();
+			JdbcConnection.getInstance().insertClientInternet(client);
+		}	
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+				+ "<INFORMATION><CLIENT matricule=\"\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
+		bl += "</INFORMATION></ENTETE>";
+		
+		// Retour des info à Internet
+		SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.INTERNET, bl);
+		
+		// Creation des comptes chez la monétique
+		if (SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.MONETIQUE, getCreationCompteCreditFed(client)) == false)
+		{
+			System.out.println("Impossible de contacter la monétique pour la création d'un compte crédit carte");
 		}
-		command.setArticles(articles);
 		
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		command.setDateBL(df.format(ClockClient.getClock().getHour()));
+		return bl;
+	}
+	
+	
+	public String getDemandeModifCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		Client client = new Client();
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);	
 		
-		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertLivraisonFournisseur(command);
+		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		client.setDate(seqDate);
 		
-		//Construction du xml
-		String bl = "<LIVRAISONSCOMMANDEFOURNISSEUR>"
-					+ "<LIVRAISON>"
-						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
-						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
-						+ "<DATEBL>" + command.getDateBL() + "</DATEBL>";
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		for (int i = 0; i < compteNodes.getLength(); i++)
+		{
+			Node infoNodes = compteNodes.item(i);
+			client.setNom(infoNodes.getAttributes().getNamedItem("nom").getNodeValue());
+			client.setPrenom(infoNodes.getAttributes().getNamedItem("prenom").getNodeValue());
+			client.setAdresse(infoNodes.getAttributes().getNamedItem("adresse").getNodeValue());
+			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
+			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
+			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+			client.setMatricule(Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue()));
+			for (int j = 0 ; j < Client.clientsList.size(); j++)
+			{
+				if (Client.clientsList.get(j).getMatricule() == client.getMatricule())
+				{
+					Client.clientsList.remove(j);
+					break;
+				}
+			}
+			Client.clientsList.add(client);
+			JdbcConnection.getInstance().getConnection();
+			JdbcConnection.getInstance().updateClientInternet(client);
+		}
+		String bl = "true";
 		
-		for (TicketReduc a : articles)
+		// Retour des info à Internet
+		SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.INTERNET, bl);
+		
+		return bl;
+	}
+	
+	
+	public String getDemandeSupprCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);
+		
+		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		int matricule = 0;
+		
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		for (int i = 0; i < compteNodes.getLength(); i++)
+		{
+			Node infoNodes = compteNodes.item(i);
+			matricule = Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue());
+			for (int j = 0 ; j < Client.clientsList.size(); j++)
+			{
+				if (Client.clientsList.get(j).getMatricule() == matricule)
+				{
+					Client.clientsList.remove(j);
+					break;
+				}
+			}
+			JdbcConnection.getInstance().getConnection();
+			JdbcConnection.getInstance().deleteClientInternet(matricule);
+		}
+		String bl = "true";
+		
+		// Retour des info à Internet
+		SyncMessHandler.getSyncMessSender().sendMessage(
+				EApplication.INTERNET, bl);
+		
+		// Suppression des comptes chez la monétique
+		if (matricule != 0)
+		{
+			if (SyncMessHandler.getSyncMessSender().sendMessage(
+					EApplication.MONETIQUE, getSupprCompteCreditFed(matricule)) == false)
+			{
+				System.out.println("Impossible de contacter la monétique pour la suppression d'un type de carte");
+			}
+		}
+			return bl;
+	}
+	
+	
+	public String getCreationTypeCarte(String type) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		CarteFidelite fed = new CarteFidelite(type);
+		if (type == "Silver")
+		{
+			fed.setEchellon(3);
+			fed.setLimite_m(3000);
+			fed.setLimite_tot(10000);
+		}
+		else if (type == "Gold")
+		{
+			fed.setEchellon(5);
+			fed.setLimite_m(5000);
+			fed.setLimite_tot(15000);
+		}
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_type_carte\" action=\"c\">" +
+					"<type_cf>" +
+					"<id>" + fed.getType() + "</id>" +
+					"<limite_mesuelle>" + fed.getLimite_m() + "</limite_mesuelle>" +
+					"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
+					"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
+					"</type_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	public String getModifTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		CarteFidelite fed = new CarteFidelite("Silver");
+		fed.setEchellon(3);
+		fed.setLimite_m(4000);
+		fed.setLimite_tot(10000);
+		
+		client.setCarteFed(fed);
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_type_carte\" action=\"m\">" +
+					"<type_cf id=\"" + fed.getType() + "\">" +
+					"<limite_mesuelle>" + fed.getLimite_m() + "</limite_mesuelle>" +
+					"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
+					"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
+					"</type_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	public String getSupprTypeCarte(String type) throws AsyncMessageException, IOException, SAXException, ParseException
+	{	
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_type_carte\" action=\"s\">" +
+					"<type_cf id=\"" + type + "\">" +
+					"<nouvel_id></nouvel_id>" +
+					"</type_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	
+	public String getCreationCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		CarteFidelite fed = new CarteFidelite("Silver");
+		fed.setEchellon(3);
+		fed.setLimite_m(3000);
+		fed.setLimite_tot(10000);
+		
+		client.setCarteFed(fed);
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_compte_cf\" action=\"c\">" +
+					"<compte_cf>" +
+					"<matricule_client>" + client.getMatricule() + "</matricule_client>" +
+					"<BIC>" + client.getBIC() + "</BIC>" +
+					"<IBAN>" + client.getIBAN() + "</IBAN>" +
+					"<id_type_cf>" + fed.getType() + "</id_type_cf>" +
+					"</compte_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	public String getModifCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		CarteFidelite fed = new CarteFidelite("Gold");
+		
+		client.setCarteFed(fed);
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_compte_cf\" action=\"m\">" +
+					"<compte_cf matricule_client=\"" + client.getMatricule() + "\">" +
+					"<BIC>" + client.getBIC() + "</BIC>" +
+					"<IBAN>" + client.getIBAN() + "</IBAN>" +
+					"<id_type_cf>" + fed.getType() + "</id_type_cf>" +
+					"</compte_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	public String getSupprCompteCreditFed(int mat) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+					"<monetique service=\"cms_compte_cf\" action=\"s\">" +
+					"<compte_cf matricule_client=\"" + Integer.toString(mat) + "\">" +
+					"</compte_cf>" +
+					"</monetique>";
+		
+		return bl;
+	}
+	
+	
+	public String getClientConnecteDemandeReduc(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);	
+		
+		String bl = "<ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+				+ "<INFORMATIONS>";
+		
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		for (int i = 0; i < compteNodes.getLength(); i++)
+		{
+			Node infoNodes = compteNodes.item(i);
+			String matricule = infoNodes.getAttributes().getNamedItem("matricule").getNodeValue();
+			Client client = JdbcConnection.getInstance().GetClientInternet(matricule);
+			bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
+					+ "<PROMOTION article=\"\" fin=\"\" reduc=\"\" />";
+		}
+		
+		bl += "</INFORMATIONS></ENTETE>";
+		return bl;
+	}
+	
+	public String getTicketClientFidelise(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		TicketVente ticketVente = new TicketVente();
+		
+		File file = new File (xml);
+		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
+		output.write(message);
+		output.close();
+		*/
+		// Parsage du fichier	
+		Document ticketVenteFile = dBuilder.parse(file);
+		
+		NodeList headerNodes = ticketVenteFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		
+		ticketVente.setDate(seqDate);
+		List<Article> list = new  ArrayList<>();
+		ticketVente.setArticle(list);
+		
+
+		NodeList ticketVenteNodes = ticketVenteFile.getElementsByTagName("TICKETVENTE");
+		
+		// Création des éléments ticketventes et articles
+		for (int i = 0; i < ticketVenteNodes.getLength(); i++)
+		{
+			Node articleNodes = ticketVenteNodes.item(i);
+			ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
+			
+			NodeList articlesNodes = ticketVenteFile.getElementsByTagName("ARTICLE");
+			for (int j = 0; j < articlesNodes.getLength(); j++) 
+			{
+				Node artNodes = articlesNodes.item(j);
+				Article article = new Article();
+				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
+				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
+				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+				ticketVente.getArticle().add(article);
+			}
+		}
+		
+		String bl = "<EXPEDITIONCLIENT>";
+		/*	+ "<LIVRAISON>"
+				+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
+				+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
+				+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
+				
+		for (TicketReduc a : clients)
 			bl += "<ARTICLE>"
 					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
 					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
 					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";
+				+ "</ARTICLE>";*/
 							
-		bl+= "</LIVRAISON></LIVRAISONSCOMMANDEFOURNISSEUR>";
+		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
 		
 		return bl;
 	}
-	*/
-	/*public String getReassortBO(String message, Document doc) throws AsyncMessageException
+	
+	public String getTicketCaisse(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		ReassortBO command = new ReassortBO();
+		TicketCaisse ticketCaisse = new TicketCaisse();
 		
-		command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0).getTextContent());
-		command.setBackOfficeRef(doc.getElementsByTagName("REFBO").item(0).getTextContent());
-		command.setBackOfficeAddress(doc.getElementsByTagName("ADRESSEBO").item(0).getTextContent()); 
-		command.setBackOfficePhone(doc.getElementsByTagName("TELBO").item(0).getTextContent());
-		command.setDateBC(doc.getElementsByTagName("DATEBC").item(0).getTextContent());
+		File file = new File (xml);
+		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
+		output.write(message);
+		output.close();
+		*/
+		// Parsage du fichier	
+		Document ticketCaisseFile = dBuilder.parse(file);
 		
-		List<TicketReduc> articles = new ArrayList<TicketReduc>();
-		NodeList nList = doc.getElementsByTagName("ARTICLE");
-		for (int temp = 0; temp < nList.getLength(); temp++) 
-		{
-			TicketReduc a = new TicketReduc();
-			
-			//Récupéraction du noeud à traiter
-			Node nNode = nList.item(temp);
-			//Conversion en element
-			Element eElement = (Element) nNode;
+		NodeList headerNodes = ticketCaisseFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		
+		ticketCaisse.setDate(seqDate);
+		List<Article> list = new  ArrayList<>();
+		List<Article> listReduc = new  ArrayList<>();
+		ticketCaisse.setArticle(list);
+		int totalPrice = 0;
+		
 
-			a.setReference(eElement.getElementsByTagName("REFERENCE").item(0).getTextContent());
-			a.setQuantity(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
-			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
-			 
-			articles.add(a);
+		NodeList ticketCaisseNodes = ticketCaisseFile.getElementsByTagName("TICKETVENTE");
+		
+		// Création des éléments ticketventes et articles
+		for (int i = 0; i < ticketCaisseNodes.getLength(); i++)
+		{
+			Node articleNodes = ticketCaisseNodes.item(i);
+			ticketCaisse.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+			ticketCaisse.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
+			
+			NodeList articlesNodes = ticketCaisseFile.getElementsByTagName("ARTICLE");
+			for (int j = 0; j < articlesNodes.getLength(); j++) 
+			{
+				Node artNodes = articlesNodes.item(j);
+				Article article = new Article();
+				Article articleReduc = new Article();
+				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
+				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
+				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+				ticketCaisse.getArticle().add(article);
+				articleReduc.setRef(article.getRef());
+				articleReduc.setQuantite(article.getQuantite());
+				articleReduc.setPrix(article.getPrix() - 1);
+				listReduc.add(articleReduc);
+				totalPrice = totalPrice + (article.getPrix() - 1);
+			}
 		}
-		command.setArticles(articles);
+		Date date = null;
+		//DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		//(df.format(ClockClient.getClock().getHour()));
 		
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		command.setDateBL(df.format(ClockClient.getClock().getHour()));
-		
-		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertReassortBO(command);
-		
-		//Construction du xml
-		String bl = "<LIVRAISONS>"
-					+ "<LIVRAISON>"
-						+ "<NUMERO>" + command.getCommandNumber() + "</NUMERO>"
-						+ "<REFMAGASIN>"+ command.getBackOfficeRef() + "</REFMAGASIN>"
-						+ "<DATEBC>" + command.getDateBC() + "</DATEBC>"
-						+ "<DATEBL>" + command.getDateBL() + "</DATEBL>";
-		
-		for (TicketReduc a : articles)
-			bl += "<ARTICLE>"
-					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-				+ "</ARTICLE>";
-		
-		bl += "</LIVRAISON></LIVRAISONS>";
+		String bl = "<ENTETE objet=\"facture-client\" source=\"crm\" date=\"" + date + "\"/>" +
+						"<FACTURE refclient=\"" + ticketCaisse.getRefclient() + "\" montanttotal=\"" + totalPrice + "\" >";
+						   for (int k = 0; k < listReduc.size(); k++)
+						   {
+							   bl = bl + "<ARTICLE refarticle=\"" + listReduc.get(k).getRef() + "\" quantite=\"" + listReduc.get(k).getQuantite() + "\" nvprix=\"" + listReduc.get(k).getPrix() + "\" />";
+						   }
+						bl = bl + "</FACTURE>";
 		
 		return bl;
-	}*/
+	}
 }

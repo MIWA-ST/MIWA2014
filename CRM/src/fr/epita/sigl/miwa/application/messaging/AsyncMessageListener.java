@@ -35,6 +35,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		if (source == EApplication.BI){
 			// Segmentation client
 			LOGGER.info("Fichier reçu du BI");
+			
+			//TODO parer la segmentation reçue
 			LOGGER.info("Le path du fichier est : " + file.getAbsolutePath());
 		}	
 		// Fichier non attendu
