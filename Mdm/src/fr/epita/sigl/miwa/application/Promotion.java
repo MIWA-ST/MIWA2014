@@ -19,7 +19,7 @@ public class Promotion {
 	public void setDate_fin(Date date_fin) {
 		this.date_fin = date_fin;
 	}
-	public double getPourcentage() {
+	public int getPourcentage() {
 		return pourcentage;
 	}
 	public void setPourcentage(int pourcentage) {

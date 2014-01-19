@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,9 +38,9 @@ public class DbHandler {
 			String ref = id.toString();
 			if (ref.length() < 32)
 				ref += p.getEAN();
-			String sql = "INSERT INTO PRODUCT (EAN, reference, description, buyPrice, nbMin, providerNumber) "
+			String sql = "INSERT INTO PRODUCT (EAN, reference, description, buyPrice, nbMin, providerNumber, categorie) "
 					+ "VALUES ('" + p.getEAN() + "', '" + ref.substring(0, 32) + "', '" + p.getDescription() + "', " +
-					p.getBuyPrice() + ", " + p.getNbMin() + ", " + p.getProviderNumber() + ");";
+					p.getBuyPrice() + ", " + p.getNbMin() + ", " + p.getProviderNumber() + ", " + p.getCategorie() + ");";
 
 			//System.out.println(sql);
 			stmt.executeUpdate(sql);
@@ -117,6 +118,64 @@ public class DbHandler {
 		}
 
 		return productList;
+	}
+	
+	public void createNewPromotion(Promotion promo, ArrayList<Product> productList) {
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+
+			conn = DriverManager.getConnection(dbUrl, user, password);
+
+			stmt = conn.createStatement();
+			String getMaxPromotionId = "select MAX(idPromotion) from Promotion";
+			ResultSet rs = stmt.executeQuery(getMaxPromotionId);
+
+			int promoId = -1;
+			while(rs.next()){
+				promoId = rs.getInt("MAX(idPromotion)");
+			}
+			stmt.close();
+			promoId++;
+
+			stmt = conn.createStatement();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String createPromo = "INSERT INTO Promotion (idPromotion, startDate, endDate, rebate) VALUES ("
+					+ promoId + ", DATE('" + df.format(promo.getDate_debut()) + "'), DATE('" + df.format(promo.getDate_fin()) +"'), " + promo.getPourcentage() + ");";
+			stmt.executeUpdate(createPromo);
+			stmt.close();
+			
+			stmt = conn.createStatement();
+			for (Product p : productList) {
+				String queryProductHasPromo = "INSERT INTO Product_has_Promotion (Product_reference, Promotion_idPromotion) VALUES ('"
+						+ p.getReference() + "', " + promoId + ");";
+				stmt.addBatch(queryProductHasPromo);
+			}
+			stmt.executeBatch();
+			stmt.close();
+			conn.close();
+
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
+
 	}
 	
 	public ArrayList<Promotion> getPromotionsForDeltaForProduct(String reference) {

@@ -81,7 +81,6 @@ public class Product {
 	public void setNbMin(String nbMin) {
 		this.nbMin = nbMin;
 	}
-
 	
 	public Product(String EAN, String description, String buyPrice, String nbMin, String reference, Integer origine) {
 		this.EAN = EAN;
@@ -92,6 +91,11 @@ public class Product {
 		this.providerNumber = origine;
 		promotionList = new ArrayList<Promotion>();
 		promotionGCList = new ArrayList<PromotionForGC>();
+		this.categorie = "Nourriture";
+	}
+	
+	public Product(String ref) {
+		this.reference = ref;
 	}
 	
 	public ArrayList<PromotionForGC> getPromotionGCList() {

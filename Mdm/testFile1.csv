@@ -1,2 +1,6 @@
 code EAN;description;pack;price;taxRate;minimalOrder;orderBy;
-1234567891234;Description du produit;128;120;18;42;<taille des lots à commander>
+1234567891234;Description du produit 1;2;20;18;2;<taille des lots à commander>
+1234567891221;Description du produit 2;4;42;18;5;<taille des lots à commander>
+1234567891222;Description du produit 3;6;120;18;42;<taille des lots à commander>
+1234567891223;Description du produit 4;8;120;18;24;<taille des lots à commander>
+1234567891224;Description du produit 5;128;220;18;42;<taille des lots à commander>

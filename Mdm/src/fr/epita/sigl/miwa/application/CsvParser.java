@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class CsvParser {
 	
@@ -26,6 +27,7 @@ public class CsvParser {
 			
 			Boolean firstligne = true;
 			String line = null;
+			this.dbHandler.clearProductsForProvider(1);
 			while ( (line = reader.readLine()) != null ) {
 				String[] fields = line.split(";");
 				if (fields.length != 7)
@@ -52,11 +54,16 @@ public class CsvParser {
 					continue;
 				}
 				
-				String buyPrice = Integer.toString(buyPriceWithoutVat * vat / 100);
-				
+				String buyPrice = Integer.toString(buyPriceWithoutVat + (buyPriceWithoutVat * vat / 100));
+
 				String nbMin = fields[5].replaceAll(",", ".");
 				Product p = new Product(EAN, description, buyPrice, nbMin, "", 1);
-				this.dbHandler.clearProductsForProvider(1);
+
+				if (firstligne) {
+					final Logger LOGGER = Logger.getLogger(CsvParser.class.getName());
+					LOGGER.severe("***** " + "Parsing du premier produit (Exemple) : EAN du produit=" + EAN + " / Prix fournisseur du produit (TTC)=" + buyPrice);
+					firstligne = false;
+				}
 				this.dbHandler.addNewProduct(p);
 				
 			}

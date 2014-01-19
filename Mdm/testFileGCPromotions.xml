@@ -1,0 +1,31 @@
+<!--
+ 
+GC => Referentiel
+	reference : CHAR(32)
+	prix_vente : Numeric(2)
+	promotion_pourcentage : integer [0;100]
+	datedebut : Date AAAA-MM-JJ
+	datefin : Date AAAA-MM-JJ
+-->
+<XML>
+	<PROMOTIONS>
+		<PROMOTION datedebut="2014-01-20" datefin="2014-01-25" promotion_pourcentage="10">
+			<ARTICLES>
+				<ARTICLE reference="6d7f7610-f5e7-4cb9-9496-cb627ca0"/>
+				<ARTICLE reference="a5c24e0d-5004-478b-bbb5-afa3a802"/>
+				<ARTICLE reference="acacc5dc-1e90-4bc8-b4b5-8172424a"/>
+			</ARTICLES>
+		</PROMOTION>
+		<PROMOTION datedebut="2014-01-22" datefin="2014-01-28" promotion_pourcentage="5">
+			<ARTICLES>
+				<ARTICLE reference="6d7f7610-f5e7-4cb9-9496-cb627ca0"/>
+				<ARTICLE reference="a5c24e0d-5004-478b-bbb5-afa3a802"/>
+			</ARTICLES>
+		</PROMOTION>
+		<PROMOTION datedebut="2014-01-25" datefin="2014-01-27" promotion_pourcentage="25">
+			<ARTICLES>
+				<ARTICLE reference="6d7f7610-f5e7-4cb9-9496-cb627ca0"/>
+			</ARTICLES>
+		</PROMOTION>
+	</PROMOTIONS>
+</XML>

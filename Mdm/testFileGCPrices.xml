@@ -1,0 +1,17 @@
+<!--
+ 
+GC => Referentiel
+	reference : CHAR(32)
+	prix_vente : Numeric(2)
+-->
+<XML>
+	<PRIXVENTE>
+		<ARTICLES>
+			<ARTICLE reference="058bdb5b-6e4f-4fe5-9976-bdc5d974" prix_vente="42"/>
+			<ARTICLE reference="6d7f7610-f5e7-4cb9-9496-cb627ca0" prix_vente="42"/>
+			<ARTICLE reference="a5c24e0d-5004-478b-bbb5-afa3a802" prix_vente="42"/>
+			<ARTICLE reference="acacc5dc-1e90-4bc8-b4b5-8172424a" prix_vente="42"/>
+			<ARTICLE reference="ad0f0ac0-3ed6-40c3-b530-7673e2de" prix_vente="42"/>
+		</ARTICLES>
+	</PRIXVENTE>
+</XML>
