@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+
 import fr.epita.sigl.miwa.application.XmlGenerator;
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 
 public class Vente {
 	Vente() {
@@ -15,7 +17,7 @@ public class Vente {
 	public void create() throws InterruptedException {
 		int i = 0;
 		// 1 vente
-		while (true) {
+		while (Main.open) {
 			System.out.println("------------------------------------");
 			System.out.println("Vente : " + i);
 			final Set<Produit> tabproduct = new HashSet<Produit>();
@@ -104,8 +106,15 @@ public class Vente {
 			System.out.println("-------------------------------------");
 			XmlGenerator.SendTicketToBO(selectedproducts, "1", type);
 			}
+			System.out.println(ClockClient.getClock().getHour());
 			i++;
-			Thread.sleep(300);
+			
+			try
+			{
+			Thread.sleep(3000);
+			}
+			catch(InterruptedException ie)
+			{}
 			
 		}
 	}

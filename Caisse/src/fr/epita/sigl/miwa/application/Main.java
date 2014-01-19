@@ -29,6 +29,7 @@ public class Main {
 	public static final BddAccess bdd = new BddAccess();
 	public static ThreadVente ventealeatoires = new ThreadVente();
 	public static ThreadIHM ihm = new ThreadIHM();
+	public static boolean open = false;
 	
 	public static void main(String[] args) throws AsyncFileException,
 			AsyncMessageException {
@@ -72,8 +73,7 @@ public class Main {
 			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "fermeture");
 			//Fin des réveilles
 			
-			Main.ventealeatoires.start();
-			Main.ihm.start();
+			
 			
 			//fin de la clock
 			

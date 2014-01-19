@@ -26,16 +26,13 @@ public class ClockClient {
 		if (message instanceof String) {
 			
 			if (message.equals("ouverture")) {
+				Main.open = true;
 				System.out.println(date.toString() + " : Caisse start !");
-				Main.ventealeatoires.start();
+				//Main.ventealeatoires.start();
 				Main.ihm.start();
 			} else if (message.equals("fermeture")){
-				try {
-					Main.ventealeatoires.wait();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				Main.open = false;
+				//Main.ventealeatoires.interrupt();
 				System.out.println(date.toString() + " : Bye Caisse, its over for today!");
 			}
 			else
