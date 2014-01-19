@@ -26,6 +26,8 @@ public class Client {
 	private Date date;
 	private CarteFidelite carteFed;
 	
+	public List<Article> articlesList;
+	
 	public static List<Client> clientsList;
 	
 	public Client (int id, String nom, String prenom)

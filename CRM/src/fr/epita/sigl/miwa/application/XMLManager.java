@@ -110,7 +110,7 @@ public class XMLManager
 		output.write(message);
 		output.close();
 		*/
-		// Parsage du fichier	
+		// Parsage du fichier
 		Document criteriaFile = dBuilder.parse(file);
 		
 		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
@@ -118,11 +118,11 @@ public class XMLManager
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
 		
 		segmentation.setDate(seqDate);
+		List<Critere> list2 = new ArrayList<Critere>();
+		segmentation.setCriteres(list2);
 		
-		
-		ArrayList<Critere> criteres = new ArrayList<Critere>();
 
-		NodeList groupsNodes = criteriaFile.getElementsByTagName("GROUPES");
+		NodeList groupsNodes = criteriaFile.getElementsByTagName("GROUPE");
 		
 		// Création des éléments Critere
 		for (int i = 0; i < groupsNodes.getLength(); i++)
@@ -132,22 +132,22 @@ public class XMLManager
 			Group group = new Group();
 			List<Critere> list = new  ArrayList<>();
 			group.setCriteres(list);
-			String tmpInfo;
 			
 			NodeList childNodes = groupNode.getChildNodes();
 			for (int j = 0; j < childNodes.getLength(); j++) 
 			{
 				Node cNode = childNodes.item(j);
-				if (cNode instanceof Element) 
+				if (cNode instanceof Element)
 				{
-					String content = cNode.getLastChild().getTextContent().trim();
-					if (cNode.getNodeName() == "CRITERE")
+					if (cNode.getNodeName() == "CRITERES")
 					{
-						NodeList criteriasNodes = cNode.getChildNodes();
+						NodeList criteriasNodes = criteriaFile.getElementsByTagName("CRITERE");
+						System.out.println(criteriasNodes.getLength());
 						for (int k = 0; k < criteriasNodes.getLength(); k++) 
 						{
 							Node criteriaNodes = criteriasNodes.item(k);
 							Critere c = new Critere();
+							String tmp = criteriaNodes.getNodeName();
 							String type = criteriaNodes.getAttributes().getNamedItem("type").getNodeValue();
 							switch (type) 
 							{
@@ -158,93 +158,55 @@ public class XMLManager
 									break;
 								case "geographie":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("departement").getNodeValue());
 								    break;
 								case "sexe":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("sexe").getNodeValue());
 								    break;
 								case "situation-familiale":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("situation").getNodeValue());
 								    break;
 								case "enfant":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("enfant").getNodeValue());
 								    break;
 								case "fidelite":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("carte").getNodeValue());
 								    break;
 							}
 							group.getCriteres().add(c);
+							segmentation.addCritere(c);
 						}
 					}
 					else if (cNode.getNodeName() == "CLIENTS")
 					{
-						NodeList clientsNodes = cNode.getChildNodes();
+						NodeList clientsNodes = criteriaFile.getElementsByTagName("CLIENT");
 						for (int k = 0; k < clientsNodes.getLength(); k++) 
 						{
 							Node clientNodes = clientsNodes.item(k);
-							Critere c = new Critere();
-							String type = clientNodes.getAttributes().getNamedItem("type").getNodeValue();
-							// FIXME
-
+							Client c = new Client();
+							c.setMatricule(Integer.parseInt(clientNodes.getAttributes().getNamedItem("numero").getNodeValue()));
+							c.articlesList = new ArrayList<>();
+							
+							//NodeList articlessNodes = clientNodes.getChildNodes();
+							NodeList articlessNodes = criteriaFile.getElementsByTagName("CATEGORIE");
+							for (int l = 0; l < articlessNodes.getLength(); l++) 
+							{
+								Node articleNodes = articlessNodes.item(l);
+								Article a = new Article();
+								a.setRef(articleNodes.getAttributes().getNamedItem("ref").getNodeValue());
+								a.setQuantite(Integer.parseInt(articleNodes.getAttributes().getNamedItem("achat").getNodeValue()));
+								c.articlesList.add(a);
+							}
+							segmentation.addClient(c);
 						}
 					}
 				}
 			}
 		}
-			
-			
-			/*tmpInfo = criteriaNode.getAttributes().getNamedItem("type").getNodeValue();
-			criteria.setType(tmpInfo);
-			if (tmpInfo.equalsIgnoreCase("age")) {
-				String min = criteriaNode.getAttributes().getNamedItem("min").getNodeValue();
-				String max = criteriaNode.getAttributes().getNamedItem("max").getNodeValue();
-				criteria.setMax(Integer.valueOf(max));
-				criteria.setMin(Integer.valueOf(min));
-			}
-			else if (tmpInfo.equalsIgnoreCase("geographie")) {
-				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
-				criteria.setValue(valeur);
-			}
-			else if (tmpInfo.equalsIgnoreCase("sexe")) {
-				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
-				criteria.setValue(valeur);
-			}
-			else if (tmpInfo.equalsIgnoreCase("situation-familiale")) {
-				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
-				criteria.setValue(valeur);
-			}
-			else if (tmpInfo.equalsIgnoreCase("enfant")) {
-				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
-				criteria.setValue(valeur);
-			}
-			else if (tmpInfo.equalsIgnoreCase("fidelite")) {
-				String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
-				criteria.setValue(valeur);
-			}
-			
-			criteres.add(criteria);
-		}
-		segmentation.setCriteres(criteres);*/
-		
-		//Récupération des clients
-		ArrayList<Client> clients = new ArrayList<Client>();
-		NodeList mList = criteriaFile.getElementsByTagName("CLIENT");
-		for (int temp = 0; temp < mList.getLength(); temp++)
-		{
-			//Récupéraction du noeud à traiter
-			Node nNode = mList.item(temp);
-			//Conversion en element
-			Element eElement = (Element) nNode;
-			
-			Client a = new Client(Integer.parseInt(eElement.getAttribute("numero")));
-
-			clients.add(a);
-		}
-		segmentation.setClients(clients);
 		
 		//DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		//segmentation.setDateBL(df.format(ClockClient.getClock().getHour()));
@@ -254,19 +216,6 @@ public class XMLManager
 		
 		//Construction du xml
 		String bl = "<EXPEDITIONCLIENT>";
-				/*	+ "<LIVRAISON>"
-						+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
-						+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
-						+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
-						
-		for (TicketReduc a : clients)
-			bl += "<ARTICLE>"
-					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";*/
-							
-		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
 		
 		return bl;
 		
