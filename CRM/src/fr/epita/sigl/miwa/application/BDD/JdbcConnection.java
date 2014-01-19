@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.crm.ReassortBO;
+import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Segmentation;
 
@@ -126,6 +127,121 @@ public class JdbcConnection
 	}
 	
 	
+	public void insertCarteFed(CarteFidelite carte)
+	{
+		try
+		{
+			System.out.println("insertion carte de fidelite");
+			if (connection != null)
+			{
+				String request = "INSERT INTO cartefed (type, limite_m, limite_tot, echellon) VALUES (?, ?, ?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, carte.getType());
+				statement.setString(2, Integer.toString(carte.getLimite_m()));
+				statement.setString(3, Integer.toString(carte.getLimite_tot()));
+				statement.setString(4, Integer.toString(carte.getEchellon()));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouvelle carte ajoutée en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateCarteFed(CarteFidelite carte)
+	{
+		try
+		{
+			System.out.println("update carte de fidelite");
+			if (connection != null)
+			{
+				String request = "UPDATE Client SET limite_m=?, limite_tot=?, echellon=? WHERE type = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(carte.getLimite_m()));
+				statement.setString(2, Integer.toString(carte.getLimite_tot()));
+				statement.setString(3, Integer.toString(carte.getEchellon()));
+				statement.setString(4, carte.getType());
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Carte modifiée en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur update en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void deleteCarteFed(String type)
+	{
+		try
+		{
+			System.out.println("suppr carte fidelite");
+			if (connection != null)
+			{
+				String request = "DELETE FROM cartefed WHERE type = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, type);
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("carte suppr en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur suppr en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public CarteFidelite GetCarteFed(String type)
+	{
+		CarteFidelite carte = new CarteFidelite(type);
+		try
+		{
+			if (connection != null)
+			{
+				String request = "SELECT * FROM cartefed WHERE type = '" + type + "'";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+
+				ResultSet result = statement.executeQuery();
+				while(result.next())
+				{
+					carte.setLimite_m(Integer.parseInt(result.getString(2)));
+					carte.setLimite_tot(Integer.parseInt(result.getString(3)));
+					carte.setEchellon(Integer.parseInt(result.getString(4)));
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur recup en base");
+			e.printStackTrace();
+		}
+		return carte;
+	}
+	
+	
 	public void insertClientInternet(Client client)
 	{
 		try
@@ -133,7 +249,7 @@ public class JdbcConnection
 			System.out.println("insertion client internet");
 			if (connection != null)
 			{
-				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule, iban, cib, fedelite) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -143,6 +259,9 @@ public class JdbcConnection
 				statement.setString(5, client.getMail());
 				statement.setString(6, client.getTelephone());
 				statement.setString(7, Integer.toString(client.getMatricule()));
+				statement.setString(8, client.getIBAN());
+				statement.setString(9, client.getBIC());
+				statement.setString(10, client.getCarteFed().getType());
 
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
@@ -165,7 +284,7 @@ public class JdbcConnection
 			System.out.println("update client internet");
 			if (connection != null)
 			{
-				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=? WHERE matricule = ?";
+				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, iban=?, bic=?, fidelite=? WHERE matricule = ?";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -175,6 +294,9 @@ public class JdbcConnection
 				statement.setString(5, client.getMail());
 				statement.setString(6, client.getTelephone());
 				statement.setString(7, Integer.toString(client.getMatricule()));
+				statement.setString(8, client.getIBAN());
+				statement.setString(9, client.getBIC());
+				statement.setString(10, client.getCarteFed().getType());
 
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
@@ -239,6 +361,10 @@ public class JdbcConnection
 					client.setMail(result.getString(6));
 					client.setTelephone(result.getString(7));
 					client.setMatricule(Integer.parseInt(result.getString(8)));
+					client.setIBAN(result.getString(9));
+					client.setBIC(result.getString(10));
+					CarteFidelite c = new CarteFidelite(result.getString(11));
+					client.setCarteFed(c);
 				}
 			}
 		}
@@ -250,93 +376,4 @@ public class JdbcConnection
 		return client;
 	}
 	
-	/*
-	public void insertLivraisonFournisseur(LivraisonFournisseur command)
-	{
-		try
-		{
-			System.out.println("insertion livraison fournisseur");
-			if (connection != null)
-			{
-				String request = "INSERT INTO livraisonfournisseur (commandnumber, datebc, datebl) VALUES (?, ?, ?)";
-				
-				PreparedStatement statement = connection.prepareStatement(request);
-				statement.setString(1, command.getCommandNumber());
-				statement.setString(2, command.getDateBC());
-				statement.setString(3, command.getDateBL());
-
-				int rowsInserted = statement.executeUpdate();
-				if (rowsInserted > 0)
-				{
-					System.out.println("Nouvelle commande ajoutée en base !");
-					for (TicketReduc a : command.getArticles())
-					{
-						String request2 = "INSERT INTO article (articleref, category) VALUES (?, ?)";
-						
-						statement = connection.prepareStatement(request2);
-						statement.setString(1, a.getReference());
-						statement.setString(2, a.getCategory());
-						statement.executeUpdate();
-						
-						String request3 = "INSERT INTO livraisonfournisseur_article (articleref, commandref) VALUES (?, ?)";
-						statement = connection.prepareStatement(request3);
-						statement.setString(1, a.getReference());
-						statement.setString(2, command.getCommandNumber());
-						statement.executeUpdate();
-					}
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			System.out.println("Erreur insertion en base");
-			e.printStackTrace();
-		}
-	}*/
-	/*
-	public void insertReassortBO(ReassortBO command)
-	{
-		try
-		{
-			System.out.println("insertion reassort bo");
-			if (connection != null)
-			{
-				String request = "INSERT INTO reassortbo (commandnumber, datebc, datebl, backofficeref, backofficephone, backofficeaddress) VALUES (?, ?, ?, ?, ?, ?)";
-				
-				PreparedStatement statement = connection.prepareStatement(request);
-				statement.setString(1, command.getCommandNumber());
-				statement.setString(2, command.getDateBC());
-				statement.setString(3, command.getDateBL());
-				statement.setString(4, command.getBackOfficeRef());
-				statement.setString(5, command.getBackOfficePhone());
-				statement.setString(6, command.getBackOfficeAddress());
-				
-				int rowsInserted = statement.executeUpdate();
-				if (rowsInserted > 0)
-				{
-					System.out.println("Nouvelle commande ajoutée en base !");
-					for (TicketReduc a : command.getArticles())
-					{
-						String request2 = "INSERT INTO article (articleref, category) VALUES (?, ?)";
-						
-						statement = connection.prepareStatement(request2);
-						statement.setString(1, a.getReference());
-						statement.setString(2, a.getCategory());
-						statement.executeUpdate();
-						
-						String request3 = "INSERT INTO reassortbo_article (articleref, commandref) VALUES (?, ?)";
-						statement = connection.prepareStatement(request3);
-						statement.setString(1, a.getReference());
-						statement.setString(2, command.getCommandNumber());
-						statement.executeUpdate();
-					}
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			System.out.println("Erreur insertion en base");
-			e.printStackTrace();
-		}
-	}*/
 }

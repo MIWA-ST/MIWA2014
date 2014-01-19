@@ -47,6 +47,7 @@ public class Main {
 		
 		//XMLManager.getInstance().getSegmentationClient("coucou");
 		Client.clientsList = new ArrayList<Client>();
+		JdbcConnection.getInstance().getConnection();
 		//XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
 		XMLManager.getInstance().getCreationTypeCarte("Silver");
 		XMLManager.getInstance().getCreationTypeCarte("Gold");
@@ -71,6 +72,7 @@ public class Main {
 		//AsyncFileFactory.getInstance().getFileManager().send("bi.xml", EApplication.BI);
 		
 		/* !CODE HERE */
+		JdbcConnection.getInstance().closeConnection();
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
 				.stopListener();

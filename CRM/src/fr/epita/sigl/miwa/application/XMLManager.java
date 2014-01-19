@@ -246,6 +246,7 @@ public class XMLManager
 			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
 			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+			// FIXME ajouter les IBAN et BIC
 			LOGGER.info("***** Recherche des informations clients");
 			LOGGER.info("***** " + client.toString());
 			
@@ -255,7 +256,6 @@ public class XMLManager
 			int random = (int)(Math.random() * (higher-lower)) + lower;
 			client.setMatricule(random);
 			Client.clientsList.add(client);
-			JdbcConnection.getInstance().getConnection();
 			JdbcConnection.getInstance().insertClientInternet(client);
 			LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule());
 		}	
@@ -315,7 +315,6 @@ public class XMLManager
 				}
 			}
 			Client.clientsList.add(client);
-			JdbcConnection.getInstance().getConnection();
 			JdbcConnection.getInstance().updateClientInternet(client);
 			LOGGER.info("***** Modification effectuée en BDD");
 		}
@@ -356,7 +355,6 @@ public class XMLManager
 					break;
 				}
 			}
-			JdbcConnection.getInstance().getConnection();
 			JdbcConnection.getInstance().deleteClientInternet(matricule);
 			LOGGER.info("***** Suppression effectuée en BDD");
 		}
@@ -397,6 +395,7 @@ public class XMLManager
 			fed.setLimite_m(5000);
 			fed.setLimite_tot(15000);
 		}
+		JdbcConnection.getInstance().insertCarteFed(fed);
 		
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_type_carte\" action=\"c\">" +
@@ -418,6 +417,7 @@ public class XMLManager
 		fed.setEchellon(3);
 		fed.setLimite_m(4000);
 		fed.setLimite_tot(10000);
+		JdbcConnection.getInstance().updateCarteFed(fed);
 		
 		client.setCarteFed(fed);
 		
@@ -434,7 +434,8 @@ public class XMLManager
 	}
 	
 	public String getSupprTypeCarte(String type) throws AsyncMessageException, IOException, SAXException, ParseException
-	{	
+	{
+		JdbcConnection.getInstance().deleteCarteFed(type);
 		LOGGER.info("***** Suppression du type de carte fidélité: " + type);
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_type_carte\" action=\"s\">" +
