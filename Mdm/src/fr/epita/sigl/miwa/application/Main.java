@@ -30,13 +30,24 @@ public class Main {
 		/* CODE HERE */
 		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "Coucou GC");
 		
-		LOGGER.severe("*****" + "Lancement de l'application MDM");
-		LOGGER.severe("*****" + "Réception et parsing du fichier fournisseur");
+		LOGGER.severe("***** " + "Lancement de l'application MDM");
+		LOGGER.severe("***** " + "Réception du fichier fournisseur");
+		/*
 		CsvParser parser = new CsvParser("testFile1.csv");
 		parser.parse();
+		XmlReader xmlReader = new XmlReader("testFileGCPrices.xml");
+		xmlReader.parseProducts();
+		XmlReader xmlReader = new XmlReader("testFileGCPromotions.xml");
+		xmlReader.parsePromotions();
+		*/
+
+		XmlWriter xmlWriter = new XmlWriter("outputFileBI.xml");
+		xmlWriter.generateFileForBI();
 	
-	
+	/*
 		try {
+
+			LOGGER.severe("*****" + "Envoi des prix d'achats à la GC");
 			String fileGC = Conf.getInstance().getLocalRepository() + File.separator + EApplication.MDM.getShortName() + File.separator + "outputFileGC.xml";
 			XmlWriter xmlWriter = new XmlWriter(fileGC);
 			xmlWriter.generateFileForGC();
@@ -56,6 +67,7 @@ public class Main {
 		
 		XmlWriter xmlWriter2 = new XmlWriter("outputFileBI.xml");
 		xmlWriter2.generateFileForBI();
+		*/
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
