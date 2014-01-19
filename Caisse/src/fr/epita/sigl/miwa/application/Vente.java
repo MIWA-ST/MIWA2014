@@ -80,7 +80,7 @@ public class Vente {
 				int cbchiffre2 = (int)(Math.random() * (cbmax-cbmin)) + cbmin;
 				int datemin = 1;
 				int datemax = 13;
-				int datemax2 = 32;
+				int datemax2 = 31;
 				int cbdate1 = (int)(Math.random() * (datemax-datemin)) + datemin;
 				int cbdate2 = (int)(Math.random() * (datemax2-datemin)) + datemin;
 				int picto1 = 100;
