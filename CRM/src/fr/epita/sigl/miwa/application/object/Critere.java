@@ -14,9 +14,8 @@ public class Critere {
 	private int min;
 	private int max;
 	
-	public Critere(String type)
-	{
-		this.type = type;
+	public Critere() {
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

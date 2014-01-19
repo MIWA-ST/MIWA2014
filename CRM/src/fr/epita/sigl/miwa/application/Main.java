@@ -1,5 +1,6 @@
 package fr.epita.sigl.miwa.application;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
@@ -61,13 +62,11 @@ public class Main {
 		//Document doc = builder.parse(new InputSource(new StringReader()));  
 		
 		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.INTERNET, "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ENETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\"/> <INFORMATIONS> <CLIENT matricule=\"0001\" nom=\"Doe\" prenom=\"John\" /> </INFORMATIONS>");
+				EApplication.INTERNET, "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\"/> <INFORMATIONS> <CLIENT matricule=\"0001\" nom=\"Doe\" prenom=\"John\" /> </INFORMATIONS>");
 		
 		//AsyncMessageFactory.getInstance().getAsyncMessageManager().send("Message Async vers GC", EApplication.GESTION_COMMERCIALE);
 		
 		//AsyncFileFactory.getInstance().getFileManager().send("bi.xml", EApplication.BI);
-		
-		
 		
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */

@@ -102,7 +102,6 @@ public class XMLManager
 		return XMLReturn;
 	}
 	
-	
 	public String getSegmentationClient(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		
