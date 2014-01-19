@@ -178,7 +178,7 @@ public class DbHandler {
 
 	}
 	
-	public ArrayList<Promotion> getPromotionsForDeltaForProduct(String reference) {
+	public ArrayList<Promotion> getPromotionsForProduct(String reference) {
 		ArrayList<Promotion> promoList = new ArrayList<Promotion>();
 		Connection conn = null;
 		Statement stmt = null;
@@ -194,7 +194,7 @@ public class DbHandler {
 
 			while(rs.next()){
 				int pourcent = rs.getInt("rebate");
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd");
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 				Date startDate = formatter.parse(rs.getString("startDate"));
 				Date endDate  = formatter.parse(rs.getString("endDate"));
 				

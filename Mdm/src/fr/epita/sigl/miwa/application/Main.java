@@ -37,10 +37,12 @@ public class Main {
 		parser.parse();
 		XmlReader xmlReader = new XmlReader("testFileGCPrices.xml");
 		xmlReader.parseProducts();
-		*/
 		XmlReader xmlReader = new XmlReader("testFileGCPromotions.xml");
 		xmlReader.parsePromotions();
+		*/
 
+		XmlWriter xmlWriter = new XmlWriter("outputFileBI.xml");
+		xmlWriter.generateFileForBI();
 	
 	/*
 		try {

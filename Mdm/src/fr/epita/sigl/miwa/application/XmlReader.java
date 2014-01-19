@@ -40,8 +40,8 @@ public class XmlReader {
 						Integer sellPrice = Integer.parseInt(attributes.getValue("prix_vente"));
 
 						if (firstline) {
-							final Logger LOGGER = Logger.getLogger(CsvParser.class.getName());
-							LOGGER.severe("***** " + "Parsing du premier prix de la GC (Exemple) : Référence du produit=" + ref + " / Prix de vente du produit (TTC)=" + sellPrice);
+							final Logger LOGGER = Logger.getLogger(XmlReader.class.getName());
+							LOGGER.severe("***** " + "Parsing des prix (Flux GC -> MDM) : Référence du produit=" + ref + " / Prix de vente du produit (TTC)=" + sellPrice);
 							firstline = false;
 						}
 						dbHandler.updateProduct(ref, sellPrice);
@@ -61,11 +61,12 @@ public class XmlReader {
 
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
+			final Logger LOGGER = Logger.getLogger(XmlReader.class.getName());
 
 			DefaultHandler handler = new DefaultHandler() {
 				ArrayList<Product> productList = new ArrayList<>();
 				Promotion promo = null;
-
+				boolean firstline = true;
 
 				public void startElement(String uri, String localName,String qName, 
 						Attributes attributes) throws SAXException {
@@ -82,6 +83,10 @@ public class XmlReader {
 						}
 
 						Integer rebate = Integer.parseInt(attributes.getValue("promotion_pourcentage"));
+						if (firstline) {
+							LOGGER.severe("***** " + "Première promotion : Date de début=" + startDate + " / Taux de remise=" + rebate + "%");
+							firstline = false;
+						}
 						promo = new Promotion(startDate, endDate, rebate);
 					}
 
@@ -104,6 +109,9 @@ public class XmlReader {
 				}
 			};
 
+
+			LOGGER.severe("***** " + "Parsing des promotions (Flux GC -> MDM)");
+			
 			saxParser.parse(this.filename, handler);
 
 		} catch (Exception e) {
