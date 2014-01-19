@@ -225,13 +225,16 @@ public class XMLManager
 	
 	public String getDemandeCreationCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Analyse du flux XML: création d'un compte fidélité");
 		Client client = new Client();
 		File file = new File (xml);
 		Document compteClientFile = dBuilder.parse(file);	
+		LOGGER.info("***** Début du parsage du fichier");
 		
 		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		LOGGER.info("***** Demande effectuée le: " + seqDate);
 		client.setDate(seqDate);
 		
 		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
@@ -244,6 +247,9 @@ public class XMLManager
 			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
 			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+			LOGGER.info("***** Recherche des informations clients");
+			LOGGER.info("***** " + client.toString());
+			
 			int lower = 1;
 			int higher = 99999999;
 
@@ -252,22 +258,24 @@ public class XMLManager
 			Client.clientsList.add(client);
 			JdbcConnection.getInstance().getConnection();
 			JdbcConnection.getInstance().insertClientInternet(client);
+			LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule());
 		}	
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
-				+ "<INFORMATION><CLIENT matricule=\"\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
+				+ "<INFORMATION><CLIENT matricule=\"" + client.getMatricule() + "\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
 		bl += "</INFORMATION></ENTETE>";
 		
 		// Retour des info à Internet
 		SyncMessHandler.getSyncMessSender().sendMessage(
 				EApplication.INTERNET, bl);
+		LOGGER.info("***** Envoi de la réponse auprès d'Internet");
 		
 		// Creation des comptes chez la monétique
 		if (SyncMessHandler.getSyncMessSender().sendMessage(
 				EApplication.MONETIQUE, getCreationCompteCreditFed(client)) == false)
 		{
-			System.out.println("Impossible de contacter la monétique pour la création d'un compte crédit carte");
+			LOGGER.warning("Impossible de contacter la monétique pour la création d'un compte crédit carte");
 		}
-		
+		LOGGER.info("***** Création du compte crédit " + client.getMatricule() + " effectué auprès de la Monétique");
 		return bl;
 	}
 	
@@ -278,10 +286,12 @@ public class XMLManager
 		Client client = new Client();
 		File file = new File (xml);
 		Document compteClientFile = dBuilder.parse(file);	
+		LOGGER.info("***** Début du parsage du fichier");
 		
 		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		LOGGER.info("***** Demande effectuée le: " + seqDate);
 		client.setDate(seqDate);
 		
 		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
@@ -295,6 +305,8 @@ public class XMLManager
 			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
 			client.setMatricule(Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue()));
+			LOGGER.info("***** Recherche des informations clients");
+			LOGGER.info("***** " + client.toString());
 			for (int j = 0 ; j < Client.clientsList.size(); j++)
 			{
 				if (Client.clientsList.get(j).getMatricule() == client.getMatricule())
@@ -306,13 +318,14 @@ public class XMLManager
 			Client.clientsList.add(client);
 			JdbcConnection.getInstance().getConnection();
 			JdbcConnection.getInstance().updateClientInternet(client);
+			LOGGER.info("***** Modification effectuée en BDD");
 		}
 		String bl = "true";
 		
 		// Retour des info à Internet
 		SyncMessHandler.getSyncMessSender().sendMessage(
 				EApplication.INTERNET, bl);
-		
+		LOGGER.info("***** Confirmation effectuée auprès d'Internet");
 		return bl;
 	}
 	
@@ -363,7 +376,7 @@ public class XMLManager
 			{
 				LOGGER.warning("Impossible de contacter la monétique pour la suppression d'un compte crédit");
 			}
-			LOGGER.info("***** Suppression du compte crédit " + matricule + " effectué");
+			LOGGER.info("***** Suppression du compte crédit " + matricule + " effectué auprès de la Monétique");
 		}
 			return bl;
 	}
