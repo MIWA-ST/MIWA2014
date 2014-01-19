@@ -274,6 +274,7 @@ public class XMLManager
 	
 	public String getDemandeModifCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Analyse du flux XML: modification d'un compte fidélité");
 		Client client = new Client();
 		File file = new File (xml);
 		Document compteClientFile = dBuilder.parse(file);	
@@ -318,12 +319,15 @@ public class XMLManager
 	
 	public String getDemandeSupprCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Analyse du flux XML: suppression d'un compte fidélité");
 		File file = new File (xml);
 		Document compteClientFile = dBuilder.parse(file);
+		LOGGER.info("***** Début du parsage du fichier");
 		
 		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		LOGGER.info("***** Demande effectuée le: " + seqDate);
 		int matricule = 0;
 		
 		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
@@ -331,6 +335,7 @@ public class XMLManager
 		{
 			Node infoNodes = compteNodes.item(i);
 			matricule = Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue());
+			LOGGER.info("***** Demande de suppression du compte " + matricule);
 			for (int j = 0 ; j < Client.clientsList.size(); j++)
 			{
 				if (Client.clientsList.get(j).getMatricule() == matricule)
@@ -341,12 +346,14 @@ public class XMLManager
 			}
 			JdbcConnection.getInstance().getConnection();
 			JdbcConnection.getInstance().deleteClientInternet(matricule);
+			LOGGER.info("***** Suppression effectuée en BDD");
 		}
 		String bl = "true";
 		
 		// Retour des info à Internet
 		SyncMessHandler.getSyncMessSender().sendMessage(
 				EApplication.INTERNET, bl);
+		LOGGER.info("***** Confirmation de la suppression auprès d'Internet");
 		
 		// Suppression des comptes chez la monétique
 		if (matricule != 0)
@@ -354,8 +361,9 @@ public class XMLManager
 			if (SyncMessHandler.getSyncMessSender().sendMessage(
 					EApplication.MONETIQUE, getSupprCompteCreditFed(matricule)) == false)
 			{
-				System.out.println("Impossible de contacter la monétique pour la suppression d'un type de carte");
+				LOGGER.warning("Impossible de contacter la monétique pour la suppression d'un compte crédit");
 			}
+			LOGGER.info("***** Suppression du compte crédit " + matricule + " effectué");
 		}
 			return bl;
 	}
@@ -363,6 +371,7 @@ public class XMLManager
 	
 	public String getCreationTypeCarte(String type) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Création du type de carte: " + type);
 		CarteFidelite fed = new CarteFidelite(type);
 		if (type == "Silver")
 		{
@@ -392,6 +401,7 @@ public class XMLManager
 	
 	public String getModifTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Modification du type de carte");
 		CarteFidelite fed = new CarteFidelite("Silver");
 		fed.setEchellon(3);
 		fed.setLimite_m(4000);
@@ -413,19 +423,21 @@ public class XMLManager
 	
 	public String getSupprTypeCarte(String type) throws AsyncMessageException, IOException, SAXException, ParseException
 	{	
+		LOGGER.info("***** Suppression du type de carte fidélité: " + type);
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_type_carte\" action=\"s\">" +
 					"<type_cf id=\"" + type + "\">" +
 					"<nouvel_id></nouvel_id>" +
 					"</type_cf>" +
 					"</monetique>";
-		
+		LOGGER.info("***** Envoi du XML vers Monétique");
 		return bl;
 	}
 	
 	
 	public String getCreationCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Création du compte crédit pour le client: " + client.getMatricule());
 		CarteFidelite fed = new CarteFidelite("Silver");
 		fed.setEchellon(3);
 		fed.setLimite_m(3000);
@@ -442,12 +454,13 @@ public class XMLManager
 					"<id_type_cf>" + fed.getType() + "</id_type_cf>" +
 					"</compte_cf>" +
 					"</monetique>";
-		
+		LOGGER.info("***** Envoi du XML vers Monétique");
 		return bl;
 	}
 	
 	public String getModifCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Modification du compte crédit du client " + client.getMatricule());
 		CarteFidelite fed = new CarteFidelite("Gold");
 		
 		client.setCarteFed(fed);
@@ -460,18 +473,19 @@ public class XMLManager
 					"<id_type_cf>" + fed.getType() + "</id_type_cf>" +
 					"</compte_cf>" +
 					"</monetique>";
-		
+		LOGGER.info("***** Envoi du XML vers Monétique");
 		return bl;
 	}
 	
 	public String getSupprCompteCreditFed(int mat) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Suppression du compte crédit: " + mat);
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_compte_cf\" action=\"s\">" +
 					"<compte_cf matricule_client=\"" + Integer.toString(mat) + "\">" +
 					"</compte_cf>" +
 					"</monetique>";
-		
+		LOGGER.info("***** Envoi du XML vers Monétique");
 		return bl;
 	}
 	
