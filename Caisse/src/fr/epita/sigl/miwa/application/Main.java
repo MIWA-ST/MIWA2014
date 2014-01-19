@@ -55,6 +55,7 @@ public class Main {
 			dateouverture.add((Calendar.DAY_OF_MONTH), 1);
 			nextOccurence = dateouverture.getTime();
 			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "ouverture");
+			System.out.println(ClockClient.getClock().getHour());
 			//je veux etre reveillé à 21H00
 			dateouverture = Calendar.getInstance();
 			dateouverture.setTime(ClockClient.getClock().getHour());
@@ -69,16 +70,12 @@ public class Main {
 			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "fermeture");
 			//Fin des réveilles
 			
-			Vente vente = new Vente();
-			try {
-				vente.create();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ThreadVente ventealeatoires = new ThreadVente();
+			ThreadMAJ maj = new ThreadMAJ();			
+			ventealeatoires.start();
+			maj.start();
+			
 			//fin de la clock
-			//Home home = new Home();
-			//home.open();
 			
 			// CI DESSOUS TEST MANUEL POUR LE PARSING XML DEPUIS LE BO VERS NOUS
 			//AsyncFileFactory.getInstance().getFileManager().send("toto.xml", EApplication.CAISSE);
