@@ -27,6 +27,8 @@ import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 public class Main {
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 	public static final BddAccess bdd = new BddAccess();
+	public static ThreadVente ventealeatoires = new ThreadVente();
+	public static ThreadIHM ihm = new ThreadIHM();
 	
 	public static void main(String[] args) throws AsyncFileException,
 			AsyncMessageException {
@@ -70,10 +72,8 @@ public class Main {
 			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "fermeture");
 			//Fin des réveilles
 			
-			ThreadVente ventealeatoires = new ThreadVente();
-			ThreadMAJ maj = new ThreadMAJ();			
-			ventealeatoires.start();
-			maj.start();
+			Main.ventealeatoires.start();
+			Main.ihm.start();
 			
 			//fin de la clock
 			

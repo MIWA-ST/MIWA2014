@@ -57,7 +57,8 @@ public class Vente {
 			}
 			if (selectedproducts.isEmpty())
 				System.out.println("Pas de produit, vente annulée");
-			System.out.println("-------------------------------------");
+			else
+			{
 			// si client non fidélisé
 			// traiter paiement par espèce OU cb
 			int lower = 0;
@@ -100,11 +101,12 @@ public class Vente {
 				// appeler fonction generation XML (qui va envoyer le ticket au BO)
 				//if NOK paiement espece
 			}
+			System.out.println("-------------------------------------");
 			XmlGenerator.SendTicketToBO(selectedproducts, "1", type);
+			}
 			i++;
-			Thread.sleep(3000);
+			Thread.sleep(300);
 			
 		}
 	}
-
 }

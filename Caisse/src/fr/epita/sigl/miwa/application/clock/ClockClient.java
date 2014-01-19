@@ -2,6 +2,9 @@ package fr.epita.sigl.miwa.application.clock;
 
 import java.util.Date;
 
+import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.ThreadIHM;
+import fr.epita.sigl.miwa.application.ThreadVente;
 import fr.epita.sigl.miwa.st.clock.ClockFactory;
 import fr.epita.sigl.miwa.st.clock.IExposedClock;
 
@@ -21,10 +24,19 @@ public class ClockClient {
 	@Deprecated
 	static public void wakeUp(Date date, Object message) {
 		if (message instanceof String) {
-			if (message.equals("Ouverture")) {
-				System.out.println(date.toString() + " : Hello dear client!");
-			} else if (message.equals("Ouverture")){
-				System.out.println(date.toString() + " : Bye dear client!");
+			
+			if (message.equals("ouverture")) {
+				System.out.println(date.toString() + " : Caisse start !");
+				Main.ventealeatoires.start();
+				Main.ihm.start();
+			} else if (message.equals("fermeture")){
+				try {
+					Main.ventealeatoires.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println(date.toString() + " : Bye Caisse, its over for today!");
 			}
 			else
 			{

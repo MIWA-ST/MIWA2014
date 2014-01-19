@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import fr.epita.sigl.miwa.application.BddAccess;
 import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.Produit;
-import fr.epita.sigl.miwa.application.ThreadMAJ;
+import fr.epita.sigl.miwa.application.ThreadIHM;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 
@@ -89,6 +89,27 @@ public class Home {
 
 		btnNewButton_1.setBounds(351, 280, 119, 49);
 		btnNewButton_1.setText("Payer");
+		
+		Button btnNewButton_2 = new Button(grpTransaction, SWT.NONE);
+
+		btnNewButton_2.setBounds(351, 350, 119, 40);
+		btnNewButton_2.setText("Stoper la caisse");
+		btnNewButton_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				Main.ventealeatoires.interrupt();
+			}
+		});
+		Button btnNewButton_3 = new Button(grpTransaction, SWT.NONE);
+
+		btnNewButton_3.setBounds(351, 400, 119, 40);
+		btnNewButton_3.setText("Redémarrer la caisse");
+		btnNewButton_3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDown(MouseEvent arg0) {
+				Main.ventealeatoires.start();
+			}
+		});
 
 		fidtext = new Text(grpTransaction, SWT.BORDER);
 		fidtext.setBounds(374, 225, 76, 29);
