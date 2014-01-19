@@ -28,7 +28,7 @@ public class XmlGenerator {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(ClockClient.getClock().getHour());
 		String theDate = Integer.toString(cal.get(Calendar.YEAR)) + "-"
-				+ Integer.toString(cal.get(Calendar.MONTH)) + "-"
+				+ Integer.toString(cal.get(Calendar.MONTH) + 1) + "-"
 				+ Integer.toString(cal.get(Calendar.DAY_OF_MONTH));
 
 		return theDate;
