@@ -8,10 +8,8 @@ package fr.epita.sigl.miwa.application.computer;
 import java.util.*;
 import java.util.Map.Entry;
 
-import fr.epita.sigl.miwa.application.criteres.*;
 import fr.epita.sigl.miwa.application.data.*;
 import fr.epita.sigl.miwa.application.enums.EPaiementType;
-import fr.epita.sigl.miwa.application.statistic.TemporaryDetailSale;
 import fr.epita.sigl.miwa.application.statistics.*;
 
 public class BIComputer {

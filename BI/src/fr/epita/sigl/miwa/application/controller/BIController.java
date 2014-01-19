@@ -110,7 +110,7 @@ public class BIController {
 	/** @param message */
 	public String generateSegmentation(String message) {
 		List<Critere> criteres = parser.parseCRMMessage(message);
-		while (!hasClient && !hasDetailSaleBOForSegmentation && !hasDetailSaleInternetSegmentation){
+		while (!hasClient && !hasDetailSaleBOForSegmentation && !hasMDMData){
 			try {
 				wait(10000);
 			} catch (InterruptedException e) {
