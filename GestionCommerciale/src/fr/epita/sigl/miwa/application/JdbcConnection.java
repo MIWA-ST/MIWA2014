@@ -78,6 +78,12 @@ public class JdbcConnection
 			System.out.println("Insert Articles");
 			if (connection != null)
 			{
+				String existe = "SELECT * FROM articles WHERE ref_article = ?";
+				PreparedStatement verif_existe = connection.prepareStatement(existe);
+				verif_existe.setString(1, article.getRef_article());
+				ResultSet resultat = verif_existe.executeQuery();
+				
+				if (resultat.wasNull()) {
 				String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
@@ -89,8 +95,22 @@ public class JdbcConnection
 				statement.setString(6, article.getStock_max_mag());
 				statement.setString(7, article.getCategory());
 				statement.setString(8, article.getQuantite_min_fournisseur());
-			
 				statement.executeUpdate();
+				}
+				else {
+					String request = "UPDATE articles SET (nom = ?, prix_fournisseur = ?, prix_vente = ?, stock_max_entrepo = ?, stock_max_magasin = ?, categorie = ?, quantite_min_commande_fournisse = ?) WHERE ref_article = ?";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, article.getNom());
+					statement.setString(2, article.getPrix_fournisseur());
+					statement.setString(3, article.getPrix_vente());
+					statement.setString(4, article.getStock_max_entre());
+					statement.setString(5, article.getStock_max_mag());
+					statement.setString(6, article.getCategory());
+					statement.setString(7, article.getQuantite_min_fournisseur());
+					statement.setString(8, article.getRef_article());
+					statement.executeUpdate();
+				}
 			}
 		}
 		catch (SQLException e)
@@ -131,18 +151,22 @@ public class JdbcConnection
 			System.out.println("Insert commandes_fournisseur");
 			if (connection != null)
 			{
+				String existe = "SELECT * FROM commandes_fournisseur WHERE numero_commande = ?";
+				PreparedStatement verif_existe = connection.prepareStatement(existe);
+				verif_existe.setString(1, cmd.getNumero_commande());
+				ResultSet resultat = verif_existe.executeQuery();
+				
+				if (resultat.wasNull()) {
 				String request = "INSERT INTO commandes_fournisseur (numero_commande, date_bon_de_commande, date_bon_de_livraison, traitee) VALUES (?, ?, ?, ?)";
 
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, cmd.getNumero_commande());
 				statement.setString(2, cmd.getBon_commande());
 				statement.setString(3, cmd.getBon_livraion());
-				statement.setString(4, cmd.getTraitee());
-				
+				statement.setString(4, cmd.getTraitee());				
 				statement.executeUpdate();
 					
 				int indice = 0;
-			
 				for (Articles a : cmd.getArticles()) {
 					String request2 = "INSERT INTO commande_fournisseur_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
 							
@@ -153,6 +177,18 @@ public class JdbcConnection
 				
 					statement2.executeUpdate();
 					indice++;
+				}
+				}
+				else {
+					String request = "UPDATE commandes_fournisseur SET (date_bon_de_commande = ?, date_bon_de_livraison = ?, traitee = ?) WHERE numero_commande = ?";
+
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, cmd.getBon_commande());
+					statement.setString(2, cmd.getBon_livraion());
+					statement.setString(3, cmd.getTraitee());
+					statement.setString(4, cmd.getNumero_commande());
+					
+					statement.executeUpdate();
 				}
 			}
 		}
@@ -169,6 +205,12 @@ public class JdbcConnection
 			System.out.println("Insert commandes internet");
 			if (connection != null)
 			{
+				String existe = "SELECT * FROM commandes_internet WHERE numero_commande = ?";
+				PreparedStatement verif_existe = connection.prepareStatement(existe);
+				verif_existe.setString(1, cmd.getCommandNumber());
+				ResultSet resultat = verif_existe.executeQuery();
+				
+				if (resultat.wasNull()) {
 				String request = "INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_client, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
@@ -183,20 +225,34 @@ public class JdbcConnection
 				
 				statement.executeUpdate();
 				
-				/// Si y a un bug, ça vient de là
-				ResultSet res = statement.getGeneratedKeys();
-				int id = res.getInt(1);
 				int indice = 0;
+				
 				for (Articles a : cmd.getArticles()) {
 				String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
-							
+				
 				PreparedStatement statement2 = connection.prepareStatement(request2);
-				statement.setString(1, Integer.toString(id));
-				statement.setString(2, a.getRef_article());
-				statement.setString(3, cmd.getquantity().get(indice));
+				statement2.setString(1, cmd.getCommandNumber());
+				statement2.setString(2, a.getRef_article());
+				statement2.setString(3, cmd.getquantity().get(indice));
 				
 				statement2.executeUpdate();
 				indice++;
+				}
+				}
+				else {
+					String request = "UPDATE commandes_internet SET (ref_client = ?, date_bon_commande = ?, date_bon_livraison = ?, nom_client = ?, prenom_client = ?, adresse_client = ?, traitee = ?) WHERE numero_commande = ?";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, cmd.getCustomerRef());
+					statement.setString(2, cmd.getDateBC());
+					statement.setString(3, cmd.getDateBL());
+					statement.setString(4, cmd.getCustomerLastname());
+					statement.setString(5, cmd.getCustomerFirstname());
+					statement.setString(6, cmd.getCustomerAddress());
+					statement.setString(7, cmd.getTraite());
+					statement.setString(8, cmd.getCommandNumber());
+					
+					statement.executeUpdate();
 				}
 			}
 		}
@@ -213,6 +269,12 @@ public class JdbcConnection
 			System.out.println("Insert demande reassort");
 			if (connection != null)
 			{
+				String existe = "SELECT * FROM demandes_reassort WHERE numero_demande = ?";
+				PreparedStatement verif_existe = connection.prepareStatement(existe);
+				verif_existe.setString(1, dmd.getCommandNumber());
+				ResultSet resultat = verif_existe.executeQuery();
+				
+				if (resultat.wasNull()) {
 				String request = "INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traite) VALUES (?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
@@ -226,19 +288,32 @@ public class JdbcConnection
 				statement.executeUpdate();
 				
 				/// Si y a un bug, ça vient de là
-				ResultSet res = statement.getGeneratedKeys();
-				int id = res.getInt(1);
 				int indice = 0;
 				for (Articles a : dmd.getArticles()) {
-				String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
+					String request2 = "INSERT INTO demande_reassort_line (numero_demande, ref_article, quantite) VALUES (?, ?, ?)";
 							
-				PreparedStatement statement2 = connection.prepareStatement(request2);
-				statement.setString(1, Integer.toString(id));
-				statement.setString(2, a.getRef_article());
-				statement.setString(3, dmd.getQuantity().get(indice));
+					PreparedStatement statement2 = connection.prepareStatement(request2);
+					statement2.setString(1, dmd.getCommandNumber());
+					statement2.setString(2, a.getRef_article());
+					statement2.setString(3, dmd.getQuantity().get(indice));
 				
-				statement2.executeUpdate();
-				indice++;
+					statement2.executeUpdate();
+					indice++;
+				}
+				}
+				else {
+					String request = "UPDATE demandes_reassort SET (ref_bo = ?, adresse_bo = ?, tel_bo = ?, date_bc = ?, traite = ?) WHERE numero_demande = ?";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, dmd.getBackOfficeRef());
+					statement.setString(2, dmd.getBackOfficeAddress());
+					statement.setString(3, dmd.getBackOfficePhone());
+					statement.setString(4, dmd.getDateBC());
+					statement.setString(5, dmd.getTraite());
+					statement.setString(6, dmd.getCommandNumber());
+					
+					statement.executeUpdate();
+
 				}
 			}
 		}
@@ -279,6 +354,12 @@ public class JdbcConnection
 			System.out.println("Insert stock entrepôt");
 			if (connection != null)
 			{
+				String existe = "SELECT * FROM stock_entrepot WHERE ref_article = ?";
+				PreparedStatement verif_existe = connection.prepareStatement(existe);
+				verif_existe.setString(1, stck.getArticle().getRef_article());
+				ResultSet resultat = verif_existe.executeQuery();
+				
+				if (resultat.wasNull()) {
 				String request = "INSERT INTO stock_entrepot (ref_article, quantite) VALUES (?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
@@ -286,6 +367,16 @@ public class JdbcConnection
 				statement.setString(2, stck.getQuantity());
 				
 				statement.executeUpdate();
+				}
+				else {
+					String request = "UPDATE stock_entrepot SET (quantite = ?) WHERE ref_article = ?";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, stck.getQuantity());
+					statement.setString(2, stck.getArticle().getRef_article());
+					
+					statement.executeUpdate();
+					}
 			}
 		}
 		catch (SQLException e)
@@ -301,7 +392,14 @@ public class JdbcConnection
 			System.out.println("Insert stock magasin");
 			if (connection != null)
 			{
-				String request = " INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?) MATCHING (ref_article, id_magasin)";
+				String existe = "SELECT * FROM stock_magasin WHERE ref_article = ? AND id_magasin = ?";
+				PreparedStatement verif_existe = connection.prepareStatement(existe);
+				verif_existe.setString(1, mgs.getArticle().getRef_article());
+				verif_existe.setString(2, mgs.getIdmag());
+				ResultSet resultat = verif_existe.executeQuery();
+				
+				if (resultat.wasNull()) {
+				String request = "INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, mgs.getArticle().getRef_article());
@@ -309,6 +407,19 @@ public class JdbcConnection
 				statement.setString(3, mgs.getQuantity());
 
 				statement.executeUpdate();
+				}
+				else {
+					String request = "UPDATE stock_magasin SET (quantite = ?) WHERE ref_article = ? AND id_magasin = ? ";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, mgs.getQuantity());
+					statement.setString(2, mgs.getArticle().getRef_article());
+					statement.setString(3, mgs.getIdmag());
+
+
+					statement.executeUpdate();
+					
+				}
 			}
 		}
 		catch (SQLException e)
@@ -342,9 +453,9 @@ public class JdbcConnection
 				String request2 = "INSERT INTO articles_map (ref_article, id_demande, quantite) VALUES (?, ?, ?)";
 							
 				PreparedStatement statement2 = connection.prepareStatement(request2);
-				statement.setString(1, a.getRef_article());
-				statement.setString(2, Integer.toString(id));
-				statement.setString(3, dmd.getQuantity().get(indice));
+				statement2.setString(1, a.getRef_article());
+				statement2.setString(2, Integer.toString(id));
+				statement2.setString(3, dmd.getQuantity().get(indice));
 				
 				statement2.executeUpdate();
 				indice++;
