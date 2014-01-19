@@ -50,6 +50,8 @@ public class Main {
 		//XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
 		XMLManager.getInstance().getCreationTypeCarte("Silver");
 		XMLManager.getInstance().getCreationTypeCarte("Gold");
+		XMLManager.getInstance().getTicketClientFidelise("lol", "BO ticket client fidelise.xml");
+		XMLManager.getInstance().getSegmentationClient("lol", "segmentation-client.xml");
 		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");
 		JdbcConnection.getInstance().GetClientInternet("831356");
 		//System.out.println(ClockClient.getClock().getHour());
