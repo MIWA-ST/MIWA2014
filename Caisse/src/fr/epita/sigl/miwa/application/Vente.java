@@ -57,9 +57,32 @@ public class Vente {
 			if (selectedproducts.isEmpty())
 				System.out.println("Pas de produit, vente annulée");
 			System.out.println("-------------------------------------");
+			// si client non fidélisé
+			// traiter paiement par espèce OU cb
+			int lower = 0;
+			int higher = 2;
+			int paiement = (int)(Math.random() * (higher-lower)) + lower;
+			if (paiement == 0)
+			{
+				//paiement espece
+				//selectedproducts = liste des produit
+				//prixtotal = prix à payer
+				System.out.println("paiement espece ok");
+			}
+			else
+			{
+				//paiement CB
+				//selectedproducts = liste des produit
+				//prixtotal = prix à payer
+				// traiter paiement CB avec MONETIQUE
+				// si paiement OK avec CB (ou paiement espèce automatqieuemtn validé)
+				// appeler fonction generation XML (qui va envoyer le ticket au BO)
+				System.out.println("paiement CB ok");
+				//if NOK paiement espece
+			}			
 			i++;
+			Thread.sleep(300);
 			
-			Thread.sleep(2000);
 		}
 	}
 
