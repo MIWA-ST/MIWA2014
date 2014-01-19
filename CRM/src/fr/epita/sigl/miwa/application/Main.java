@@ -51,6 +51,7 @@ public class Main {
 		//XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
 		XMLManager.getInstance().getCreationTypeCarte("Silver");
 		XMLManager.getInstance().getCreationTypeCarte("Gold");
+		XMLManager.getInstance().getDemandeCreationCompte("creation", "creation compte internet.xml");
 		XMLManager.getInstance().getTicketClientFidelise("lol", "BO ticket client fidelise.xml");
 		XMLManager.getInstance().getSegmentationClient("lol", "segmentation-client.xml");
 		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");

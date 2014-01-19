@@ -15,15 +15,19 @@ import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 public class Client {
 	
 	private int matricule;
+	private int nbenfant;
+	private Date date;
 	private String nom;
 	private String prenom;
+	private String civilite;
+	private String situation;
 	private String adresse;
 	private String codePostal;
 	private String telephone;
 	private String mail;
 	private String IBAN;
 	private String BIC;
-	private Date date;
+	private String naissance;
 	private CarteFidelite carteFed;
 	
 	public List<Article> articlesList;
@@ -49,7 +53,30 @@ public class Client {
 	
 	
 	
-	
+	public int getNbenfant() {
+		return nbenfant;
+	}
+
+	public void setNbenfant(int nbenfant) {
+		this.nbenfant = nbenfant;
+	}
+
+	public String getSituation() {
+		return situation;
+	}
+
+	public void setSituation(String situation) {
+		this.situation = situation;
+	}
+
+	public String getCivilite() {
+		return civilite;
+	}
+
+	public void setCivilite(String civilite) {
+		this.civilite = civilite;
+	}
+
 	public String getIBAN() {
 		return IBAN;
 	}
@@ -106,6 +133,17 @@ public class Client {
 		this.mail = mail;
 	}
 
+	public String getNaissance() {
+		return naissance;
+	}
+
+	public void setNaissance(String naissance) {
+		this.naissance = naissance;
+	}
+
+	
+	
+	
 	public Date getDate() {
 		return date;
 	}

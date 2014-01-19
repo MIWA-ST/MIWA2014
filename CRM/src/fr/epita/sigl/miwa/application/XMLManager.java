@@ -69,7 +69,7 @@ public class XMLManager
 	{
 		File file = new File (xml);
 
-		// Parsage du fichier	
+		// Parsage du fichier
 		Document criteriaFile = dBuilder.parse(file);
 		String XMLReturn = "";
 		
@@ -222,6 +222,27 @@ public class XMLManager
 		
 	}
 	
+	public String getSendClientBI()
+	{
+		LOGGER.info("***** Creation du XML poir le BI avec la base client");
+		
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XML><ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\"/>"
+				+ "<CLIENTS>";
+		
+		for (int i = 0; i < Client.clientsList.size(); i++)
+		{
+			Client c = Client.clientsList.get(i);
+			LOGGER.info("***** Ajout d'un client dans le XML : " + c.getMatricule());
+			bl += "<CLIENT id=\"" + c.getMatricule() + "\" civilite=\"" + c.getCivilite()
+					+ "\" naissance=\"" + c.getDate() + "\" codepostal=\"" + c.getCodePostal() 
+					+ "\" situationfam=\"" + c.getSituation() + "\" nbenfant=\"" + c.getNbenfant() + "\" typecarte=\"" + c.getCarteFed().getType() + "\" />";
+		}
+		
+		bl += "<CLIENTS><XML>";
+		LOGGER.info("***** Envoi des clients au BI");
+		return bl;
+	}
+	
 	public String getDemandeCreationCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		LOGGER.info("***** Analyse du flux XML: création d'un compte fidélité");
@@ -246,7 +267,13 @@ public class XMLManager
 			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
 			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
-			// FIXME ajouter les IBAN et BIC
+			client.setCivilite(infoNodes.getAttributes().getNamedItem("civilite").getNodeValue());
+			client.setSituation(infoNodes.getAttributes().getNamedItem("situation").getNodeValue());
+			client.setNaissance(infoNodes.getAttributes().getNamedItem("naissance").getNodeValue());
+			client.setNbenfant(Integer.parseInt(infoNodes.getAttributes().getNamedItem("nbenfant").getNodeValue()));
+			client.setIBAN(infoNodes.getAttributes().getNamedItem("iban").getNodeValue());
+			client.setBIC(infoNodes.getAttributes().getNamedItem("bic").getNodeValue());
+
 			LOGGER.info("***** Recherche des informations clients");
 			LOGGER.info("***** " + client.toString());
 			
@@ -510,7 +537,7 @@ public class XMLManager
 		Document compteClientFile = dBuilder.parse(file);	
 		LOGGER.info("***** Parsage du XML");
 		
-		String bl = "<ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
 				+ "<INFORMATIONS>";
 		
 		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");

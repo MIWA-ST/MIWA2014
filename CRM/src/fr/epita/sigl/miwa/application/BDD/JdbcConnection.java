@@ -249,7 +249,7 @@ public class JdbcConnection
 			System.out.println("insertion client internet");
 			if (connection != null)
 			{
-				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule, iban, cib, fedelite) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule, iban, bic, fedelite, civilite, naissance, nbenfant, situation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -261,8 +261,17 @@ public class JdbcConnection
 				statement.setString(7, Integer.toString(client.getMatricule()));
 				statement.setString(8, client.getIBAN());
 				statement.setString(9, client.getBIC());
+				if (client.getCarteFed() == null)
+				{
+					CarteFidelite fed = new CarteFidelite("Silver");
+					client.setCarteFed(fed);
+				}
 				statement.setString(10, client.getCarteFed().getType());
-
+				statement.setString(11, client.getCivilite());
+				statement.setString(12, client.getNaissance());
+				statement.setString(13, Integer.toString(client.getNbenfant()));
+				statement.setString(14, client.getSituation());
+				
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
 				{
@@ -284,7 +293,7 @@ public class JdbcConnection
 			System.out.println("update client internet");
 			if (connection != null)
 			{
-				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, iban=?, bic=?, fidelite=? WHERE matricule = ?";
+				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, iban=?, bic=?, fidelite=?, civilite=? naissance=? nbenfant=? situation=? WHERE matricule = ?";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -297,6 +306,10 @@ public class JdbcConnection
 				statement.setString(8, client.getIBAN());
 				statement.setString(9, client.getBIC());
 				statement.setString(10, client.getCarteFed().getType());
+				statement.setString(11, client.getCivilite());
+				statement.setString(12, client.getNaissance());
+				statement.setString(13, Integer.toString(client.getNbenfant()));
+				statement.setString(14, client.getSituation());
 
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
@@ -364,6 +377,11 @@ public class JdbcConnection
 					client.setIBAN(result.getString(9));
 					client.setBIC(result.getString(10));
 					CarteFidelite c = new CarteFidelite(result.getString(11));
+					client.setCivilite(result.getString(11));
+					client.setNaissance(result.getString(12));
+					client.setNbenfant(Integer.parseInt(result.getString(13)));
+					client.setSituation(result.getString(14));
+					
 					client.setCarteFed(c);
 				}
 			}

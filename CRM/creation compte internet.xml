@@ -1,5 +1,5 @@
 <XML>
     <ENTETE objet="creation_compte" source="internet" date="2014-01-18" />
-        <COMPTE nom="Foissac" prenom="JF" adresse="rue de l'hopital" code_postal="94800" email="gegoux@foissac.fr" telephone="066666666">
+        <COMPTE nom="Foissac" prenom="JF" adresse="rue de l'hopital" code_postal="94800" email="gegoux@foissac.fr" telephone="066666666" iban="15465" bic="56464" civilite="M" naissance="2014/02/20" nbenfant="3" situation="Celibataire">
         </COMPTE>
 </XML>
