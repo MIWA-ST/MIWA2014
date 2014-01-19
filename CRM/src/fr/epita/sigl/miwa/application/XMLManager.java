@@ -34,7 +34,6 @@ import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Critere;
 import fr.epita.sigl.miwa.application.object.Group;
 import fr.epita.sigl.miwa.application.object.Segmentation;
-import fr.epita.sigl.miwa.application.object.TicketCaisse;
 import fr.epita.sigl.miwa.application.object.TicketVente;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -44,6 +43,8 @@ public class XMLManager
 	private static XMLManager instance = null;
 	private DocumentBuilderFactory dBFactory;
 	private DocumentBuilder dBuilder;
+	
+	private static final Logger LOGGER = Logger.getLogger(XMLManager.class.getName());
 	
 	public XMLManager() {
 		try {
@@ -59,7 +60,7 @@ public class XMLManager
 	{
 		if (instance == null)
 			instance = new XMLManager();
-		
+		LOGGER.info("***** Chargement du gestionnaire de XML");
 		return instance;
 	}
 	
@@ -103,6 +104,7 @@ public class XMLManager
 	
 	public String getSegmentationClient(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		
 		Segmentation segmentation = new Segmentation();
 		
 		File file = new File (xml);
@@ -498,6 +500,7 @@ public class XMLManager
 	
 	public String getTicketClientFidelise(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Analyse du flux XML: ticket de caisse après vente");
 		TicketVente ticketVente = new TicketVente();
 		
 		File file = new File (xml);
@@ -507,10 +510,12 @@ public class XMLManager
 		*/
 		// Parsage du fichier	
 		Document ticketVenteFile = dBuilder.parse(file);
+		LOGGER.info("***** Parsage du ticket de caisse");
 		
 		NodeList headerNodes = ticketVenteFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		LOGGER.info("***** Ticket de caisse du " + dateStr);
 		
 		ticketVente.setDate(seqDate);
 		List<Article> list = new  ArrayList<>();
@@ -525,6 +530,7 @@ public class XMLManager
 			Node articleNodes = ticketVenteNodes.item(i);
 			ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
 			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
+			LOGGER.info("***** Client " + i + ": " + ticketVente.getRefclient() + " - " + ticketVente.getMoyenpayement());
 			
 			NodeList articlesNodes = ticketVenteFile.getElementsByTagName("ARTICLE");
 			for (int j = 0; j < articlesNodes.getLength(); j++) 
@@ -535,6 +541,7 @@ public class XMLManager
 				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
 				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
 				ticketVente.getArticle().add(article);
+				LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
 			}
 		}
 		
@@ -558,7 +565,8 @@ public class XMLManager
 	
 	public String getTicketCaisse(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		TicketCaisse ticketCaisse = new TicketCaisse();
+		LOGGER.info("***** Analyse du flux XML: ticket de caisse avant vente");
+		TicketVente ticketVente = new TicketVente();
 		
 		File file = new File (xml);
 		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
@@ -566,29 +574,33 @@ public class XMLManager
 		output.close();
 		*/
 		// Parsage du fichier	
-		Document ticketCaisseFile = dBuilder.parse(file);
+		Document ticketVenteFile = dBuilder.parse(file);
+		LOGGER.info("***** Parsage du ticket de caisse temporaire");
 		
-		NodeList headerNodes = ticketCaisseFile.getElementsByTagName("ENTETE");
+		NodeList headerNodes = ticketVenteFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		LOGGER.info("***** Ticket de caisse du " + dateStr);
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
 		
-		ticketCaisse.setDate(seqDate);
+		ticketVente.setDate(seqDate);
 		List<Article> list = new  ArrayList<>();
 		List<Article> listReduc = new  ArrayList<>();
-		ticketCaisse.setArticle(list);
+		ticketVente.setArticle(list);
 		int totalPrice = 0;
 		
 
-		NodeList ticketCaisseNodes = ticketCaisseFile.getElementsByTagName("TICKETVENTE");
+		NodeList ticketVenteNodes = ticketVenteFile.getElementsByTagName("TICKETVENTE");
 		
 		// Création des éléments ticketventes et articles
-		for (int i = 0; i < ticketCaisseNodes.getLength(); i++)
+		for (int i = 0; i < ticketVenteNodes.getLength(); i++)
 		{
-			Node articleNodes = ticketCaisseNodes.item(i);
-			ticketCaisse.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
-			ticketCaisse.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
+			Node articleNodes = ticketVenteNodes.item(i);
 			
-			NodeList articlesNodes = ticketCaisseFile.getElementsByTagName("ARTICLE");
+			ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
+			LOGGER.info("***** Client " + i + ": " + ticketVente.getRefclient() + " - " + ticketVente.getMoyenpayement());
+			
+			NodeList articlesNodes = ticketVenteFile.getElementsByTagName("ARTICLE");
 			for (int j = 0; j < articlesNodes.getLength(); j++) 
 			{
 				Node artNodes = articlesNodes.item(j);
@@ -597,20 +609,25 @@ public class XMLManager
 				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
 				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
 				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
-				ticketCaisse.getArticle().add(article);
+				LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
+				ticketVente.getArticle().add(article);
 				articleReduc.setRef(article.getRef());
 				articleReduc.setQuantite(article.getQuantite());
 				articleReduc.setPrix(article.getPrix() - 1);
 				listReduc.add(articleReduc);
+				LOGGER.info("********* Application de la réduction : " + articleReduc.getPrix());
 				totalPrice = totalPrice + (article.getPrix() - 1);
 			}
 		}
+		LOGGER.info("***** Montant total : " + totalPrice);
+		LOGGER.info("***** Construction du nouveau ticket de vente");
+		
 		Date date = null;
 		//DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		//(df.format(ClockClient.getClock().getHour()));
 		
 		String bl = "<ENTETE objet=\"facture-client\" source=\"crm\" date=\"" + date + "\"/>" +
-						"<FACTURE refclient=\"" + ticketCaisse.getRefclient() + "\" montanttotal=\"" + totalPrice + "\" >";
+						"<FACTURE refclient=\"" + ticketVente.getRefclient() + "\" montanttotal=\"" + totalPrice + "\" >";
 						   for (int k = 0; k < listReduc.size(); k++)
 						   {
 							   bl = bl + "<ARTICLE refarticle=\"" + listReduc.get(k).getRef() + "\" quantite=\"" + listReduc.get(k).getQuantite() + "\" nvprix=\"" + listReduc.get(k).getPrix() + "\" />";
