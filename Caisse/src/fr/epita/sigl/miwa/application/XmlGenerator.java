@@ -77,7 +77,7 @@ public class XmlGenerator {
 			e.printStackTrace();
 		}
 
-
+/*// pour écrire un DOM dans un fichier
 TransformerFactory factory = TransformerFactory.newInstance();
 Transformer transformer = null;
 try {
@@ -93,8 +93,7 @@ try {
 } catch (TransformerException e) {
 	// TODO Auto-generated catch block
 	e.printStackTrace();
-}
-		
+}*/
 		
 		LOGGER.info("***** Caisse : envoi d'une demande de paiement CB vers la monétique");
 		boolean resultat = SyncMessFactory.getSyncMessSender().sendXML(
@@ -127,8 +126,6 @@ try {
 		}
 
 		xml += "</TICKETVENTE>";
-
-		System.out.println(xml);
 
 		try {
 			AsyncMessageFactory.getInstance().getAsyncMessageManager()
