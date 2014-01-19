@@ -2,7 +2,9 @@ package fr.epita.sigl.miwa.application.messaging;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -35,13 +37,53 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 	public void onMessage(String message, EApplication source) {	
 		//Message du Back-office
 		if (source == EApplication.BACK_OFFICE){
-			LOGGER.info("Message reçu du Back-office");
-			LOGGER.info("Le message est : " + message);
+			LOGGER.info("*****Message reçu du Back-office");
+			LOGGER.info("*****Le message est : " + message);
+			
+			PrintWriter out = null;
+			try {
+				out = new PrintWriter("backoffice.xml");
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			out.print(message);
+			out.close();
+			
+			try {
+				manager.getInstance().dispatchXML("", "backoffice.xml");
+			} catch (SAXException | IOException | AsyncMessageException
+					| ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} else if (source == EApplication.INTERNET) {
+			LOGGER.info("*****Message reçu d'Internet");
+			LOGGER.info("*****Le message est : " + message);
+			
+			PrintWriter out = null;
+			try {
+				out = new PrintWriter("internet.xml");
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			out.print(message);
+			out.close();
+			
+			try {
+				manager.getInstance().dispatchXML("", "internet.xml");
+			} catch (SAXException | IOException | AsyncMessageException
+					| ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		// Message pas attendu
 		else {
-			LOGGER.info("Message qui ne nous intÃ©resse pas de " + source);
-			LOGGER.info("Le message est : " + message);
+			LOGGER.info("*****Message qui ne nous intéresse pas de " + source);
+			LOGGER.info("*****Le message est : " + message);
 		}
 	}
 
@@ -50,10 +92,10 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		
 		if (source == EApplication.BI){
 			// Segmentation client
-			LOGGER.info("Fichier reçu du BI");
+			LOGGER.info("*****Fichier reçu du BI");
 			
 			//TODO parer la segmentation reçue
-			LOGGER.info("Le path du fichier est : " + file.getAbsolutePath());
+			LOGGER.info("*****Le path du fichier est : " + file.getAbsolutePath());
 		/*	
 			 byte[] encoded = null;
 			try {
@@ -62,19 +104,19 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			 
+			
 			String xml = encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	*/		
-			File res;
+			/*File res;
 			try {
 				res = AsyncFileFactory.getInstance().getFileHelper().retrieve(file.getAbsolutePath());
 			} catch (AsyncFileException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-			
+			*/
 			try {
-				XMLManager.getInstance().dispatchXML("segmentation-client", "segmentation-client.xml");
+				XMLManager.getInstance().dispatchXML("segmentation-client", file.getAbsolutePath());
 			} catch (SAXException | IOException | AsyncMessageException
 					| ParseException e1) {
 				// TODO Auto-generated catch block
@@ -90,13 +132,13 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				e.printStackTrace();
 			}
 			
-			LOGGER.info("Résultat : " + result);
+			LOGGER.info("*****Résultat : " + result);
 			
 		}	
 		// Fichier non attendu
 		else {
-			LOGGER.severe("Fichier non attendu de " + source);
-			LOGGER.severe("Le path du fichier est : " + file.getAbsolutePath());
+			LOGGER.severe("*****Fichier non attendu de " + source);
+			LOGGER.severe("*****Le path du fichier est : " + file.getAbsolutePath());
 		}
 	}
 
