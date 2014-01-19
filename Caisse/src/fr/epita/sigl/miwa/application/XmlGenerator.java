@@ -106,6 +106,46 @@ try {
 		
 		return resultat;
 	}
+	
+	public static boolean CheckFidPaymentWithMo(String total, String idClient) {
+		String message = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>"
+				+ total
+				+ "</montant><matricule_client>"
+				+ idClient
+				+ "</matricule_client></monetique>";
+
+		DocumentBuilder db = null;
+		try {
+			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		} catch (ParserConfigurationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		InputSource is = new InputSource();
+		is.setCharacterStream(new StringReader(message));
+
+		Document doc = null;
+		try {
+			doc = db.parse(is);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		LOGGER.info("***** Caisse : envoi d'une demande de paiement fidélité vers la monétique");
+		boolean resultat = SyncMessFactory.getSyncMessSender().sendXML(
+				EApplication.MONETIQUE, doc);
+
+		if (resultat)
+			LOGGER.info("***** Caisse : le paiement fidélité a été approuvé par la monétique");
+		else
+			LOGGER.info("***** Caisse : erreur, le paiement fidélité n'a pas été approuvé par la monétique");
+
+		return resultat;
+	}
 
 	public static void SendTicketToBO(Set<Produit> produits, String idClient,
 			String typePaiement) {
