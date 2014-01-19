@@ -213,7 +213,7 @@ public class BIParser {
 				Promotion promotion = new Promotion();
 				
 				tmpInfo = promotionNode.getAttributes().getNamedItem("ref-article").getNodeValue();
-				// TODO : promotion.setProduct(BIDao.getProductByRef(tmpInfo));
+				promotion.setProductReference(tmpInfo);
 				tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
 				promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
 				tmpInfo = promotionNode.getAttributes().getNamedItem("fin").getNodeValue();
@@ -444,7 +444,7 @@ public class BIParser {
 				client.setMaritalStatus(clientNode.getAttributes().getNamedItem("situationfam").getNodeValue());
 				tmpInfo = clientNode.getAttributes().getNamedItem("nbenfant").getNodeValue();
 				client.setChildrenNb(Integer.valueOf(tmpInfo));
-				client.setLoyaltyType(clientNode.getAttributes().getNamedItem("typecarte").getNodeValue());
+				client.setLoyaltyType(Integer.valueOf(clientNode.getAttributes().getNamedItem("typecarte").getNodeValue()));
 				
 				clientList.add(client);
 			}
@@ -506,7 +506,7 @@ public class BIParser {
 							Node promotionNode = promotionNodes.item(k);
 							Promotion promotion = new Promotion();
 							
-							promotion.setProduct(product);
+							promotion.setProductReference(product.getReference());
 							tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
 							promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
 							tmpInfo = promotionNode.getAttributes().getNamedItem("fin").getNodeValue();

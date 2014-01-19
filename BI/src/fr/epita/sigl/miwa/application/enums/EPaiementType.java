@@ -15,4 +15,15 @@ public enum EPaiementType {
 	public String toString(){
 		return name;
 	}
+	
+	public static EPaiementType fromString(String name){
+		if (name != null){
+			for (EPaiementType p : EPaiementType.values()){
+				if (name.equalsIgnoreCase(p.name)){
+					return p;
+				}
+			}
+		}
+		return null;
+	}
 }

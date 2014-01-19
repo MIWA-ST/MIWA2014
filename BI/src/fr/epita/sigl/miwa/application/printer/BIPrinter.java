@@ -41,13 +41,13 @@ public class BIPrinter {
 		boolean headerMagasin = false;
 		StringBuilder builder = new StringBuilder();
 		for (StockStatistic statistic : stockStatistics){
-			if (!headerEntrepot && ENTREPOT.equals(statistic.getName())){
+			if (!headerEntrepot && ENTREPOT.equals(statistic.getStore())){
 				builder.append("\n");
 				builder.append("**** GESTION DES STOCKS : ENTREPOT");
 				builder.append("\n");
 				headerEntrepot = true;
 			}
-			if (!headerMagasin && !ENTREPOT.equals(statistic.getName())){
+			if (!headerMagasin && !ENTREPOT.equals(statistic.getStore())){
 				builder.append("\n");
 				builder.append("**** GESTION DES STOCKS : MAGASIN");
 				builder.append("\n");

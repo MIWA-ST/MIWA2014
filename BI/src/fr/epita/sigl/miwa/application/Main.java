@@ -1,5 +1,6 @@
 package fr.epita.sigl.miwa.application;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -26,14 +27,26 @@ public class Main {
 		/* CODE HERE */
 		Date clockDate = ClockClient.getClock().getHour();
 		// Réveil à 9h pour les statistiques sur les stocks
-		Date reveilStock = new Date(clockDate.getYear(), clockDate.getMonth(), clockDate.getDay() + 1, 9, 0);
-		ClockClient.getClock().wakeMeUpEveryDays(reveilStock, EClockMessage.STOCK.toString());
+		Calendar reveilStock = Calendar.getInstance();
+		reveilStock.setTime(clockDate);
+		reveilStock.set(Calendar.DAY_OF_MONTH, clockDate.getDate() + 1);
+		reveilStock.set(Calendar.HOUR_OF_DAY, 10);
+		reveilStock.set(Calendar.MINUTE, 0);
+		ClockClient.getClock().wakeMeUpEveryDays(reveilStock.getTime(), EClockMessage.STOCK.toString());
 		// Réveil à 22h pour les ventes
-		Date reveilVente = new Date(clockDate.getYear(), clockDate.getMonth(), clockDate.getDay() + 1, 23, 0);
-		ClockClient.getClock().wakeMeUpEveryDays(reveilVente, EClockMessage.VENTE.toString());
+		Calendar reveilVente = Calendar.getInstance();
+		reveilVente.setTime(clockDate);
+		reveilVente.set(Calendar.DAY_OF_MONTH, clockDate.getDate() + 1);
+		reveilVente.set(Calendar.HOUR_OF_DAY, 23);
+		reveilVente.set(Calendar.MINUTE, 0);
+		ClockClient.getClock().wakeMeUpEveryDays(reveilVente.getTime(), EClockMessage.VENTE.toString());
 		//Réveil à 23h pour la répartition des moyens de paiement
-		Date reveilPayment = new Date(clockDate.getYear(), clockDate.getMonth(), clockDate.getDay() + 1, 23, 0);
-		ClockClient.getClock().wakeMeUpEveryDays(reveilPayment, EClockMessage.REP_PAYMENT.toString());
+		Calendar reveilPayment = Calendar.getInstance();
+		reveilPayment.setTime(clockDate);
+		reveilPayment.set(Calendar.DAY_OF_MONTH, clockDate.getDate() + 1);
+		reveilPayment.set(Calendar.HOUR_OF_DAY, 23);
+		reveilPayment.set(Calendar.MINUTE, 15);
+		ClockClient.getClock().wakeMeUpEveryDays(reveilPayment.getTime(), EClockMessage.REP_PAYMENT.toString());
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()

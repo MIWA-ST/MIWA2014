@@ -14,13 +14,13 @@ public class Client {
 	private Integer zipcode;
 	private String maritalStatus;
 	private Integer childrenNb;
-	private String loyaltyType;
+	private Integer loyaltyType;
    
 	public Client() {
 	}
 
 	public Client(Integer numero, String title, Date birthDate, Integer zipcode, String maritalStatus,
-			Integer childrenNb, String loyaltyType) {
+			Integer childrenNb, Integer loyaltyType) {
 		this.numero = numero;
 		this.title = title;
 		this.birthDate = birthDate;
@@ -78,11 +78,11 @@ public class Client {
 		this.childrenNb = childrenNb;
 	}
 	
-	public String getLoyaltyType() {
+	public Integer getLoyaltyType() {
 		return loyaltyType;
 	}
 	
-	public void setLoyaltyType(String loyaltyType) {
+	public void setLoyaltyType(Integer loyaltyType) {
 		this.loyaltyType = loyaltyType;
 	}
 }

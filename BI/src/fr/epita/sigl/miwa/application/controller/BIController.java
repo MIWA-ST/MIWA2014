@@ -74,7 +74,7 @@ public class BIController {
 		return BIControllerHolder.instance;
 	}
 	public void generateStockStatistic() {
-		while (!hasStockBO && !hasStockGC){
+		while (!hasMDMData && !hasStockBO && !hasStockGC){
 			try {
 				wait(10000);
 			} catch (InterruptedException e) {
@@ -82,7 +82,7 @@ public class BIController {
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
-		List<Stock> stocks = biDao.getLastStocks();
+		List<Stock> stocks = biDao.getStockOfToday();
 		List<StockStatistic> stockStatistics = computer.computeStockStatistics(stocks);
 		hasStockBO = false;
 		hasStockGC = false;
@@ -100,7 +100,7 @@ public class BIController {
 			}
 		}
 		List<Sale> sales = biDao.getSalesOfToday();
-		List<SaleStatistic> lastSaleStatistics = biDao.getLastSaleStatistics();
+		List<SaleStatistic> lastSaleStatistics = biDao.getSaleStatisticsOfYesterday();
 		List<SaleStatistic> saleStatistics = computer.computeSaleStatistics(sales, lastSaleStatistics);
 		hasSaleBO = false;
 		hasSaleInternet = false;
@@ -202,7 +202,6 @@ public class BIController {
 	public void parseMDMFile(File file) {
 		MDMData mdmData = parser.parseMDMFile(file);
 		biDao.insertProducts(mdmData.getProducts());
-		biDao.insertProductsCategories(mdmData.getCategories());
 		biDao.insertPromotions(mdmData.getPromotions());
 		hasMDMData = true;
 	}

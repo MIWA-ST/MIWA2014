@@ -33,9 +33,9 @@ public class BIComputerTest {
 	@Test
 	public void computeStockStatisticsTest() {
 		List<Stock> stocks = new ArrayList<Stock>();
-		Stock stock1 = new Stock("1", true, 100, 100, "Mag 1");
-		Stock stock2 = new Stock("2", false, 5, 100, "Mag 1");
-		Stock stock3 = new Stock("3", true, 5, 100, "Mag 1");
+		Stock stock1 = new Stock(1, "1", true, 100, 100, "Mag 1");
+		Stock stock2 = new Stock(2, "2", false, 5, 100, "Mag 1");
+		Stock stock3 = new Stock(3, "3", true, 5, 100, "Mag 1");
 		stocks.add(stock1);
 		stocks.add(stock2);
 		stocks.add(stock3);
@@ -48,15 +48,15 @@ public class BIComputerTest {
 	@Test
 	public void computeSaleStatisticsTest(){
 		List<Sale> sales = new ArrayList<Sale>();
-		Sale sale1 = new Sale(new Date(), "Mag 1", 50, "1", 100, 100000);
+		Sale sale1 = new Sale(1, new Date(), "Mag 1", 50, "1", 100, 100000);
 		sales.add(sale1);
-		Sale sale2 = new Sale(new Date(), "Mag 1", 100, "2", 100, 100000);
+		Sale sale2 = new Sale(2, new Date(), "Mag 1", 100, "2", 100, 100000);
 		sales.add(sale2);
-		Sale sale3 = new Sale(new Date(), "Mag 1", 3, "3", 100, 100000);
+		Sale sale3 = new Sale(3, new Date(), "Mag 1", 3, "3", 100, 100000);
 		sales.add(sale3);
-		Sale sale4 = new Sale(new Date(), "Mag 1", 50, "1", 100, 100000);
+		Sale sale4 = new Sale(4, new Date(), "Mag 1", 50, "1", 100, 100000);
 		sales.add(sale4);
-		Sale sale5 = new Sale(new Date(), "Mag 1", 50, "5", 100, 100000);
+		Sale sale5 = new Sale(5, new Date(), "Mag 1", 50, "5", 100, 100000);
 		sales.add(sale5);
 		List<SaleStatistic> lastSaleStatistics = new ArrayList<SaleStatistic>();
 		SaleStatistic stat1 = new SaleStatistic(null, "1", 1, 100000, 10, 50);
@@ -153,9 +153,9 @@ public class BIComputerTest {
 		criteres.add(c6);
 		List<Segmentation> segmentations = new ArrayList<Segmentation>();
 		List<CategorieStatistic> categorieStatistics = new ArrayList<CategorieStatistic>();
-		CategorieStatistic cs1 = new CategorieStatistic(null, "1", 100);
+		CategorieStatistic cs1 = new CategorieStatistic("1", 100);
 		categorieStatistics.add(cs1);
-		CategorieStatistic cs2 = new CategorieStatistic(null, "2", 42);
+		CategorieStatistic cs2 = new CategorieStatistic("2", 42);
 		categorieStatistics.add(cs2);
 		Segmentation s1 = new Segmentation(null, 1, categorieStatistics);
 		segmentations.add(s1);

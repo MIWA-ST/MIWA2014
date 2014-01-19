@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Promotion {
 	private Integer id;
-	private Product product;
+	private String productReference;
 	private Date beginDate;
 	private Date endDate;
 	private Integer percentage;
@@ -18,10 +18,10 @@ public class Promotion {
 	public Promotion() {
 	}
 
-	public Promotion(Integer id, Product product, Date beginDate, Date endDate,
-			Integer percentage, String store) {
+	public Promotion(Integer id, String productReference, Date beginDate,
+			Date endDate, Integer percentage, String store) {
 		this.id = id;
-		this.product = product;
+		this.productReference = productReference;
 		this.beginDate = beginDate;
 		this.endDate = endDate;
 		this.percentage = percentage;
@@ -36,12 +36,12 @@ public class Promotion {
 		this.id = id;
 	}
 
-	public Product getProduct() {
-		return product;
+	public String getProductReference() {
+		return productReference;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProductReference(String productReference) {
+		this.productReference = productReference;
 	}
 
 	public Date getBeginDate() {
@@ -75,4 +75,6 @@ public class Promotion {
 	public void setStore(String store) {
 		this.store = store;
 	}
+
+	
 }

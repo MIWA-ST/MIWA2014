@@ -16,11 +16,12 @@ import fr.epita.sigl.miwa.application.statistics.*;
 public class BIComputer {
 	/** @param stocks */
 	public List<StockStatistic> computeStockStatistics(List<Stock> stocks) {
+		Date date = ClockClient.getClock().getHour();
 		List<StockStatistic> stockStatistics = new ArrayList<StockStatistic>();
 		for (Stock stock : stocks){
 			float stockPourcent = (stock.getStockQty() / stock.getMaxQty()) * 100;
 			if (stockPourcent <= 15.0 || stockPourcent >= 85.0){
-				StockStatistic stockStatistic = new StockStatistic(stock.getStore(), stock.getProductRef(), stockPourcent >= 85.0, stockPourcent <= 15.0, stock.getOrdered());
+				StockStatistic stockStatistic = new StockStatistic(date, stock.getStore(), stock.getProductRef(), stockPourcent >= 85.0, stockPourcent <= 15.0, stock.getOrdered());
 				stockStatistics.add(stockStatistic);
 			}
 		}
@@ -96,7 +97,7 @@ public class BIComputer {
 		for (Entry<Integer, Map<String, Integer>> clients : categoriesByClient.entrySet()){
 			List<CategorieStatistic> categoryStatistics = new ArrayList<CategorieStatistic>();
 			for (Entry<String, Integer> quantities : clients.getValue().entrySet()){
-				categoryStatistics.add(new CategorieStatistic(date, quantities.getKey(), quantities.getValue()));
+				categoryStatistics.add(new CategorieStatistic(quantities.getKey(), quantities.getValue()));
 			}
 			segmentations.add(new Segmentation(date, clients.getKey(), categoryStatistics));
 		}
