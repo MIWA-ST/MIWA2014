@@ -24,7 +24,7 @@ public class XmlGenerator {
 	private static final Logger LOGGER = Logger.getLogger(XmlGenerator.class
 			.getName());
 
-	public String GetCurrentClockDate() {
+	public static String GetCurrentClockDate() {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(ClockClient.getClock().getHour());
 		String theDate = Integer.toString(cal.get(Calendar.YEAR)) + "-"
@@ -34,7 +34,7 @@ public class XmlGenerator {
 		return theDate;
 	}
 
-	public boolean CheckCbPaymentWithMo(String total, String numCB,
+	public static boolean CheckCbPaymentWithMo(String total, String numCB,
 			String date, String picto) {
 		String message = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>"
 				+ total
@@ -76,7 +76,7 @@ public class XmlGenerator {
 		return result;
 	}
 
-	public void SendTicketToBO(Set<Produit> produits, String idClient,
+	public static void SendTicketToBO(Set<Produit> produits, String idClient,
 			String typePaiement) {
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"ticket-caisse\" source=\"caisse\" date=\""
 				+ GetCurrentClockDate()
