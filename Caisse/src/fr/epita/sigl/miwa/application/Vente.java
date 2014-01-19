@@ -15,7 +15,7 @@ public class Vente {
 	public void create() throws InterruptedException {
 		int i = 0;
 		// 1 vente
-		while (i < 1) {
+		while (true) {
 			System.out.println("------------------------------------");
 			System.out.println("Vente : " + i);
 			final Set<Produit> tabproduct = new HashSet<Produit>();
@@ -74,19 +74,35 @@ public class Vente {
 			}
 			else
 			{
+				int cbmin = 0;
+				int cbmax = 99999999;
+				int cbchiffre = (int)(Math.random() * (cbmax-cbmin)) + cbmin;
+				int cbchiffre2 = (int)(Math.random() * (cbmax-cbmin)) + cbmin;
+				int datemin = 1;
+				int datemax = 13;
+				int datemax2 = 32;
+				int cbdate1 = (int)(Math.random() * (datemax-datemin)) + datemin;
+				int cbdate2 = (int)(Math.random() * (datemax2-datemin)) + datemin;
+				int picto1 = 100;
+				int picto2 = 999;
+				int cbpicto = (int)(Math.random() * (picto2-picto1)) + picto1;
 				type = "cb";
+				Boolean result = XmlGenerator.CheckCbPaymentWithMo(""+prixtotal, Integer.toString(cbchiffre+cbchiffre2), Integer.toString(cbdate2+cbdate1), Integer.toString(cbpicto));
+				if (result)
+					System.out.println("CB OK");
+				else
+					System.out.println("CB NOK");
 				//paiement CB
 				//selectedproducts = liste des produit
 				//prixtotal = prix à payer
 				// traiter paiement CB avec MONETIQUE
 				// si paiement OK avec CB (ou paiement espèce automatqieuemtn validé)
 				// appeler fonction generation XML (qui va envoyer le ticket au BO)
-				System.out.println("paiement CB ok");
 				//if NOK paiement espece
 			}
 			XmlGenerator.SendTicketToBO(selectedproducts, "1", type);
 			i++;
-			Thread.sleep(300);
+			Thread.sleep(3000);
 			
 		}
 	}
