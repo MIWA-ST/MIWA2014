@@ -197,8 +197,6 @@ public class Home {
 					JOptionPane.showMessageDialog(null,
 							"L'achat a déjà été totalement réglé !", null, 1,
 							null);
-					ThreadMAJ ventealeatoires = new ThreadMAJ();			
-					ventealeatoires.start();
 					return;
 				}
 
