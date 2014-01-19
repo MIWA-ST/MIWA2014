@@ -11,6 +11,12 @@ import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -69,6 +75,14 @@ public class XmlGenerator {
 			e.printStackTrace();
 		}
 
+
+TransformerFactory factory = TransformerFactory.newInstance();
+Transformer transformer = factory.newTransformer();
+Result result = new StreamResult(new File("test.xml"));
+Source source = new DOMSource(doc);
+transformer.transform(source, result);
+		
+		
 		LOGGER.info("***** Caisse : envoi d'une demande de paiement CB vers la monétique");
 		boolean result = SyncMessFactory.getSyncMessSender().sendXML(
 				EApplication.MONETIQUE, doc);
