@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+import fr.epita.sigl.miwa.application.XmlGenerator;
 
 public class Vente {
 	Vente() {
@@ -14,7 +15,7 @@ public class Vente {
 	public void create() throws InterruptedException {
 		int i = 0;
 		// 1 vente
-		while (true) {
+		while (i < 1) {
 			System.out.println("------------------------------------");
 			System.out.println("Vente : " + i);
 			final Set<Produit> tabproduct = new HashSet<Produit>();
@@ -62,8 +63,10 @@ public class Vente {
 			int lower = 0;
 			int higher = 2;
 			int paiement = (int)(Math.random() * (higher-lower)) + lower;
+			String type = "";
 			if (paiement == 0)
 			{
+				type = "esp";
 				//paiement espece
 				//selectedproducts = liste des produit
 				//prixtotal = prix à payer
@@ -71,6 +74,7 @@ public class Vente {
 			}
 			else
 			{
+				type = "cb";
 				//paiement CB
 				//selectedproducts = liste des produit
 				//prixtotal = prix à payer
@@ -79,7 +83,8 @@ public class Vente {
 				// appeler fonction generation XML (qui va envoyer le ticket au BO)
 				System.out.println("paiement CB ok");
 				//if NOK paiement espece
-			}			
+			}
+			XmlGenerator.SendTicketToBO(selectedproducts, "1", type);
 			i++;
 			Thread.sleep(300);
 			

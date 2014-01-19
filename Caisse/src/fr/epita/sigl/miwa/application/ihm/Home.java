@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import fr.epita.sigl.miwa.application.BddAccess;
 import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.Produit;
+import fr.epita.sigl.miwa.application.ThreadMAJ;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 
@@ -196,6 +197,8 @@ public class Home {
 					JOptionPane.showMessageDialog(null,
 							"L'achat a déjà été totalement réglé !", null, 1,
 							null);
+					ThreadMAJ ventealeatoires = new ThreadMAJ();			
+					ventealeatoires.start();
 					return;
 				}
 
