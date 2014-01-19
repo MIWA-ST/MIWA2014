@@ -40,7 +40,6 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		
 		try {
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
 			

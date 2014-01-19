@@ -28,8 +28,9 @@ public class ClockClient {
 			if (message.equals("ouverture")) {
 				Main.open = true;
 				System.out.println(date.toString() + " : Caisse start !");
-				//Main.ventealeatoires.start();
-				Main.ihm.start();
+				if (!Main.ventealeatoires.isAlive())
+					Main.ventealeatoires.start();
+				//Main.ihm.start();
 			} else if (message.equals("fermeture")){
 				Main.open = false;
 				//Main.ventealeatoires.interrupt();
