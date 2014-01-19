@@ -2,6 +2,7 @@ package fr.epita.sigl.miwa.application;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
@@ -12,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.*;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
@@ -46,16 +48,19 @@ public class XmlGenerator {
 				+ picto
 				+ "</pictogramme></cb></monetique>";
 
-		DocumentBuilderFactory fabriqueD = DocumentBuilderFactory.newInstance();
-		DocumentBuilder constructeur;
-		Document document = null;
+		DocumentBuilder db = null;
 		try {
-			constructeur = fabriqueD.newDocumentBuilder();
-			File fileXml = new File(message);
-			document = constructeur.parse(fileXml);
-		} catch (ParserConfigurationException e) {
+			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		} catch (ParserConfigurationException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
+		}
+		InputSource is = new InputSource();
+		is.setCharacterStream(new StringReader(message));
+
+		Document doc = null;
+		try {
+			doc = db.parse(is);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,7 +71,7 @@ public class XmlGenerator {
 
 		LOGGER.info("***** Caisse : envoi d'une demande de paiement CB vers la monétique");
 		boolean result = SyncMessFactory.getSyncMessSender().sendXML(
-				EApplication.MONETIQUE, document);
+				EApplication.MONETIQUE, doc);
 		
 		if (result)
 			LOGGER.info("***** Caisse : le paiement CB a été approuvé par la monétique");
