@@ -529,8 +529,10 @@ public class XMLManager
 	
 	public String getClientConnecteDemandeReduc(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
+		LOGGER.info("***** Analyse du flux XML: Client Connecté (Internet)");
 		File file = new File (xml);
 		Document compteClientFile = dBuilder.parse(file);	
+		LOGGER.info("***** Parsage du XML");
 		
 		String bl = "<ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
 				+ "<INFORMATIONS>";
@@ -540,12 +542,18 @@ public class XMLManager
 		{
 			Node infoNodes = compteNodes.item(i);
 			String matricule = infoNodes.getAttributes().getNamedItem("matricule").getNodeValue();
+			LOGGER.info("***** Client connecté:" + matricule);
 			Client client = JdbcConnection.getInstance().GetClientInternet(matricule);
+			if (client != null)
+				LOGGER.info("***** Client retrouvé en BDD:" + client.getNom() + " " + client.getPrenom());
+			else
+				LOGGER.info("***** ERREUR: Client inconnu de la part du CRM");
 			bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
 					+ "<PROMOTION article=\"\" fin=\"\" reduc=\"\" />";
 		}
 		
 		bl += "</INFORMATIONS></ENTETE>";
+		LOGGER.info("***** Envoi des promotions");
 		return bl;
 	}
 	
