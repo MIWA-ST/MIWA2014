@@ -6,6 +6,7 @@
 package fr.epita.sigl.miwa.application.data;
 
 public class Stock {
+	private Integer id;
 	private String productRef;
 	private Boolean ordered;
 	private Integer stockQty;
@@ -14,14 +15,24 @@ public class Stock {
 	
 	public Stock() {
 	}
-	
-	public Stock(String productRef, Boolean ordered, Integer stockQty, Integer maxQty,
-			String store) {
+
+	public Stock(Integer id, String productRef, Boolean ordered,
+			Integer stockQty, Integer maxQty, String store) {
+		super();
+		this.id = id;
 		this.productRef = productRef;
 		this.ordered = ordered;
 		this.stockQty = stockQty;
 		this.maxQty = maxQty;
 		this.store = store;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getProductRef() {
@@ -63,4 +74,5 @@ public class Stock {
 	public void setStore(String store) {
 		this.store = store;
 	}
+	
 }

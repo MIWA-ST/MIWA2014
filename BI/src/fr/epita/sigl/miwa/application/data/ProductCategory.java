@@ -8,7 +8,6 @@ package fr.epita.sigl.miwa.application.data;
 import java.util.*;
 
 public class ProductCategory {
-	private Integer id;
 	private String name;
    
 	public List<Product> product;
@@ -16,18 +15,9 @@ public class ProductCategory {
 	public ProductCategory() {
 	}
 
-	public ProductCategory(Integer id, String name, List<Product> product) {
-		this.id = id;
+	public ProductCategory(String name, List<Product> product) {
 		this.name = name;
 		this.product = product;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getName() {

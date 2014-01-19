@@ -1,6 +1,10 @@
 package fr.epita.sigl.miwa.application.statistics;
 
+import java.util.Date;
+
 public class SaleStatistic {
+	
+	private Date dateTime;
 
 	private String categorie;
 	
@@ -12,15 +16,24 @@ public class SaleStatistic {
 	
 	private int nbSoldProducts;
 
-	public SaleStatistic(String categorie, float evolution, float ca,
-			float caPourcent, int nbSoldProducts) {
+	public SaleStatistic(Date dateTime, String categorie, float evolution,
+			float ca, float caPourcent, int nbSoldProducts) {
+		this.dateTime = dateTime;
 		this.categorie = categorie;
 		this.evolution = evolution;
 		this.ca = ca;
 		this.caPourcent = caPourcent;
 		this.nbSoldProducts = nbSoldProducts;
 	}
-	
+
+	public Date getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
+	}
+
 	public String getCategorie() {
 		return categorie;
 	}
@@ -60,5 +73,4 @@ public class SaleStatistic {
 	public void setNbSoldProducts(int nbSoldProducts) {
 		this.nbSoldProducts = nbSoldProducts;
 	}
-	
 }

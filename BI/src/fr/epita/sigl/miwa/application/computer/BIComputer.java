@@ -8,6 +8,7 @@ package fr.epita.sigl.miwa.application.computer;
 import java.util.*;
 import java.util.Map.Entry;
 
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.data.*;
 import fr.epita.sigl.miwa.application.enums.EPaiementType;
 import fr.epita.sigl.miwa.application.statistics.*;
@@ -28,6 +29,7 @@ public class BIComputer {
 
 	/** @param stocks */
 	public List<SaleStatistic> computeSaleStatistics(List<Sale> sales, List<SaleStatistic> lastSaleStatistics) {
+		Date date = ClockClient.getClock().getHour();
 		List<SaleStatistic> saleStatistics = new ArrayList<SaleStatistic>();
 		Map<String, TemporarySaleStatistic> categorieStatistics = new HashMap<String, TemporarySaleStatistic>();
 		int caTotal = 0;
@@ -48,23 +50,24 @@ public class BIComputer {
 			if (categorieStatistics.containsKey(category)){
 				TemporarySaleStatistic temp = categorieStatistics.get(category);
 				int diff = temp.getNbSoldProducts() - lastSaleStatistic.getNbSoldProducts();
-				saleStatistic = new SaleStatistic(category, (float) diff / (float) lastSaleStatistic.getNbSoldProducts() * 100, temp.getCa() , (float) temp.getCa() / (float) caTotal * 100, temp.getNbSoldProducts());
+				saleStatistic = new SaleStatistic(date, category, (float) diff / (float) lastSaleStatistic.getNbSoldProducts() * 100, temp.getCa() , (float) temp.getCa() / (float) caTotal * 100, temp.getNbSoldProducts());
 				categorieStatistics.remove(category);
 			} else {
 				int diff = 0 - lastSaleStatistic.getNbSoldProducts();
-				saleStatistic = new SaleStatistic(category, (float)diff / (float)lastSaleStatistic.getNbSoldProducts() * 100, 0, 0, 0);
+				saleStatistic = new SaleStatistic(date, category, (float)diff / (float)lastSaleStatistic.getNbSoldProducts() * 100, 0, 0, 0);
 			}
 			saleStatistics.add(saleStatistic);
 		}
 		for (Entry<String, TemporarySaleStatistic> entry : categorieStatistics.entrySet()){
 			TemporarySaleStatistic value = entry.getValue();
-			SaleStatistic saleStatistic = new SaleStatistic(entry.getKey(), value.getNbSoldProducts() * 100, value.getCa(), (float)value.getCa() / (float)caTotal * 100, value.getNbSoldProducts());
+			SaleStatistic saleStatistic = new SaleStatistic(date, entry.getKey(), value.getNbSoldProducts() * 100, value.getCa(), (float)value.getCa() / (float)caTotal * 100, value.getNbSoldProducts());
 			saleStatistics.add(saleStatistic);
 		}
 		return saleStatistics;
 	}
 
 	public List<Segmentation> computeSegmentation(List<DetailSale> detailSales, List<Product> products) {
+		Date date = ClockClient.getClock().getHour();
 		List<Segmentation> segmentations = new ArrayList<Segmentation>();
 		Map<Integer, Map<String, Integer>> categoriesByClient = new HashMap<Integer, Map<String, Integer>>();
 		for (DetailSale detailSale : detailSales){
@@ -93,15 +96,16 @@ public class BIComputer {
 		for (Entry<Integer, Map<String, Integer>> clients : categoriesByClient.entrySet()){
 			List<CategorieStatistic> categoryStatistics = new ArrayList<CategorieStatistic>();
 			for (Entry<String, Integer> quantities : clients.getValue().entrySet()){
-				categoryStatistics.add(new CategorieStatistic(quantities.getKey(), quantities.getValue()));
+				categoryStatistics.add(new CategorieStatistic(date, quantities.getKey(), quantities.getValue()));
 			}
-			segmentations.add(new Segmentation(clients.getKey(), categoryStatistics));
+			segmentations.add(new Segmentation(date, clients.getKey(), categoryStatistics));
 		}
 		return segmentations;
 	}
 
 	/** @param detailSales */
 	public List<PaymentStatistic> computePaymentStatistics(List<DetailSale> detailSales) {
+		Date date = ClockClient.getClock().getHour();
 		List<PaymentStatistic> paymentStatistics = new ArrayList<PaymentStatistic>();
 		int caCB = 0;
 		int caCQ = 0;
@@ -126,13 +130,13 @@ public class BIComputer {
 				break;
 			}
 		}
-		PaymentStatistic cbStatistics = new PaymentStatistic(EPaiementType.CB, caCB, (float)caCB / caTotal * 100);
+		PaymentStatistic cbStatistics = new PaymentStatistic(date, EPaiementType.CB, caCB, (float)caCB / caTotal * 100);
 		paymentStatistics.add(cbStatistics);
-		PaymentStatistic cqStatistics = new PaymentStatistic(EPaiementType.CQ, caCQ, (float)caCQ / caTotal * 100);
+		PaymentStatistic cqStatistics = new PaymentStatistic(date, EPaiementType.CQ, caCQ, (float)caCQ / caTotal * 100);
 		paymentStatistics.add(cqStatistics);
-		PaymentStatistic cfStatistics = new PaymentStatistic(EPaiementType.CF, caCF, (float)caCF / caTotal * 100);
+		PaymentStatistic cfStatistics = new PaymentStatistic(date, EPaiementType.CF, caCF, (float)caCF / caTotal * 100);
 		paymentStatistics.add(cfStatistics);
-		PaymentStatistic esStatistics = new PaymentStatistic(EPaiementType.ES, caES, (float)caES / caTotal * 100);
+		PaymentStatistic esStatistics = new PaymentStatistic(date, EPaiementType.ES, caES, (float)caES / caTotal * 100);
 		paymentStatistics.add(esStatistics);
 		return paymentStatistics;
 	}

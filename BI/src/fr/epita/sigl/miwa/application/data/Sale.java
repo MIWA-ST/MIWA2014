@@ -8,6 +8,7 @@ package fr.epita.sigl.miwa.application.data;
 import java.util.*;
 
 public class Sale {
+	private Integer id;
    private Date dateTime;
    private String store;
    private Integer soldQty;
@@ -17,15 +18,24 @@ public class Sale {
    
 	public Sale() {
 	}
-	
-	public Sale(Date dateTime, String store, Integer soldQty, String productCategory,
-			Integer supplierTotal, Integer salesTotal) {
+
+	public Sale(Integer id, Date dateTime, String store, Integer soldQty,
+			String productCategory, Integer supplierTotal, Integer salesTotal) {
+		this.id = id;
 		this.dateTime = dateTime;
 		this.store = store;
 		this.soldQty = soldQty;
 		this.productCategory = productCategory;
 		this.supplierTotal = supplierTotal;
 		this.salesTotal = salesTotal;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public Date getDateTime() {
@@ -74,6 +84,5 @@ public class Sale {
 
 	public void setSalesTotal(Integer salesTotal) {
 		this.salesTotal = salesTotal;
-	}  
-
+	}
 }

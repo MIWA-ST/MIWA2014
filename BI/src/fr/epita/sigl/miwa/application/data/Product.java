@@ -6,7 +6,6 @@
 package fr.epita.sigl.miwa.application.data;
 
 public class Product {
-	private Integer id;
 	private String reference;
 	private Float buyingPrice;
 	private Float sellingPrice;
@@ -16,22 +15,13 @@ public class Product {
    	public Product() {
    	}
 
-	public Product(Integer id, String reference, Float buyingPrice, Float sellingPrice,
+	public Product(String reference, Float buyingPrice, Float sellingPrice,
 			Float margin, String categoryName) {
-		this.id = id;
 		this.reference = reference;
 		this.buyingPrice = buyingPrice;
 		this.sellingPrice = sellingPrice;
 		this.margin = margin;
 		this.categoryName = categoryName;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getReference() {

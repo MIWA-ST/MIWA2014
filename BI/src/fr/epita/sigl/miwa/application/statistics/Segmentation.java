@@ -1,18 +1,30 @@
 package fr.epita.sigl.miwa.application.statistics;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Segmentation {
+	
+	private Date dateTime;
 
 	private Integer clientNumero;
 
 	private List<CategorieStatistic> categorieStatistics = new ArrayList<CategorieStatistic>();
 
-	public Segmentation(Integer clientNumero,
+	public Segmentation(Date dateTime, Integer clientNumero,
 			List<CategorieStatistic> categorieStatistics) {
+		this.dateTime = dateTime;
 		this.clientNumero = clientNumero;
 		this.categorieStatistics = categorieStatistics;
+	}
+
+	public Date getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
 
 	public Integer getClientNumero() {

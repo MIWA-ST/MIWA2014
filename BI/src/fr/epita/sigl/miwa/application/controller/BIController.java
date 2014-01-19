@@ -19,7 +19,6 @@ import fr.epita.sigl.miwa.application.data.Client;
 import fr.epita.sigl.miwa.application.data.DetailSale;
 import fr.epita.sigl.miwa.application.data.MDMData;
 import fr.epita.sigl.miwa.application.data.Product;
-import fr.epita.sigl.miwa.application.data.ProductCategory;
 import fr.epita.sigl.miwa.application.data.Promotion;
 import fr.epita.sigl.miwa.application.data.Sale;
 import fr.epita.sigl.miwa.application.data.Stock;
@@ -39,6 +38,8 @@ public class BIController {
 	private BIComputer computer = new BIComputer();
 	
 	private BIPrinter printer = new BIPrinter();
+	
+	private BIDao biDao = new BIDao();
 	
 	private boolean hasClient = false;
 	
@@ -81,11 +82,11 @@ public class BIController {
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
-		List<Stock> stocks = BIDao.getLastStocks();
+		List<Stock> stocks = biDao.getLastStocks();
 		List<StockStatistic> stockStatistics = computer.computeStockStatistics(stocks);
 		hasStockBO = false;
 		hasStockGC = false;
-		BIDao.insertStockStatistics(stockStatistics);
+		biDao.insertStockStatistics(stockStatistics);
 		printer.publishStockStatistics(stockStatistics);
 	}
 
@@ -98,12 +99,12 @@ public class BIController {
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
-		List<Sale> sales = BIDao.getSalesOfToday();
-		List<SaleStatistic> lastSaleStatistics = BIDao.getLastSaleStatistics();
+		List<Sale> sales = biDao.getSalesOfToday();
+		List<SaleStatistic> lastSaleStatistics = biDao.getLastSaleStatistics();
 		List<SaleStatistic> saleStatistics = computer.computeSaleStatistics(sales, lastSaleStatistics);
 		hasSaleBO = false;
 		hasSaleInternet = false;
-		BIDao.insertSaleStatistics(saleStatistics);
+		biDao.insertSaleStatistics(saleStatistics);
 		printer.publishSaleStatistics(saleStatistics);
 	}
 
@@ -118,11 +119,11 @@ public class BIController {
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
-		List<Client> clients = BIDao.getClientByCriteria(criteres);
-		List<DetailSale> detailSales = BIDao.getDetailSalesForClients(clients);
-		List<Product> products = BIDao.getAllProducts();
+		List<Client> clients = biDao.getClientByCriteria(criteres);
+		List<DetailSale> detailSales = biDao.getDetailSalesForClients(clients);
+		List<Product> products = biDao.getAllProducts();
 		List<Segmentation> segmentations = computer.computeSegmentation(detailSales, products);
-		BIDao.insertSegmentation(segmentations);
+		biDao.insertSegmentation(segmentations);
 		return printer.createSegmentationFile(criteres, segmentations);
 	}
 
@@ -136,17 +137,17 @@ public class BIController {
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
-		List<DetailSale> detailSales = BIDao.getAllDetailSales();
+		List<DetailSale> detailSales = biDao.getAllDetailSales();
 		List<PaymentStatistic> paiementStatistics = computer.computePaymentStatistics(detailSales);
 		hasDetailSaleBOForPayment = false;
 		hasDetailSaleInternetForPayment = false;
-		BIDao.insertPaiementStatistics(paiementStatistics);
+		biDao.insertPaiementStatistics(paiementStatistics);
 		printer.publishPaiementStatistics(paiementStatistics);
 	}
 
 	public void parseGCMessage(String message){
 		List<Stock> stocks = parser.parseStockMessage(message);
-		BIDao.insertStocks(stocks);
+		biDao.insertStocks(stocks);
 		hasStockGC = true;
 	}
 
@@ -161,7 +162,7 @@ public class BIController {
 				Promotion promotion = (Promotion) o;
 				promotions.add(promotion);
 			}
-			BIDao.insertPromotions(promotions);
+			biDao.insertPromotions(promotions);
 			hasPromoBO = true;
 			break;
 		case STOCK:
@@ -170,7 +171,7 @@ public class BIController {
 				Stock stock = (Stock) o;
 				stocks.add(stock);
 			}
-			BIDao.insertStocks(stocks);
+			biDao.insertStocks(stocks);
 			hasStockBO = true;
 			break;
 		case VENTE:
@@ -179,7 +180,7 @@ public class BIController {
 				Sale sale = (Sale) o;
 				sales.add(sale);
 			}
-			BIDao.insertSales(sales);
+			biDao.insertSales(sales);
 			hasSaleBO = true;
 		default:
 			break;
@@ -188,34 +189,34 @@ public class BIController {
 	}
 	public void parseInternetMessage(String message) {
 		List<Sale> sales = parser.parseSaleMessage(message);
-		BIDao.insertSales(sales);
+		biDao.insertSales(sales);
 		hasSaleInternet  = true;
 	}
 
 	public void parseCRMFile(File file) {
 		List<Client> clients = parser.parseClientFile(file);
-		BIDao.insertClients(clients);
+		biDao.insertClients(clients);
 		hasClient = true;
 	}
 
 	public void parseMDMFile(File file) {
 		MDMData mdmData = parser.parseMDMFile(file);
-		BIDao.insertProducts(mdmData.getProducts());
-		BIDao.insertProductsCategories(mdmData.getCategories());
-		BIDao.insertPromotions(mdmData.getPromotions());
+		biDao.insertProducts(mdmData.getProducts());
+		biDao.insertProductsCategories(mdmData.getCategories());
+		biDao.insertPromotions(mdmData.getPromotions());
 		hasMDMData = true;
 	}
 
 	public void parseBOFile(File file) {
 		List<DetailSale> detailSales = parser.parseDetailSale(file);
-		BIDao.insertDetailSales(detailSales);
+		biDao.insertDetailSales(detailSales);
 		hasDetailSaleBOForPayment = true;
 		hasDetailSaleBOForSegmentation = true;
 	}
 
 	public void parseInternetFile(File file) {
 		List<DetailSale> detailSales = parser.parseDetailSale(file);
-		BIDao.insertDetailSales(detailSales);
+		biDao.insertDetailSales(detailSales);
 		hasDetailSaleInternetForPayment = true;
 		hasDetailSaleInternetSegmentation = true;
 	}

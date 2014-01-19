@@ -14,7 +14,6 @@ public class StockStatistic {
 
 	public StockStatistic(String name, String article, boolean plein,
 			boolean vide, boolean commande) {
-		super();
 		this.name = name;
 		this.article = article;
 		this.plein = plein;
