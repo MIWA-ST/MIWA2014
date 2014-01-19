@@ -10,8 +10,6 @@ import fr.epita.sigl.miwa.application.bo.CommandeInternet;
 import fr.epita.sigl.miwa.application.bo.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.bo.ReassortBO;
 
-//TODO gérer stock article ? ou insert or update
-//TODO tester tout :)
 public class JdbcConnection
 {
 	private static JdbcConnection instance = null;
@@ -27,8 +25,6 @@ public class JdbcConnection
 	
 	public void getConnection()
 	{
-		System.out.println("-------- PostgreSQL " + "JDBC Connection Testing ------------");
- 
 		try
 		{
 			Class.forName("org.postgresql.Driver");
@@ -36,12 +32,10 @@ public class JdbcConnection
 		}
 		catch (ClassNotFoundException e)
 		{
-			System.out.println("Where is your PostgreSQL JDBC Driver? Include in your library path!");
+			System.out.println("jar de postgeSQL pas trouvé, à ajouter dans le path");
 			e.printStackTrace();
 			return;
 		}
- 
-		System.out.println("PostgreSQL JDBC Driver Registered!");
  
 		try
 		{
@@ -56,7 +50,7 @@ public class JdbcConnection
 		}
  
 		if (connection != null)
-			System.out.println("You made it, take control your database now!");
+			System.out.println("Connexion PostgreSQL ouverte");
 		else
 			System.out.println("Failed to make connection!");
 	}
@@ -108,10 +102,11 @@ public class JdbcConnection
 						statement.setString(2, a.getCategory());
 						statement.executeUpdate();
 						
-						String request3 = "INSERT INTO commandeinternet_article (articleref, commandref) VALUES (?, ?)";
+						String request3 = "INSERT INTO commandeinternet_article (articleref, commandref, quantity) VALUES (?, ?, ?)";
 						statement = connection.prepareStatement(request3);
 						statement.setString(1, a.getReference());
 						statement.setString(2, command.getCommandNumber());
+						statement.setString(3, a.getQuantity());
 						statement.executeUpdate();
 					}
 				}
@@ -151,14 +146,19 @@ public class JdbcConnection
 						statement.setString(2, a.getCategory());
 						statement.executeUpdate();
 						
-						String request3 = "INSERT INTO livraisonfournisseur_article (articleref, commandref) VALUES (?, ?)";
+						String request3 = "INSERT INTO livraisonfournisseur_article (articleref, commandref, quantity) VALUES (?, ?, ?)";
 						statement = connection.prepareStatement(request3);
 						statement.setString(1, a.getReference());
 						statement.setString(2, command.getCommandNumber());
+						statement.setString(3,  a.getQuantity());
 						statement.executeUpdate();
 					}
 				}
+				else
+					System.out.println("commande fournisseur pas ajoutée en base");
 			}
+			else
+				System.out.println("connexion nulle");
 		}
 		catch (SQLException e)
 		{
@@ -197,10 +197,11 @@ public class JdbcConnection
 						statement.setString(2, a.getCategory());
 						statement.executeUpdate();
 						
-						String request3 = "INSERT INTO reassortbo_article (articleref, commandref) VALUES (?, ?)";
+						String request3 = "INSERT INTO reassortbo_article (articleref, commandref, quantity) VALUES (?, ?, ?)";
 						statement = connection.prepareStatement(request3);
 						statement.setString(1, a.getReference());
 						statement.setString(2, command.getCommandNumber());
+						statement.setString(3,  a.getQuantity());
 						statement.executeUpdate();
 					}
 				}

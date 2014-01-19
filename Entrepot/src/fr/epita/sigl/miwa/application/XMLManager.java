@@ -12,7 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-//import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
+import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.bo.Article;
 import fr.epita.sigl.miwa.application.bo.CommandeInternet;
 import fr.epita.sigl.miwa.application.bo.LivraisonFournisseur;
@@ -72,7 +72,7 @@ public class XMLManager
 		command.setDateBL(df.format(ClockClient.getClock().getHour()));
 		
 		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertCommandeInternet(command);
+		JdbcConnection.getInstance().insertCommandeInternet(command);
 		
 		//Construction du xml
 		String bl = "<EXPEDITIONCLIENT>"
@@ -132,7 +132,7 @@ public class XMLManager
 		
 		LOGGER.info("*****Livraison Fournisseur reçue !");
 		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertLivraisonFournisseur(command);
+		JdbcConnection.getInstance().insertLivraisonFournisseur(command);
 		
 		//Construction du xml
 		String bl = "<LIVRAISONSCOMMANDEFOURNISSEUR>"
@@ -194,7 +194,7 @@ public class XMLManager
 		command.setDateBL(df.format(ClockClient.getClock().getHour()));
 		
 		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertReassortBO(command);
+		JdbcConnection.getInstance().insertReassortBO(command);
 		
 		//Construction du xml
 		String bl = "<LIVRAISONS>"
