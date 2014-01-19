@@ -43,13 +43,14 @@ public class XmlGenerator {
 
 		xml += "</TICKETVENTE>";
 		
+		System.out.println(xml);
+		
 		try {
 			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.BACK_OFFICE);
 			LOGGER.info("***** Caisse : ticket de fin de vente envoyé au back-office");
 		} catch (AsyncMessageException e1) {
 			LOGGER.info("***** Caisse : erreur, l'envoi du ticket de fin de vente au back-office a généré une exception");
 		}
-		// TODO SEND THIS TICKET TO BO
 	}
 
 }
