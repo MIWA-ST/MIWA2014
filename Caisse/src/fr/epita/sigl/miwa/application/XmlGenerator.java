@@ -14,6 +14,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -77,22 +79,33 @@ public class XmlGenerator {
 
 
 TransformerFactory factory = TransformerFactory.newInstance();
-Transformer transformer = factory.newTransformer();
+Transformer transformer = null;
+try {
+	transformer = factory.newTransformer();
+} catch (TransformerConfigurationException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
 Result result = new StreamResult(new File("test.xml"));
 Source source = new DOMSource(doc);
-transformer.transform(source, result);
+try {
+	transformer.transform(source, result);
+} catch (TransformerException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
 		
 		
 		LOGGER.info("***** Caisse : envoi d'une demande de paiement CB vers la monétique");
-		boolean result = SyncMessFactory.getSyncMessSender().sendXML(
+		boolean resultat = SyncMessFactory.getSyncMessSender().sendXML(
 				EApplication.MONETIQUE, doc);
 		
-		if (result)
+		if (resultat)
 			LOGGER.info("***** Caisse : le paiement CB a été approuvé par la monétique");
 		else
 			LOGGER.info("***** Caisse : erreur, le paiement CB n'a pas été approuvé par la monétique");
 		
-		return result;
+		return resultat;
 	}
 
 	public static void SendTicketToBO(Set<Produit> produits, String idClient,
