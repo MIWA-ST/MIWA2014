@@ -2,6 +2,7 @@ package fr.epita.sigl.miwa.application.object;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Segmentation {
 
@@ -16,8 +17,8 @@ public class Segmentation {
 	}
 
 
-	private static ArrayList<Client> clients;
-	private ArrayList<Critere> criteres;
+	private static List<Client> clients;
+	private List<Critere> criteres;
 	
 	public Segmentation ()
 	{
@@ -51,28 +52,28 @@ public class Segmentation {
 	/**
 	 * @return the clients
 	 */
-	public ArrayList<Client> getClients() {
+	public List<Client> getClients() {
 		return clients;
 	}
 
 	/**
 	 * @param clients the clients to set
 	 */
-	public void setClients(ArrayList<Client> clients) {
+	public void setClients(List<Client> clients) {
 		this.clients = clients;
 	}
 
 	/**
 	 * @return the criteres
 	 */
-	public ArrayList<Critere> getCriteres() {
+	public List<Critere> getCriteres() {
 		return criteres;
 	}
 
 	/**
 	 * @param criteres the criteres to set
 	 */
-	public void setCriteres(ArrayList<Critere> criteres) {
+	public void setCriteres(List<Critere> criteres) {
 		this.criteres = criteres;
 	}
 	

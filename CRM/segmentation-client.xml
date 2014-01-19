@@ -1,28 +1,29 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-	<ENTETE objet="segmentation-client" source="bi" date="">
+<XML>
+	<ENTETE objet="segmentation-client" source="bi" date="2014-02-20"/>
 	<GROUPES>
 		<GROUPE>
 			<CRITERES>
-				<CRITERE type="age" min="" max=""/>
-				<CRITERE type="geographie" departement=""/>
-				<CRITERE type="sexe" sexe=""/>
-				<CRITERE type="situation-familiale" situation=""/>
-				<CRITERE type="enfant" enfant=""/>
-				<CRITERE type="fidelite" carte="" />
+				<CRITERE type="age" min="10" max="20"/>
+				<CRITERE type="geographie" departement="78"/>
+				<CRITERE type="sexe" sexe="M"/>
+				<CRITERE type="situation-familiale" situation="Marie"/>
+				<CRITERE type="enfant" enfant="2"/>
+				<CRITERE type="fidelite" carte="Gold" />
 			</CRITERES>
 			<CLIENTS>
 				<CLIENT numero="1">
 					<CATEGORIEARTICLES>
-						<CATEGORIE ref="art1" achat=""/>
-						<CATEGORIE ref="art2" achat=""/>
+						<CATEGORIE ref="art1" achat="1"/>
+						<CATEGORIE ref="art2" achat="10"/>
 					</CATEGORIEARTICLES>
 				</CLIENT>
 				<CLIENT numero="2">
 					<CATEGORIEARTICLES>
-						<CATEGORIE ref="art1" achat=""/>
+						<CATEGORIE ref="art1" achat="3"/>
 					</CATEGORIEARTICLES>
 				</CLIENT>				
 			</CLIENTS>
 		</GROUPE>
 	</GROUPES>		
-</ENTETE>
+</XML>

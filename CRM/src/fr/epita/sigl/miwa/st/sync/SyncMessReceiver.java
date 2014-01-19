@@ -1,20 +1,24 @@
 package fr.epita.sigl.miwa.st.sync;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.ISyncMessReceiver;
+import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
 class SyncMessReceiver extends UnicastRemoteObject implements ISyncMessReceiver {
 	
@@ -51,7 +55,14 @@ class SyncMessReceiver extends UnicastRemoteObject implements ISyncMessReceiver 
 	@Override
 	public boolean receiveMessage(EApplication sender, String message)
 			throws RemoteException {
-		return SyncMessHandler.receiveMessage(sender, message);
+		try {
+			return SyncMessHandler.receiveMessage(sender, message);
+		} catch (SAXException | IOException | AsyncMessageException
+				| ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	/*
