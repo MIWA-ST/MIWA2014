@@ -2,10 +2,11 @@ package fr.epita.sigl.miwa.application;
 
 public class Promotions {
 private Articles article;
-private String ref_article;
+	private String ref_article;
 private String begin;
 private String end;
 private String pourcentage;
+
 public Articles getArticle() {
 	return article;
 }
