@@ -319,6 +319,7 @@ public class XMLManager {
 		}
 		command.setArticles(articles);
 		command.setquantity(quantities);
+		command.setTraite("TRUE");
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertCommandeInternet_entrepot(command);
 		JdbcConnection.getInstance().closeConnection();
@@ -369,6 +370,7 @@ public class XMLManager {
 		}
 		commande.setArticles(articles);
 		commande.setquantity(quantities);
+		commande.setTraite("FALSE");
 		// FIXME SAVEBDD
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertCommandeInternet(commande);
@@ -549,7 +551,7 @@ public class XMLManager {
 	}
 
 	public String envoiStockToBI(List<StockEntrepot> entrepot, List<StockMagasin> magasin) {
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String xml = "<XML> <ENTETE objet=\"information stock\" source=\"gc\" date=\"" + df.format(ClockClient.getClock().getHour())
 				+ "\" /><STOCKS>";
 		for (StockEntrepot stockEntrepot : entrepot) {
