@@ -64,6 +64,8 @@ public class ClockClient {
 				List<StockEntrepot> listent = new ArrayList<StockEntrepot>();
 				JdbcConnection.getInstance().getConnection();
 				listmag = JdbcConnection.getInstance().envoi_all_stock_mag();
+				JdbcConnection.getInstance().closeConnection();
+				JdbcConnection.getInstance().getConnection();
 				listent = JdbcConnection.getInstance().envoi_all_stock();
 				JdbcConnection.getInstance().closeConnection();
 				content = XMLManager.getInstance().envoiStockToBI(listent, listmag);
