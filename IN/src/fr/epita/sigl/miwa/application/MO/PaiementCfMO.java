@@ -37,7 +37,7 @@ public class PaiementCfMO {
 	{
 		StringBuilder result = new StringBuilder();
 		
-		LOGGER.info("***** Envoi d'un message à MO : demande de paiement par CF.");
+		LOGGER.info("***** Envoi d'un message à MO : demande de paiement par CF - " + this.montant + " € pour le client " + this.matricule + ".");
 		
 		result.append("<monetique service=\"paiement_cf\">");
 		result.append("<montant>" + this.montant + "</montant>");

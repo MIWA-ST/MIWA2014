@@ -43,14 +43,16 @@ public class PaiementCbMO {
 	{
 		StringBuilder result = new StringBuilder();
 		
-		LOGGER.info("***** Envoi d'un message à MO : demande de paiement par CF.");
+		LOGGER.info("***** Envoi d'un message à MO : demande de paiement par CB : montant : " + this.montant + "€ CB numero : " + this.numero);
 		
-		result.append("<monetique service=\"paiement_cb\"><cb>");
-		result.append("<montant>" + this.montant + "</montant>");
+		result.append("<monetique service=\"paiement_cb\">");
+		result.append("<montant>" + this.montant + "</montant><cb>");
 		result.append("<numero>" + this.numero + "</numero>");
 		result.append("<date_validite>" + this.date_validite + "</date_validite>");
 		result.append("<pictogramme>" + this.pictogramme + "</pictogramme>");
 		result.append("</cb></monetique>");
+		
+		System.out.println(result.toString());
 		
 		return result.toString();
 	}
