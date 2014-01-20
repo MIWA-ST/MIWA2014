@@ -50,10 +50,6 @@ public class SyncMessHandler {
 	*/
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
-<<<<<<< HEAD
-		LOGGER.info("***** Recepting message.");
-=======
->>>>>>> 40290d0b2b77203289ded54f69b71132eb3a6936
 		xml.getDocumentElement().normalize();
 		String serviceToPerform = xml.getDocumentElement().getAttribute("service");
 		String actionToPerform = xml.getDocumentElement().getAttribute("action");
