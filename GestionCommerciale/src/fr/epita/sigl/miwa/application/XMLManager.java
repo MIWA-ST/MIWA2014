@@ -302,7 +302,7 @@ public class XMLManager {
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
 
-			// Récupéraction du noeud à traiter
+			// Récupéraction du noeud à traiters
 			Node nNode = nList.item(temp);
 			// Conversion en element
 			Element eElement = (Element) nNode;
