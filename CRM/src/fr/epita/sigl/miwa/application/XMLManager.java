@@ -103,7 +103,7 @@ public class XMLManager
 	
 	public String getSegmentationClient(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		
+		LOGGER.info("***** Analyse du fichier XML: Segmentation client");
 		Segmentation segmentation = new Segmentation();
 		
 		File file = new File (xml);
@@ -113,10 +113,12 @@ public class XMLManager
 		*/
 		// Parsage du fichier
 		Document criteriaFile = dBuilder.parse(file);
+		LOGGER.info("***** Parsage du fichier");
 		
 		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		LOGGER.info("***** Demande effectuée le: " + seqDate);
 		
 		segmentation.setDate(seqDate);
 		List<Critere> list2 = new ArrayList<Critere>();
@@ -128,7 +130,7 @@ public class XMLManager
 		// Création des éléments Critere
 		for (int i = 0; i < groupsNodes.getLength(); i++)
 		{
-			
+			LOGGER.info("***** Analyse du groupe " + i);
 			Node groupNode = groupsNodes.item(i);
 			Group group = new Group();
 			List<Critere> list = new  ArrayList<>();
@@ -143,39 +145,46 @@ public class XMLManager
 					if (cNode.getNodeName() == "CRITERES")
 					{
 						NodeList criteriasNodes = criteriaFile.getElementsByTagName("CRITERE");
-						System.out.println(criteriasNodes.getLength());
+						LOGGER.info("***** Nombre de critères: " + criteriasNodes.getLength());
 						for (int k = 0; k < criteriasNodes.getLength(); k++) 
 						{
 							Node criteriaNodes = criteriasNodes.item(k);
 							Critere c = new Critere();
 							String tmp = criteriaNodes.getNodeName();
 							String type = criteriaNodes.getAttributes().getNamedItem("type").getNodeValue();
+							LOGGER.info("***** Analyse du critère "+ k +": " + type);
 							switch (type) 
 							{
 								case "age":
 									c.setType(type);
 									c.setMax(Integer.parseInt(criteriaNodes.getAttributes().getNamedItem("max").getNodeValue()));
 									c.setMin(Integer.parseInt(criteriaNodes.getAttributes().getNamedItem("min").getNodeValue()));
+									LOGGER.info("***** L'âge est compris entre : " + c.getMin() + " et " + c.getMax());
 									break;
 								case "geographie":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("departement").getNodeValue());
+									LOGGER.info("***** Le département est: " + c.getValue());
 								    break;
 								case "sexe":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("sexe").getNodeValue());
+									LOGGER.info("***** Le sexe est: " + c.getValue());
 								    break;
 								case "situation-familiale":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("situation").getNodeValue());
+									LOGGER.info("***** La situation familiale est: " + c.getValue());
 								    break;
 								case "enfant":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("enfant").getNodeValue());
+									LOGGER.info("***** Le nombre d'enfants est de: " + c.getValue());
 								    break;
 								case "fidelite":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("carte").getNodeValue());
+									LOGGER.info("***** La fidélité est: " + c.getValue());
 								    break;
 							}
 							group.getCriteres().add(c);
@@ -185,15 +194,16 @@ public class XMLManager
 					else if (cNode.getNodeName() == "CLIENTS")
 					{
 						NodeList clientsNodes = criteriaFile.getElementsByTagName("CLIENT");
+						LOGGER.info("***** Nombre de clients: " + clientsNodes.getLength());
 						for (int k = 0; k < clientsNodes.getLength(); k++) 
 						{
-							Node clientNodes = clientsNodes.item(k);
+							Element clientNodes = (Element)clientsNodes.item(k);
 							Client c = new Client();
 							c.setMatricule(Integer.parseInt(clientNodes.getAttributes().getNamedItem("numero").getNodeValue()));
 							c.articlesList = new ArrayList<>();
+							LOGGER.info("***** Analyse du client " + k + ": " + c.getMatricule());
 							
-							//NodeList articlessNodes = clientNodes.getChildNodes();
-							NodeList articlessNodes = criteriaFile.getElementsByTagName("CATEGORIE");
+							NodeList articlessNodes = clientNodes.getElementsByTagName("CATEGORIE");
 							for (int l = 0; l < articlessNodes.getLength(); l++) 
 							{
 								Node articleNodes = articlessNodes.item(l);
@@ -201,6 +211,7 @@ public class XMLManager
 								a.setRef(articleNodes.getAttributes().getNamedItem("ref").getNodeValue());
 								a.setQuantite(Integer.parseInt(articleNodes.getAttributes().getNamedItem("achat").getNodeValue()));
 								c.articlesList.add(a);
+								LOGGER.info("***** Catégorie d'article: ref:" + a.getRef() + " - achat:" + a.getQuantite());
 							}
 							segmentation.addClient(c);
 						}
@@ -562,13 +573,12 @@ public class XMLManager
 		// Création des éléments ticketventes et articles
 		for (int i = 0; i < ticketVenteNodes.getLength(); i++)
 		{
-			Node articleNodes = ticketVenteNodes.item(i);
-			Element articleElement = (Element)ticketVenteNodes.item(i);
+			Element articleNodes = (Element)ticketVenteNodes.item(i);
 			ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
 			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
 			LOGGER.info("***** Client " + i + ": " + ticketVente.getRefclient() + " - " + ticketVente.getMoyenpayement());
 			
-			NodeList articlesNodes = articleElement.getElementsByTagName("ARTICLE");
+			NodeList articlesNodes = articleNodes.getElementsByTagName("ARTICLE");
 			for (int j = 0; j < articlesNodes.getLength(); j++) 
 			{
 				Node artNodes = articlesNodes.item(j);
