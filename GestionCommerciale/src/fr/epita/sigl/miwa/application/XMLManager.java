@@ -418,7 +418,7 @@ public class XMLManager {
 			xml += "<PROMOTION datedebut=\"" + promotions.getBegin()
 					+ "\" datefin=\"" + promotions.getEnd()
 					+ "\" promotion_pourcentage=\""
-					+ promotions.getPourcentage() + "\"></ARTICLES>"
+					+ promotions.getPourcentage() + "\"><ARTICLES>"
 					+ "<ARTICLE reference=\""
 					+ promotions.getRef_article()
 					+ "\" /></ARTICLES></PROMOTION>";
