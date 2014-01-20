@@ -48,16 +48,25 @@ public class Main {
 		{
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
+		    // TEST Creation de compte fidélité
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_compte_cf\" action=\"c\"><compte_cf><matricule_client>C987654321</matricule_client><BIC>ABCD</BIC><IBAN>EFGH</IBAN><id_type_cf>bronze</id_type_cf></compte_cf></monetique>"));
+		    // TEST Modification de compte fidélité
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_compte_cf\" action=\"m\"><compte_cf matricule_client=\"C987654321\"><BIC>ABCD</BIC><IBAN>EFGH</IBAN><id_type_cf>silver</id_type_cf></compte_cf></monetique>"));
+		    // TEST Suppression de compte fidélité
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_compte_cf\" action=\"s\"><compte_cf matricule_client=\"C987654321\"></compte_cf></monetique>"));	    
+		    
 		    // TEST Paiement CB
-		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>12.00</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>12.00</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));
 		    // TEST Paiement CF
-		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>150.50</montant><matricule_client>C123456789</matricule_client></monetique>"));
+
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>150.50</montant><matricule_client>C123456789</matricule_client></monetique>"));
 		    // TEST Ajout carte fidé
-		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"c\"><type_cf><id>12GOLD</id><limite_mensuelle>100.00</limite_mensuelle><limite_totale>1200.00</limite_totale><nb_echelon>3</nb_echelon></type_cf></monetique>"));
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"c\"><type_cf><id>12GOLD</id><limite_mensuelle>100.00</limite_mensuelle><limite_totale>1200.00</limite_totale><nb_echelon>3</nb_echelon></type_cf></monetique>"));
 		    // TEST Modification d'une carte fidé
-		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"m\"><type_cf id=\"12GOLD\"><limite_mensuelle>500.00</limite_mensuelle><limite_totale>2000.00</limite_totale><nb_echelon>2</nb_echelon></type_cf></monetique>"));
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"m\"><type_cf id=\"12GOLD\"><limite_mensuelle>500.00</limite_mensuelle><limite_totale>2000.00</limite_totale><nb_echelon>2</nb_echelon></type_cf></monetique>"));
 		    // TEST Suppression d'une carte fidé
-		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"s\"><type_cf id=\"bronze\"><nouvel_id>12GOLD</nouvel_id></type_cf></monetique>"));
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"s\"><type_cf id=\"bronze\"><nouvel_id>12GOLD</nouvel_id></type_cf></monetique>"));
+
 		    Document doc = db.parse(is);
 			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, doc);
 		} 
