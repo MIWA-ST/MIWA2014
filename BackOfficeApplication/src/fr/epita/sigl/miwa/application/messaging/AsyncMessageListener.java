@@ -39,13 +39,13 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		Sale sale;
 		switch (source) {
 		case CAISSE:
-			System.out.println("***** Une vente réalisée envoyée par la Caisse a été reçue.");
-
-			DomParserCashRegister parserCashregister = new DomParserCashRegister();			
-			sale = parserCashregister.saleTicket(message);
-			
-			System.out.println("****** Le client = " + sale.customer + " a acheté " + sale.articles.size() + " articles en payant par " + sale.paymentMeans + "." );
-			System.out.println("****** Fin du parsing.");			
+//			System.out.println("***** Une vente réalisée envoyée par la Caisse a été reçue.");
+//
+//			DomParserCashRegister parserCashregister = new DomParserCashRegister();			
+//			sale = parserCashregister.saleTicket(message);
+//			
+//			System.out.println("****** Le client = " + sale.customer + " a acheté " + sale.articles.size() + " articles en payant par " + sale.paymentMeans + "." );
+//			System.out.println("****** Fin du parsing.");			
 			break;
 		
 		case ENTREPOT:

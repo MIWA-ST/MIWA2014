@@ -12,7 +12,9 @@ import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.bo.db.JdbcConnection;
 import fr.epita.sigl.miwa.bo.db.Mapper;
 import fr.epita.sigl.miwa.bo.file.FileManager;
+import fr.epita.sigl.miwa.bo.object.Sale;
 import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
+import fr.epita.sigl.miwa.bo.plug.PlugBusinessIntelligence;
 import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
 import fr.epita.sigl.miwa.bo.util.Test;
@@ -50,9 +52,28 @@ public class Main {
 			e.printStackTrace();
 		}
 		
+		/*
+		// BO => GC demande de réassort
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
 		send(PlugStoreManagement.restockRequest, EApplication.GESTION_COMMERCIALE);
+		System.out.println("***** demande de réassort envoyé à la GC");
+		*/
+		
+		/*
+		// BO => BI envoi des vente par catégorie
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().
+		send(PlugBusinessIntelligence.categorizedSale, EApplication.BI);
+		System.out.println("***** vente par catégorie envoyées à la BI");
+		*/
+		
 
+		// BO => BI envoi des vente détaillé
+		FileManager.createFile("ventedetaille.xml", PlugBusinessIntelligence.detailedSale);
+			AsyncFileFactory.getInstance().getFileManager().send("ventedetaille.xml", EApplication.BI);
+			System.out.println("***** vente détaillé envoyé à la BI");
+	
+		 
+		
 		
 		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "coucou");
 

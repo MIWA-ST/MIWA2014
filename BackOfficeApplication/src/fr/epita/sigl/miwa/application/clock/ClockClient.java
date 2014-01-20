@@ -8,18 +8,19 @@ import fr.epita.sigl.miwa.st.clock.IExposedClock;
 public class ClockClient {
 
 	/*
-	 * Récupère l'horloge serveur pour faire des requêtes dessus (getHour, wakeMeUp, ...)
+	 * Rï¿½cupï¿½re l'horloge serveur pour faire des requï¿½tes dessus (getHour, wakeMeUp, ...)
 	 */
 	static public IExposedClock getClock() {
 		return ClockFactory.getServerClock();
 	}
 	
 	/*
-	 * Vous ne devez faire aucun appel à cette fonction, seulement remplir le code
-	 * Elle est automatiquement appelée lorsque l'horloge vous contacte
+	 * Vous ne devez faire aucun appel ï¿½ cette fonction, seulement remplir le code
+	 * Elle est automatiquement appelï¿½e lorsque l'horloge vous contacte
 	 */
 	@Deprecated
 	static public void wakeUp(Date date, Object message) {
+
 		if (message instanceof String) {
 			if (message.equals("Hello World!")) {
 				System.out.println(date.toString() + " : Hello dear client!");

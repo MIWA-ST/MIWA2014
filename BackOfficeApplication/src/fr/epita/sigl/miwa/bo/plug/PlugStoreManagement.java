@@ -17,16 +17,16 @@ public class PlugStoreManagement {
 		"<DATEBC>20130427</DATEBC>" + // AAAAMMJJ
 		"<ARTICLES>" +
 			"<ARTICLE>" +
-				"<REFERENCE>AU736827</REFERENCE>" +
+				"<REFERENCE>08deb933-bb39-411d-b0ee-59b28812</REFERENCE>" +
 				"<QUANTITE>265000</QUANTITE>" +
 				"<CATEGORIE>001</CATEGORIE>" +
 			"</ARTICLE>" +
 			"<ARTICLE>" +
-				"<REFERENCE>AU736823</REFERENCE>" +
+				"<REFERENCE>292f8025-58bf-498a-a092-1404d30f</REFERENCE>" +
 				"<QUANTITE>12</QUANTITE>" +
 				"<CATEGORIE>001</CATEGORIE>" +
 			"</ARTICLE>" +
-		"<ARTICLES>" +
+		"</ARTICLES>" +
 	"</REASSORT>";
 			
 	public static String restockRequestReception =
