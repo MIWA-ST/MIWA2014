@@ -69,7 +69,7 @@ public class Main {
 		try {
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
-		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!-- Demande de paiement par carte bancaire --><monetique service=\"paiement_cb\"><montant>XX.XX</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));
+		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!-- Demande de paiement par carte bancaire --><monetique service=\"paiement_cb\"><montant>12.00</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));
 		    Document doc_bis = db.parse(is);
 			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, doc_bis);
 		} catch (Exception e1) {
