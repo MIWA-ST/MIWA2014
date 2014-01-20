@@ -216,9 +216,7 @@ public class JdbcConnection {
 	public void insertCommandeInternet(CommandeInternet cmd) {
 		try {
 			// System.out.println("Insert commandes internet");
-			System.out.println(cmd.getCustomerFirstname());
-			System.out.println(cmd.getCustomerFirstname());
-
+			
 			if (connection != null) {
 				String verif = "SELECT * FROM commandes_internet WHERE numero_commande = ?";
 				PreparedStatement verif_req = connection
@@ -347,8 +345,6 @@ public class JdbcConnection {
 				verif_req.setString(1, dmd.getCommandNumber());
 				ResultSet rs = verif_req.executeQuery();
 				
-				System.out.println(dmd.getBackOfficeRef());
-
 				if (!rs.next()) {
 					String request = "INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traitee) VALUES (?, ?, ?, ?, ?, ?)";
 

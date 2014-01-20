@@ -41,7 +41,8 @@ public class ClockClient {
 	 */
 	@Deprecated
 	static public void wakeUp(Date date, Object message) {
-		try {
+		return;
+		/*try {
 		if (message instanceof String) {
 			if (message.equals("BO")) {
 				LOGGER.severe("*****: CLOCK BO !");
@@ -78,6 +79,6 @@ public class ClockClient {
 		} catch (AsyncMessageException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 }
