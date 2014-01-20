@@ -599,7 +599,8 @@ public class XMLManager
 		Document compteClientFile = dBuilder.parse(file);
 		LOGGER.info("***** Parsage du XML");
 		
-		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
 				+ "<INFORMATIONS>";
 		
 		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
@@ -757,11 +758,10 @@ public class XMLManager
 		LOGGER.info("***** Montant total : " + totalPrice);
 		LOGGER.info("***** Construction du nouveau ticket de vente");
 		
-		Date date = null;
-		//DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		//(df.format(ClockClient.getClock().getHour()));
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
 		
-		String bl = "<ENTETE objet=\"facture-client\" source=\"crm\" date=\"" + date + "\"/>" +
+		String bl = "<ENTETE objet=\"facture-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\"/>" +
 						"<FACTURE refclient=\"" + ticketVente.getRefclient() + "\" montanttotal=\"" + totalPrice + "\" >";
 						   for (int k = 0; k < listReduc.size(); k++)
 						   {
