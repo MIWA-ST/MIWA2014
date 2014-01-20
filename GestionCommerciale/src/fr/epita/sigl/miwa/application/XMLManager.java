@@ -346,7 +346,8 @@ public class XMLManager {
 
 		List<Articles> articles = new ArrayList<Articles>();
 		List<String> quantities = new ArrayList<String>();
-		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		Node listarticles = doc.getElementsByTagName("ARTICLES").item(0);
+		NodeList nList = listarticles.getChildNodes();
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
 
