@@ -2,10 +2,17 @@ package fr.epita.sigl.miwa.application;
 
 public class StockMagasin {
 	private Articles article;
+	private String ref_article;
 	private String quantity;
 	private String max_q;
 	private String idmag;
 	
+	public String getRef_article() {
+		return ref_article;
+	}
+	public void setRef_article(String ref_article) {
+		this.ref_article = ref_article;
+	}
 	public Articles getArticle() {
 		return article;
 	}

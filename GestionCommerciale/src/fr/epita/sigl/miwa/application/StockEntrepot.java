@@ -1,11 +1,21 @@
 package fr.epita.sigl.miwa.application;
 
+import java.util.List;
+
 public class StockEntrepot {
 private Articles article;
+private String ref_article;
 private String quantity;
 private String max_q;
 private String identrepot;
 
+
+public String getRef_article() {
+	return ref_article;
+}
+public void setRef_article(String ref_article) {
+	this.ref_article = ref_article;
+}
 public Articles getArticle() {
 	return article;
 }
@@ -36,11 +46,15 @@ public boolean stock_suffisant(Articles art, String quant_dem) {
 	int stock = 0;
 	
 	JdbcConnection.getInstance().getConnection();
-	DemandeNiveauStock dns = JdbcConnection.getInstance().envoi_all_stock();
+	List<StockEntrepot> lis = JdbcConnection.getInstance().envoi_all_stock();
 	JdbcConnection.getInstance().closeConnection();
+
+	int index = 0;
+	while (lis.get(index).getRef_article() != this.getRef_article()) {
+		index++;
+	}
 	
-	this.article = dns.getArticles().get(0);
-	this.quantity = dns.getQuantity().get(0);
+	this.quantity = lis.get(index).getQuantity();
 	
 	stock = Integer.parseInt(this.quantity);
 	demande = Integer.parseInt(quant_dem);
