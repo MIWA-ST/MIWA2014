@@ -1,7 +1,9 @@
 package fr.epita.sigl.miwa.application;
 
+import java.util.Calendar;
 import java.util.Date;
 //import java.util.logging.Logger;
+
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
@@ -27,7 +29,13 @@ public class Main {
 
 		Date d = ClockClient.getClock().getHour();
 		System.out.println(d);
-
+		Calendar calen = Calendar.getInstance();
+		calen.setTime(d);
+		calen.set(Calendar.HOUR_OF_DAY, 7);
+		calen.set(Calendar.MINUTE, 0);
+		ClockClient.getClock().wakeMeUpEveryDays(calen.getTime(), "BI");
+		calen.set(Calendar.HOUR_OF_DAY, 4);
+		ClockClient.getClock().wakeMeUpEveryDays(calen.getTime(), "BO");
 		// Pour se faire appeler à une certaine heure :
 		// ClockClient.getClock().wakeMeUpEveryDays(new Date("23/12/2013"),
 		// "envoie_msg_BO");
