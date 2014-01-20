@@ -6,7 +6,7 @@ import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.RestockRequest;
 import fr.epita.sigl.miwa.bo.object.RestockRequestReception;
 
-public class PlugBusinessManagement {
+public class PlugStoreManagement {
 	
 	public static String restockRequest =
 	"<REASSORT>" +

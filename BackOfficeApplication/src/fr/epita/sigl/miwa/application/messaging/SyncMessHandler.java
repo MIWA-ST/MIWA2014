@@ -2,7 +2,10 @@ package fr.epita.sigl.miwa.application.messaging;
 
 import org.w3c.dom.Document;
 
+import fr.epita.sigl.miwa.bo.object.Sale;
+import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
 import fr.epita.sigl.miwa.bo.parser.DomParserReferential;
+import fr.epita.sigl.miwa.bo.parser.DomParserStoreManagement;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.sync.ISyncMessSender;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
@@ -24,6 +27,40 @@ public class SyncMessHandler {
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
 		System.out.println(message);
+		
+		switch (sender) {
+		case CAISSE:
+			/* Caisse => BO : Vente en cours en demande de fidélisation */
+			System.out.println("***** Une vente en cours de réalisation est remontée par la Caisse.");
+
+			DomParserCashRegister parserCashregister = new DomParserCashRegister();
+			
+			Sale sale = parserCashregister.saleTicket(message);
+			
+			System.out.println("****** Le client " + sale.customerNumber + " souhaite avoir accès à des promotions ciblées." );
+			System.out.println("****** Fin du parsing.");
+			
+			break;
+		
+		case CRM:
+			/* CRM => BO : Vente en cours avec fidélisation effectuée */
+			System.out.println("***** Un panier a pu être retourné par le CRM.");
+
+			DomParserStoreManagement parserStoremanagement = new DomParserStoreManagement();
+			sale  = parserStoremanagement.saleTicket(message);
+			
+			System.out.println("****** Le panier du client = " + sale.customerNumber + " a été redescendu par le CRM." );
+			System.out.println("****** Fin du parsing.");
+			
+			// BO => Caisse : On redescend le panier envoyé par le CRM à la Caisse.
+			getSyncMessSender().sendMessage(EApplication.CAISSE, message);
+
+			
+			
+		default:
+			break;
+		}
+		
 		return false;
 	}
 
