@@ -91,7 +91,8 @@ public class SyncMessHandler {
 			
 			if (montant.equals("") || cb[0].equals("") || cb[1].equals("") || cb[2].equals(""))
 			{
-				LOGGER.info("***** ERROR : Bad XML input.");
+				LOGGER.info("***** ERROR -> Missing data in request ('montant' or 'cb' balise or 'numero' or 'date_validite' or 'pictogramme').");
+				LOGGER.info("***** Paiement by CB service terminated normally with: " + false + ".");
 				return false;
 			}
 			Float mt;
@@ -100,17 +101,20 @@ public class SyncMessHandler {
 				mt = Float.parseFloat(montant);
 				if (mt < 0)
 				{
-					LOGGER.info("***** ERROR : The amount indicated is not a positive number.");
+					LOGGER.info("***** ERROR -> Invalid data ('montant' : " + mt + ") in request.");
+					LOGGER.info("***** Paiement by CB service terminated normally with: " + false + ".");
 					return false;
 				}
 			}
 			catch (NumberFormatException e)
 			{
-				LOGGER.info("***** ERROR : The amount indicated is not a valid number.");
+				LOGGER.info("***** ERROR -> Invalid data ('montant' : " + montant + ") in request.");
+				LOGGER.info("***** Paiement by CB service terminated normally with: " + false + ".");
 				return false;
 			}
 			LOGGER.info("***** REQUEST -> " + montant + "€ for the credit card : " + cb[0]);
 			Boolean bankResponse = getBankPaiement();
+			LOGGER.info("***** REQUEST -> Done.");
 			LOGGER.info("***** Paiement by CB service terminated normally with : " + bankResponse + ".");
 			return bankResponse;
 		}
@@ -142,20 +146,20 @@ public class SyncMessHandler {
 			try 
 			{
 				montantFloat = Float.parseFloat(montantXML);
+				if (montantFloat <= 0f)
+				{
+					LOGGER.info("***** ERROR -> Invalid data ('montant' : " + montantFloat + ") in request.");
+					LOGGER.info("***** Paiement by fidelity service terminated normally with: " + false + ".");
+					return false;
+				}
 			} 
 			catch (Exception e) 
 			{
-				LOGGER.info("***** ERROR -> Invalid data ('montant' : " + montantFloat + ") in request.");
+				LOGGER.info("***** ERROR -> Invalid data ('montant' : " + montantXML + ") in request.");
 				LOGGER.info("***** Paiement by fidelity service terminated normally with: " + false + ".");
 				return false;
 			}
-			if (montantFloat <= 0f)
-			{
-				LOGGER.info("***** ERROR -> Invalid data ('montant' : " + montantFloat + ") in request.");
-				LOGGER.info("***** Paiement by fidelity service terminated normally with: " + false + ".");
-				return false;
-			}
-
+			
 			DbHandler dbHandler = new DbHandler();
 			try 
 			{
@@ -175,7 +179,7 @@ public class SyncMessHandler {
 					Integer idClient = result.getInt("id");
 					Integer echelonNb = result.getInt("echelon_nb");
 					
-					LOGGER.info("***** REQUEST -> Credit of " + montantFloat + "€ (" + echelonNb + " month(s))for the fidelity account: " + matriculeClientXML + ".");			
+					LOGGER.info("***** REQUEST -> Credit of " + montantFloat + "€ (" + echelonNb + " month(s)) for the fidelity account: " + matriculeClientXML + ".");			
 					
 					// Ajout crédit
 					pS = connection.prepareStatement("INSERT INTO fidelity_credit (id_fidelity_credit_account, fidelity_credit_date, amount, repaid_amount, is_repaid, echelon_nb) VALUES "
@@ -241,19 +245,25 @@ public class SyncMessHandler {
 						nb_ech = nl.item(i).getTextContent();					
 				}
 				
-				Float month_lim_db;
-				Float tot_lim_db;
-				Integer nb_ech_db;
-				
+				Float month_lim_db = null;
+				Float tot_lim_db = null;
+				Integer nb_ech_db = null;				
 				try
 				{
 					month_lim_db = Float.parseFloat(month_lim);
 					tot_lim_db = Float.parseFloat(tot_lim);
 					nb_ech_db = Integer.parseInt(nb_ech);
+					if (month_lim_db < 0f || tot_lim_db < 0f || nb_ech_db < 0f)
+					{
+						LOGGER.info("***** ERROR -> Invalid data in request.");
+						LOGGER.info("***** Card type service (create) terminated normally with: " + false + ".");
+						return false;
+					}
 				}
-				catch (NumberFormatException e)
+				catch (Exception e)
 				{
-					LOGGER.info("***** ERROR : Input XML data are not all valid numbers.");
+					LOGGER.info("***** ERROR -> Invalid data in request.");
+					LOGGER.info("***** Card type service (create) terminated normally with: " + false + ".");
 					return false;
 				}
 
@@ -277,7 +287,8 @@ public class SyncMessHandler {
 				} 
 				catch (SQLException e) 
 				{
-					System.err.println("ERROR : " + e.getMessage());		
+					System.err.println("ERROR : " + e.getMessage());
+					LOGGER.info("***** Card type service (create) terminated normally with: " + false + ".");
 					return false;
 				}
 				finally
@@ -285,7 +296,7 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}				
 
-				LOGGER.info("***** Card creation service terminated normally with : " + true + ".");
+				LOGGER.info("***** Card type service (create) terminated normally with: " + true + ".");
 				return true;
 			}
 			else if (actionToPerform.equals("m"))
@@ -310,19 +321,25 @@ public class SyncMessHandler {
 						nb_ech = nl.item(i).getTextContent();					
 				}
 				
-				Float month_lim_db;
-				Float tot_lim_db;
-				Integer nb_ech_db;
-				
+				Float month_lim_db = null;
+				Float tot_lim_db = null;
+				Integer nb_ech_db = null;			
 				try
 				{
 					month_lim_db = Float.parseFloat(month_lim);
 					tot_lim_db = Float.parseFloat(tot_lim);
 					nb_ech_db = Integer.parseInt(nb_ech);
+					if (month_lim_db < 0f || tot_lim_db < 0f || nb_ech_db < 0f)
+					{
+						LOGGER.info("***** ERROR -> Invalid data in request.");
+						LOGGER.info("***** Card type service (update) terminated normally with: " + false + ".");
+						return false;
+					}
 				}
-				catch (NumberFormatException e)
+				catch (Exception e)
 				{
-					LOGGER.info("ERROR : Input XML data are not all valid numbers.");
+					LOGGER.info("***** ERROR -> Invalid data in request.");
+					LOGGER.info("***** Card type service (update) terminated normally with: " + false + ".");
 					return false;
 				}
 
@@ -346,7 +363,8 @@ public class SyncMessHandler {
 				} 
 				catch (SQLException e) 
 				{
-					System.err.println("ERROR : " + e.getMessage());		
+					System.err.println("ERROR : " + e.getMessage());	
+					LOGGER.info("***** Card type service (update) terminated normally with: " + false + ".");
 					return false;
 				}
 				finally
@@ -354,7 +372,7 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}	
 
-				LOGGER.info("***** Card modification service terminated normally with : " + true + ".");
+				LOGGER.info("***** Card type service (update) terminated normally with: " + true + ".");
 				return true;
 			}
 			else if (actionToPerform.equals("s"))
@@ -365,9 +383,10 @@ public class SyncMessHandler {
 				String id_old = attrs.item(0).getTextContent();
 				String id_new = xml.getDocumentElement().getChildNodes().item(0).getChildNodes().item(0).getTextContent();
 				
-				if (id_old == null || id_old.equalsIgnoreCase("") || id_new == null || id_new.equalsIgnoreCase(""))
+				if (id_old == null || id_new == null)
 				{
-					LOGGER.info("***** ERROR: Bad XML input: blank parameters.");
+					LOGGER.info("***** ERROR -> Invalid data in request.");
+					LOGGER.info("***** Card type service (delete) terminated normally with: " + false + ".");
 					return false;
 				}
 
@@ -377,7 +396,7 @@ public class SyncMessHandler {
 					// Connexion à la BDD
 					Connection connection = dbHandler.open();
 
-					LOGGER.info("***** REQUEST -> Delete the card with ID : " + id_old + " and replace it with " + id_new);			
+					LOGGER.info("***** REQUEST -> Delete the card with ID: " + id_old + " and replace it with " + id_new + ".");			
 						
 					// Récupérer l'ID de la nouvelle carte
 					PreparedStatement ps = connection.prepareStatement("SELECT ID_LOYALTY_CARD_TYPE FROM loyalty_card_type WHERE CARD_TYPE_CODE = ?;");
@@ -393,10 +412,12 @@ public class SyncMessHandler {
 					}
 					else
 					{
-						LOGGER.info("***** ERROR : The card to change is Not an existing fidelity card.");
+						LOGGER.info("***** ERROR -> Unknown fidelity card type for id: " + id_old + ".");
+						LOGGER.info("***** Card type service (delete) terminated normally with: " + false + ".");
 						return false;
 					}
 					
+					// Récupérer l'ID de l'ancienne carte
 					ps = connection.prepareStatement("SELECT ID_LOYALTY_CARD_TYPE FROM loyalty_card_type WHERE CARD_TYPE_CODE = ?;");
 					ps.setString(1, id_new);
 					res = ps.executeQuery();
@@ -407,7 +428,8 @@ public class SyncMessHandler {
 					}
 					else
 					{
-						LOGGER.info("***** ERROR : The card for replacement is not an existing fidelity card.");
+						LOGGER.info("***** ERROR -> Unknown fidelity card type for id: " + id_new + ".");
+						LOGGER.info("***** Card type service (delete) terminated normally with: " + false + ".");
 						return false;
 					}
 					
@@ -426,7 +448,8 @@ public class SyncMessHandler {
 				} 
 				catch (SQLException e) 
 				{
-					System.err.println("ERROR : " + e.getMessage());		
+					System.err.println("ERROR : " + e.getMessage());	
+					LOGGER.info("***** Card type service (delete) terminated normally with: " + false + ".");
 					return false;
 				}
 				finally
@@ -434,12 +457,12 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}	
 
-				LOGGER.info("***** Card modification service terminated normally with : " + true + ".");
+				LOGGER.info("***** Card type service (delete) terminated normally with: " + true + ".");
 				return true;
 			}
 			else
 			{
-				LOGGER.severe("***** ERROR : A fatal error occured when processing Carte type service.");
+				LOGGER.severe("***** ERROR: Unknown action (" + actionToPerform + ") for card type service.");
 				return false;
 			}
 		}
@@ -726,18 +749,18 @@ public class SyncMessHandler {
 		}
 		else
 		{
-			LOGGER.severe("***** ERROR : Unknown service.");
+			LOGGER.severe("***** ERROR: Unknown service.");
 			return false;
 		}
 	}
 
 	private static boolean getBankPaiement() 
 	{
-		LOGGER.info("***** Bank Paiement started.");		
+		LOGGER.info("***** Bank Paiement service call started.");		
 		Random rnd = new Random();
 		Integer myRnd = rnd.nextInt(100);
-
-		LOGGER.info("***** Bank Paiement stopped.");
+		
+		LOGGER.info("***** Bank Paiement service call stopped with : " + (myRnd < 70) + ".");
 		return myRnd < 70;
 	}
 

@@ -1,6 +1,7 @@
 package fr.epita.sigl.miwa.application;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.text.ParseException;
@@ -9,18 +10,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
-import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.db.InitMysqlConnector;
 import fr.epita.sigl.miwa.st.Conf;
-import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -38,8 +31,12 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		
-		/* CODE HERE */
-		new BufferedReader(new InputStreamReader(System.in));	
+		/* CODE HERE */		
+		try {
+			new BufferedReader(new InputStreamReader(System.in)).readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
 		Date clockDate = ClockClient.getClock().getHour();
 		System.out.println(clockDate);
 		
@@ -49,7 +46,7 @@ public class Main {
 		// Init MySQL connector
 		InitMysqlConnector.init();
 				
-	    DocumentBuilder db;
+	    /*DocumentBuilder db;
 		try 
 		{
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -80,19 +77,10 @@ public class Main {
 		catch (Exception e1) 
 		{
 			e1.printStackTrace();
-		}
-		
-		/*try {
-			Thread.sleep(40000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}*/
-		/*AsyncMessageFactory.getInstance().getAsyncMessageManager().send(message, destination);
-		SyncMessFactory.getSyncMessSender().sendMessage(to, message)
-		ClockClient.getClock().wakeMeUp(date, message);*/
-//		SyncMessHandler.getSyncMessSender().sendMessage(
-//				EApplication.BI, "Coucou BI");
+
+		
+		//ClockClient.getClock().wakeMeUp(date, message);
 		/* !CODE HERE */
 		
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
