@@ -930,6 +930,7 @@ public class XMLManager
 				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
 				LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
 				ticketVente.getArticle().add(article);
+				
 				articleReduc.setRef(article.getRef());
 				articleReduc.setQuantite(article.getQuantite());
 				articleReduc.setPrix(article.getPrix() - 1);
