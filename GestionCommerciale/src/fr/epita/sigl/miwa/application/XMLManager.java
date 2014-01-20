@@ -106,7 +106,7 @@ public class XMLManager {
 			a.setPrix_vente(Float.toString(pv));
 			List<PromoFournisseur> promosf = new ArrayList<PromoFournisseur>();
 			NodeList nList2 = doc.getElementsByTagName("PROMOTION");
-			for (int temp2 = 0; temp2 < nList.getLength(); temp2++) {
+			for (int temp2 = 0; temp2 < nList2.getLength(); temp2++) {
 				PromoFournisseur p = new PromoFournisseur();
 				// Récupéraction du noeud à traiter
 				Node nNode2 = nList2.item(temp2);
@@ -129,6 +129,33 @@ public class XMLManager {
 		// FIXME sauvegarder les pomo et les prix des articles
 	}
 
+	public DemandeReassort getconfirmationreassortfromBO(String message, Document doc)
+	{
+		DemandeReassort demand = new DemandeReassort();
+		demand.setCommandNumber(doc.getElementsByTagName("NUMEROCOMMANDE").item(0).getTextContent());
+		demand.setDateBL(doc.getElementsByTagName("DATELIVRAISON").item(0).getTextContent());
+		demand.setTraite(doc.getElementsByTagName("STATUT").item(0).getTextContent());
+		
+		List<Articles> articles = new ArrayList<Articles>();
+		List<String> quantities = new ArrayList<String>();
+		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		for (int temp2 = 0; temp2 < nList.getLength(); temp2++) {
+			Node nNode = nList.item(temp2);
+			Element eElement = (Element) nNode;
+			Articles a = new Articles();
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
+					.getTextContent());
+			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0).getTextContent());
+			articles.add(a);
+			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0).getTextContent());
+		}
+		demand.setArticles(articles);
+		demand.setQuantity(quantities);
+		JdbcConnection.getInstance().getConnection();
+		JdbcConnection.getInstance().insertDemandeReassort(demand);
+		JdbcConnection.getInstance().closeConnection();
+		return demand;
+	}
 	public DemandeReassort getdemandereassortfromBO(String message, Document doc)
 			throws AsyncMessageException {
 		DemandeReassort demand = new DemandeReassort();
@@ -394,7 +421,7 @@ return commande;
 		{
 			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i)  + "</REFERENCE>";
 			xml += "<QUANTITE>" + demande.getQuantity().get(i) + "</QUANTITE></ARTICLE>";
-					
+			i++;		
 		}
 		xml += "</ARTICLES></DEMANDENIVEAUDESTOCKINTERNET>";
 		
@@ -421,6 +448,7 @@ return commande;
 					+ "</reference>" + "<quantite>"
 					+ commande.getquantity().get(i) + "</quantite>"
 					+ "</article>";
+			i++;
 		}
 		xml += "</articles></commande></commande_internet>";
 
@@ -442,6 +470,7 @@ return commande;
 					+ "</QUANTITE><CATEGORIE>" 
 					+ commande.getArticles().get(i).getCategory() 
 					+ "</CATEGORIE></ARTICLE>";
+			i++;
 		}
 		xml += "</ARTICLES></COMMANDE></COMMANDESFOURNISSEUR>";
 		return xml;
@@ -459,6 +488,7 @@ return commande;
 					xml += "<ARTICLE><REFERENCE>" + demand.getArticles().get(i).getRef_article() 
 							+ "</REFERENCE><QUANTITE>" + demand.getQuantity().get(i) + "</QUANTITE><CATEGORIE>"
 							+ demand.getArticles().get(i).getCategory() + "</CATEGORIE></ARTICLE>";
+				i++;
 				}
 				xml += "</ARTICLES></REASSORT></REASSORTSBO>";
 				return xml;
@@ -473,7 +503,7 @@ return commande;
 		while (i< demande.getArticles().size())
 		{
 			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i)  + "</REFERENCE>";
-					
+			i++;		
 		}
 		xml += "</ARTICLES></DEMANDENIVEAUDESTOCK>";
 		
