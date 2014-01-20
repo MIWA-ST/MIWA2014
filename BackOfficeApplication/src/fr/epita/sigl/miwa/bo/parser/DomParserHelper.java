@@ -49,7 +49,12 @@ public class DomParserHelper
 	public static String getHeader(String xml)
 	{		
 		String[] xmlSplited = xml.split(">");
-
+		
+		
+		if (xmlSplited[0].substring(0, 2).equals("<?"))
+		{
+			return xmlSplited[1] + ">";
+		}
 		return xmlSplited[0] + ">";
 	}
 	
@@ -59,9 +64,24 @@ public class DomParserHelper
 		
 		String res = "";
 		
-		for (int i = 1; i < xmlSplited.length; i++)
+		int ib;
+		
+		if (xmlSplited[0].substring(0, 2).equals("<?"))
 		{
-			res += xmlSplited[i] + ">";
+			ib = 2;
+		}
+		else
+		{
+			ib = 1;
+		}
+		
+		for (int i = ib; i < xmlSplited.length; i++)
+		{
+			if (xmlSplited[i].length() > 2)
+			{
+				res += xmlSplited[i] + ">";
+			}
+			
 		}
 
 		return res;

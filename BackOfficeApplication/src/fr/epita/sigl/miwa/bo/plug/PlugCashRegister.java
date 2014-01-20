@@ -4,6 +4,7 @@ import java.util.Date;
 
 import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleAndLocalPriceAndPromotion;
+import fr.epita.sigl.miwa.bo.object.ArticleList;
 
 public class PlugCashRegister {
 	
@@ -28,6 +29,18 @@ public class PlugCashRegister {
 		"  </VENTE>\n\r" +
 	"</VENTES>\n\r";
 	
+	public static String saleTicket =
+			//"<?xml version='1.0' encoding='UTF-8'?>" +
+			"<ENTETE objet='ticket-caisse' source='caisse' date='2015-6-11'/>\n\r" +
+			"<TICKETVENTE refclient='C987654321' moyenpayement=''>\n\r" +
+				"<ARTICLE refarticle='1' quantite='1' prix='5.5' />\n\r" +
+			"</TICKETVENTE>\n\r";
+			/*"<ENTETE objet='ticket-caisse' source='caisse' date='2014-01-19'/>\n\r" +
+	"<TICKETVENTE refclient='nimportequoi' moyenpayement='CB' >\n\r" +
+	    "<ARTICLE refarticle='2361' quantite='42' prix='23' />\n\r" +
+	    "<ARTICLE refarticle='2452' quantite='10' prix='43' />\n\r" +
+	"</TICKETVENTE>\n\r";*/
+	
 	@SuppressWarnings("deprecation")
 	public static ArticleAndLocalPriceAndPromotion articleAndLocalPriceAndPromotionObject()
 	{
@@ -46,6 +59,29 @@ public class PlugCashRegister {
 		a2.reference = "r2";
 		a2.salesPrice="p2";
 		a2.promotion="pr2";
+		a.articles.add(a2);
+
+		return a;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static ArticleList articleListObject()
+	{
+		ArticleList a = new ArticleList();
+		a.date = new Date(2013 - 1900, 11, 20);
+		a.refclient = "123456789";
+		a.totalamount = "20";
+		
+		Article a1 = new Article();
+		a1.reference = "r1";
+		a1.salesPrice="10";
+		a1.quantity="1";
+		a.articles.add(a1);
+		
+		Article a2 = new Article();
+		a2.reference = "r2";
+		a2.salesPrice="10";
+		a2.quantity="1";
 		a.articles.add(a2);
 
 		return a;

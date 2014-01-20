@@ -157,4 +157,6 @@ public class BusinessIntelligenceXMLConstructor extends XMLConstructor
 		
 		return this.xml;
 	}
+	
+	// TODO : promo local
 }

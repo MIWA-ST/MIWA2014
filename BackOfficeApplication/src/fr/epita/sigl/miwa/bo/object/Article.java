@@ -23,22 +23,22 @@ public class Article
 
 	public void print()
 	{
-		System.out.println("==========ARTICLE=BEGIN==========");
-		System.out.println("NAME:" + this.name);
-		System.out.println("REFERENCE:" + this.reference);
-		System.out.println("CATEGORY:" + this.category);
-		System.out.println("QUANTITY:" + this.quantity);
-		System.out.println("PROVIDER PRICE:" + this.providerPrice);
-		System.out.println("SALES PRICE:" + this.salesPrice);
-		System.out.println("EAN:" + this.ean);
-		System.out.println("DESCRIPTION:" + this.description);
-		System.out.println("PROMOTION:" + this.promotion);
-		System.out.println("==========ARTICLE=>PROMOTIONS=BEGIN==========");
+		System.out.println("***** ==========ARTICLE=BEGIN==========");
+		System.out.println("***** NAME:" + this.name);
+		System.out.println("***** REFERENCE:" + this.reference);
+		System.out.println("***** CATEGORY:" + this.category);
+		System.out.println("***** QUANTITY:" + this.quantity);
+		System.out.println("***** PROVIDER PRICE:" + this.providerPrice);
+		System.out.println("***** SALES PRICE:" + this.salesPrice);
+		System.out.println("***** EAN:" + this.ean);
+		System.out.println("***** DESCRIPTION:" + this.description);
+		System.out.println("***** PROMOTION:" + this.promotion);
+		System.out.println("***** ==========ARTICLE=>PROMOTIONS=BEGIN==========");
 		for (Promotion promotion : this.promotions)
 		{
 			promotion.print();
 		}
-		System.out.println("==========ARTICLE=>PROMOTIONS=END==========");
-		System.out.println("==========ARTICLE=END==========");
+		System.out.println("***** ==========ARTICLE=>PROMOTIONS=END==========");
+		System.out.println("***** ==========ARTICLE=END==========");
 	}
 }

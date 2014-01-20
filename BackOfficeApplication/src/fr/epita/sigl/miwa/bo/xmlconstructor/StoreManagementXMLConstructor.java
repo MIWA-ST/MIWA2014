@@ -2,10 +2,12 @@ package fr.epita.sigl.miwa.bo.xmlconstructor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleAndLocalPriceAndPromotion;
+import fr.epita.sigl.miwa.bo.object.Delivery;
 import fr.epita.sigl.miwa.bo.object.NodeAttribute;
 import fr.epita.sigl.miwa.bo.object.RestockRequest;
 import fr.epita.sigl.miwa.bo.object.RestockRequestReception;
@@ -90,6 +92,17 @@ public class StoreManagementXMLConstructor extends XMLConstructor
 		this.closeNode("RECEPTIONREASSORT", 0);
 		
 		return this.xml;
+	}
+	public String restockRequestReception(Delivery d)
+	{
+		RestockRequestReception r = new RestockRequestReception();
+		r.orderNumber = d.number;
+		r.status = "TRUE";
+		r.deliveryDate = d.deliveryDate;
+		r.articles = d.articles;
+		
+		return restockRequestReception(r);
+		
 	}
 	
 	/* LOG : ***** afficher article envoyé + quantité
