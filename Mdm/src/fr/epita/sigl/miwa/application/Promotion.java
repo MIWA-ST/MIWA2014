@@ -6,22 +6,6 @@ public class Promotion {
 	private Date date_debut;
 	private Date date_fin;
 	private int pourcentage;
-	private int quantityMin;
-
-	public int getQuantityMin() {
-		return quantityMin;
-	}
-	public void setQuantityMin(int quantityMin) {
-		this.quantityMin = quantityMin;
-	}
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	private int id;
 	
 	public Date getDate_debut() {
 		return date_debut;
@@ -47,14 +31,5 @@ public class Promotion {
 		this.date_fin = endDate;
 		this.pourcentage = rebate;
 	}
-	
-	public Promotion(Date startDate, Date endDate, int rebate, int quantityMin, int id) {
-		this.date_debut = startDate;
-		this.date_fin = endDate;
-		this.pourcentage = rebate;
-		this.quantityMin = quantityMin;
-		this.id = id;
-	}
-
 }
 
