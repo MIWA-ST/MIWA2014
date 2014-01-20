@@ -38,7 +38,26 @@ public class Main {
 					+ "111</CATEGORIE></ARTICLE>";
 		xml += "</ARTICLES></COMMANDE></COMMANDESFOURNISSEUR>";
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.ENTREPOT);
+
+		xml = "<commande_internet>" + "<commande>" + "<numero>125b76"
+				 + "</numero>" + "<refclient>4242"
+				 + "</refclient>" + "<datebc>20131212"
+				 + "</datebc>" + "<datebl>20131225"
+				+ "</datebl>" + "<adresseClient>12rue des oiseaux"
+				 + "</adresseClient>" + "<nom>Hollande"
+				 + "</nom>" + "<prenom>Francoise"
+				 + "</prenom>" + "<articles>";
+
 		
+			xml += "<article>" + "<CATEGORIE>"
+					+ "121234</CATEGORIE>" + "<reference>"
+					+ "0193832436534653</reference>" + "<quantite>"
+					+ "1234567890</quantite>"
+					+ "</article>";
+		
+		xml += "</articles></commande></commande_internet>";
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.ENTREPOT);
+
 		String XMLENT_BLexp = "<EXPEDITIONCLIENT>";
 				XMLENT_BLexp += "<LIVRAISON>";
 				XMLENT_BLexp += "<NUMERO>CV398719873</NUMERO>";

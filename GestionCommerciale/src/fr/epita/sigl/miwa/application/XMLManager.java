@@ -102,7 +102,8 @@ public class XMLManager {
 			Element eElement = (Element) nNode;
 			a.setRef_article(eElement.getAttribute("reference"));
 			a.setPrix_fournisseur(eElement.getAttribute("prix_fournisseur"));
-			
+			float pv = Float.parseFloat(eElement.getAttribute("prix_fournisseur")) * Float.parseFloat("1,1");
+			a.setPrix_vente(Float.toString(pv));
 			List<PromoFournisseur> promosf = new ArrayList<PromoFournisseur>();
 			NodeList nList2 = doc.getElementsByTagName("PROMOTION");
 			for (int temp2 = 0; temp2 < nList.getLength(); temp2++) {
@@ -199,7 +200,7 @@ public class XMLManager {
 
 	}
 
-	public void getbonlivraisonfromEntrepot(String message, Document doc) {
+	public CommandeFournisseur getbonlivraisonfromEntrepot(String message, Document doc) {
 
 		CommandeFournisseur commande = new CommandeFournisseur();
 		commande.setNumero_commande(doc.getElementsByTagName("NUMERO").item(0)
@@ -235,6 +236,7 @@ public class XMLManager {
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertCommandeFournisseur(commande);
 		JdbcConnection.getInstance().closeConnection();
+		return commande;
 	}
 
 	public CommandeInternet getexpeditionclientfromEntrepot(String message, Document doc)
@@ -321,7 +323,7 @@ JdbcConnection.getInstance().closeConnection();
 return commande;
 	}
 
-	public void getniveauStockfromBO(String message, Document doc)
+	public List<StockMagasin> getniveauStockfromBO(String message, Document doc)
 			throws AsyncMessageException {
 		List<StockMagasin> stocks = new ArrayList<StockMagasin>();
 		String idmagasin = doc.getElementsByTagName("REFMAGASIN").item(0)
@@ -352,6 +354,7 @@ return commande;
 			JdbcConnection.getInstance().closeConnection();
 			
 		}
+		return stocks;
 		// FIXME sauvegarder chaque stock dans la bdd
 	}
 
@@ -405,7 +408,7 @@ return commande;
 				+ commande.getCommandNumber() + "</numero>" + "<refclient>"
 				+ commande.getCustomerRef() + "</refclient>" + "<datebc>"
 				+ commande.getDateBC() + "</datebc>" + "<datebl>"
-				+ commande.getDateBL() + "</datebl>" + "<adresseClient"
+				+ commande.getDateBL() + "</datebl>" + "<adresseClient>"
 				+ commande.getCustomerAddress() + "</adresseClient>" + "<nom>"
 				+ commande.getCustomerLastname() + "</nom>" + "<prenom>"
 				+ commande.getCustomerFirstname() + "</prenom>" + "<articles>";
