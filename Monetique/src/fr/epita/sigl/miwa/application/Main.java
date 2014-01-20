@@ -49,7 +49,7 @@ public class Main {
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
 		    // TEST Creation de compte fidélité
-		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_compte_cf\" action=\"c\"><compte_cf><matricule_client>C987654321</matricule_client><BIC>ABCD</BIC><IBAN>EFGH</IBAN><id_type_cf>bronze</id_type_cf></compte_cf></monetique>"));
+		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_compte_cf\" action=\"c\"><compte_cf><matricule_client>C987654321</matricule_client><BIC>ABCD</BIC><IBAN>EFGH</IBAN><id_type_cf>bronze</id_type_cf></compte_cf></monetique>"));
 		    // TEST Modification de compte fidélité
 		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_compte_cf\" action=\"m\"><compte_cf matricule_client=\"C987654321\"><BIC>ABCD</BIC><IBAN>EFGH</IBAN><id_type_cf>silver</id_type_cf></compte_cf></monetique>"));
 		    // TEST Suppression de compte fidélité
