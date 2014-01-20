@@ -158,7 +158,7 @@ public class SyncMessHandler {
 		}
 		else if (sender == EApplication.INTERNET)
 		{
-			LOGGER.info("*****XML synchrone reçu d'internet :"); // + xml.getDocumentURI());
+			LOGGER.info("*****XML synchrone reçu d'internet"); // + xml.getDocumentURI());
 			// Demande d'information client
 			
 			PrintWriter out = null;
@@ -225,19 +225,7 @@ public class SyncMessHandler {
 	static public boolean receiveXML(EApplication sender, Document xml){
 		// TODO Auto-generated method stub
 		
-		if (sender == EApplication.CAISSE)
-		{
-			LOGGER.info("*****XML synchrone reçu de la caisse :" + xml.getDocumentURI());
-			try {
-				XMLManager.getInstance().dispatchXML("", xml.getDocumentURI());
-			} catch (SAXException | IOException | AsyncMessageException
-					| ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		else if (sender == EApplication.INTERNET)
+		if (sender == EApplication.INTERNET)
 		{
 			
 			LOGGER.info("*****XML synchrone reçu d'internet :" + xml.getDocumentURI());

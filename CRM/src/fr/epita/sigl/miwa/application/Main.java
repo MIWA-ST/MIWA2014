@@ -61,7 +61,7 @@ public class Main {
 		//Date date = ClockClient.getClock().getHour();
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
-		//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(XMLManager.getInstance().getDemandeSegmentationClient("plop"), EApplication.BI);
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(XMLManager.getInstance().getDemandeSegmentationClient("plop"), EApplication.BI);
 		
 		/**************** Fin BI ******************/
 		

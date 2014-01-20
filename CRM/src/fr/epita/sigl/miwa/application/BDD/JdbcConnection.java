@@ -297,7 +297,7 @@ public class JdbcConnection
 			System.out.println("update client internet");
 			if (connection != null)
 			{
-				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, iban=?, bic=?, fidelite=?, civilite=? naissance=? nbenfant=? situation=? WHERE matricule = ?";
+				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, matricule=?, iban=?, bic=?, fidelite=?, civilite=? nbenfant=? situation=? naissance=? WHERE matricule = ?";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -311,9 +311,12 @@ public class JdbcConnection
 				statement.setString(9, client.getBIC());
 				statement.setString(10, client.getCarteFed().getType());
 				statement.setString(11, client.getCivilite());
-				statement.setString(12, client.getDate().toString());
-				statement.setString(13, Integer.toString(client.getNbenfant()));
-				statement.setString(14, client.getSituation());
+				statement.setString(12, Integer.toString(client.getNbenfant()));
+				statement.setString(13, client.getSituation());
+				statement.setString(14, new SimpleDateFormat("YYYY-MM-dd").format(client.getDate()));
+				
+				System.out.println(client.getDate().toString());
+				System.out.println(new SimpleDateFormat("YYYY-MM-dd").format(client.getDate()));
 
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)

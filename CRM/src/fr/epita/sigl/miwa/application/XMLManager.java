@@ -95,7 +95,7 @@ public class XMLManager
 			case "creation_compte":
 				XMLReturn = getDemandeCreationCompte(message, xml);
 				break;
-			case "modif_compte":
+			case "modifier_compte":
 				XMLReturn = getDemandeModifCompte(message, xml);
 				break;
 			case "suppression_compte":
@@ -376,7 +376,7 @@ public class XMLManager
 
 		int random = (int)(Math.random() * (higher-lower)) + lower;
 		
-		bl += "<CRITERE type=\"age\" max=\"" + (random - 10) + "\" min=\"" + (random + 10) + "\" />"
+		bl += "<CRITERE type=\"age\" max=\"" + (random + 10) + "\" min=\"" + (random - 10) + "\" />"
 				+ "<CRITERE type=\"geographie\" valeur=\"" + (random + 3) + "\" />";
 				
 		if (random%2 == 0)
@@ -507,7 +507,7 @@ public class XMLManager
 		for (int i = 0; i < compteNodes.getLength(); i++)
 		{
 			Node infoNodes = compteNodes.item(i);
-			String mat = infoNodes.getAttributes().getNamedItem("nom").getNodeValue();
+			String mat = infoNodes.getAttributes().getNamedItem("matricule").getNodeValue();
 			client = Client.getClient(mat);
 			
 			if (client == null)
@@ -520,6 +520,9 @@ public class XMLManager
 			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
 			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+			client.setDate((new SimpleDateFormat("YYYY-MM-dd")).parse(infoNodes.getAttributes().getNamedItem("naissance").getNodeValue()));
+			client.setBIC(infoNodes.getAttributes().getNamedItem("bic").getNodeValue());
+			client.setIBAN(infoNodes.getAttributes().getNamedItem("iban").getNodeValue());
 			client.setMatricule(Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue()));
 			LOGGER.info("***** Recherche des informations clients");
 			LOGGER.info("***** " + client.toString());
@@ -557,11 +560,12 @@ public class XMLManager
 						EApplication.INTERNET, "true");
 				LOGGER.info("***** Confirmation de la MAJ auprès d'Internet");
 				
-				Client.clientsList.add(client);
-				JdbcConnection.getInstance().updateClientInternet(client);
-				LOGGER.info("***** Modification effectuée en BDD");
+				
 			}
 			
+			Client.clientsList.add(client);
+			JdbcConnection.getInstance().updateClientInternet(client);
+			LOGGER.info("***** Modification effectuée en BDD");
 			
 		}
 		String bl = "true";
