@@ -10,7 +10,7 @@ public enum EApplication {
 	BI("BI", "BI"), BACK_OFFICE("BO", "Back office"), GESTION_COMMERCIALE("GC",
 			"Gestion commerciale"), CAISSE("CA", "Caisse"), ENTREPOT("EN",
 			"Entrepot"), CRM("CR", "CRM"), MDM("MD", "MDM"), MONETIQUE("MO",
-			"Monétique"), INTERNET("IN", "Internet");
+			"Monétique"), INTERNET("IN", "Internet"), DEBUG ("DB", "Debug");
 	private String _shortName;
 	private String _longName;
 
