@@ -448,9 +448,8 @@ public class XMLManager
 			LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule() + " et nom : " + client.getNom());
 		}	
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String bl = "<ENTETE objet=\"matricule-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
-				+ "<INFORMATIONS><CLIENT matricule=\"" + client.getMatricule() + "\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
-		bl += "</INFORMATIONS></ENTETE>";
+		
+		String bl = null;
 		
 		// Retour des info à Internet
 		try
@@ -462,6 +461,8 @@ public class XMLManager
 					getCreationCompteCreditFed(client))));
 			doc.getDocumentElement().normalize();
 			
+			
+			
 			// Creation des comptes chez la monétique
 			if (SyncMessHandler.getSyncMessSender().sendXML(
 					EApplication.MONETIQUE, doc) == false)
@@ -471,6 +472,10 @@ public class XMLManager
 			else
 			{
 				LOGGER.info("***** Création du compte crédit " + client.getMatricule() + " effectué auprès de la Monétique");
+				
+				bl = "<ENTETE objet=\"matricule-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
+						+ "<INFORMATIONS><CLIENT matricule=\"" + client.getMatricule() + "\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
+				bl += "</INFORMATIONS></ENTETE>";
 				
 				SyncMessHandler.getSyncMessSender().sendMessage(
 						EApplication.INTERNET, bl);
@@ -524,6 +529,7 @@ public class XMLManager
 			client.setBIC(infoNodes.getAttributes().getNamedItem("bic").getNodeValue());
 			client.setIBAN(infoNodes.getAttributes().getNamedItem("iban").getNodeValue());
 			client.setMatricule(Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue()));
+			client.setNbenfant(Integer.parseInt(infoNodes.getAttributes().getNamedItem("nbenfant").getNodeValue()));
 			LOGGER.info("***** Recherche des informations clients");
 			LOGGER.info("***** " + client.toString());
 			
@@ -552,20 +558,24 @@ public class XMLManager
 			if (SyncMessHandler.getSyncMessSender().sendXML(
 					EApplication.MONETIQUE, doc) == false)
 			{
-				LOGGER.warning("Impossible de contacter la monétique pour la suppression d'un compte crédit");
+				LOGGER.warning("*****Impossible de contacter la monétique pour la suppression d'un compte crédit");
+				
+				// Retour des info à Internet
+				SyncMessHandler.getSyncMessSender().sendMessage(
+						EApplication.INTERNET, "KO MAJ");
+				LOGGER.info("***** Communication de MAJ échouée auprès d'Internet");
+				
 			} else {
 				LOGGER.info("***** MAJ du compte crédit " + client.getMatricule() + " effectué auprès de la Monétique");
 				// Retour des info à Internet
 				SyncMessHandler.getSyncMessSender().sendMessage(
-						EApplication.INTERNET, "true");
+						EApplication.INTERNET, "OK MAJ");
 				LOGGER.info("***** Confirmation de la MAJ auprès d'Internet");
 				
-				
+				Client.clientsList.add(client);
+				JdbcConnection.getInstance().updateClientInternet(client);
+				LOGGER.info("***** Modification effectuée en BDD");
 			}
-			
-			Client.clientsList.add(client);
-			JdbcConnection.getInstance().updateClientInternet(client);
-			LOGGER.info("***** Modification effectuée en BDD");
 			
 		}
 		String bl = "true";
@@ -622,6 +632,7 @@ public class XMLManager
 					
 					if (matricule != 0)
 					{
+						
 						if (SyncMessHandler.getSyncMessSender().sendXML(
 								EApplication.MONETIQUE, doc) == false)
 						{
@@ -629,8 +640,8 @@ public class XMLManager
 						} else {
 							LOGGER.info("***** Suppression du compte crédit " + matricule + " effectué auprès de la Monétique");
 							// Retour des info à Internet
-							SyncMessHandler.getSyncMessSender().sendMessage(
-									EApplication.INTERNET, bl);
+							/*SyncMessHandler.getSyncMessSender().send, message)(
+									EApplication.INTERNET, bl);*/
 							LOGGER.info("***** Confirmation de la suppression auprès d'Internet");
 						}
 
@@ -673,7 +684,7 @@ public class XMLManager
 					"<monetique service=\"cms_type_carte\" action=\"c\">" +
 					"<type_cf>" +
 					"<id>" + fed.getType() + "</id>" +
-					"<limite_mesuelle>" + fed.getLimite_m() + "</limite_mesuelle>" +
+					"<limite_mensuelle>" + fed.getLimite_m() + "</limite_mensuelle>" +
 					"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
 					"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
 					"</type_cf>" +
@@ -797,7 +808,7 @@ public class XMLManager
 			if (client != null)
 			{
 				LOGGER.info("***** Client retrouvé en BDD:" + client.getNom() + " " + client.getPrenom());
-			
+				
 				if (client.articlesList == null)
 				{
 					Article e = new Article();
@@ -907,7 +918,6 @@ public class XMLManager
 		ticketVente.setArticle(list);
 		int totalPrice = 0;
 		
-
 		NodeList ticketVenteNodes = ticketVenteFile.getElementsByTagName("TICKETVENTE");
 		
 		// Création des éléments ticketventes et articles

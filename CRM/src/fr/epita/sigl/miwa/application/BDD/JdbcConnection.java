@@ -253,7 +253,7 @@ public class JdbcConnection
 			System.out.println("insertion client internet");
 			if (connection != null)
 			{
-				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule, iban, bic, fedelite, civilite, naissance, nbenfant, situation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule, iban, bic, fidelite, civilite, naissance, nbenfant, situation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -297,7 +297,7 @@ public class JdbcConnection
 			System.out.println("update client internet");
 			if (connection != null)
 			{
-				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, matricule=?, iban=?, bic=?, fidelite=?, civilite=? nbenfant=? situation=? naissance=? WHERE matricule = ?";
+				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, matricule=?, iban=?, bic=?, fidelite=?, civilite=?, nbenfant=?, situation=? WHERE matricule = ?";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -313,11 +313,11 @@ public class JdbcConnection
 				statement.setString(11, client.getCivilite());
 				statement.setString(12, Integer.toString(client.getNbenfant()));
 				statement.setString(13, client.getSituation());
-				statement.setString(14, new SimpleDateFormat("YYYY-MM-dd").format(client.getDate()));
+				//statement.setString(14, new SimpleDateFormat("YYYY-MM-dd").format(client.getDate()));
+				statement.setString(14, Integer.toString(client.getMatricule()));
 				
-				System.out.println(client.getDate().toString());
-				System.out.println(new SimpleDateFormat("YYYY-MM-dd").format(client.getDate()));
-
+				System.out.println(statement);
+				
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
 				{
