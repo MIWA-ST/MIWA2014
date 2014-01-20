@@ -8,10 +8,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.application.MO.PaiementCbMO;
+import fr.epita.sigl.miwa.application.MO.PaiementCfMO;
 import fr.epita.sigl.miwa.application.ParseXML.TYPE_LANGUAGE;
 import fr.epita.sigl.miwa.application.CR.CreationClientCR;
 import fr.epita.sigl.miwa.application.CR.EnvoiEnteteCR;
 import fr.epita.sigl.miwa.application.CR.EnvoiMatriculeCR;
+import fr.epita.sigl.miwa.application.CR.ModifierUtilisateurCR;
+import fr.epita.sigl.miwa.application.CR.SupprimerUtilisateurCR;
 import fr.epita.sigl.miwa.application.GC.ArticleCommandeParClientGC;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticlesGC;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockGC;
@@ -75,23 +79,31 @@ public class Main {
 //			System.out.println(testCreationCRM.sendXML());
 //			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.CRM, testCreationCRM.sendXML());
 			
+			
+//			SupprimerUtilisateurCR deleteTest = new SupprimerUtilisateurCR(new EnvoiEnteteCR("suppression_compte", "Internet", ClockClient.getClock().getHour()), "38167037");
+//			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.CRM, deleteTest.sendXML());
+//			
+//			ModifierUtilisateurCR modifierTest = new ModifierUtilisateurCR(new EnvoiEnteteCR("modifier_compte", "Internet", ClockClient.getClock().getHour()), "68523705", "HADDAD", "Chawqui", "ADRESSE", "code_postal", "email", "213265413", "civilite", "situation", "2014-12-13", "65465", "2313123", "12321");
+//			String result2 = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.CRM, modifierTest.sendXML());
+			
+			
 			// Test Envoi des commandes GC
-			List<ArticleCommandeParClientGC> articles = new ArrayList<ArticleCommandeParClientGC>();
-			
-			articles.add(new ArticleCommandeParClientGC("Categorie 1", "Reference5", "77"));
-			articles.add(new ArticleCommandeParClientGC("Categorie 2", "Reference93", "59"));
-			articles.add(new ArticleCommandeParClientGC("Categorie 3", "Referenc0e", "99"));
-			
-			EnvoiCommandeGC testEnvoiCommande = new EnvoiCommandeGC("CV56E8",
-					"Fd595SD",
-					"20121223",
-					"20140102",
-					"ADRESSE CLIENTE !!!",
-					"HADDAD",
-					"CHAWQUI",
-					articles);
-			System.out.println(testEnvoiCommande.sendXML());
-			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(testEnvoiCommande.sendXML(), EApplication.GESTION_COMMERCIALE);
+//			List<ArticleCommandeParClientGC> articles = new ArrayList<ArticleCommandeParClientGC>();
+//			
+//			articles.add(new ArticleCommandeParClientGC("Categorie 1", "08deb933-bb39-411d-b0ee-59b28812", "77"));
+//			articles.add(new ArticleCommandeParClientGC("Categorie 2", "292f8025-58bf-498a-a092-1404d30f", "59"));
+////			articles.add(new ArticleCommandeParClientGC("Categorie 3", "Referenc0e", "99"));
+//			
+//			EnvoiCommandeGC testEnvoiCommande = new EnvoiCommandeGC("CV56E8",
+//					"Fd595SD",
+//					"20121223",
+//					"20140102",
+//					"ADRESSE CLIENTE !!!",
+//					"HADDAD",
+//					"CHAWQUI",
+//					articles);
+//			System.out.println(testEnvoiCommande.sendXML());
+//			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(testEnvoiCommande.sendXML(), EApplication.GESTION_COMMERCIALE);
 			
 
 			
@@ -105,6 +117,18 @@ public class Main {
 //			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.GESTION_COMMERCIALE, testDmandeNiveauStock.sendXML());
 //			
 //			
+			
+			
+			// Test de la MO
+//			PaiementCfMO paiementCF = new PaiementCfMO("93.93", "68523705");
+//			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, paiementCF.sendXMLDocument());
+			
+			
+			PaiementCbMO paiementCB = new PaiementCbMO("93.93", "1234569856985214", "1116", "586");
+			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, paiementCB.sendXMLDocument());
+			
+			
+			
 			
 			//new BufferedReader(new InputStreamReader(System.in)).readLine();
 			

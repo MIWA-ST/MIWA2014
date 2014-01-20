@@ -1,4 +1,4 @@
-package fr.epita.sigl.miwa.application.CR;
+package fr.epita.sigl.miwa.application.MO;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,43 +12,36 @@ import org.jdom2.output.DOMOutputter;
 import org.w3c.dom.Document;
 
 import fr.epita.sigl.miwa.application.ParseXML;
-import fr.epita.sigl.miwa.application.clock.ClockClient;
 
-public class EnvoiMatriculeCR {
+public class PaiementCfMO {
 	private static final Logger LOGGER = Logger.getLogger(ParseXML.class.getName());
-	private EnvoiEnteteCR entete = new EnvoiEnteteCR("connection_client", "Internet", ClockClient.getClock().getHour());
+	private Float montant;
 	private String matricule;
 	
-	public EnvoiMatriculeCR(String matricule)
+	public PaiementCfMO(Float montant, String matricule)
 	{
 		this.matricule = matricule;
+		this.montant = montant;
 	}
 	
-	public EnvoiEnteteCR getEntete() {
-		return entete;
-	}
-
-	public void setEntete(EnvoiEnteteCR entete) {
-		this.entete = entete;
-	}
-
-	public String getMatricule() {
-		return matricule;
-	}
-
-	public void setMatricule(String matricule) {
+	public PaiementCfMO(String montant, String matricule)
+	{
 		this.matricule = matricule;
+		if (montant != null && !montant.equals(""))
+			this.montant = Float.parseFloat(montant);
+		else
+			this.montant = 0.0f;
 	}
-	
+
 	public String sendXML()
 	{
 		StringBuilder result = new StringBuilder();
 		
-		LOGGER.info("***** Envoi d'un message à CRM : envoi du matricule : " + matricule);
+		LOGGER.info("***** Envoi d'un message à MO : demande de paiement par CF.");
 		
-		result.append("<XML>");
-		result.append(entete.sendXML());
-		result.append("<COMPTE matricule=\"" + matricule + "\"></COMPTE></XML>");
+		result.append("<monetique service=\"paiement_cf\">");
+		result.append("<montant>" + this.montant + "</montant>");
+		result.append("<matricule_client>" + this.matricule + "</matricule_client></monetique>");
 		
 		return result.toString();
 	}
@@ -73,5 +66,21 @@ public class EnvoiMatriculeCR {
 			LOGGER.info("***** Erreur lors de la création du flux XML : " + e.getMessage());
 		}
 		return null;
+	}
+	
+	public Float getMontant() {
+		return montant;
+	}
+
+	public void setMontant(Float montant) {
+		this.montant = montant;
+	}
+
+	public String getMatricule() {
+		return matricule;
+	}
+
+	public void setMatricule(String matricule) {
+		this.matricule = matricule;
 	}
 }
