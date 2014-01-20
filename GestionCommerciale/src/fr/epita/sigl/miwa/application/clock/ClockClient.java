@@ -1,6 +1,8 @@
 package fr.epita.sigl.miwa.application.clock;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -9,7 +11,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.InputSource;
 
+import fr.epita.sigl.miwa.application.DemandeNiveauStock;
+import fr.epita.sigl.miwa.application.JdbcConnection;
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.StockEntrepot;
+import fr.epita.sigl.miwa.application.StockMagasin;
+import fr.epita.sigl.miwa.application.XMLManager;
+import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -33,27 +41,36 @@ public class ClockClient {
 	 */
 	@Deprecated
 	static public void wakeUp(Date date, Object message) {
-		try {
+		return;
+		/*try {
 		if (message instanceof String) {
-			if (message.equals("Hello World!")) {
-				System.out.println(date.toString() + " : Hello dear client!");
-			} else if (message.equals("envoie_msg_BO")) {
+			if (message.equals("BO")) {
+				LOGGER.severe("*****: CLOCK BO !");
 				String content = "";
-				try {
-					DocumentBuilder db = DocumentBuilderFactory.newInstance()
-							.newDocumentBuilder();
-					InputSource is = new InputSource();
-					LOGGER.info("On demande les niveaux de stock à Back office");
-					// A faire envoi niveau de stock
-					content = "<DEMANDENIVEAUDESTOCK><NUMERO>CV398719873</NUMERO><REFMAGASIN>PA218765</REFMAGASIN><DATE>20131225</DATE><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE></ARTICLE><ARTICLE><REFERENCE>AU736829</REFERENCE></ARTICLE></ARTICLES></DEMANDENIVEAUDESTOCK>";
-
-						AsyncMessageFactory.getInstance().getAsyncMessageManager()
-								.send(content, EApplication.BACK_OFFICE);
-					LOGGER.info("Envoi des stocks au back office");
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				DemandeNiveauStock demand = new DemandeNiveauStock();
+				demand.setCommandNumber(ClockClient.getClock().getHour().toString());
+				demand.setRefbo("0000001");
+				JdbcConnection.getInstance().getConnection();
+				demand.setArticles(JdbcConnection.getInstance().envoiPrixArticle());
+				JdbcConnection.getInstance().closeConnection();
+				content = XMLManager.getInstance().envoidemandeniveaudestocktoBO(demand);
+				AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BACK_OFFICE);
+				
+			}
+			else if (message.equals("BI"))
+			{
+				LOGGER.severe("*****: CLOCK BI !");
+				String content = "";
+				List<StockMagasin> listmag = new ArrayList<StockMagasin>();
+				List<StockEntrepot> listent = new ArrayList<StockEntrepot>();
+				JdbcConnection.getInstance().getConnection();
+				listmag = JdbcConnection.getInstance().envoi_all_stock_mag();
+				JdbcConnection.getInstance().closeConnection();
+				JdbcConnection.getInstance().getConnection();
+				listent = JdbcConnection.getInstance().envoi_all_stock();
+				JdbcConnection.getInstance().closeConnection();
+				content = XMLManager.getInstance().envoiStockToBI(listent, listmag);
+				AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BI);
 			}
 			else {
 				System.out.println(date.toString() + " : " + message);
@@ -62,6 +79,6 @@ public class ClockClient {
 		} catch (AsyncMessageException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 }
