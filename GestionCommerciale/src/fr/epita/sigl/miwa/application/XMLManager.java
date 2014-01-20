@@ -4,11 +4,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 
 //import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 //import fr.epita.sigl.miwa.application.bo.Article;
@@ -19,6 +21,7 @@ import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
 public class XMLManager {
+	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 	private static XMLManager instance = null;
 
 	public static XMLManager getInstance() {
@@ -91,19 +94,25 @@ public class XMLManager {
 
 	public List<Articles> getprixfournisseurs(String message, Document doc)
 			throws AsyncMessageException {
+		LOGGER.severe ("TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO1");
+		
+		Node listarticles = doc.getElementsByTagName("ARTICLES").item(0);
+		
 		List<Articles> articles = new ArrayList<Articles>();
-		NodeList nList = doc.getElementsByTagName("ARTICLE");
+		NodeList nList = listarticles.getChildNodes();
+		
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
-
+			LOGGER.severe ("TOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			// Récupéraction du noeud à traiter
 			Node nNode = nList.item(temp);
 			// Conversion en element
 			Element eElement = (Element) nNode;
 			a.setRef_article(eElement.getAttribute("reference"));
 			a.setPrix_fournisseur(eElement.getAttribute("prix_fournisseur"));
-			float pv = Float.parseFloat(eElement.getAttribute("prix_fournisseur")) * Float.parseFloat("1,1");
+			float pv = Float.parseFloat(eElement.getAttribute("prix_fournisseur")) * Float.parseFloat("1.1");
 			a.setPrix_vente(Float.toString(pv));
+			articles.add(a);
 			List<PromoFournisseur> promosf = new ArrayList<PromoFournisseur>();
 			NodeList nList2 = doc.getElementsByTagName("PROMOTION");
 			for (int temp2 = 0; temp2 < nList2.getLength(); temp2++) {
@@ -118,10 +127,12 @@ public class XMLManager {
 				p.setMinquantite(eElement2.getAttribute("nb_min_promo"));
 				p.setRef_article(a.getRef_article());
 				promosf.add(p);
+				LOGGER.severe("J4AI UN ARTICLE");
 			}
 		}
 		for (Articles articles2 : articles) {
 			JdbcConnection.getInstance().getConnection();
+			LOGGER.severe(articles2.getRef_article());
 			JdbcConnection.getInstance().insertArticle(articles2);	
 			JdbcConnection.getInstance().closeConnection();
 		}
@@ -402,7 +413,7 @@ return commande;
 	}
 
 	public String envoiprixventetoRef(List<Articles> articles) {
-		String xml = "<PRIXVENTE></ARTICLES>";
+		String xml = "<PRIXVENTE><ARTICLES>";
 		for (Articles article : articles) {
 			xml += "<ARTICLE reference=\"" +article.getRef_article() + 
 					"\" prix_vente=\"" + article.getPrix_vente() + "\"/>";	

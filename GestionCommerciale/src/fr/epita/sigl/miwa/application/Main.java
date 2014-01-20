@@ -1,19 +1,18 @@
 package fr.epita.sigl.miwa.application;
 
 import java.util.Date;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.st.Conf;
-import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 
 public class Main {
-	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+	//private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 	public static void main(String[] args) throws AsyncFileException,
 			AsyncMessageException {
@@ -59,7 +58,7 @@ public class Main {
 		xml += "</ARTICLES></COMMANDE></COMMANDESFOURNISSEUR>";
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.ENTREPOT);
 
-*/		String xml;
+		String xml;
 		xml = "<commande_internet>" + "<commande>" + "<numero>125b76"
 				 + "</numero>" + "<refclient>4242"
 				 + "</refclient>" + "<datebc>20131212"

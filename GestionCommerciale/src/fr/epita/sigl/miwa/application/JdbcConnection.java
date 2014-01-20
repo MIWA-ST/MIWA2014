@@ -73,8 +73,8 @@ public class JdbcConnection {
 				verif_req.setString(1, article.getRef_article());
 				ResultSet rs = verif_req.executeQuery();
 
-				if (rs.wasNull()) {
-					String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				if (rs == null) {
+					String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepot, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 					PreparedStatement statement = connection
 							.prepareStatement(request);
@@ -87,9 +87,11 @@ public class JdbcConnection {
 					statement.setString(7, article.getCategory());
 					statement.setString(8,
 							article.getQuantite_min_fournisseur());
+					
+					System.out.println(statement);
 					statement.executeUpdate();
 				} else {
-					String request = "UPDATE articles SET nom = ?, prix_fournisseur = ?, prix_vente = ?, stock_max_entrepo = ?, stock_max_magasin = ?, categorie = ?, quantite_min_commande_fournisse = ? WHERE ref_article = ?";
+					String request = "UPDATE articles SET nom = ?, prix_fournisseur = ?, prix_vente = ?, stock_max_entrepot = ?, stock_max_magasin = ?, categorie = ?, quantite_min_commande_fournisse = ? WHERE ref_article = ?";
 
 					PreparedStatement statement = connection
 							.prepareStatement(request);
@@ -418,7 +420,14 @@ public class JdbcConnection {
 		try {
 			System.out.println("Insert stock magasin");
 			if (connection != null) {
-				String request = " INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?) MATCHING (ref_article, id_magasin)";
+				String verif = "SELECT * FROM stock_magasin WHERE ref_article = ?";
+				PreparedStatement verif_req = connection
+						.prepareStatement(verif);
+				verif_req.setString(1, mgs.getArticle().getRef_article());
+				ResultSet rs = verif_req.executeQuery();
+
+				if (rs.wasNull()) {
+					String request = "INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?)";
 
 				PreparedStatement statement = connection
 						.prepareStatement(request);
@@ -427,6 +436,19 @@ public class JdbcConnection {
 				statement.setString(3, mgs.getQuantity());
 
 				statement.executeUpdate();
+				}
+				else {
+					String request = "UPDATE stock_magasin SET id_magasin = ?, quantite = ? WHERE ref_article = ?";
+
+					PreparedStatement statement = connection
+							.prepareStatement(request);
+					statement.setString(1, mgs.getIdmag());
+					statement.setString(2, mgs.getQuantity());
+					statement.setString(3, mgs.getArticle().getRef_article());
+					
+					statement.executeUpdate();
+
+				}
 			}
 		} catch (SQLException e) {
 			System.out.println("Erreur insertion en base");
