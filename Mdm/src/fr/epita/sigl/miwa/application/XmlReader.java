@@ -126,7 +126,8 @@ public class XmlReader {
 			SAXParser saxParser = factory.newSAXParser();
 
 			DefaultHandler handler = new DefaultHandler() {
-
+				boolean firstline = true;
+				boolean long_desc;
 
 				public void startElement(String uri, String localName,String qName, 
 						Attributes attributes) throws SAXException {
@@ -135,12 +136,35 @@ public class XmlReader {
 						String name = attributes.getValue("name");
 						String description = attributes.getValue("description");
 						Integer priceTTC = Integer.parseInt(attributes.getValue("priceTTC"));
-						//dbHandler.updateProduct(ref, sellPrice);
+						String modification = attributes.getValue("modification");
 					}
 
 					if (qName.equalsIgnoreCase("DESCRIPTION")) {
-						String long_desc = attributes.getValue("name");
-						//dbHandler.updateProduct(ref, sellPrice);
+						long_desc = true;
+					}
+					
+					if (qName.equalsIgnoreCase("PROMOTION")) {
+						int id = Integer.parseInt(attributes.getValue("id"));
+						int quantityMin = Integer.parseInt(attributes.getValue("quantityMin"));
+						int rebate = Integer.parseInt(attributes.getValue("rebate"));
+						
+						SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+						Date startDate = null;
+						Date endDate = null;
+						try {
+							startDate = formatter.parse(attributes.getValue("debut"));
+							endDate = formatter.parse(attributes.getValue("fin"));
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+						Promotion promo = new Promotion(startDate, endDate, rebate, quantityMin, id);
+					}
+				}
+				
+				public void characters(char ch[], int start, int length) throws SAXException {
+					if (long_desc) {
+						String long_d = new String(ch, start, length);
+						long_desc = false;
 					}
 				}
 			};
