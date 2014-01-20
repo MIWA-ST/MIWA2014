@@ -215,27 +215,70 @@ public class SyncMessHandler {
 		else if (serviceToPerform.equals("cms_type_carte"))
 		{
 			LOGGER.info("***** Carte type service started.");
-			if (actionToPerform.equals("c"))
+
+			String id = "";
+			String month_lim = "";
+			String tot_lim = "";
+			String nb_ech = "";
+			
+			NodeList nl = xml.getDocumentElement().getChildNodes().item(0).getChildNodes();
+			
+			for (int i = 0; i < nl.getLength(); ++i)
 			{
-				LOGGER.info("***** Create a new card.");
-				
-				String id = "";
-				String month_lim = "";
-				String tot_lim = "";
-				String nb_ech = "";
-				
-				NodeList nl = xml.getDocumentElement().getChildNodes().item(0).getChildNodes();
-				
-				for (int i = 0; i < nl.getLength(); ++i)
+				if (nl.item(i).getNodeName().equals("id"))
+					id = nl.item(i).getTextContent();
+				if (nl.item(i).getNodeName().equals("limite_mesuelle"))
+					month_lim = nl.item(i).getTextContent();
+				if (nl.item(i).getNodeName().equals("limite_totale"))
+					tot_lim = nl.item(i).getTextContent();
+				if (nl.item(i).getNodeName().equals("nb_echelon"))
+					nb_ech = nl.item(i).getTextContent();					
+			}
+			
+			Float month_lim_db;
+			Float tot_lim_db;
+			Integer nb_ech_db;
+			
+			try
+			{
+				month_lim_db = Float.parseFloat(month_lim);
+				tot_lim_db = Float.parseFloat(tot_lim);
+				nb_ech_db = Integer.parseInt(nb_ech);
+			}
+			catch (NumberFormatException e)
+			{
+				LOGGER.info("ERROR : Input XML data are not all valid numbers.");
+				return false;
+			}
+						
+			if (actionToPerform.equals("c"))
+			{				
+				DbHandler dbHandler = new DbHandler();
+				try 
 				{
-					if (nl.item(i).getNodeName().equals("id"))
-						id = nl.item(i).getTextContent();
-					if (nl.item(i).getNodeName().equals("limite_mesuelle"))
-						month_lim = nl.item(i).getTextContent();
-					if (nl.item(i).getNodeName().equals("limite_totale"))
-						tot_lim = nl.item(i).getTextContent();
-					if (nl.item(i).getNodeName().equals("nb_echelon"))
-						nb_ech = nl.item(i).getTextContent();					
+					// Connexion à la BDD
+					Connection connection = dbHandler.open();
+
+					LOGGER.info("***** REQUEST -> Creation of a new card with ID : " + id + ", MONTH LIMIT : " + month_lim + ", TOTAL LIMIT : " + tot_lim + " AND WITH " + nb_ech + " ECHELONS.");			
+						
+					// Ajout carte
+					PreparedStatement pS = connection.prepareStatement("INSERT INTO loyalty_card_type(CARD_TYPE_CODE, MONTLY_CREDIT_LIMIT, TOTAL_CREDIT_LIMIT, ECHELON_NB) VALUES (?, ?, ?, ?);");
+					pS.setString(1, id);
+					pS.setFloat(2, month_lim_db);
+					pS.setFloat(3, tot_lim_db);
+					pS.setInt(4, nb_ech_db);
+					pS.executeUpdate();
+						
+					LOGGER.info("***** REQUEST -> Done");	
+				} 
+				catch (SQLException e) 
+				{
+					System.err.println("ERROR : " + e.getMessage());		
+					return false;
+				}
+				finally
+				{
+					dbHandler.close();
 				}
 				
 				return true;
