@@ -107,11 +107,8 @@ public class XmlReader {
 						productList = new ArrayList<>();
 						promo = null;
 					}
-
 				}
 			};
-
-
 			LOGGER.severe("***** " + "Début du parsing des promotions (Flux GC -> MDM)");
 			saxParser.parse(this.filename, handler);
 			LOGGER.severe("***** " + "Fin du parsing des promotions (Flux GC -> MDM)");
@@ -128,8 +125,10 @@ public class XmlReader {
 			final Logger LOGGER = Logger.getLogger(XmlReader.class.getName());
 
 			DefaultHandler handler = new DefaultHandler() {
-				boolean firstline = true;
 				boolean long_desc;
+				ArrayList<Product> productList = new ArrayList<>();
+				ArrayList<PromotionForGC> promoGCList = new ArrayList<>();
+				String long_d = null;
 
 				public void startElement(String uri, String localName,String qName, 
 						Attributes attributes) throws SAXException {
@@ -161,18 +160,27 @@ public class XmlReader {
 							e.printStackTrace();
 						}
 						PromotionForGC promo = new PromotionForGC(id, quantityMin, rebate, startDate, endDate);
+						promoGCList.add(promo);
 					}
 				}
 				
 				public void characters(char ch[], int start, int length) throws SAXException {
 					if (long_desc) {
-						String long_d = new String(ch, start, length);
+						long_d = new String(ch, start, length);
 						long_desc = false;
 					}
 				}
+				
+				public void endElement(String uri, String localName,
+						String qName) throws SAXException {
+
+					if (qName.equalsIgnoreCase("PRODUCT")) {
+					}
+				}
 			};
-			LOGGER.severe("***** " + "Parsing des promotions (Flux fournisseur delta -> MDM)");
+			LOGGER.severe("***** " + "Début parsing (Flux fournisseur delta -> MDM)");
 			saxParser.parse(this.filename, handler);
+			LOGGER.severe("***** " + "Fin du parsing (Flux fournisseur delta -> MDM)");
 
 		} catch (Exception e) {
 			e.printStackTrace();
