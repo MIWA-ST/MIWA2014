@@ -261,27 +261,27 @@ public class XMLManager
 									break;
 								case "geographie":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("departement").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** Le département est: " + c.getValue());
 								    break;
 								case "sexe":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("sexe").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** Le sexe est: " + c.getValue());
 								    break;
 								case "situation-familiale":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("situation").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** La situation familiale est: " + c.getValue());
 								    break;
 								case "enfant":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("enfant").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** Le nombre d'enfants est de: " + c.getValue());
 								    break;
 								case "fidelite":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("carte").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** La fidélité est: " + c.getValue());
 								    break;
 							}
@@ -397,7 +397,7 @@ public class XMLManager
 		else
 		{
 			bl += "<CRITERE type=\"enfant\" valeur=\"FALSE\" />"
-					+ "<CRITERE type=\"fidelite\" valeur=\"2\" />";
+					+ "<CRITERE type=\"fidelite\" valeur=\"Silver\" />";
 		}	
 		
 		bl += "</CRITERES></XML>";
@@ -495,7 +495,7 @@ public class XMLManager
 		Client client = new Client();
 		File file = new File (xml);
 		Document compteClientFile = dBuilder.parse(file);	
-		LOGGER.info("***** Début du parsage du fichier");
+		LOGGER.info("***** Début du parsing du fichier");
 		
 		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
@@ -507,6 +507,13 @@ public class XMLManager
 		for (int i = 0; i < compteNodes.getLength(); i++)
 		{
 			Node infoNodes = compteNodes.item(i);
+			String mat = infoNodes.getAttributes().getNamedItem("nom").getNodeValue();
+			client = Client.getClient(mat);
+			
+			if (client == null)
+				client = new Client(Integer.parseInt(mat));
+				
+			//client.setMatricule();
 			client.setNom(infoNodes.getAttributes().getNamedItem("nom").getNodeValue());
 			client.setPrenom(infoNodes.getAttributes().getNamedItem("prenom").getNodeValue());
 			client.setAdresse(infoNodes.getAttributes().getNamedItem("adresse").getNodeValue());
@@ -525,16 +532,45 @@ public class XMLManager
 					break;
 				}
 			}
-			Client.clientsList.add(client);
-			JdbcConnection.getInstance().updateClientInternet(client);
-			LOGGER.info("***** Modification effectuée en BDD");
+			
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder dBuilder = null;
+			try {
+				dBuilder = dbFactory.newDocumentBuilder();
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Document doc = dBuilder.parse(new InputSource(new StringReader(
+					getModifCompteCreditFed(client))));
+			doc.getDocumentElement().normalize();
+			
+			if (SyncMessHandler.getSyncMessSender().sendXML(
+					EApplication.MONETIQUE, doc) == false)
+			{
+				LOGGER.warning("Impossible de contacter la monétique pour la suppression d'un compte crédit");
+			} else {
+				LOGGER.info("***** MAJ du compte crédit " + client.getMatricule() + " effectué auprès de la Monétique");
+				// Retour des info à Internet
+				SyncMessHandler.getSyncMessSender().sendMessage(
+						EApplication.INTERNET, "true");
+				LOGGER.info("***** Confirmation de la MAJ auprès d'Internet");
+				
+				Client.clientsList.add(client);
+				JdbcConnection.getInstance().updateClientInternet(client);
+				LOGGER.info("***** Modification effectuée en BDD");
+			}
+			
+			
 		}
 		String bl = "true";
 		
 		// Retour des info à Internet
-		SyncMessHandler.getSyncMessSender().sendMessage(
+	/*	SyncMessHandler.getSyncMessSender().sendMessage(
 				EApplication.INTERNET, bl);
-		LOGGER.info("***** Confirmation effectuée auprès d'Internet");
+		LOGGER.info("***** Confirmation effectuée auprès d'Internet");*/
+		
 		return bl;
 	}
 	
@@ -551,41 +587,62 @@ public class XMLManager
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
 		LOGGER.info("***** Demande effectuée le: " + seqDate);
 		int matricule = 0;
+		String mat = null;
 		
 		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		
+		String bl = "true";
+		
 		for (int i = 0; i < compteNodes.getLength(); i++)
 		{
 			Node infoNodes = compteNodes.item(i);
 			matricule = Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue());
 			LOGGER.info("***** Demande de suppression du compte " + matricule);
+			
 			for (int j = 0 ; j < Client.clientsList.size(); j++)
 			{
 				if (Client.clientsList.get(j).getMatricule() == matricule)
 				{
-					Client.clientsList.remove(j);
-					break;
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+							.newInstance();
+					DocumentBuilder dBuilder = null;
+					try {
+						dBuilder = dbFactory.newDocumentBuilder();
+					} catch (ParserConfigurationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Document doc = dBuilder.parse(new InputSource(new StringReader(
+							getSupprCompteCreditFed(matricule))));
+					doc.getDocumentElement().normalize();
+					
+					if (matricule != 0)
+					{
+						if (SyncMessHandler.getSyncMessSender().sendXML(
+								EApplication.MONETIQUE, doc) == false)
+						{
+							LOGGER.warning("Impossible de contacter la monétique pour la suppression d'un compte crédit");
+						} else {
+							LOGGER.info("***** Suppression du compte crédit " + matricule + " effectué auprès de la Monétique");
+							// Retour des info à Internet
+							SyncMessHandler.getSyncMessSender().sendMessage(
+									EApplication.INTERNET, bl);
+							LOGGER.info("***** Confirmation de la suppression auprès d'Internet");
+						}
+
+						Client.clientsList.remove(j);
+						break;
+					}
+					
 				}
 			}
 			JdbcConnection.getInstance().deleteClientInternet(matricule);
 			LOGGER.info("***** Suppression effectuée en BDD");
 		}
-		String bl = "true";
+		
 		
 		// Suppression des comptes chez la monétique
-		if (matricule != 0)
-		{
-			if (SyncMessHandler.getSyncMessSender().sendMessage(
-					EApplication.MONETIQUE, getSupprCompteCreditFed(matricule)) == false)
-			{
-				LOGGER.warning("Impossible de contacter la monétique pour la suppression d'un compte crédit");
-			} else {
-				LOGGER.info("***** Suppression du compte crédit " + matricule + " effectué auprès de la Monétique");
-				// Retour des info à Internet
-				SyncMessHandler.getSyncMessSender().sendMessage(
-						EApplication.INTERNET, bl);
-				LOGGER.info("***** Confirmation de la suppression auprès d'Internet");
-			}
-		}
+		
 			return bl;
 	}
 	

@@ -93,6 +93,9 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		if (source == EApplication.BI){
 			// Segmentation client
 			LOGGER.info("*****Fichier reçu du BI");
+			LOGGER.info("*****************************");
+			LOGGER.info("*****************************");
+			
 			
 			//TODO parser la segmentation reçue
 	
