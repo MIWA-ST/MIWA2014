@@ -65,10 +65,11 @@ public class Vente {
 					// si client non fidélisé
 					// traiter paiement par espèce OU cb
 					int lower = 0;
-					int higher = 2;
+					int higher = 3;
 					int paiement = (int) (Math.random() * (higher - lower))
 							+ lower;
 					String type = "";
+					String idClient = "";
 					if (paiement == 0) {
 						type = "esp";
 						// paiement espece
@@ -76,7 +77,7 @@ public class Vente {
 						// prixtotal = prix à payer
 						System.out.println(prixtotal);
 						System.out.println("paiement espece ok");
-					} else {
+					} else if (paiement == 1){
 						int cbmin = 0;
 						int cbmax = 99999999;
 						int cbchiffre = (int) (Math.random() * (cbmax - cbmin))
@@ -104,7 +105,10 @@ public class Vente {
 						if (result)
 							System.out.println("CB OK");
 						else
+						{
 							System.out.println("CB NOK");
+							type = "esp";
+						}
 						// paiement CB
 						// selectedproducts = liste des produit
 						// prixtotal = prix à payer
@@ -115,8 +119,23 @@ public class Vente {
 						// ticket au BO)
 						// if NOK paiement espece
 					}
+					else
+					{
+						System.out.println("paiement par carte de fidelité");
+						try {
+							ResultSet rs = Main.bdd
+									.select("select client_mat from clientfid");
+							while (rs.next()) {
+								idClient = rs.getString(1);
+							}
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						XmlGenerator.CheckFidPaymentWithMo(""+prixtotal, idClient);
+					}
 					System.out.println("-------------------------------------");
-					XmlGenerator.SendTicketToBO(selectedproducts, "1", type);
+					XmlGenerator.SendTicketToBO(selectedproducts, idClient, type);
 				}
 				System.out.println(ClockClient.getClock().getHour());
 				i++;
