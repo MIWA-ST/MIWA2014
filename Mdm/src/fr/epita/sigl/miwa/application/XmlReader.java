@@ -144,7 +144,7 @@ public class XmlReader {
 					}
 					
 					if (qName.equalsIgnoreCase("PROMOTION")) {
-						int id = Integer.parseInt(attributes.getValue("id"));
+						String id = attributes.getValue("id");
 						int quantityMin = Integer.parseInt(attributes.getValue("quantityMin"));
 						int rebate = Integer.parseInt(attributes.getValue("rebate"));
 						
@@ -157,7 +157,7 @@ public class XmlReader {
 						} catch (ParseException e) {
 							e.printStackTrace();
 						}
-						Promotion promo = new Promotion(startDate, endDate, rebate, quantityMin, id);
+						PromotionForGC promo = new PromotionForGC(id, quantityMin, rebate, startDate, endDate);
 					}
 				}
 				
