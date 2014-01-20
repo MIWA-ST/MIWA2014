@@ -36,7 +36,9 @@ public class Main {
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		
 		/* CODE HERE */
-		new BufferedReader(new InputStreamReader(System.in));
+		new BufferedReader(new InputStreamReader(System.in));	
+		Date clockDate = ClockClient.getClock().getHour();
+		System.out.println(clockDate);
 	
 		// Init MySQL connector
 		InitMysqlConnector.init();
@@ -62,9 +64,6 @@ public class Main {
             System.err.println("ERROR : " + e.getMessage());
         }*/
 		
-		Date clockDate = ClockClient.getClock().getHour();
-		System.out.println(clockDate);
-
 	    DocumentBuilder db;
 		try {
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -73,18 +72,15 @@ public class Main {
 		    Document doc_bis = db.parse(is);
 			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, doc_bis);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "Coucou");
-		try {
+		
+		/*try {
 			Thread.sleep(40000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.BI, "Coucou BI");
+		}*/
 		/*AsyncMessageFactory.getInstance().getAsyncMessageManager().send(message, destination);
 		SyncMessFactory.getSyncMessSender().sendMessage(to, message)
 		ClockClient.getClock().wakeMeUp(date, message);*/
