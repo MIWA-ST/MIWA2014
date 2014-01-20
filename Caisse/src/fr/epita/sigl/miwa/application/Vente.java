@@ -2,6 +2,7 @@ package fr.epita.sigl.miwa.application;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
@@ -122,15 +123,30 @@ public class Vente {
 					else
 					{
 						System.out.println("paiement par carte de fidelité");
+						ArrayList<String> listclient = new ArrayList<String>();
+						int iteratclient = 0;
 						try {
 							ResultSet rs = Main.bdd
 									.select("select client_mat from clientfid");
+							
 							while (rs.next()) {
 								idClient = rs.getString(1);
+								listclient.add(rs.getString(1));
+								iteratclient++;
 							}
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
+						}
+						int min = 0;
+						int max = iteratclient;
+						int rclient = (int) (Math.random() * (max - min))
+								+ min;
+						int iterator = 0;
+						for (String el : listclient)
+						{
+							if (iterator == rclient)
+								idClient = el;
 						}
 						
 						String updatedTicket = XmlGenerator.AskReducToBO(selectedproducts, idClient, type);
