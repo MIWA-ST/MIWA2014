@@ -37,8 +37,9 @@ create table FIDELITY_CREDIT_ACCOUNT
    BLAKLISTED_DATE      datetime,
    TOTAL_CREDIT_AMOUNT  numeric(8,0),
    TOTAL_REPAID_CREDIT__AMOUNT numeric(8,0),
+   IS_DELETED			bool,
    primary key (ID_FIDELITY_CREDIT_ACCOUNT),
-   key AK_CUSTOMER_CODE (CUSTOMER_CODE)
+   unique key AK_CUSTOMER_CODE (CUSTOMER_CODE)
 );
 
 /*==============================================================*/
@@ -52,7 +53,7 @@ create table LOYALTY_CARD_TYPE
    TOTAL_CREDIT_LIMIT   numeric(8,0),
    ECHELON_NB           numeric(8,0),
    primary key (ID_LOYALTY_CARD_TYPE),
-   key AK_CARD_TYPE_CODE (CARD_TYPE_CODE)
+   unique key AK_CARD_TYPE_CODE (CARD_TYPE_CODE)
 );
 
 alter table FIDELITY_CREDIT add constraint FK_FIDELITY_CREDIT_ACCOUNT_HAS_FIDELITY_CREDITS foreign key (ID_FIDELITY_CREDIT_ACCOUNT)
