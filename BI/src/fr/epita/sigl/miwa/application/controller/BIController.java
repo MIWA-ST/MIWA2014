@@ -49,8 +49,6 @@ public class BIController {
 
 	private boolean hasStockGC = false;
 
-	private boolean hasStockBO = false;
-
 	private boolean hasMDMData = false;
 
 	private boolean hasSaleInternet = false;
@@ -74,14 +72,13 @@ public class BIController {
 		return BIControllerHolder.instance;
 	}
 	public void generateStockStatistic() {
-		if (!hasMDMData || !hasStockBO || !hasStockGC){
-			LOGGER.severe("Génération des statistiques des stocks interrompue : manque d'informations");
-			LOGGER.severe("MDM: " + hasMDMData + ", BO: " + hasStockBO + ", GC: " + hasStockGC);
+		if (!hasMDMData || !hasStockGC){
+			LOGGER.severe("***** Génération des statistiques des stocks interrompue : manque d'informations");
+			LOGGER.severe("***** MDM: " + hasMDMData + ", GC: " + hasStockGC);
 			return;
 		}
 		List<Stock> stocks = biDao.getStockOfToday();
 		List<StockStatistic> stockStatistics = computer.computeStockStatistics(stocks);
-		hasStockBO = false;
 		hasStockGC = false;
 		biDao.insertStockStatistics(stockStatistics);
 		printer.publishStockStatistics(stockStatistics);
@@ -89,8 +86,8 @@ public class BIController {
 
 	public void generateSaleStatistic() {
 		if (!hasSaleBO){
-			LOGGER.severe("Génération des statistiques des ventes interrompue : manque d'informations");
-			LOGGER.severe("BO: " + hasSaleBO);
+			LOGGER.severe("***** Génération des statistiques des ventes interrompue : manque d'informations");
+			LOGGER.severe("***** BO: " + hasSaleBO);
 			return;
 		}
 		List<Sale> sales = biDao.getSalesOfToday();
@@ -105,8 +102,8 @@ public class BIController {
 	public String generateSegmentation(String message) {
 		List<Critere> criteres = parser.parseCRMMessage(message);
 		if (!hasClient || !hasDetailSaleBOForSegmentation){
-			LOGGER.severe("Génération de la segmentation interrompue : manque d'informations");
-			LOGGER.severe("CRM: " + hasClient + ", BO: " + hasDetailSaleBOForSegmentation);
+			LOGGER.severe("***** Génération de la segmentation interrompue : manque d'informations");
+			LOGGER.severe("***** CRM: " + hasClient + ", BO: " + hasDetailSaleBOForSegmentation);
 			return printer.createSegmentationFile(criteres, new ArrayList<Segmentation>());
 		}
 		List<Client> clients = biDao.getClientByCriteria(criteres);
@@ -120,8 +117,8 @@ public class BIController {
 	/** @param path */
 	public void generatePaymentStatistics() {
 		if (!hasDetailSaleBOForPayment){
-			LOGGER.severe("Génération des statistiques de paiement interrompue : manque d'informations");
-			LOGGER.severe("BO: " + hasDetailSaleBOForPayment);
+			LOGGER.severe("***** Génération des statistiques de paiement interrompue : manque d'informations");
+			LOGGER.severe("***** BO: " + hasDetailSaleBOForPayment);
 			return;
 		}
 		List<DetailSale> detailSales = biDao.getAllBODetailSales();
@@ -134,8 +131,8 @@ public class BIController {
 
 	public void parseGCMessage(String message){
 		if (!hasMDMData){
-			LOGGER.severe("Insertion des stocks en BDD interrompue : manque d'informations");
-			LOGGER.severe("MDM: " + hasMDMData);
+			LOGGER.severe("***** Insertion des stocks en BDD interrompue : manque d'informations");
+			LOGGER.severe("***** MDM: " + hasMDMData);
 			return;
 		}
 		List<Stock> stocks = parser.parseStockMessage(message);
@@ -145,8 +142,8 @@ public class BIController {
 
 	public void parseBOMessage(String message) {
 		if (!hasMDMData){
-			LOGGER.severe("Insertion des données du BO en BDD interrompue : manque d'informations");
-			LOGGER.severe("MDM: " + hasMDMData);
+			LOGGER.severe("***** Insertion des données du BO en BDD interrompue : manque d'informations");
+			LOGGER.severe("***** MDM: " + hasMDMData);
 			return;
 		}
 		Map<EBOMessageType, List<Object>> boData = parser.parseBOMessage(message);
@@ -161,15 +158,6 @@ public class BIController {
 			}
 			biDao.insertPromotions(promotions);
 			hasPromoBO = true;
-			break;
-		case STOCK:
-			List<Stock> stocks = new ArrayList<Stock>();
-			for (Object o : values){
-				Stock stock = (Stock) o;
-				stocks.add(stock);
-			}
-			biDao.insertStocks(stocks);
-			hasStockBO = true;
 			break;
 		case VENTE:
 			List<Sale> sales = new ArrayList<Sale>();
@@ -186,8 +174,8 @@ public class BIController {
 	}
 	public void parseInternetMessage(String message) {
 		if (!hasMDMData){
-			LOGGER.severe("Insertion des ventes de l'Internet en BDD interrompue : manque d'informations");
-			LOGGER.severe("MDM: " + hasMDMData);
+			LOGGER.severe("***** Insertion des ventes de l'Internet en BDD interrompue : manque d'informations");
+			LOGGER.severe("***** MDM: " + hasMDMData);
 			return;
 		}
 		List<Sale> sales = parser.parseSaleMessage(message);
@@ -210,8 +198,8 @@ public class BIController {
 
 	public void parseBOFile(File file) {
 		if (!hasClient || !hasMDMData){
-			LOGGER.severe("Insertion des ventes détaillées du BO en BDD interrompue : manque d'informations");
-			LOGGER.severe("MDM: " + hasMDMData + ", CRM: " + hasClient);
+			LOGGER.severe("***** Insertion des ventes détaillées du BO en BDD interrompue : manque d'informations");
+			LOGGER.severe("***** MDM: " + hasMDMData + ", CRM: " + hasClient);
 			return;
 		}
 		List<DetailSale> detailSales = parser.parseDetailSale(file);
@@ -222,8 +210,8 @@ public class BIController {
 
 	public void parseInternetFile(File file) {
 		if (!hasClient || !hasMDMData){
-			LOGGER.severe("Insertion des ventes détaillées de l'Internet en BDD interrompue : manque d'informations");
-			LOGGER.severe("MDM: " + hasMDMData + ", CRM: " + hasClient);
+			LOGGER.severe("***** Insertion des ventes détaillées de l'Internet en BDD interrompue : manque d'informations");
+			LOGGER.severe("***** MDM: " + hasMDMData + ", CRM: " + hasClient);
 			return;
 		}
 		List<DetailSale> detailSales = parser.parseDetailSale(file);

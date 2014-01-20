@@ -47,8 +47,8 @@ public class BIParser {
 			dBFactory = DocumentBuilderFactory.newInstance();
 			dBuilder = dBFactory.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			LOGGER.severe("Erreur : impossible d'initialiser le parser DOM");
-			LOGGER.severe("L'erreur est : " + e);
+			LOGGER.severe("***** Erreur : impossible d'initialiser le parser DOM");
+			LOGGER.severe("***** L'erreur est : " + e);
 		}
 	}
 
@@ -92,9 +92,10 @@ public class BIParser {
 				stock.setStockQty(Integer.valueOf(tmpInfo));
 				tmpInfo = stockNode.getAttributes().getNamedItem("max").getNodeValue();
 				stock.setMaxQty(Integer.valueOf(tmpInfo));
-				stock.setStore("entrepot");
 				Date dateTime = new SimpleDateFormat("YYYY-MM-dd").parse(dateInfo);
 				stock.setDateTime(dateTime);
+				String store = stockNode.getAttributes().getNamedItem("lieu").getNodeValue();
+				stock.setStore(store);
 
 				stockList.add(stock);
 			}
@@ -102,14 +103,14 @@ public class BIParser {
 			// Suppression du fichier
 			file.delete();
 		} catch (IOException e1) {
-			LOGGER.severe("Erreur : impossible de transformer le message en fichier");
-			LOGGER.severe("L'erreur est : " + e1);
+			LOGGER.severe("***** Erreur : impossible de transformer le message en fichier");
+			LOGGER.severe("***** L'erreur est : " + e1);
 		} catch (SAXException e2) {
-			LOGGER.severe("Erreur : impossible de parser le fichier");
-			LOGGER.severe("L'erreur est : " + e2);
+			LOGGER.severe("***** Erreur : impossible de parser le fichier");
+			LOGGER.severe("***** L'erreur est : " + e2);
 		} catch (ParseException e) {
-			LOGGER.severe("Erreur : date au mauvais format dans le XML");
-			LOGGER.severe("L'erreur est : " + e);
+			LOGGER.severe("***** Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("***** L'erreur est : " + e);
 		}
 
 		return stockList;
@@ -147,57 +148,18 @@ public class BIParser {
 				result = new HashMap<EBOMessageType, List<Object>>();
 				result.put(EBOMessageType.PROMO, parseBOPromotionMessage(boFile));
 			}
-			if (object.equalsIgnoreCase("information stock")) {
-				result = new HashMap<EBOMessageType, List<Object>>();
-				result.put(EBOMessageType.STOCK, parseBOStockMessage(boFile));
-			}
 
 			// Suppression du fichier
 			file.delete();
 		} catch (IOException e1) {
-			LOGGER.severe("Erreur : impossible de transformer le message en fichier");
-			LOGGER.severe("L'erreur est : " + e1);
+			LOGGER.severe("***** Erreur : impossible de transformer le message en fichier");
+			LOGGER.severe("***** L'erreur est : " + e1);
 		} catch (SAXException e2) {
-			LOGGER.severe("Erreur : impossible de parser le fichier");
-			LOGGER.severe("L'erreur est : " + e2);
+			LOGGER.severe("***** Erreur : impossible de parser le fichier");
+			LOGGER.severe("***** L'erreur est : " + e2);
 		}
 
 		return result;
-	}
-
-	/**
-	 * Parse le message "Stock" envoyé par le BO
-	 * @param message
-	 * @return La liste des stocks
-	 */
-	private List<Object> parseBOStockMessage(Document stockFile){
-		List<Object> stockList = null;
-
-		// Parsage du fichier : Partie corps
-		NodeList bodyNodes = stockFile.getElementsByTagName("STOCKS");
-		String storeId = bodyNodes.item(0).getAttributes().getNamedItem("lieu").getNodeValue();
-		NodeList stockNodes = bodyNodes.item(0).getChildNodes();
-		stockList = new ArrayList<Object>();
-
-		// Création des éléments Stock
-		for (int i = 0; i < stockNodes.getLength(); i++) {
-			Node stockNode = stockNodes.item(i);
-			String tmpInfo;
-			Stock stock = new Stock();
-
-			stock.setProductRef(stockNode.getAttributes().getNamedItem("ref-article").getNodeValue());
-			tmpInfo = stockNode.getAttributes().getNamedItem("commande").getNodeValue();
-			stock.setOrdered(Boolean.valueOf(tmpInfo));
-			tmpInfo = stockNode.getAttributes().getNamedItem("stock").getNodeValue();
-			stock.setStockQty(Integer.valueOf(tmpInfo));
-			tmpInfo = stockNode.getAttributes().getNamedItem("max").getNodeValue();
-			stock.setMaxQty(Integer.valueOf(tmpInfo));
-			stock.setStore(storeId);
-
-			stockList.add(stock);
-		}
-
-		return stockList;
 	}
 
 	/**
@@ -234,8 +196,8 @@ public class BIParser {
 				promotionList.add(promotion);
 			}
 		}  catch (ParseException e) {
-			LOGGER.severe("Erreur : date au mauvais format dans le XML");
-			LOGGER.severe("L'erreur est : " + e);
+			LOGGER.severe("***** Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("***** L'erreur est : " + e);
 		}
 
 		return promotionList;
@@ -281,8 +243,8 @@ public class BIParser {
 				saleList.add(sale);
 			}
 		}  catch (ParseException e) {
-			LOGGER.severe("Erreur : date au mauvais format dans le XML");
-			LOGGER.severe("L'erreur est : " + e);
+			LOGGER.severe("***** Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("***** L'erreur est : " + e);
 		}
 
 		return saleList;
@@ -350,11 +312,11 @@ public class BIParser {
 			// Suppression du fichier
 			file.delete();
 		} catch (IOException e1) {
-			LOGGER.severe("Erreur : impossible de transformer le message en fichier");
-			LOGGER.severe("L'erreur est : " + e1);
+			LOGGER.severe("***** Erreur : impossible de transformer le message en fichier");
+			LOGGER.severe("***** L'erreur est : " + e1);
 		} catch (SAXException e2) {
-			LOGGER.severe("Erreur : impossible de parser le fichier");
-			LOGGER.severe("L'erreur est : " + e2);
+			LOGGER.severe("***** Erreur : impossible de parser le fichier");
+			LOGGER.severe("***** L'erreur est : " + e2);
 		}
 
 		return criteriaList;
@@ -411,14 +373,14 @@ public class BIParser {
 			// Suppression du fichier
 			file.delete();
 		} catch (IOException e1) {
-			LOGGER.severe("Erreur : impossible de transformer le message en fichier");
-			LOGGER.severe("L'erreur est : " + e1);
+			LOGGER.severe("***** Erreur : impossible de transformer le message en fichier");
+			LOGGER.severe("***** L'erreur est : " + e1);
 		} catch (SAXException e2) {
-			LOGGER.severe("Erreur : impossible de parser le fichier");
-			LOGGER.severe("L'erreur est : " + e2);
+			LOGGER.severe("***** Erreur : impossible de parser le fichier");
+			LOGGER.severe("***** L'erreur est : " + e2);
 		} catch (ParseException e3) {
-			LOGGER.severe("Erreur : date au mauvais format dans le XML");
-			LOGGER.severe("L'erreur est : " + e3);
+			LOGGER.severe("***** Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("***** L'erreur est : " + e3);
 		}
 
 		return saleList;		
@@ -460,11 +422,11 @@ public class BIParser {
 				clientList.add(client);
 			}
 		} catch (IOException | SAXException e1) {
-			LOGGER.severe("Erreur : impossible de parser le fichier");
-			LOGGER.severe("L'erreur est : " + e1);
+			LOGGER.severe("***** Erreur : impossible de parser le fichier");
+			LOGGER.severe("***** L'erreur est : " + e1);
 		} catch (ParseException e2) {
-			LOGGER.severe("Erreur : date au mauvais format dans le XML");
-			LOGGER.severe("L'erreur est : " + e2);
+			LOGGER.severe("***** Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("***** L'erreur est : " + e2);
 		}
 
 		return clientList;
@@ -519,9 +481,9 @@ public class BIParser {
 
 							promotion.setProductReference(product.getReference());
 							tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
-							promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
+							promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
 							tmpInfo = promotionNode.getAttributes().getNamedItem("fin").getNodeValue();
-							promotion.setEndDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
+							promotion.setEndDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
 							tmpInfo = promotionNode.getAttributes().getNamedItem("pourcent").getNodeValue();
 							promotion.setPercentage(Integer.valueOf(tmpInfo));
 							promotion.setStore("");
@@ -536,11 +498,11 @@ public class BIParser {
 			mdmData.setPromotions(promotionList);
 
 		} catch (IOException | SAXException e1) {
-			LOGGER.severe("Erreur : impossible de parser le fichier");
-			LOGGER.severe("L'erreur est : " + e1);
+			LOGGER.severe("***** Erreur : impossible de parser le fichier");
+			LOGGER.severe("***** L'erreur est : " + e1);
 		} catch (ParseException e2) {
-			LOGGER.severe("Erreur : date au mauvais format dans le XML");
-			LOGGER.severe("L'erreur est : " + e2);
+			LOGGER.severe("***** Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("***** L'erreur est : " + e2);
 		}
 
 		return mdmData;		
@@ -610,11 +572,11 @@ public class BIParser {
 				detailSaleList.add(detailSale);
 			}
 		} catch (IOException | SAXException e1) {
-			LOGGER.severe("Erreur : impossible de parser le fichier");
-			LOGGER.severe("L'erreur est : " + e1);
+			LOGGER.severe("***** Erreur : impossible de parser le fichier");
+			LOGGER.severe("***** L'erreur est : " + e1);
 		} catch (ParseException e2) {
-			LOGGER.severe("Erreur : date au mauvais format dans le XML");
-			LOGGER.severe("L'erreur est : " + e2);
+			LOGGER.severe("***** Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("***** L'erreur est : " + e2);
 		}
 
 		return detailSaleList;		

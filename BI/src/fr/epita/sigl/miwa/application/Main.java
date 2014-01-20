@@ -32,7 +32,7 @@ public class Main {
 		reveilStock.add(Calendar.DAY_OF_MONTH, 1);
 		reveilStock.set(Calendar.HOUR_OF_DAY, 10);
 		reveilStock.set(Calendar.MINUTE, 0);
-		LOGGER.info("Enregistrement auprès de la Clock pour la génération des statistiques de stock à " + reveilStock.getTime());
+		LOGGER.info("***** Enregistrement auprès de la Clock pour la génération des statistiques de stock à " + reveilStock.getTime());
 		ClockClient.getClock().wakeMeUpEveryDays(reveilStock.getTime(), EClockMessage.STOCK.toString());
 		// Réveil à 22h pour les ventes
 		Calendar reveilVente = Calendar.getInstance();
@@ -40,7 +40,7 @@ public class Main {
 		reveilVente.add(Calendar.DAY_OF_MONTH, 1);
 		reveilVente.set(Calendar.HOUR_OF_DAY, 23);
 		reveilVente.set(Calendar.MINUTE, 0);
-		LOGGER.info("Enregistrement auprès de la Clock pour la génération des statistiques de ventes à " + reveilVente.getTime());
+		LOGGER.info("***** Enregistrement auprès de la Clock pour la génération des statistiques de ventes à " + reveilVente.getTime());
 		ClockClient.getClock().wakeMeUpEveryDays(reveilVente.getTime(), EClockMessage.VENTE.toString());
 		//Réveil à 23h pour la répartition des moyens de paiement
 		Calendar reveilPayment = Calendar.getInstance();
@@ -48,8 +48,14 @@ public class Main {
 		reveilPayment.add(Calendar.DAY_OF_MONTH, 1);
 		reveilPayment.set(Calendar.HOUR_OF_DAY, 23);
 		reveilPayment.set(Calendar.MINUTE, 15);
-		LOGGER.info("Enregistrement auprès de la Clock pour la génération des statistiques de paiement à " + reveilPayment.getTime());
+		LOGGER.info("***** Enregistrement auprès de la Clock pour la génération des statistiques de paiement à " + reveilPayment.getTime());
 		ClockClient.getClock().wakeMeUpEveryDays(reveilPayment.getTime(), EClockMessage.REP_PAYMENT.toString());
+		try {
+			Thread.sleep(10000000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
