@@ -96,6 +96,8 @@ try {
 }*/
 		
 		LOGGER.info("***** Caisse : envoi d'une demande de paiement CB vers la monétique");
+		LOGGER.info("***** Caisse : numero de carte bancaire -> " + numCB);
+		LOGGER.info("***** Caisse : prix total -> " + total + " €");
 		boolean resultat = SyncMessFactory.getSyncMessSender().sendXML(
 				EApplication.MONETIQUE, doc);
 		

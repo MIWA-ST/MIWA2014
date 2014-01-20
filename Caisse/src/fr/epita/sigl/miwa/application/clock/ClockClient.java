@@ -1,5 +1,6 @@
 package fr.epita.sigl.miwa.application.clock;
 
+import java.io.IOException;
 import java.util.Date;
 
 import fr.epita.sigl.miwa.application.Main;
@@ -22,19 +23,21 @@ public class ClockClient {
 	 * Elle est automatiquement appel�e lorsque l'horloge vous contacte
 	 */
 	@Deprecated
-	static public void wakeUp(Date date, Object message) {
+	static public void wakeUp(Date date, Object message){
 		if (message instanceof String) {
 			
 			if (message.equals("ouverture")) {
 				Main.open = true;
-				System.out.println(date.toString() + " : Caisse start !");
+				//System.out.println(date.toString() + " : Caisse start !");
 				if (!Main.ventealeatoires.isAlive())
-					Main.ventealeatoires.start();
+				Main.ventealeatoires.start();
+				
+					//System.out.println("thread tjrs vivant");
 				//Main.ihm.start();
 			} else if (message.equals("fermeture")){
 				Main.open = false;
 				//Main.ventealeatoires.interrupt();
-				System.out.println(date.toString() + " : Bye Caisse, its over for today!");
+				//System.out.println(date.toString() + " : Bye Caisse, its over for today!");
 			}
 			else
 			{
