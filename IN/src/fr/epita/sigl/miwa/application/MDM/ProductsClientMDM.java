@@ -31,6 +31,37 @@ public class ProductsClientMDM {
 		this.articles = products;
 	}
 	
+	public String print_logger()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append("***** Article A Vendre - PRODUCTS : [\n");
+		if (entete != null)
+			result.append(entete.print_logger());
+		else
+			result.append("*****	Entete : [ NULL ]\n");
+		
+		if (articles != null && !articles.isEmpty())
+		{
+			Integer i = 0;
+			for(ArticleAVendreMDM a : articles)
+			{
+				result.append("*****	Article ");
+				result.append(++i);
+				result.append(" : [\n");
+				
+				result.append(a.print_logger() + "\n");
+				
+				result.append("*****	]\n");
+			}
+			
+		}
+		else
+			result.append("*****	Article : [ NULL ]\n");
+		
+		return result.toString();
+	}
+	
 	public void print()
 	{
 		System.out.println("Article A Vendre - PRODUCTS : [");

@@ -14,18 +14,18 @@ Référentiel => BO, BI, Internet
 	DESCRIPTION : VARCHAR(2048)
 -->
 <XML>
-<ENTETE objet="obj" source="MDM" date="01172014"/>
+<ENTETE objet=\"obj\" source=\"MDM\" date=\"2014-01-17\"/>
 	<ARTICLES>
-		<ARTICLE reference="REF" ean="EAN" categorie="CAT" prix_fournisseur="32" prix_vente="67">
+		<ARTICLE reference=\"REF\" ean=\"EAN\" categorie=\"CAT\" prix_fournisseur=\"32\" prix_vente=\"67\">
 			<DESCRIPTION><![CDATA[<Texte multi lignes de description du produit.>]]> </DESCRIPTION>
 			<PROMOTIONS>
-				<PROMOTION debut="01022014" fin="01172014" pourcent="37" />
+				<PROMOTION debut=\"2014-02-01\" fin=\"2014-01-17\" pourcent=\"37\" />
 			</PROMOTIONS>
 		</ARTICLE>
-				<ARTICLE reference="REF" ean="EAN" categorie="CAT" prix_fournisseur="32" prix_vente="67">
+				<ARTICLE reference=\"REF\" ean=\"EAN\" categorie=\"CAT\" prix_fournisseur=\"33\" prix_vente=\"68\">
 			<DESCRIPTION><![CDATA[<Texte multi lignes de description du produit.>]]> </DESCRIPTION>
 			<PROMOTIONS>
-				<PROMOTION debut="01022014" fin="01172014" pourcent="37" />
+				<PROMOTION debut=\"2014-01-02\" fin=\"2014-01-17\" pourcent=\"38\" />
 			</PROMOTIONS>
 		</ARTICLE>
 	</ARTICLES>

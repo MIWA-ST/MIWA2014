@@ -2,20 +2,24 @@ package fr.epita.sigl.miwa.application.GC;
 
 public class DemandeNiveauStockArticlesGC {
 	private String reference;
-	private Integer quantite;
+	
 
-	public DemandeNiveauStockArticlesGC(String reference, Integer quantite)
+	public DemandeNiveauStockArticlesGC(String reference)
 	{
 		this.reference = reference;
-		this.quantite = quantite;
 	}
 	
-	public Integer getQuantite() {
-		return quantite;
-	}
-
-	public void setQuantite(Integer quantite) {
-		this.quantite = quantite;
+	public String sendXML()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append("<ARTICLE>");
+		
+		result.append("<REFERENCE>" + this.reference + "</REFERENCE>");
+		
+		result.append("<ARTICLE>");		
+		
+		return result.toString();
 	}
 
 	public String getReference() {
@@ -26,16 +30,23 @@ public class DemandeNiveauStockArticlesGC {
 		this.reference = reference;
 	}
 	
+	public String print_logger()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		if (this.reference != null)
+			result.append("***** 		REFERENCE : " + this.reference + "\n");
+		else
+			result.append("*****		REFERENCE : NULL\n");
+		
+		return result.toString();
+	}
+	
 	public void print()
 	{
 		if (this.reference != null)
 			System.out.println("		REFERENCE : " + this.reference);
 		else
 			System.out.println("		REFERENCE : NULL");
-		
-		if (this.quantite != null)
-			System.out.println("		QUANTITE : " + this.quantite);
-		else
-			System.out.println("		QUANTITE : NULL");
 	}
 }

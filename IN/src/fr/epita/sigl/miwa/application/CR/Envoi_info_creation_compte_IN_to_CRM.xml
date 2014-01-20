@@ -12,6 +12,6 @@ Champs du XML :
 
 <XML>
     <ENTETE objet="creation_compte" source="" date="" />
-        <COMPTE nom="" prenom="" adresse="" code_postal="" email="" telephone="">
+        <COMPTE civilite="" nom="" prenom="" adresse="" code_postal="" email="" telephone="" situation="" naissance="" nbenfant="" iban="" bic="">
         </COMPTE>
 </XML>
