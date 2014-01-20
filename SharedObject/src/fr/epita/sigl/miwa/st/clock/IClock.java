@@ -12,4 +12,5 @@ public interface IClock extends Remote {
 	public void wakeMeUpEveryHours(EApplication sender, Date nextOccurence, Object message) throws RemoteException;
 	public void wakeMeUpEveryDays(EApplication sender, Date nextOccurence, Object message) throws RemoteException;
 	public void wakeMeUpEveryWeeks(EApplication sender, Date nextOccurence, Object message) throws RemoteException;
+	public void removeSubscriptions(EApplication sender) throws RemoteException;
 }
