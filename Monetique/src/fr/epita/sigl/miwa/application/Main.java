@@ -3,13 +3,22 @@ package fr.epita.sigl.miwa.application;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
+import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.db.InitMysqlConnector;
 import fr.epita.sigl.miwa.st.Conf;
+import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -39,8 +48,8 @@ public class Main {
 		// Init MySQL connector
 		InitMysqlConnector.init();
 				
-	    /*DocumentBuilder db;
-		try 
+	    DocumentBuilder db;
+		/*try 
 		{
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
