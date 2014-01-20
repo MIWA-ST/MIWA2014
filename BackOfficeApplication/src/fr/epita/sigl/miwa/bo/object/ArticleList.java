@@ -7,7 +7,9 @@ import java.util.List;
 public class ArticleList
 {
 	public Date date = null;
+	public String number = null;
 	public String refclient = null;
+	public String refshop = null;
 	public String totalamount = null;
 	public List<Article> articles = null;
 	
@@ -21,8 +23,10 @@ public class ArticleList
 		System.out.println("==========ARTICLE=LIST=BEGIN==========");
 		if (this.date != null)
 		{
-			System.out.println("DATE:" + this.date.toString());			
+			System.out.println("DATE:" + this.date.toString());
+			System.out.println("NUMBER:" + this.number);
 			System.out.println("REF CLIENT:" + this.refclient);
+			System.out.println("REF SHOP:" + this.refshop);
 			System.out.println("TOTAL AMOUNT:" + this.totalamount);
 		}
 		else

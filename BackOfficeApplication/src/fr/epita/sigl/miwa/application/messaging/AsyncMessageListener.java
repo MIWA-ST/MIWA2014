@@ -16,6 +16,7 @@ import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
 import fr.epita.sigl.miwa.bo.parser.DomParserStoreManagement;
 import fr.epita.sigl.miwa.bo.parser.DomParserReferential;
 import fr.epita.sigl.miwa.bo.parser.DomParserWarehouse;
+import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.util.Convert;
 import fr.epita.sigl.miwa.bo.xmlconstructor.StoreManagementXMLConstructor;
 import fr.epita.sigl.miwa.st.EApplication;
@@ -36,16 +37,17 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 	@Override
 	public void onMessage(String message, EApplication source) {
 		LOGGER.severe(message);
-		Sale sale;
+		Sale sale = null;
+		ArticleList articleList = null;
 		switch (source) {
 		case CAISSE:
-//			System.out.println("***** Une vente réalisée envoyée par la Caisse a été reçue.");
-//
-//			DomParserCashRegister parserCashregister = new DomParserCashRegister();			
-//			sale = parserCashregister.saleTicket(message);
-//			
-//			System.out.println("****** Le client = " + sale.customer + " a acheté " + sale.articles.size() + " articles en payant par " + sale.paymentMeans + "." );
-//			System.out.println("****** Fin du parsing.");			
+			System.out.println("***** Une vente réalisée envoyée par la Caisse a été reçue.");
+
+			DomParserCashRegister parserCashregister = new DomParserCashRegister();			
+			sale = parserCashregister.saleTicket(message);
+			
+			System.out.println("****** Le client = " + sale.customer + " a acheté " + sale.articles.size() + " articles en payant par " + sale.paymentMeans + "." );
+			System.out.println("****** Fin du parsing.");			
 			break;
 		
 		case ENTREPOT:
@@ -72,7 +74,26 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			}
 			System.out.println("****** Fin du parsing.");
 			break;
-
+		case GESTION_COMMERCIALE:
+			System.out.println("***** Une demande de niveau de stock envoyée par la GC a été reçue.");
+			
+			DomParserStoreManagement parserStoreManagement = new DomParserStoreManagement();			
+			articleList = parserStoreManagement.stockLevel(message);
+			
+			System.out.println("****** date:" + articleList.date.toString() + " - Réf magazin " + articleList.refshop + " - nombre d'article:" + articleList.articles.size());
+			
+			try {
+				AsyncMessageFactory.getInstance().getAsyncMessageManager().
+				send(PlugStoreManagement.stockLevel, EApplication.GESTION_COMMERCIALE);
+				System.out.println("***** niveau de stock envoyé à la GC");
+			} catch (AsyncMessageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			System.out.println("****** Fin du parsing.");
+			break;
 		default:
 			System.out.println("****** Message reçu d'une source inconnue. #miwaFail");
 			break;

@@ -12,8 +12,10 @@ import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.bo.db.JdbcConnection;
 import fr.epita.sigl.miwa.bo.db.Mapper;
 import fr.epita.sigl.miwa.bo.file.FileManager;
+import fr.epita.sigl.miwa.bo.object.ArticleList;
 import fr.epita.sigl.miwa.bo.object.Sale;
 import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
+import fr.epita.sigl.miwa.bo.parser.DomParserStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugBusinessIntelligence;
 import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
@@ -40,10 +42,6 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-
-//		DomParserCashRegister toto = new DomParserCashRegister();
-		
-//		toto.saleTicket(PlugCashRegister.saleTicket);
 		
 		try {
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
@@ -66,20 +64,19 @@ public class Main {
 		System.out.println("***** vente par catégorie envoyées à la BI");
 		*/
 		
-
-		// BO => BI envoi des vente détaillé
+		/*
+		// BO => BI envoi des ventes détaillées
 		FileManager.createFile("ventedetaille.xml", PlugBusinessIntelligence.detailedSale);
 			AsyncFileFactory.getInstance().getFileManager().send("ventedetaille.xml", EApplication.BI);
 			System.out.println("***** vente détaillé envoyé à la BI");
-	
-		 
+		*/
 		
-		
-		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "coucou");
-
-//		FileManager.createFile("test.xml", PlugCashRegister.articleAndLocalPriceAndPromotion);
-//		AsyncFileFactory.getInstance().getFileManager().send("test.xml", EApplication.CAISSE);
-		
+		/*
+		// BO => GC envoi niveau de stock
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().
+		send(PlugStoreManagement.stockLevel, EApplication.GESTION_COMMERCIALE);
+		System.out.println("***** niveau de stock envoyé à la GC");
+		*/
 		
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
