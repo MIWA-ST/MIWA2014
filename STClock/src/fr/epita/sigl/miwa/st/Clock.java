@@ -159,6 +159,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				MessageHandler messageH = new MessageHandler(sender, date,
 						message, frequency);
 				_messagesToDeliver.add(messageH);
+				log.info(sender.getShortName() + "registred with : " + message.toString());
 			}
 		}
 	}
@@ -182,7 +183,6 @@ public class Clock extends UnicastRemoteObject implements IClock {
 
 			}
 		}).start();
-		;
 	}
 
 	private class MessageHandler implements Runnable {
@@ -199,23 +199,25 @@ public class Clock extends UnicastRemoteObject implements IClock {
 			_frequency = frequency;
 		}
 
-		public void sendMessage() {
+		public void sendMessage() {	
 			try {
 				final IClockClient receiver = getClientConnection(false);
-				if (receiver != null)
+				if (receiver != null) {
 					receiver.wakeUp(_date, _message);
-			} catch (RemoteException e) {
-				e.printStackTrace();
+					log.info("wakeup " + _sender.getShortName());
+				}
+			} catch (Exception e) {
 				log.log(Level.WARNING, "CLOCK SERVER : Failed to wakeUp "
 						+ _sender + ", Try to reconnect.");
 				final IClockClient receiver = getClientConnection(true);
 				if (receiver != null) {
 					try {
 						receiver.wakeUp(_date, _message);
-					} catch (RemoteException e1) {
+						log.info("wakeup " + _sender.getShortName());
+					} catch (Exception e1) {
 						log.log(Level.SEVERE,
 								"CLOCK SERVER : Failed to wakeUp " + _sender
-										+ " for the second try." + e.getMessage());
+										+ " for the second try.");
 						return;
 					}
 				}
@@ -336,6 +338,8 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				} else if (cmdArgs[0].equals("factor")) {
 					int factor = Integer.parseInt(cmdArgs[1]);
 					c.setFactor(factor);
+				} else if (cmdArgs[0].equals("hour")) {
+					System.out.println("At " + new Date() + " this is : " + c._hour);
 				} else if (cmdArgs[0].equals("quit")) {
 					System.exit(0);
 				} else {
@@ -350,4 +354,26 @@ public class Clock extends UnicastRemoteObject implements IClock {
 		}
 	}
 	/* !main */
+
+	@Override
+	public void removeSubscriptions(EApplication sender) throws RemoteException {
+		class OneShotTask implements Runnable {
+	        EApplication sender;
+	        OneShotTask(EApplication sender) { this.sender = sender; }
+	        public void run() {
+	        	synchronized (_messagesToDeliver) {
+					Set<MessageHandler> toRemoveSet = new HashSet<Clock.MessageHandler>();
+					for (MessageHandler message : _messagesToDeliver) {
+						if (message._sender == sender) {
+							toRemoveSet.add(message);
+						}
+					}
+					_messagesToDeliver.removeAll(toRemoveSet);
+				}
+
+	        }
+	    }
+		new Thread(new OneShotTask(sender)).start();		
+		
+	}
 }
