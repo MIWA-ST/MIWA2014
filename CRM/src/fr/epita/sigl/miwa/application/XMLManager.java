@@ -69,7 +69,7 @@ public class XMLManager
 	{
 		File file = new File (xml);
 
-		// Parsage du fichier	
+		// Parsage du fichier
 		Document criteriaFile = dBuilder.parse(file);
 		String XMLReturn = "";
 		
@@ -103,7 +103,7 @@ public class XMLManager
 	
 	public String getSegmentationClient(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
-		
+		LOGGER.info("***** Analyse du fichier XML: Segmentation client");
 		Segmentation segmentation = new Segmentation();
 		
 		File file = new File (xml);
@@ -113,10 +113,12 @@ public class XMLManager
 		*/
 		// Parsage du fichier
 		Document criteriaFile = dBuilder.parse(file);
+		LOGGER.info("***** Parsage du fichier");
 		
 		NodeList headerNodes = criteriaFile.getElementsByTagName("ENTETE");
 		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		LOGGER.info("***** Demande effectuée le: " + seqDate);
 		
 		segmentation.setDate(seqDate);
 		List<Critere> list2 = new ArrayList<Critere>();
@@ -128,8 +130,9 @@ public class XMLManager
 		// Création des éléments Critere
 		for (int i = 0; i < groupsNodes.getLength(); i++)
 		{
-			
-			Node groupNode = groupsNodes.item(i);
+			LOGGER.info("***** Analyse du groupe " + i);
+			//Node groupNode = groupsNodes.item(i);
+			Element groupNode = (Element)groupsNodes.item(i);
 			Group group = new Group();
 			List<Critere> list = new  ArrayList<>();
 			group.setCriteres(list);
@@ -142,40 +145,47 @@ public class XMLManager
 				{
 					if (cNode.getNodeName() == "CRITERES")
 					{
-						NodeList criteriasNodes = criteriaFile.getElementsByTagName("CRITERE");
-						System.out.println(criteriasNodes.getLength());
+						NodeList criteriasNodes = groupNode.getElementsByTagName("CRITERE");
+						LOGGER.info("***** Nombre de critères: " + criteriasNodes.getLength());
 						for (int k = 0; k < criteriasNodes.getLength(); k++) 
 						{
 							Node criteriaNodes = criteriasNodes.item(k);
 							Critere c = new Critere();
 							String tmp = criteriaNodes.getNodeName();
 							String type = criteriaNodes.getAttributes().getNamedItem("type").getNodeValue();
+							LOGGER.info("***** Analyse du critère "+ k +": " + type);
 							switch (type) 
 							{
 								case "age":
 									c.setType(type);
 									c.setMax(Integer.parseInt(criteriaNodes.getAttributes().getNamedItem("max").getNodeValue()));
 									c.setMin(Integer.parseInt(criteriaNodes.getAttributes().getNamedItem("min").getNodeValue()));
+									LOGGER.info("***** L'âge est compris entre : " + c.getMin() + " et " + c.getMax());
 									break;
 								case "geographie":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("departement").getNodeValue());
+									LOGGER.info("***** Le département est: " + c.getValue());
 								    break;
 								case "sexe":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("sexe").getNodeValue());
+									LOGGER.info("***** Le sexe est: " + c.getValue());
 								    break;
 								case "situation-familiale":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("situation").getNodeValue());
+									LOGGER.info("***** La situation familiale est: " + c.getValue());
 								    break;
 								case "enfant":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("enfant").getNodeValue());
+									LOGGER.info("***** Le nombre d'enfants est de: " + c.getValue());
 								    break;
 								case "fidelite":
 									c.setType(type);
 									c.setValue(criteriaNodes.getAttributes().getNamedItem("carte").getNodeValue());
+									LOGGER.info("***** La fidélité est: " + c.getValue());
 								    break;
 							}
 							group.getCriteres().add(c);
@@ -184,16 +194,17 @@ public class XMLManager
 					}
 					else if (cNode.getNodeName() == "CLIENTS")
 					{
-						NodeList clientsNodes = criteriaFile.getElementsByTagName("CLIENT");
+						NodeList clientsNodes = groupNode.getElementsByTagName("CLIENT");
+						LOGGER.info("***** Nombre de clients: " + clientsNodes.getLength());
 						for (int k = 0; k < clientsNodes.getLength(); k++) 
 						{
-							Node clientNodes = clientsNodes.item(k);
+							Element clientNodes = (Element)clientsNodes.item(k);
 							Client c = new Client();
 							c.setMatricule(Integer.parseInt(clientNodes.getAttributes().getNamedItem("numero").getNodeValue()));
 							c.articlesList = new ArrayList<>();
+							LOGGER.info("***** Analyse du client " + k + ": " + c.getMatricule());
 							
-							//NodeList articlessNodes = clientNodes.getChildNodes();
-							NodeList articlessNodes = criteriaFile.getElementsByTagName("CATEGORIE");
+							NodeList articlessNodes = clientNodes.getElementsByTagName("CATEGORIE");
 							for (int l = 0; l < articlessNodes.getLength(); l++) 
 							{
 								Node articleNodes = articlessNodes.item(l);
@@ -201,6 +212,7 @@ public class XMLManager
 								a.setRef(articleNodes.getAttributes().getNamedItem("ref").getNodeValue());
 								a.setQuantite(Integer.parseInt(articleNodes.getAttributes().getNamedItem("achat").getNodeValue()));
 								c.articlesList.add(a);
+								LOGGER.info("***** Catégorie d'article: ref:" + a.getRef() + " - achat:" + a.getQuantite());
 							}
 							segmentation.addClient(c);
 						}
@@ -220,6 +232,69 @@ public class XMLManager
 		
 		return bl;
 		
+	}
+	
+
+	public String getSendClientBI()
+	{
+		LOGGER.info("***** Creation du XML poir le BI avec la base client");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XML><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\"/>"
+				+ "<CLIENTS>";
+		
+		for (int i = 0; i < Client.clientsList.size(); i++)
+		{
+			Client c = Client.clientsList.get(i);
+			LOGGER.info("***** Ajout d'un client dans le XML : " + c.getMatricule());
+			bl += "<CLIENT id=\"" + c.getMatricule() + "\" civilite=\"" + c.getCivilite()
+					+ "\" naissance=\"" + c.getDate() + "\" codepostal=\"" + c.getCodePostal() 
+					+ "\" situationfam=\"" + c.getSituation() + "\" nbenfant=\"" + c.getNbenfant() + "\" typecarte=\"" + c.getCarteFed().getType() + "\" />";
+		}
+		
+		bl += "<CLIENTS><XML>";
+		LOGGER.info("***** Envoi des clients au BI");
+		
+		return bl;
+	}
+
+	public String getDemandeSegmentationClient(String message) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		LOGGER.info("***** Préparation d'une demande de segmentation client");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String bl = "<ENTETE objet=\"demande-segmentation-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour());
+		//TODO: heure
+		bl += "\"/><CRITERES>";
+		int lower = 15;
+		int higher = 80;
+
+		int random = (int)(Math.random() * (higher-lower)) + lower;
+		
+		bl += "<CRITERE type=\"age\" max=" + (random - 10) + " min=" + (random + 10) + "/>"
+				+ "<CRITERE type=\"geographie\" valeur=" + (random + 3) + "/>";
+				
+		if (random%2 == 0)
+		{
+			bl += "<CRITERE type=\"situation-familiale\" valeur=\"célibataire\"/>"
+					+ "<CRITERE type=\"sexe\" valeur=\"M\"/>";
+		}
+		else
+		{
+			bl += "<CRITERE type=\"situation-familiale\" valeur=\"marié\"/>"
+					+ "<CRITERE type=\"sexe\" valeur=\"F\"/>";
+		}
+		if (random%3 == 0)
+		{
+			bl += "<CRITERE type=\"enfant\" valeur=TRUE/>"
+					+ "<CRITERE type=\"fidelite\" valeur=1/>";
+		}
+		else
+		{
+			bl += "<CRITERE type=\"enfant\" valeur=FALSE/>"
+					+ "<CRITERE type=\"fidelite\" valeur=2/>";
+		}	
+		
+		bl += "</CRITERES>";
+		return bl;
 	}
 	
 	public String getDemandeCreationCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
@@ -246,7 +321,13 @@ public class XMLManager
 			client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
 			client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
-			// FIXME ajouter les IBAN et BIC
+			client.setCivilite(infoNodes.getAttributes().getNamedItem("civilite").getNodeValue());
+			client.setSituation(infoNodes.getAttributes().getNamedItem("situation").getNodeValue());
+			client.setNaissance(infoNodes.getAttributes().getNamedItem("naissance").getNodeValue());
+			client.setNbenfant(Integer.parseInt(infoNodes.getAttributes().getNamedItem("nbenfant").getNodeValue()));
+			client.setIBAN(infoNodes.getAttributes().getNamedItem("iban").getNodeValue());
+			client.setBIC(infoNodes.getAttributes().getNamedItem("bic").getNodeValue());
+
 			LOGGER.info("***** Recherche des informations clients");
 			LOGGER.info("***** " + client.toString());
 			
@@ -259,18 +340,26 @@ public class XMLManager
 			JdbcConnection.getInstance().insertClientInternet(client);
 			LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule());
 		}	
-		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"matricule-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
 				+ "<INFORMATION><CLIENT matricule=\"" + client.getMatricule() + "\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
 		bl += "</INFORMATION></ENTETE>";
 		
 		// Retour des info à Internet
-		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.INTERNET, bl);
-		LOGGER.info("***** Envoi de la réponse auprès d'Internet");
-		
-		// Creation des comptes chez la monétique
-		if (SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.MONETIQUE, getCreationCompteCreditFed(client)) == false)
+		try
+		{
+			SyncMessHandler.getSyncMessSender().sendMessage(
+					EApplication.INTERNET, bl);
+			LOGGER.info("***** Envoi de la réponse auprès d'Internet");
+			
+			// Creation des comptes chez la monétique
+			if (SyncMessHandler.getSyncMessSender().sendMessage(
+					EApplication.MONETIQUE, getCreationCompteCreditFed(client)) == false)
+			{
+				LOGGER.warning("Impossible de contacter la monétique pour la création d'un compte crédit carte");
+			}
+		}
+		catch (Exception e)
 		{
 			LOGGER.warning("Impossible de contacter la monétique pour la création d'un compte crédit carte");
 		}
@@ -507,10 +596,11 @@ public class XMLManager
 	{
 		LOGGER.info("***** Analyse du flux XML: Client Connecté (Internet)");
 		File file = new File (xml);
-		Document compteClientFile = dBuilder.parse(file);	
+		Document compteClientFile = dBuilder.parse(file);
 		LOGGER.info("***** Parsage du XML");
 		
-		String bl = "<ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
 				+ "<INFORMATIONS>";
 		
 		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
@@ -520,12 +610,22 @@ public class XMLManager
 			String matricule = infoNodes.getAttributes().getNamedItem("matricule").getNodeValue();
 			LOGGER.info("***** Client connecté:" + matricule);
 			Client client = JdbcConnection.getInstance().GetClientInternet(matricule);
+			client = Client.getClient(matricule);
 			if (client != null)
+			{
 				LOGGER.info("***** Client retrouvé en BDD:" + client.getNom() + " " + client.getPrenom());
-			else
+			
+				if (client.articlesList == null)
+				{
+					Article e = new Article();
+					e.setRef("001");
+					client.articlesList = new ArrayList<>();
+					client.articlesList.add(e);
+				}
+				bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
+						+ "<PROMOTION article=\"" + client.articlesList.get(0).getRef() + "\" fin=\"2014-02-20\" reduc=\"-1\" />";
+			} else
 				LOGGER.info("***** ERREUR: Client inconnu de la part du CRM");
-			bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
-					+ "<PROMOTION article=\"\" fin=\"\" reduc=\"\" />";
 		}
 		
 		bl += "</INFORMATIONS></ENTETE>";
@@ -562,39 +662,42 @@ public class XMLManager
 		// Création des éléments ticketventes et articles
 		for (int i = 0; i < ticketVenteNodes.getLength(); i++)
 		{
-			Node articleNodes = ticketVenteNodes.item(i);
-			Element articleElement = (Element)ticketVenteNodes.item(i);
-			ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
-			ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
-			LOGGER.info("***** Client " + i + ": " + ticketVente.getRefclient() + " - " + ticketVente.getMoyenpayement());
+			Element articleNodes = (Element)ticketVenteNodes.item(i);
 			
-			NodeList articlesNodes = articleElement.getElementsByTagName("ARTICLE");
-			for (int j = 0; j < articlesNodes.getLength(); j++) 
+			Client c = Client.getClient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+			if (c != null)
 			{
-				Node artNodes = articlesNodes.item(j);
-				Article article = new Article();
-				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
-				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
-				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
-				ticketVente.getArticle().add(article);
-				LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
+				ticketVente.setRefclient(articleNodes.getAttributes().getNamedItem("refclient").getNodeValue());
+				ticketVente.setMoyenpayement(articleNodes.getAttributes().getNamedItem("moyenpayement").getNodeValue());
+				LOGGER.info("***** Client " + i + ": " + ticketVente.getRefclient() + " - " + ticketVente.getMoyenpayement());
+				
+				NodeList articlesNodes = articleNodes.getElementsByTagName("ARTICLE");
+				for (int j = 0; j < articlesNodes.getLength(); j++) 
+				{
+					Node artNodes = articlesNodes.item(j);
+					Article article = new Article();
+					article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
+					article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
+					article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+					ticketVente.getArticle().add(article);
+					LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
+					if (c.articlesList == null)
+					{
+						c.articlesList = new ArrayList<>();
+					}
+					c.articlesList.add(article);
+					
+					JdbcConnection.getInstance().insertArticle(article);
+				}
+				TicketVente.ticketVentesList.add(ticketVente);
+			}
+			else
+			{
+				LOGGER.info("******** Reference client inconnue dans le CRM");
 			}
 		}
 		
 		String bl = "<EXPEDITIONCLIENT>";
-		/*	+ "<LIVRAISON>"
-				+ "<NUMERO>" + segmentation.getCommandNumber() + "</NUMERO>"
-				+ "<DATEBC>" + segmentation.getDateBC() + "</DATEBC>"
-				+ "<DATEBL>" + segmentation.getDateBL() + "</DATEBL>";
-				
-		for (TicketReduc a : clients)
-			bl += "<ARTICLE>"
-					+ "<REFERENCE>" + a.getReference() + "</REFERENCE>"
-					+ "<QUANTITE>" + a.getQuantity() + "</QUANTITE>"
-					+ "<CATEGORIE>" + a.getCategory() + "</CATEGORIE>"
-				+ "</ARTICLE>";*/
-							
-		bl += "</LIVRAISON></EXPEDITIONCLIENT>";
 		
 		return bl;
 	}
@@ -605,10 +708,7 @@ public class XMLManager
 		TicketVente ticketVente = new TicketVente();
 		
 		File file = new File (xml);
-		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
-		output.write(message);
-		output.close();
-		*/
+		
 		// Parsage du fichier	
 		Document ticketVenteFile = dBuilder.parse(file);
 		LOGGER.info("***** Parsage du ticket de caisse temporaire");
@@ -658,11 +758,10 @@ public class XMLManager
 		LOGGER.info("***** Montant total : " + totalPrice);
 		LOGGER.info("***** Construction du nouveau ticket de vente");
 		
-		Date date = null;
-		//DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		//(df.format(ClockClient.getClock().getHour()));
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
 		
-		String bl = "<ENTETE objet=\"facture-client\" source=\"crm\" date=\"" + date + "\"/>" +
+		String bl = "<ENTETE objet=\"facture-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\"/>" +
 						"<FACTURE refclient=\"" + ticketVente.getRefclient() + "\" montanttotal=\"" + totalPrice + "\" >";
 						   for (int k = 0; k < listReduc.size(); k++)
 						   {
