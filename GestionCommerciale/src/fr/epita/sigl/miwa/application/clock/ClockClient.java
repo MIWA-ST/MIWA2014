@@ -44,6 +44,7 @@ public class ClockClient {
 		try {
 		if (message instanceof String) {
 			if (message.equals("BO")) {
+				LOGGER.severe("*****: CLOCK BO !");
 				String content = "";
 				DemandeNiveauStock demand = new DemandeNiveauStock();
 				demand.setCommandNumber(ClockClient.getClock().getHour().toString());
@@ -53,9 +54,11 @@ public class ClockClient {
 				JdbcConnection.getInstance().closeConnection();
 				content = XMLManager.getInstance().envoidemandeniveaudestocktoBO(demand);
 				AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BACK_OFFICE);
+				
 			}
 			else if (message.equals("BI"))
 			{
+				LOGGER.severe("*****: CLOCK BI !");
 				String content = "";
 				List<StockMagasin> listmag = new ArrayList<StockMagasin>();
 				List<StockEntrepot> listent = new ArrayList<StockEntrepot>();
