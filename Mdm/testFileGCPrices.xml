@@ -7,11 +7,11 @@ GC => Referentiel
 <XML>
 	<PRIXVENTE>
 		<ARTICLES>
-			<ARTICLE reference="058bdb5b-6e4f-4fe5-9976-bdc5d974" prix_vente="42"/>
-			<ARTICLE reference="6d7f7610-f5e7-4cb9-9496-cb627ca0" prix_vente="42"/>
-			<ARTICLE reference="a5c24e0d-5004-478b-bbb5-afa3a802" prix_vente="42"/>
-			<ARTICLE reference="acacc5dc-1e90-4bc8-b4b5-8172424a" prix_vente="42"/>
-			<ARTICLE reference="ad0f0ac0-3ed6-40c3-b530-7673e2de" prix_vente="42"/>
+			<ARTICLE reference="10100e23-2526-45a8-b432-911d56e2" prix_vente="42"/>
+			<ARTICLE reference="19f9b59b-aaa2-4d4c-a7dd-f1c229fd" prix_vente="42"/>
+			<ARTICLE reference="55bbce8f-00bb-47ac-9270-4bd1213b" prix_vente="42"/>
+			<ARTICLE reference="a770c2d7-0d67-4882-9046-4e6e3f0a" prix_vente="42"/>
+			<ARTICLE reference="f69fbad6-6d48-4e10-98d1-563358eb" prix_vente="42"/>
 		</ARTICLES>
 	</PRIXVENTE>
 </XML>

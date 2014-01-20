@@ -18,6 +18,10 @@ public class CsvParser {
 	
 	public void parse() {
 		Path path = FileSystems.getDefault().getPath(".", fileName);
+		final Logger LOGGER = Logger.getLogger(CsvParser.class.getName());
+		
+		//this.dbHandler.clearProductsForProvider(1);
+		
 		try {
 			BufferedReader reader = Files.newBufferedReader(path, Charset.forName("ISO-8859-1"));
 			
@@ -27,7 +31,6 @@ public class CsvParser {
 			
 			Boolean firstligne = true;
 			String line = null;
-			this.dbHandler.clearProductsForProvider(1);
 			while ( (line = reader.readLine()) != null ) {
 				String[] fields = line.split(";");
 				if (fields.length != 7)
@@ -43,30 +46,29 @@ public class CsvParser {
 					continue;
 				}
 				String description = fields[1];
-				Integer buyPriceWithoutVat;
-				Integer vat;
+				float buyPriceWithoutVat;
+				float vat;
 				try {
-					buyPriceWithoutVat = Integer.parseInt(fields[3].replaceAll(",", "."));
-					vat = Integer.parseInt(fields[4].replaceAll(",", "."));
+					buyPriceWithoutVat = Float.valueOf((fields[3].replaceAll(",", ".")));
+					vat = Float.valueOf((fields[4].replaceAll(",", ".")));
 				}
 				catch (NumberFormatException e) {
 					e.printStackTrace();
 					continue;
 				}
 				
-				String buyPrice = Integer.toString(buyPriceWithoutVat + (buyPriceWithoutVat * vat / 100));
+				float buyPrice = (buyPriceWithoutVat + (buyPriceWithoutVat * vat / 100));
 
-				String nbMin = fields[5].replaceAll(",", ".");
+				int nbMin = Integer.parseInt(fields[5].replaceAll(",", "."));
 				Product p = new Product(EAN, description, buyPrice, nbMin, "", 1);
 
 				if (firstligne) {
-					final Logger LOGGER = Logger.getLogger(CsvParser.class.getName());
 					LOGGER.severe("***** " + "Parsing du premier produit (Exemple) : EAN du produit=" + EAN + " / Prix fournisseur du produit (TTC)=" + buyPrice);
 					firstligne = false;
 				}
 				this.dbHandler.addNewProduct(p);
-				
 			}
+			LOGGER.severe("***** " + "Fin du parsing du catalogue fournisseur 1");
 			
 		} catch (NoSuchFileException e) {
 			System.out.println("File not found !");
