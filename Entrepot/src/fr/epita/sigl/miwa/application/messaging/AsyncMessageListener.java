@@ -43,46 +43,47 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			    InputSource is = new InputSource();
 			    is.setCharacterStream(new StringReader(message));
 		
+			    //constrution d'un doc xml à parser
 			    Document doc = db.parse(is);
 			    root = doc.getFirstChild().getNodeName();
 			    
 				//Bon de commandes fournisseur >> Renvoyer BL à la GC
 				if (root.toUpperCase().equals("COMMANDESFOURNISSEUR"))
 				{
-					LOGGER.info("Commande Fournisseur reçue de la Gestion Commerciale");
+					LOGGER.info("*****Commande Fournisseur reçue de la Gestion Commerciale");
 					//content = "<LIVRAISONSCOMMANDEFOURNISSEUR><LIVRAISON><NUMERO>CV398719873</NUMERO><DATEBC>20130427</DATEBC><DATEBL>20130427</DATEBL><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>265000</QUANTITE><CATEGORIE>XXXX</CATEGORIE></ARTICLE><ARTICLE><REFERENCE>AU736823</REFERENCE><QUANTITE>12</QUANTITE><CATEGORIE>XXXX</CATEGORIE></ARTICLE></LIVRAISON></LIVRAISONSCOMMANDEFOURNISSEUR>";
 					
-					content = XMLManager.getInstance().getCommandeFournisseur(message, doc);
+					content = XMLManager.getInstance().getCommandeFournisseur(doc);
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.GESTION_COMMERCIALE);	
-					LOGGER.info("Envoi du BL fournisseur à la GC effectué");
+					LOGGER.info("*****Envoi du BL fournisseur à la GC effectué");
 				}
 				//Commande internet >> Renvoyer BL à la GC
 				else if (root.toLowerCase().equals("commande_internet"))
 				{
-					LOGGER.info("Commande Internet reçue de la Gestion Commerciale");	
+					LOGGER.info("*****Commande Internet reçue de la Gestion Commerciale");	
 					//content = "<EXPEDITIONCLIENT><LIVRAISON><NUMERO>CV398719873</NUMERO><DATEBC>20131225</DATEBC><DATEBL>20131225</DATEBL><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>265000</QUANTITE><CATEGORIE>XXXXX</CATEGORIE></ARTICLE><ARTICLE><REFERENCE>AU736823</REFERENCE><QUANTITE>12</QUANTITE><CATEGORIE>XXXXX</CATEGORIE></ARTICLE></LIVRAISON></EXPEDITIONCLIENT>";
 				
-					content = XMLManager.getInstance().getCommandeInternet(message, doc);
+					content = XMLManager.getInstance().getCommandeInternet(doc);
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.GESTION_COMMERCIALE);
-					LOGGER.info("Livraison de la commande internet effectuée");
+					LOGGER.info("*****Livraison de la commande internet effectuée");
 				}
 				//Demande de réassort magasin >> livrer le BO
 				else if (root.toUpperCase().equals("REASSORTSBO"))
 				{
-					LOGGER.info("Demande de réassort reçue de la Gestion Commerciale");
+					LOGGER.info("*****Demande de réassort reçue de la Gestion Commerciale");
 					//content = "<LIVRAISONS><LIVRAISON><NUMERO>CV398719873</NUMERO><REFMAGASIN>6876786</REFMAGASIN><DATEBC>20131225</DATEBC><DATEBL>20131225</DATEBL><ARTICLE><REFERENCE>AU736827</REFERENCE><QUANTITE>265000</QUANTITE></ARTICLE><ARTICLE><REFERENCE>AU736823</REFERENCE><QUANTITE>12</QUANTITE></ARTICLE></LIVRAISON></LIVRAISONS>";
 					
-					content = XMLManager.getInstance().getReassortBO(message, doc);
+					content = XMLManager.getInstance().getReassortBO(doc);
 					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BACK_OFFICE);
 					
-					LOGGER.info("Envoi réassort BO");
+					LOGGER.info("*****Commande réassort expédiée");
 				}
 				else
-					LOGGER.info("Message inconnu reçu de la Gestion Commerciale");
+					LOGGER.info("*****Message inconnu reçu de la Gestion Commerciale");
 			}
 			else
 			{
-				LOGGER.severe("Message inconnu de " + source.getLongName() + " : ");
+				LOGGER.severe("*****Message inconnu de " + source.getLongName() + " : ");
 			}
 		}
 		catch (AsyncMessageException | ParserConfigurationException | SAXException | IOException e)
@@ -93,7 +94,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 	@Override
 	public void onFile(File file, EApplication source) {
-		LOGGER.severe(source + " : " + file.getAbsolutePath());		
+		LOGGER.severe("*****" + source + " : " + file.getAbsolutePath());		
 	}
 
 }

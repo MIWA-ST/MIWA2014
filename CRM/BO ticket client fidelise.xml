@@ -4,4 +4,16 @@
    	 <ARTICLE refarticle="001" quantite="1" prix="1" />
    	 <ARTICLE refarticle="002" quantite="1" prix="2" />
 	</TICKETVENTE>
+	<TICKETVENTE refclient="10" moyenpayement="CB" >
+   	 <ARTICLE refarticle="011" quantite="1" prix="1" />
+   	 <ARTICLE refarticle="012" quantite="1" prix="2" />
+	</TICKETVENTE>
+	<TICKETVENTE refclient="20" moyenpayement="CB" >
+   	 <ARTICLE refarticle="021" quantite="1" prix="10" />
+   	 <ARTICLE refarticle="022" quantite="1" prix="20" />
+	</TICKETVENTE>
+	<TICKETVENTE refclient="30" moyenpayement="CB" >
+   	 <ARTICLE refarticle="301" quantite="10" prix="100" />
+   	 <ARTICLE refarticle="302" quantite="10" prix="200" />
+	</TICKETVENTE>
 </ENTETE>

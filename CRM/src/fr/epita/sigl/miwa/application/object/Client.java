@@ -15,17 +15,21 @@ import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 public class Client {
 	
 	private int matricule;
+	private int nbenfant;
+	private Date date;
 	private String nom;
 	private String prenom;
+	private String civilite;
+	private String situation;
 	private String adresse;
 	private String codePostal;
 	private String telephone;
 	private String mail;
 	private String IBAN;
 	private String BIC;
-	private Date date;
 	private CarteFidelite carteFed;
 	
+	public static List<Article> articlesList;
 	public static List<Client> clientsList;
 	
 	public Client (int id, String nom, String prenom)
@@ -47,7 +51,30 @@ public class Client {
 	
 	
 	
-	
+	public int getNbenfant() {
+		return nbenfant;
+	}
+
+	public void setNbenfant(int nbenfant) {
+		this.nbenfant = nbenfant;
+	}
+
+	public String getSituation() {
+		return situation;
+	}
+
+	public void setSituation(String situation) {
+		this.situation = situation;
+	}
+
+	public String getCivilite() {
+		return civilite;
+	}
+
+	public void setCivilite(String civilite) {
+		this.civilite = civilite;
+	}
+
 	public String getIBAN() {
 		return IBAN;
 	}
@@ -103,7 +130,22 @@ public class Client {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-
+	
+	public static Client getClient(String mat)
+	{
+		Client c = null;
+		for (int i = 0; i < clientsList.size(); i++)
+		{
+			if (clientsList.get(i).getMatricule() == Integer.parseInt(mat))
+			{
+				c = clientsList.get(i);
+				break;
+			}
+		}
+		return c;
+	}
+	
+	
 	public Date getDate() {
 		return date;
 	}
