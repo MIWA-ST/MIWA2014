@@ -44,8 +44,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			String root = "";
 			String content = "";
 
-			LOGGER.info("***** Message reçu par GC");
-
 			DocumentBuilder db = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
 			InputSource is = new InputSource();
@@ -109,7 +107,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					int i = 0;
 					while (i < demand.getArticles().size()) {
 						LOGGER.info("*****: Confirmation Article :"
-								+ demand.getArticles().get(i) + " quantite :"
+								+ demand.getArticles().get(i).getRef_article() + " quantite :"
 								+ demand.getQuantity().get(i));
 						i++;
 					}
