@@ -71,6 +71,8 @@ public class Main {
 		
 		//AsyncFileFactory.getInstance().getFileManager().send("bi.xml", EApplication.BI);
 		
+		//SyncMessHandler.getSyncMessSender().requestMessage(to, request)
+		
 		/* !CODE HERE */
 		JdbcConnection.getInstance().closeConnection();
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
