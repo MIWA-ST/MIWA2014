@@ -6,6 +6,7 @@ import java.util.List;
 
 import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleAndLocalPriceAndPromotion;
+import fr.epita.sigl.miwa.bo.object.ArticleList;
 import fr.epita.sigl.miwa.bo.object.NodeAttribute;
 
 public class CashRegisterXMLConstructor extends XMLConstructor
@@ -92,6 +93,43 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 			this.openClosedNode("ARTICLE", articleAttributes, 1);
 		}
 		this.closeNode("ARTICLES", 0);
+		
+		return this.xml;
+	}
+	
+	/*
+	<ENTETE objet="facture-client" source="bo" date="AAAAA-MM-JJ"/>
+	<FACTURE refclient="" montanttotal="" >
+	    <ARTICLE refarticle="" quantite="" nvprix="" />
+	    <ARTICLE refarticle="" quantite="" nvprix="" />
+	</FACTURE>
+	*/
+	public String facture(ArticleList articleList)
+	{
+		if (articleList == null)
+		{
+			return null;
+		}
+		
+		List<NodeAttribute> headerAttributes = new ArrayList<NodeAttribute>();
+		headerAttributes.add(new NodeAttribute("objet", "facture-client"));
+		headerAttributes.add(new NodeAttribute("source", "bo"));
+		headerAttributes.add(new NodeAttribute("date", new SimpleDateFormat("YYYY-MM-dd").format(articleList.date)));
+		this.openClosedNode("ENTETE", headerAttributes, 0);
+		
+		List<NodeAttribute> factureAttributes = new ArrayList<NodeAttribute>();
+		factureAttributes.add(new NodeAttribute("refclient", articleList.refclient));
+		factureAttributes.add(new NodeAttribute("montanttotal", articleList.totalamount));
+		this.openNode("FACTURE", factureAttributes, 0);
+		for (Article article : articleList.articles)
+		{
+			List<NodeAttribute> articleAttributes = new ArrayList<NodeAttribute>();
+			articleAttributes.add(new NodeAttribute("refarticle", article.reference));
+			articleAttributes.add(new NodeAttribute("quantite", article.quantity));
+			articleAttributes.add(new NodeAttribute("nvprix", article.salesPrice));
+			this.openClosedNode("ARTICLE", articleAttributes, 1);
+		}
+		this.closeNode("FACTURE", 0);
 		
 		return this.xml;
 	}

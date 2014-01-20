@@ -67,8 +67,6 @@ public class DomParserHelper
 			}
 			
 		}
-		
-		System.out.println("===" + res);
 
 		return res;
 	}

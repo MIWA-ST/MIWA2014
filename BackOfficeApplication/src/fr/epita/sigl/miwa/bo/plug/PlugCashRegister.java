@@ -4,6 +4,7 @@ import java.util.Date;
 
 import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleAndLocalPriceAndPromotion;
+import fr.epita.sigl.miwa.bo.object.ArticleList;
 
 public class PlugCashRegister {
 	
@@ -58,6 +59,29 @@ public class PlugCashRegister {
 		a2.reference = "r2";
 		a2.salesPrice="p2";
 		a2.promotion="pr2";
+		a.articles.add(a2);
+
+		return a;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static ArticleList articleListObject()
+	{
+		ArticleList a = new ArticleList();
+		a.date = new Date(2013 - 1900, 11, 20);
+		a.refclient = "123456789";
+		a.totalamount = "20";
+		
+		Article a1 = new Article();
+		a1.reference = "r1";
+		a1.salesPrice="10";
+		a1.quantity="1";
+		a.articles.add(a1);
+		
+		Article a2 = new Article();
+		a2.reference = "r2";
+		a2.salesPrice="10";
+		a2.quantity="1";
 		a.articles.add(a2);
 
 		return a;

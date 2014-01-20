@@ -7,6 +7,8 @@ import java.util.List;
 public class ArticleList
 {
 	public Date date = null;
+	public String refclient = null;
+	public String totalamount = null;
 	public List<Article> articles = null;
 	
 	public ArticleList()
@@ -20,6 +22,8 @@ public class ArticleList
 		if (this.date != null)
 		{
 			System.out.println("DATE:" + this.date.toString());			
+			System.out.println("REF CLIENT:" + this.refclient);
+			System.out.println("TOTAL AMOUNT:" + this.totalamount);
 		}
 		else
 		{
