@@ -1,6 +1,8 @@
 package fr.epita.sigl.miwa.application.clock;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -12,7 +14,10 @@ import org.xml.sax.InputSource;
 import fr.epita.sigl.miwa.application.DemandeNiveauStock;
 import fr.epita.sigl.miwa.application.JdbcConnection;
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.StockEntrepot;
+import fr.epita.sigl.miwa.application.StockMagasin;
 import fr.epita.sigl.miwa.application.XMLManager;
+import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -46,11 +51,20 @@ public class ClockClient {
 				JdbcConnection.getInstance().getConnection();
 				demand.setArticles(JdbcConnection.getInstance().envoiPrixArticle());
 				JdbcConnection.getInstance().closeConnection();
-				content = XMLManager.getInstance().envoidemandeniveaudestocktoBO(demande);
+				content = XMLManager.getInstance().envoidemandeniveaudestocktoBO(demand);
+				AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BACK_OFFICE);
 			}
-			else if ("BI")
+			else if (message.equals("BI"))
 			{
-				
+				String content = "";
+				List<StockMagasin> listmag = new ArrayList<StockMagasin>();
+				List<StockEntrepot> listent = new ArrayList<StockEntrepot>();
+				JdbcConnection.getInstance().getConnection();
+				listmag = JdbcConnection.getInstance().envoi_all_stock_mag();
+				listent = JdbcConnection.getInstance().envoi_all_stock();
+				JdbcConnection.getInstance().closeConnection();
+				content = XMLManager.getInstance().envoiStockToBI(listent, listmag);
+				AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BI);
 			}
 			else {
 				System.out.println(date.toString() + " : " + message);
