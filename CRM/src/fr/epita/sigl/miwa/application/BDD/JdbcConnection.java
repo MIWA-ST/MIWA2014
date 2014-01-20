@@ -15,6 +15,7 @@ import fr.epita.sigl.miwa.application.crm.ReassortBO;
 import fr.epita.sigl.miwa.application.object.Article;
 import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
+import fr.epita.sigl.miwa.application.object.Promotion;
 import fr.epita.sigl.miwa.application.object.Segmentation;
 
 
@@ -484,6 +485,93 @@ public class JdbcConnection
 		catch (SQLException e)
 		{
 			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
+	public void insertPromotion(Promotion promo)
+	{
+		try
+		{
+			System.out.println("insertion promotion");
+			if (connection != null)
+			{
+				String request = "INSERT INTO promotion (id, produit, reduction, segmentation, date) VALUES (?, ?, ?, ?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(promo.getId()));
+				statement.setString(2, Integer.toString(promo.getProduit()));
+				statement.setString(3, Integer.toString(promo.getReduction()));
+				statement.setString(4, Integer.toString(promo.getSegmentation()));
+				statement.setString(5, promo.getDate().toString());
+				
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouvelle promotion ajoutée en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
+	public void updatePromotion(Promotion promo)
+	{
+		try
+		{
+			System.out.println("update promotion");
+			if (connection != null)
+			{
+				String request = "UPDATE promotion SET produit=?, reduction=?, segmentation=?, date=? WHERE id = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(5, Integer.toString(promo.getId()));
+				statement.setString(1, Integer.toString(promo.getProduit()));
+				statement.setString(2, Integer.toString(promo.getReduction()));
+				statement.setString(3, Integer.toString(promo.getSegmentation()));
+				statement.setString(4, promo.getDate().toString());
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Promotion modifiée en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur update en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void deletePromotion(int id)
+	{
+		try
+		{
+			System.out.println("suppr promotion");
+			if (connection != null)
+			{
+				String request = "DELETE FROM promotion WHERE id = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(id));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Promotion suppr en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur suppr en base");
 			e.printStackTrace();
 		}
 	}
