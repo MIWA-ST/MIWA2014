@@ -2,23 +2,24 @@ package fr.epita.sigl.miwa.application.GC;
 
 public class DemandeNiveauStockArticlesGC {
 	private String reference;
-	private Integer quantite;
+	
 
-	public DemandeNiveauStockArticlesGC(String reference, String quantite)
+	public DemandeNiveauStockArticlesGC(String reference)
 	{
 		this.reference = reference;
-		if (quantite != null && !quantite.equals(""))
-			this.quantite = Integer.parseInt(quantite);
-		else
-			this.quantite = 0;
 	}
 	
-	public Integer getQuantite() {
-		return quantite;
-	}
-
-	public void setQuantite(Integer quantite) {
-		this.quantite = quantite;
+	public String sendXML()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append("<ARTICLE>");
+		
+		result.append("<REFERENCE>" + this.reference + "</REFERENCE>");
+		
+		result.append("<ARTICLE>");		
+		
+		return result.toString();
 	}
 
 	public String getReference() {
@@ -38,11 +39,6 @@ public class DemandeNiveauStockArticlesGC {
 		else
 			result.append("*****		REFERENCE : NULL\n");
 		
-		if (this.quantite != null)
-			result.append("***** 		QUANTITE : " + this.quantite + "\n");
-		else
-			result.append("*****		QUANTITE : NULL\n");
-		
 		return result.toString();
 	}
 	
@@ -52,10 +48,5 @@ public class DemandeNiveauStockArticlesGC {
 			System.out.println("		REFERENCE : " + this.reference);
 		else
 			System.out.println("		REFERENCE : NULL");
-		
-		if (this.quantite != null)
-			System.out.println("		QUANTITE : " + this.quantite);
-		else
-			System.out.println("		QUANTITE : NULL");
 	}
 }

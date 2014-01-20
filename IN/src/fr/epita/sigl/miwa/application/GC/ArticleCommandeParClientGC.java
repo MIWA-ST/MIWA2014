@@ -5,6 +5,31 @@ public class ArticleCommandeParClientGC {
 	private String reference;
 	private Integer quantite;
 	
+	public ArticleCommandeParClientGC(String categorie, String reference, String quantite)
+	{
+		this.categorie = categorie;
+		this.reference = reference;
+		if (quantite != null && !quantite.equals(""))
+			this.quantite = Integer.parseInt(quantite);
+		else
+			this.quantite = Integer.parseInt(quantite);
+	}
+	
+	public String sendXML()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append("<article>");
+		
+		result.append("<CATEGORIE>" + this.categorie + "</CATEGORIE>");
+		result.append("<reference>" + this.reference + "</reference>");
+		result.append("<quantite>" + this.quantite + "</quantite>");
+		
+		result.append("</article>");
+		
+		return result.toString();
+	}
+	
 	public String getCategorie() {
 		return categorie;
 	}

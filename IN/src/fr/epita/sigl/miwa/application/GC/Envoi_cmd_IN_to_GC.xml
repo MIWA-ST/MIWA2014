@@ -6,7 +6,7 @@
 		<refclient>Fd595SD</refclient>
 		<datebc>20121223</datebc> <!-- bc = bon de commande-->
 		<datebl>20140102</datebl> <!-- bl = bon de livraison-->
-		<adresseClient>XXXX</adresse>
+		<adresseClient>XXXX</adresseClient>
 		<nom>XXX</nom>
 		<prénom>XXX</prenom>
 		<articles>

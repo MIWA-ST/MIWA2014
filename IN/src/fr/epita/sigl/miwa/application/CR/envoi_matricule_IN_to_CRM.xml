@@ -10,7 +10,7 @@ Champs du XML :
 -->
 
 <XML>
-    <ENTETE objet="connection_client" source="" date="" />
-        <COMPTE matricule="">
+    <ENTETE objet="connection_client" source="Internet" date="2014-01-23" />
+        <COMPTE matricule="50762119">
         </COMPTE>
 </XML>

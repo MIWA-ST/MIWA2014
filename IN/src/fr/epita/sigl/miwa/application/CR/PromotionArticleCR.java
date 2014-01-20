@@ -11,11 +11,14 @@ public class PromotionArticleCR {
 	private Date fin;
 	private Integer reduc;
 	
-	public PromotionArticleCR(String article, String fin, Integer reduc)
+	public PromotionArticleCR(String article, String fin, String reduc)
 	{
 		this.article = article;
-		this.reduc = reduc;
-		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		if (reduc != null && !reduc.equals(""))
+			this.reduc = Integer.parseInt(reduc);
+		else
+			this.reduc = 0;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			this.fin = df.parse(fin);
 		} catch (ParseException e) {
@@ -24,11 +27,12 @@ public class PromotionArticleCR {
 		}
 	}
 	
-	public String getArticle() {
-		return article;
-	}
 	public void setArticle(String article) {
 		this.article = article;
+	}
+	public String getArticle()
+	{
+		return this.article;
 	}
 	public Date getFin() {
 		return fin;
@@ -41,6 +45,13 @@ public class PromotionArticleCR {
 	}
 	public void setReduc(Integer reduc) {
 		this.reduc = reduc;
+	}
+	
+	public void stReduc(String reduc) {
+		if (reduc != null && !reduc.equals(""))
+			this.reduc = Integer.parseInt(reduc);
+		else
+			this.reduc = 0;
 	}
 	
 	public String print_logger()

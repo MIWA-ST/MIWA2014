@@ -9,8 +9,8 @@ public class ArticleAVendreMDM {
 	private String reference;
 	private String ean;
 	private String categorie;
-	private Integer prix_fournisseur;
-	private Integer prix_vente;
+	private Float prix_fournisseur;
+	private Float prix_vente;
 	private String description;
 	private List<PromotionArticleMDM> promotions = new ArrayList<PromotionArticleMDM>();
 	
@@ -25,13 +25,13 @@ public class ArticleAVendreMDM {
 		this.ean = ean;
 		this.categorie = categorie;
 		if (prix_fournisseur != null && !prix_fournisseur.equals(""))
-			this.prix_fournisseur = Integer.parseInt(prix_fournisseur);
+			this.prix_fournisseur = Float.parseFloat(prix_fournisseur);
 		else
-			this.prix_fournisseur = 0;
+			this.prix_fournisseur = 0.f;
 		if (prix_vente != null && !prix_vente.equals(""))
-			this.prix_vente = Integer.parseInt(prix_vente);
+			this.prix_vente = Float.parseFloat(prix_vente);
 		else
-			this.prix_vente = 0;
+			this.prix_vente = 0.f;
 		this.description = description;
 		this.promotions = promotions;
 	}
@@ -54,31 +54,31 @@ public class ArticleAVendreMDM {
 	public void setCategorie(String categorie) {
 		this.categorie = categorie;
 	}
-	public Integer getPrix_fournisseur() {
+	public Float getPrix_fournisseur() {
 		return prix_fournisseur;
 	}
-	public void setPrix_fournisseur(Integer prix_fournisseur) {
+	public void setPrix_fournisseur(Float prix_fournisseur) {
 		this.prix_fournisseur = prix_fournisseur;
 	}
-	public Integer getPrix_vente() {
+	public Float getPrix_vente() {
 		return prix_vente;
 	}
-	public void setPrix_vente(Integer prix_vente) {
+	public void setPrix_vente(Float prix_vente) {
 		this.prix_vente = prix_vente;
 	}
 	
 	public void setPrix_vente(String prix_vente) {
 		if (prix_vente != null && !prix_vente.equals(""))
-			this.prix_vente = Integer.parseInt(prix_vente);
+			this.prix_vente = Float.parseFloat(prix_vente);
 		else
-			this.prix_vente = 0;
+			this.prix_vente = 0.f;
 	}
 	
 	public void setPrix_fournisseur(String prix_fournisseur) {
 		if (prix_fournisseur != null && !prix_fournisseur.equals(""))
-			this.prix_fournisseur = Integer.parseInt(prix_fournisseur);
+			this.prix_fournisseur = Float.parseFloat(prix_fournisseur);
 		else
-			this.prix_fournisseur = 0;
+			this.prix_fournisseur = 0.f;
 	}
 	
 	public String getDescription() {

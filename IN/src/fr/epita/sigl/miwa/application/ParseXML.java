@@ -17,8 +17,10 @@ import fr.epita.sigl.miwa.application.CR.EnteteCRM;
 import fr.epita.sigl.miwa.application.CR.PromotionArticleCR;
 import fr.epita.sigl.miwa.application.CR.PromotionClientCR;
 import fr.epita.sigl.miwa.application.CR.ReceptionMatriculeCR;
+import fr.epita.sigl.miwa.application.GC.ArticleNiveauStockRecuGC;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockGC;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticlesGC;
+import fr.epita.sigl.miwa.application.GC.NiveauStockGC;
 import fr.epita.sigl.miwa.application.MDM.ArticleAVendreMDM;
 import fr.epita.sigl.miwa.application.MDM.ProductsClientEnteteMDM;
 import fr.epita.sigl.miwa.application.MDM.ProductsClientMDM;
@@ -86,6 +88,11 @@ public class ParseXML {
 		}
 		else if (typeFlux == ParseXML.TYPE_LANGUAGE.STRING)
 		{
+			if (flux != null && flux.equals("Client introuvable"))
+			{
+				LOGGER.info("***** Parsing du fichier CRM : Client introuvable.");
+				return true;
+			}
 			File file = new File("temp.xml");
 			
 			try {
@@ -283,7 +290,7 @@ public class ParseXML {
 			for(Element e : listPromotions)
 				promotionClient.getPromotions().add(new PromotionArticleCR(e.getAttributeValue("article"),
 						e.getAttributeValue("fin"),
-						Integer.parseInt(e.getAttributeValue("reduc"))));
+						e.getAttributeValue("reduc")));
 			
 			LOGGER.info(promotionClient.print_logger());
 			return true;
@@ -335,19 +342,18 @@ public class ParseXML {
 		}
 		
 		// Creation de l'objet correspondant
-		DemandeNiveauStockGC demandeNiveauStock = new DemandeNiveauStockGC();
+		NiveauStockGC niveauStock = new NiveauStockGC();
 		
 		// Récupération des informations du fichier XML
-		demandeNiveauStock.setNumero(root.getChildText("NUMERO"));
-		demandeNiveauStock.setDate(root.getChildText("DATE"));
+		niveauStock.setNumero(root.getChildText("NUMERO"));
+		niveauStock.setDate(root.getChildText("DATE"));
 		Element articles = root.getChild("ARTICLES");
 		
 		List<Element> listArticles = articles.getChildren("ARTICLE");
 		for(Element e : listArticles)
-			demandeNiveauStock.getArticles().add(new DemandeNiveauStockArticlesGC(e.getChildText("REFERENCE"),
-					e.getChildText("QUANTITE")));
+			niveauStock.getArticles().add(new ArticleNiveauStockRecuGC(e.getChildText("REFERENCE"), e.getChildText("QUANTITE")));
 		
-		 LOGGER.info(demandeNiveauStock.print_logger());
+		 LOGGER.info(niveauStock.print_logger());
 		 return true;
 	}
 
