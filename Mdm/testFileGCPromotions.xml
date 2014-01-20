@@ -11,20 +11,17 @@ GC => Referentiel
 	<PROMOTIONS>
 		<PROMOTION datedebut="2014-01-20" datefin="2014-01-25" promotion_pourcentage="10">
 			<ARTICLES>
-				<ARTICLE reference="6d7f7610-f5e7-4cb9-9496-cb627ca0"/>
-				<ARTICLE reference="a5c24e0d-5004-478b-bbb5-afa3a802"/>
-				<ARTICLE reference="acacc5dc-1e90-4bc8-b4b5-8172424a"/>
+				<ARTICLE reference="10100e23-2526-45a8-b432-911d56e2"/>
+				<ARTICLE reference="19f9b59b-aaa2-4d4c-a7dd-f1c229fd"/>
+				<ARTICLE reference="55bbce8f-00bb-47ac-9270-4bd1213b"/>
+				<ARTICLE reference="a770c2d7-0d67-4882-9046-4e6e3f0a"/>
+				<ARTICLE reference="f69fbad6-6d48-4e10-98d1-563358eb"/>
 			</ARTICLES>
 		</PROMOTION>
 		<PROMOTION datedebut="2014-01-22" datefin="2014-01-28" promotion_pourcentage="5">
 			<ARTICLES>
-				<ARTICLE reference="6d7f7610-f5e7-4cb9-9496-cb627ca0"/>
-				<ARTICLE reference="a5c24e0d-5004-478b-bbb5-afa3a802"/>
-			</ARTICLES>
-		</PROMOTION>
-		<PROMOTION datedebut="2014-01-25" datefin="2014-01-27" promotion_pourcentage="25">
-			<ARTICLES>
-				<ARTICLE reference="6d7f7610-f5e7-4cb9-9496-cb627ca0"/>
+				<ARTICLE reference="a770c2d7-0d67-4882-9046-4e6e3f0a"/>
+				<ARTICLE reference="f69fbad6-6d48-4e10-98d1-563358eb"/>
 			</ARTICLES>
 		</PROMOTION>
 	</PROMOTIONS>

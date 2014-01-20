@@ -1,6 +1,7 @@
 package fr.epita.sigl.miwa.application;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Product {
 	
@@ -13,8 +14,8 @@ public class Product {
 	//Description longue
 	private String long_desc;
 	//Prix TTC
-	private String buyPrice;
-	private String nbMin;
+	private float buyPrice;
+	private int nbMin;
 	private String name;
 	//Ajout, suppression, maj
 	private String modification;
@@ -33,12 +34,12 @@ public class Product {
 	public void setPromoList(ArrayList<Promotion> promoList) {
 		this.promoList = promoList;
 	}
-	private String sellPrice;
+	private float sellPrice;
 	
-	public String getSellPrice() {
+	public float getSellPrice() {
 		return sellPrice;
 	}
-	public void setSellPrice(String sellPrice) {
+	public void setSellPrice(float sellPrice) {
 		this.sellPrice = sellPrice;
 	}
 	// Numéro du fournisseur (1 ou 2)
@@ -69,20 +70,20 @@ public class Product {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getBuyPrice() {
+	public float getBuyPrice() {
 		return buyPrice;
 	}
-	public void setBuyPrice(String buyPrice) {
+	public void setBuyPrice(float buyPrice) {
 		this.buyPrice = buyPrice;
 	}
-	public String getNbMin() {
+	public int getNbMin() {
 		return nbMin;
 	}
-	public void setNbMin(String nbMin) {
+	public void setNbMin(int nbMin) {
 		this.nbMin = nbMin;
 	}
 	
-	public Product(String EAN, String description, String buyPrice, String nbMin, String reference, Integer origine) {
+	public Product(String EAN, String description, float buyPrice, int nbMin, String reference, Integer origine) {
 		this.EAN = EAN;
 		this.description = description;
 		this.buyPrice = buyPrice;
@@ -91,7 +92,13 @@ public class Product {
 		this.providerNumber = origine;
 		promotionList = new ArrayList<Promotion>();
 		promotionGCList = new ArrayList<PromotionForGC>();
-		this.categorie = "Nourriture";
+		List<String> categorieList = new ArrayList<String>();
+		categorieList.add("Nourriture");
+		categorieList.add("Meuble");
+		categorieList.add("Electromenager");
+		categorieList.add("Loisirs");
+		
+		this.categorie = categorieList.get((int) (Math.random() * 3));
 	}
 	
 	public Product(String ref) {

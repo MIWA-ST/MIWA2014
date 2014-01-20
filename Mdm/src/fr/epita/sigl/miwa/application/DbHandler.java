@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +41,7 @@ public class DbHandler {
 				ref += p.getEAN();
 			String sql = "INSERT INTO PRODUCT (EAN, reference, description, buyPrice, nbMin, providerNumber, categorie) "
 					+ "VALUES ('" + p.getEAN() + "', '" + ref.substring(0, 32) + "', '" + p.getDescription() + "', " +
-					p.getBuyPrice() + ", " + p.getNbMin() + ", " + p.getProviderNumber() + ", " + p.getCategorie() + ");";
+					p.getBuyPrice() + ", " + p.getNbMin() + ", " + p.getProviderNumber() + ", '" + p.getCategorie() + "');";
 
 			//System.out.println(sql);
 			stmt.executeUpdate(sql);
@@ -85,9 +86,9 @@ public class DbHandler {
 				String EAN = rs.getString("EAN");				
 				String reference = rs.getString("reference");
 				String description = rs.getString("description");
-				String buyPrice  = Integer.toString(rs.getInt("buyPrice"));
-				String nbMin =  Integer.toString(rs.getInt("nbMin"));
-				Integer providerNumber = rs.getInt("providerNumber");
+				Float buyPrice  = rs.getFloat("buyPrice");
+				int nbMin =  rs.getInt("nbMin");
+				int providerNumber = rs.getInt("providerNumber");
 
 				Product p = new Product(EAN, description, buyPrice, nbMin, reference, providerNumber);
 				productList.add(p);
@@ -141,8 +142,10 @@ public class DbHandler {
 
 			stmt = conn.createStatement();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
 			String createPromo = "INSERT INTO Promotion (idPromotion, startDate, endDate, rebate) VALUES ("
 					+ promoId + ", DATE('" + df.format(promo.getDate_debut()) + "'), DATE('" + df.format(promo.getDate_fin()) +"'), " + promo.getPourcentage() + ");";
+
 			stmt.executeUpdate(createPromo);
 			stmt.close();
 			
@@ -247,7 +250,7 @@ public class DbHandler {
 			while(rs.next()){
 				String idPromotionGC = rs.getString("idPromotionGC");
 				int nbMin = rs.getInt("nbMin");				
-				int pourcent = rs.getInt("rebate");
+				float pourcent = rs.getFloat("rebate");
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MMM-dd");
 				Date startDate = formatter.parse(rs.getString("startDate"));
 				Date endDate  = formatter.parse(rs.getString("endDate"));
@@ -319,7 +322,7 @@ public class DbHandler {
 	}
 	
 	
-	public void updateProduct(String ref, Integer sellPrice)
+	public void updateProduct(String ref, Float sellPrice)
 	{
 		Connection conn = null;
 		Statement stmt = null;

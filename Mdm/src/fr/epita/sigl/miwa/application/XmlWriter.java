@@ -53,8 +53,8 @@ public class XmlWriter {
 				Element article = doc.createElement("ARTICLE");
 				articles.appendChild(article);
 				article.setAttribute("reference", p.getReference());
-				article.setAttribute("prix_fournisseur", p.getBuyPrice());
-				article.setAttribute("nb_min_commande", p.getNbMin());
+				article.setAttribute("prix_fournisseur", Float.toString(p.getBuyPrice()));
+				article.setAttribute("nb_min_commande", Integer.toString(p.getNbMin()));
 			}
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -105,8 +105,8 @@ public class XmlWriter {
 				article.setAttribute("reference", p.getReference());
 				article.setAttribute("ean", p.getEAN());
 				article.setAttribute("categorie", p.getCategorie());
-				article.setAttribute("prix_fournisseur", p.getBuyPrice());
-				article.setAttribute("prix_vente", p.getSellPrice());
+				article.setAttribute("prix_fournisseur", Float.toString(p.getBuyPrice()));
+				article.setAttribute("prix_vente", Float.toString(p.getSellPrice()));
 
 				Element description = doc.createElement("DESCRIPTION");
 				description.setTextContent(p.getDescription());
@@ -117,7 +117,7 @@ public class XmlWriter {
 
 				for (Promotion promo : dbHandler.getPromotionsForProduct(p.getReference())) {
 					Element promotion = doc.createElement("PROMOTION");
-					DateFormat df = new SimpleDateFormat("yyyy-MMM-dd");
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 					promotion.setAttribute("debut", df.format(promo.getDate_debut()));
 					promotion.setAttribute("fin", df.format(promo.getDate_fin()));
 					promotion.setAttribute("pourcent", Integer.toString(promo.getPourcentage()));

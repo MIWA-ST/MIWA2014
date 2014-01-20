@@ -32,47 +32,53 @@ public class Main {
 		
 		LOGGER.severe("***** " + "Lancement de l'application MDM");
 		LOGGER.severe("***** " + "Réception du fichier fournisseur");
-		/*
+
 		CsvParser parser = new CsvParser("testFile1.csv");
 		parser.parse();
-		XmlReader xmlReader = new XmlReader("testFileGCPrices.xml");
-		xmlReader.parseProducts();
-		XmlReader xmlReader = new XmlReader("testFileGCPromotions.xml");
-		xmlReader.parsePromotions();
-		*/
-
-		XmlWriter xmlWriter = new XmlWriter("outputFileBI.xml");
-		xmlWriter.generateFileForBI();
+		
+		sendGC();
+		
+		sendBIBOIN();
 	
-	/*
-		try {
+		/* !CODE HERE */
+		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
+		AsyncMessageFactory.getInstance().getAsyncMessageManager()
+				.stopListener();
+		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
+	}
 
-			LOGGER.severe("*****" + "Envoi des prix d'achats à la GC");
+	private static void sendBIBOIN() throws AsyncFileException {
+		try {
+			String fileBI = Conf.getInstance().getLocalRepository() + File.separator + EApplication.MDM.getShortName() + File.separator + "outputFile.xml";
+			
+			XmlWriter xmlWriter = new XmlWriter(fileBI);
+			xmlWriter.generateFileForBI();
+			LOGGER.severe("***** " + "Envoi du fichier référentiel au BI");
+			//AsyncFileFactory.getInstance().getFileManager().send("outputFile.xml", EApplication.BI);
+			LOGGER.severe("***** " + "Envoi du fichier référentiel au BO");
+			//AsyncFileFactory.getInstance().getFileManager().send("outputFile.xml", EApplication.BACK_OFFICE);
+			LOGGER.severe("***** " + "Envoi du fichier référentiel au module INTERNET");
+			AsyncFileFactory.getInstance().getFileManager().send("outputFile.xml", EApplication.INTERNET);
+		
+		} catch (ConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private static void sendGC() throws AsyncMessageException {
+		try {
 			String fileGC = Conf.getInstance().getLocalRepository() + File.separator + EApplication.MDM.getShortName() + File.separator + "outputFileGC.xml";
 			XmlWriter xmlWriter = new XmlWriter(fileGC);
 			xmlWriter.generateFileForGC();
 			
-			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xmlWriter.readFile(fileGC, StandardCharsets.UTF_8), EApplication.INTERNET);
+			LOGGER.severe("*****" + "Envoi des prix d'achats à la GC");
 			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xmlWriter.readFile(fileGC, StandardCharsets.UTF_8), EApplication.GESTION_COMMERCIALE);
 			
 		} catch (ConfigurationException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		//AsyncFileFactory.getInstance().getFileHelper().send("outputFileGC.xml", EApplication.GESTION_COMMERCIALE);
-		
-		XmlReader xmlReader = new XmlReader("testFileGC.xml");
-		xmlReader.parseProducts();
-		
-		XmlWriter xmlWriter2 = new XmlWriter("outputFileBI.xml");
-		xmlWriter2.generateFileForBI();
-		*/
-		/* !CODE HERE */
-		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
-		AsyncMessageFactory.getInstance().getAsyncMessageManager()
-				.stopListener();
-		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 	}
 
 }
