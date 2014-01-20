@@ -139,6 +139,8 @@ try {
 		}
 
 		LOGGER.info("***** Caisse : envoi d'une demande de paiement fidélité vers la monétique");
+		LOGGER.info("***** Caisse : id client -> " + idClient);
+		LOGGER.info("***** Caisse : montant de la vente -> " + total + " €");
 		boolean resultat = SyncMessFactory.getSyncMessSender().sendXML(
 				EApplication.MONETIQUE, doc);
 
