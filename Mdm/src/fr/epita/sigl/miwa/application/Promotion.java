@@ -31,6 +31,5 @@ public class Promotion {
 		this.date_fin = endDate;
 		this.pourcentage = rebate;
 	}
-
 }
 
