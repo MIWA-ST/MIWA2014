@@ -49,16 +49,21 @@ public class Main {
 
 	private static void sendBIBOIN() throws AsyncFileException {
 		try {
-			String fileBI = Conf.getInstance().getLocalRepository() + File.separator + EApplication.MDM.getShortName() + File.separator + "outputFile.xml";
+			String file = Conf.getInstance().getLocalRepository() + File.separator + EApplication.MDM.getShortName() + File.separator;
 			
-			XmlWriter xmlWriter = new XmlWriter(fileBI);
+			XmlWriter xmlWriter = new XmlWriter(file + "outputFileBI.xml");
 			xmlWriter.generateFileForBI();
+			XmlWriter xmlWriter2 = new XmlWriter(file + "outputFileBO.xml");
+			xmlWriter2.generateFileForBI();
+			XmlWriter xmlWriter3 = new XmlWriter(file + "outputFileIN.xml");
+			xmlWriter3.generateFileForBI();
+			
 			LOGGER.severe("***** " + "Envoi du fichier référentiel au BI");
-			//AsyncFileFactory.getInstance().getFileManager().send("outputFile.xml", EApplication.BI);
+			AsyncFileFactory.getInstance().getFileManager().send("outputFileBI.xml", EApplication.BI);
 			LOGGER.severe("***** " + "Envoi du fichier référentiel au BO");
-			//AsyncFileFactory.getInstance().getFileManager().send("outputFile.xml", EApplication.BACK_OFFICE);
+			AsyncFileFactory.getInstance().getFileManager().send("outputFileBO.xml", EApplication.BACK_OFFICE);
 			LOGGER.severe("***** " + "Envoi du fichier référentiel au module INTERNET");
-			AsyncFileFactory.getInstance().getFileManager().send("outputFile.xml", EApplication.INTERNET);
+			AsyncFileFactory.getInstance().getFileManager().send("outputFileIN.xml", EApplication.INTERNET);
 		
 		} catch (ConfigurationException e) {
 			// TODO Auto-generated catch block
