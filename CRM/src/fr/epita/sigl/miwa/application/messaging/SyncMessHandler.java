@@ -34,7 +34,7 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) throws SAXException, IOException, AsyncMessageException, ParseException {
-		
+		try {
 		if (sender == EApplication.CAISSE)
 		{
 			LOGGER.info("*****Message synchrone reçu de la caisse :" + message);
@@ -72,6 +72,8 @@ public class SyncMessHandler {
 			out.print(message);
 			out.close();
 			
+			LOGGER.info("*****Fichier crée");
+			
 			try {
 				XMLManager.getInstance().dispatchXML("", "internet.xml");
 			} catch (SAXException | IOException | AsyncMessageException
@@ -79,6 +81,9 @@ public class SyncMessHandler {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			LOGGER.info("*****Envoi des information client à Internet");
+			//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.INTERNET, res);
 			
 			//TODO : envoyer les infos client demandées à internet
 		}
@@ -109,7 +114,12 @@ public class SyncMessHandler {
 		{
 			LOGGER.info("Mesasage synchrone reçu de : " + sender.toString() + " non traité.");
 		}
-		XMLManager.getInstance().dispatchXML("Traitement", message);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		//XMLManager.getInstance().dispatchXML("Traitement", message);
 		return false;
 	}
 
@@ -122,7 +132,7 @@ public class SyncMessHandler {
 	@Deprecated
 	static public String answerToRequestMessage(EApplication sender, String request) {
 		// TODO Auto-generated method stub
-		
+		try{
 		if (sender == EApplication.CAISSE)
 		{
 			LOGGER.info("*****XML synchrone reçu de la caisse :"); // + xml.getDocumentURI());
@@ -149,6 +159,7 @@ public class SyncMessHandler {
 		else if (sender == EApplication.INTERNET)
 		{
 			LOGGER.info("*****XML synchrone reçu d'internet :"); // + xml.getDocumentURI());
+			// Demande d'information client
 			
 			PrintWriter out = null;
 			try {
@@ -160,6 +171,8 @@ public class SyncMessHandler {
 			out.print(request);
 			out.close();
 			
+			LOGGER.info("*****Fichier crée");
+			
 			try {
 				XMLManager.getInstance().dispatchXML("", "internet.xml");
 			} catch (SAXException | IOException | AsyncMessageException
@@ -167,6 +180,8 @@ public class SyncMessHandler {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			LOGGER.info("*****Envoi des information client à Internet");
 		}
 		else if (sender == EApplication.MONETIQUE)
 		{
@@ -193,7 +208,11 @@ public class SyncMessHandler {
 		{
 			LOGGER.info("*****Request  synchrone non géré reçu de : " + sender.toString() + " non utilisé.");
 		}
-		
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
@@ -220,7 +239,10 @@ public class SyncMessHandler {
 		}
 		else if (sender == EApplication.INTERNET)
 		{
+			
 			LOGGER.info("*****XML synchrone reçu d'internet :" + xml.getDocumentURI());
+			String res = null;
+			
 			try {
 				XMLManager.getInstance().dispatchXML("", xml.getDocumentURI());
 			} catch (SAXException | IOException | AsyncMessageException
@@ -228,17 +250,22 @@ public class SyncMessHandler {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			LOGGER.info("*****Envoi des information client à Internet");
+			SyncMessHandler.getSyncMessSender().sendMessage(EApplication.INTERNET, res);
 		}
 		else if (sender == EApplication.MONETIQUE)
 		{
 			LOGGER.info("*****XML synchrone reçu de la monétique :" + xml.getDocumentURI());
+			String res = null;
+			
 			try {
-				XMLManager.getInstance().dispatchXML("", xml.getDocumentURI());
+				res = XMLManager.getInstance().dispatchXML("", xml.getDocumentURI());
 			} catch (SAXException | IOException | AsyncMessageException
 					| ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}			
+			
 		}
 		else
 		{

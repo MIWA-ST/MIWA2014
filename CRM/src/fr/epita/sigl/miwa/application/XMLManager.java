@@ -2,8 +2,10 @@ package fr.epita.sigl.miwa.application;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -33,6 +35,7 @@ import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Critere;
 import fr.epita.sigl.miwa.application.object.Group;
+import fr.epita.sigl.miwa.application.object.Promotion;
 import fr.epita.sigl.miwa.application.object.Segmentation;
 import fr.epita.sigl.miwa.application.object.TicketVente;
 import fr.epita.sigl.miwa.st.EApplication;
@@ -96,11 +99,103 @@ public class XMLManager
 			case "suppression_compte":
 				XMLReturn = getDemandeSupprCompte(message, xml);
 				break;
+			case "connection_client":
+				XMLReturn = getInfoCompte(message, xml);
 
 		}
 		return XMLReturn;
 	}
 	
+	private String getInfoCompte(String message, String xml) throws SAXException, IOException, ParseException {
+		// TODO Auto-generated method stub
+		
+		LOGGER.info("***** Analyse du flux XML: Demande d'informations d'un compte fidélité");
+		Client client = new Client();
+		File file = new File (xml);
+		Document compteClientFile = dBuilder.parse(file);	
+		LOGGER.info("***** Début du parsage du fichier");
+		
+		NodeList headerNodes = compteClientFile.getElementsByTagName("ENTETE");
+		String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+		Date seqDate = (new SimpleDateFormat("YYYY-MM-dd")).parse(dateStr);
+		LOGGER.info("***** Demande effectuée le: " + seqDate);
+		
+		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");
+		Node infoNodes = compteNodes.item(0);
+		
+		String mat = infoNodes.getAttributes().getNamedItem("matricule").getNodeValue();
+		client = Client.getClient(mat);
+		String bl = null;
+		
+		if (client != null)
+		{
+			client.setDate(seqDate);
+			
+			LOGGER.info("***** Informations client de : " + client.getMatricule());
+		
+			/*for (int i = 0; i < compteNodes.getLength(); i++)
+			{
+				Node infoNodes = compteNodes.item(i);
+				client.setNom(infoNodes.getAttributes().getNamedItem("nom").getNodeValue());
+				client.setPrenom(infoNodes.getAttributes().getNamedItem("prenom").getNodeValue());
+				client.setAdresse(infoNodes.getAttributes().getNamedItem("adresse").getNodeValue());
+				client.setCodePostal(infoNodes.getAttributes().getNamedItem("code_postal").getNodeValue());
+				client.setMail(infoNodes.getAttributes().getNamedItem("email").getNodeValue());
+				client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
+				client.setCivilite(infoNodes.getAttributes().getNamedItem("civilite").getNodeValue());
+				client.setSituation(infoNodes.getAttributes().getNamedItem("situation").getNodeValue());
+				client.setNaissance(infoNodes.getAttributes().getNamedItem("naissance").getNodeValue());
+				client.setNbenfant(Integer.parseInt(infoNodes.getAttributes().getNamedItem("nbenfant").getNodeValue()));
+				client.setIBAN(infoNodes.getAttributes().getNamedItem("iban").getNodeValue());
+				client.setBIC(infoNodes.getAttributes().getNamedItem("bic").getNodeValue());
+	
+				LOGGER.info("***** Recherche des informations clients");
+				LOGGER.info("***** " + client.toString());
+				
+				int lower = 1;
+				int higher = 99999999;
+	
+				int random = (int)(Math.random() * (higher-lower)) + lower;
+				client.setMatricule(random);
+				Client.clientsList.add(client);
+				JdbcConnection.getInstance().insertClientInternet(client);
+				LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule());
+			}	*/
+			
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\" >"
+					+ "<INFORMATIONS><CLIENT matricule=\"" + client.getMatricule() + "\" />";
+			bl +="<PROMOTIONS>";
+			
+			for (Promotion p : Segmentation.promotions)
+			{
+				
+				bl += "<PROMOTION article=\"" + p.getId() + "\" fin=\"" + p.getDate() + "\" reduc=\"" + p.getReduction() + "\" />";
+				
+			}
+			bl +="</PROMOTIONS>";
+			bl += "</INFORMATIONS></ENTETE>";
+			
+			// Retour des info à Internet
+			try
+			{
+				SyncMessHandler.getSyncMessSender().sendMessage(
+						EApplication.INTERNET, bl);
+				LOGGER.info("***** Envoi de la réponse auprès d'Internet");
+			}
+			catch (Exception e)
+			{
+				LOGGER.warning("Impossible de contacter internet pour les informations client");
+			}
+		}
+		else{
+			SyncMessHandler.getSyncMessSender().sendMessage(EApplication.INTERNET, "Client introuvable");
+			LOGGER.warning("***** Erreur : Client introuvable !");
+		}
+		
+		return bl;
+	}
+
 	public String getSegmentationClient(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		LOGGER.info("***** Analyse du fichier XML: Segmentation client");
@@ -237,9 +332,10 @@ public class XMLManager
 
 	public String getSendClientBI()
 	{
-		LOGGER.info("***** Creation du XML poir le BI avec la base client");
+		LOGGER.info("***** Creation du XML pour le BI avec la base client");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XML><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\"/>"
+		//<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+		String bl = "<XML><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\"/>"
 				+ "<CLIENTS>";
 		
 		for (int i = 0; i < Client.clientsList.size(); i++)
@@ -254,7 +350,16 @@ public class XMLManager
 		bl += "<CLIENTS><XML>";
 		LOGGER.info("***** Envoi des clients au BI");
 		
-		return bl;
+		try {
+			PrintWriter pw = new PrintWriter("../../ftp/CR/clients.xml");
+			pw.write(bl);
+			pw.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "clients.xml";
 	}
 
 	public String getDemandeSegmentationClient(String message) throws AsyncMessageException, IOException, SAXException, ParseException
@@ -341,9 +446,9 @@ public class XMLManager
 			LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule());
 		}	
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"matricule-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
-				+ "<INFORMATION><CLIENT matricule=\"" + client.getMatricule() + "\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
-		bl += "</INFORMATION></ENTETE>";
+		String bl = "<ENTETE objet=\"matricule-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
+				+ "<INFORMATIONS><CLIENT matricule=\"" + client.getMatricule() + "\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
+		bl += "</INFORMATIONS></ENTETE>";
 		
 		// Retour des info à Internet
 		try
@@ -600,7 +705,7 @@ public class XMLManager
 		LOGGER.info("***** Parsage du XML");
 		
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + ">"
 				+ "<INFORMATIONS>";
 		
 		NodeList compteNodes = compteClientFile.getElementsByTagName("COMPTE");

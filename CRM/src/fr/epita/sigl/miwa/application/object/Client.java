@@ -30,8 +30,7 @@ public class Client {
 	private String naissance;
 	private CarteFidelite carteFed;
 	
-	public List<Article> articlesList;
-	
+	public static List<Article> articlesList;
 	public static List<Client> clientsList;
 	
 	public Client (int id, String nom, String prenom)
@@ -153,8 +152,10 @@ public class Client {
 				break;
 			}
 		}
+		
 		return c;
 	}
+	
 	
 	public Date getDate() {
 		return date;

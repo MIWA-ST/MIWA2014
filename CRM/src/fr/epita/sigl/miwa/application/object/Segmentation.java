@@ -16,9 +16,9 @@ public class Segmentation {
 		this.date = date;
 	}
 
-
 	private static List<Client> clients;
 	private List<Critere> criteres;
+	public static ArrayList<Promotion> promotions = new ArrayList<Promotion>();
 	
 	public Segmentation ()
 	{
@@ -33,6 +33,12 @@ public class Segmentation {
 	public void addClient(Client client)
 	{
 		this.clients.add(client);
+	}
+	
+
+	public void addPromotion(Promotion promo)
+	{
+		this.promotions.add(promo);
 	}
 
 	/**

@@ -48,7 +48,7 @@ public class JdbcConnection
  
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/postgres", "postgres", "root");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/MIWA", "postgres", "plop");
 		}
 		catch (SQLException e)
 		{
@@ -351,6 +351,52 @@ public class JdbcConnection
 			System.out.println("Erreur suppr en base");
 			e.printStackTrace();
 		}
+	}
+	
+
+	public void GetClients()
+	{
+		Client client;
+		try
+		{
+			if (connection != null)
+			{
+				String request = "SELECT * FROM Client";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+
+				ResultSet result = statement.executeQuery();
+				while(result.next())
+				{
+					client = new Client();
+					
+					client.setNom(result.getString(2));
+					client.setPrenom(result.getString(3));
+					client.setCodePostal(result.getString(4));
+					client.setAdresse(result.getString(5));
+					client.setMail(result.getString(6));
+					client.setTelephone(result.getString(7));
+					client.setMatricule(Integer.parseInt(result.getString(8)));
+					client.setIBAN(result.getString(9));
+					client.setBIC(result.getString(10));
+					CarteFidelite c = new CarteFidelite(result.getString(11));
+					client.setCivilite(result.getString(12));
+					client.setNaissance(result.getString(13));
+					client.setNbenfant(Integer.parseInt(result.getString(14)));
+					client.setSituation(result.getString(15));
+					
+					client.setCarteFed(c);
+					
+					Client.clientsList.add(client);
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur récupération des clients en base");
+			e.printStackTrace();
+		}
+		
 	}
 	
 	

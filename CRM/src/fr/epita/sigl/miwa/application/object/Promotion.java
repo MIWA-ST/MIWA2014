@@ -1,5 +1,8 @@
 package fr.epita.sigl.miwa.application.object;
 
+import java.sql.Date;
+import java.util.ArrayList;
+
 public class Promotion {
 
 	private int id;
@@ -7,14 +10,16 @@ public class Promotion {
 	private int produit;
 	private int reduction;
 	private int points;
+	private Date date;
 	
-	public Promotion (int id, int segmentation, int produit, int reduction, int points)
+	public Promotion (int id, int segmentation, int produit, int reduction, int points, Date date)
 	{
 		this.id = id;
 		this.segmentation = segmentation;
 		this.produit = produit;
 		this.reduction = reduction;
 		this.points = points;
+		this.setDate(date);
 	}
 
 	/**
@@ -85,6 +90,20 @@ public class Promotion {
 	 */
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	/**
+	 * @return the date
+	 */
+	public Date getDate() {
+		return date;
+	}
+
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(Date date) {
+		this.date = date;
 	}
 	
 }
