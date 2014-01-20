@@ -72,7 +72,7 @@ public class Main {
 		 * "</ARTICLES></COMMANDE></COMMANDESFOURNISSEUR>";
 		 * AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml,
 		 * EApplication.ENTREPOT);
-		 */
+		 *//*
 		String xml;
 		xml = "<commande_internet>" + "<commande>" + "<numero>125b76"
 				+ "</numero>" + "<refclient>4242" + "</refclient>"

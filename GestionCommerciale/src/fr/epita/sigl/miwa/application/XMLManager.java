@@ -289,16 +289,17 @@ public class XMLManager {
 
 	public CommandeInternet getexpeditionclientfromEntrepot(String message,
 			Document doc) throws AsyncMessageException {
+		System.out.println("mesg entrepot " + message);
 		CommandeInternet command = new CommandeInternet();
-		command.setCommandNumber(doc.getElementsByTagName("numero").item(0)
+		command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0)
 				.getTextContent());
-		command.setDateBC(doc.getElementsByTagName("datebc").item(0)
+		command.setDateBC(doc.getElementsByTagName("DATEBC").item(0)
 				.getTextContent());
-		command.setDateBL(doc.getElementsByTagName("datebl").item(0)
+		command.setDateBL(doc.getElementsByTagName("DATEBL").item(0)
 				.getTextContent());
 		List<Articles> articles = new ArrayList<Articles>();
 		List<String> quantities = new ArrayList<String>();
-		NodeList nList = doc.getElementsByTagName("article");
+		NodeList nList = doc.getElementsByTagName("ARTICLE");
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
 
@@ -307,10 +308,10 @@ public class XMLManager {
 			// Conversion en element
 			Element eElement = (Element) nNode;
 
-			a.setRef_article(eElement.getElementsByTagName("reference").item(0)
+			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
 					.getTextContent());
 
-			quantities.add(eElement.getElementsByTagName("quantite").item(0)
+			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0)
 					.getTextContent());
 			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
 					.getTextContent());
@@ -346,7 +347,7 @@ public class XMLManager {
 
 		List<Articles> articles = new ArrayList<Articles>();
 		List<String> quantities = new ArrayList<String>();
-		Node listarticles = doc.getElementsByTagName("ARTICLES").item(0);
+		Node listarticles = doc.getElementsByTagName("articles").item(0);
 		NodeList nList = listarticles.getChildNodes();
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
@@ -358,10 +359,10 @@ public class XMLManager {
 
 			a.setCategory(eElement.getElementsByTagName("CATEGORIE").item(0)
 					.getTextContent());
-			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
+			a.setRef_article(eElement.getElementsByTagName("reference").item(0)
 					.getTextContent());
 
-			quantities.add(eElement.getElementsByTagName("QUANTITE").item(0)
+			quantities.add(eElement.getElementsByTagName("quantite").item(0)
 					.getTextContent());
 
 			articles.add(a);

@@ -214,6 +214,9 @@ public class JdbcConnection {
 	public void insertCommandeInternet(CommandeInternet cmd) {
 		try {
 			// System.out.println("Insert commandes internet");
+			System.out.println(cmd.getCustomerFirstname());
+			System.out.println(cmd.getCustomerFirstname());
+			
 			if (connection != null) {
 				String verif = "SELECT * FROM commandes_internet WHERE numero_commande = ?";
 				PreparedStatement verif_req = connection
@@ -238,16 +241,13 @@ public class JdbcConnection {
 					statement.executeUpdate();
 
 					// Si y a un bug, ça vient de là
-					ResultSet res = statement.getGeneratedKeys();
-					if (res.first()) {
-						int id = res.getInt(1);
 						int indice = 0;
 						for (Articles a : cmd.getArticles()) {
 							String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
 
 							PreparedStatement statement2 = connection
 									.prepareStatement(request2);
-							statement.setString(1, Integer.toString(id));
+							statement.setString(1, cmd.getCommandNumber());
 							statement.setString(2, a.getRef_article());
 							statement.setString(3, cmd.getquantity()
 									.get(indice));
@@ -255,7 +255,6 @@ public class JdbcConnection {
 							statement2.executeUpdate();
 							indice++;
 						}
-					}
 				} else {
 					String request = "UPDATE commandes_internet SET date_bon_commande = ?, date_bon_livraison = ?, nom_client = ?, prenom_clien = ?, adresse_client = ?, traitee = ? WHERE numero_commande = ?";
 
@@ -308,7 +307,7 @@ public class JdbcConnection {
 						int id = res.getInt(1);
 						int indice = 0;
 						for (Articles a : dmd.getArticles()) {
-							String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
+							String request2 = "INSERT INTO demande_reassort_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
 
 							PreparedStatement statement2 = connection
 									.prepareStatement(request2);
