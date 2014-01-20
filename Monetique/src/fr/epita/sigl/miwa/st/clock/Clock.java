@@ -6,11 +6,20 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
+import fr.epita.sigl.miwa.db.DbHandler;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
@@ -31,6 +40,8 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 	private static Clock _instance;
 	private static final Object _lockInstance = new Object();
 	private static IClock remoteClock;
+	
+	private static Integer counter = 0;
 
 	static public Clock getInstance() {
 		if (_instance == null) {
@@ -150,8 +161,66 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 	}
 
 	@Override
-	public String wakeUp(Date date, Object message) throws RemoteException {
-		ClockClient.wakeUp(date, message);
+	public String wakeUp(Date date, Object message) throws RemoteException 
+	{
+		// Paiement fidélité en fin de mois
+		//ClockClient.wakeUp(date, message);
+		if (counter == 0)
+		{
+			Map<Integer, Float> comptes = new HashMap<>();
+			
+			DbHandler dbHandler = new DbHandler();
+			try 
+			{
+				// Connexion à la BDD
+				Connection connection = dbHandler.open();
+
+				log.info("***** REQUEST -> Fetching in-debts accounts.");			
+					
+				// Fetching account
+				PreparedStatement ps = connection.prepareStatement("SELECT ID_FIDELITY_CREDIT_ACCOUNT FROM fidelity_credit_account WHERE TOTAL_CREDIT_AMOUNT - TOTAL_REPAID_CREDIT__AMOUNT > 0;");
+				ResultSet res = ps.executeQuery();
+				
+				while (res.next())
+				{
+					comptes.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), 0f);
+				}
+
+				// Foreach compte select montant somme des credit fid en prenant les echelons en compte
+				for (Integer c : comptes.keySet()) 
+				{
+					ps = connection.prepareStatement("SELECT SUM(AMOUNT / ECHELON_NB) FROM fidelity_credit WHERE IS_REPAID = false AND ID_FIDELITY_CREDIT_ACCOUNT = ?;");
+					ps.setInt(1, c);
+					res = ps.executeQuery();
+					if (res.next())
+					{
+						comptes.put(c, res.getFloat(1));
+					}
+				}
+
+					
+				log.info("***** REQUEST -> Done");	
+			} 
+			catch (SQLException e) 
+			{
+				System.err.println("ERROR : " + e.getMessage());		
+				return false;
+			}
+			finally
+			{
+				dbHandler.close();
+			}				
+
+		}
+		else
+		{
+			counter = (counter + 1) % 4;
+		}
+		
+		// Pour chaque élément de la liste, appliquer la fonction de banque et associé un booléen
+		// Pour chaque élement blacklisté si false
+		// Si true mettre à jour le repaid amount et le isrepaid éventuellement et si blacklisté, déblacklisté
+		
 		return null;
 	}
 
