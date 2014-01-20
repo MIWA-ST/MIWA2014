@@ -135,9 +135,11 @@ public class Vente {
 						
 						String updatedTicket = XmlGenerator.AskReducToBO(selectedproducts, idClient, type);
 						
+						String updatedPrice = XmlParser.getUpdatedPrice(updatedTicket);
+						selectedproducts = XmlParser.getUpdatedProducts(updatedTicket);
 						//TODO RECUPERER LE NOUVEAU PRIX TOTAL DE UPDATEDTICKET
 						// TODO CONSTRUIRE LE NOUVEAU SELECTEDPRODUCTS A PARTIR DE UPDATEDTICKET
-						XmlGenerator.CheckFidPaymentWithMo("" + prixtotal, idClient);
+						XmlGenerator.CheckFidPaymentWithMo("" + updatedPrice, idClient);
 					}
 					System.out.println("-------------------------------------");
 					XmlGenerator.SendTicketToBO(selectedproducts, idClient, type);

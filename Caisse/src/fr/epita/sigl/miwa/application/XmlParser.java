@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.application;
 import java.io.File;
 import java.io.StringReader;
 import java.sql.SQLException;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,43 +20,6 @@ import org.xml.sax.helpers.DefaultHandler;
 public class XmlParser {
 	private static final Logger LOGGER = Logger.getLogger(XmlParser.class
 			.getName());
-
-	/*
-	 * SAXParserFactory factory = SAXParserFactory.newInstance(); SAXParser
-	 * saxParser = factory.newSAXParser();
-	 * 
-	 * DefaultHandler handler = new DefaultHandler() {
-	 * 
-	 * 
-	 * public void startElement(String uri, String localName,String qName,
-	 * Attributes attributes) throws SAXException {
-	 * 
-	 * if (qName.equalsIgnoreCase("ARTICLE")) {
-	 * 
-	 * String nom = attributes.getValue("nomarticle"); String ref =
-	 * attributes.getValue("refarticle"); String prix =
-	 * attributes.getValue("prix"); String promotion =
-	 * attributes.getValue("promotion");
-	 * 
-	 * System.out.println("nom = " + nom); System.out.println("ref = " + ref);
-	 * System.out.println("prix = " + prix); System.out.println("promo = " +
-	 * promotion); //Integer sellPrice =
-	 * Integer.parseInt(attributes.getValue("prix_vente"));
-	 * 
-	 * int n = 1; try { n = Main.bdd.update("update produit set produit_prix = "
-	 * + prix + ", produit_nom = '" + nom + "', produit_pourcentagepromo = " +
-	 * promotion + "where produit_ref = " + ref); } catch (SQLException e) { //
-	 * TODO Auto-generated catch block e.printStackTrace(); } if (n == 0) try {
-	 * Main.bdd.insert(
-	 * "insert into produit (produit_prix, produit_ref, produit_nom, produit_pourcentagepromo) values ('"
-	 * + nom + "'," + ref + "," + prix + "," + promotion + ")"); } catch
-	 * (SQLException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); }
-	 * 
-	 * } } };
-	 * 
-	 * saxParser.parse(xmlFile, handler);
-	 */
 
 	// fonction appelée quand le BO nous envoie un fichier
 	// -> uniquement pour la liste des articles à réceptionner en début de
@@ -207,15 +171,18 @@ public class XmlParser {
 			e.printStackTrace();
 		}
 		
+		if (montant == "")
+			LOGGER.info("***** Caisse : erreur, le message des produits à mettre à jour a été reçu, mais le retour du back-office est incorrect");
+
 		return montant;
 
 	}
-/*
-	public static set<Produit> getUpdatedProducts(String xmlFile) {
+
+	public static Set<Produit> getUpdatedProducts(String xmlFile) {
 
 		
 		
 
 	}
-*/
+
 }
