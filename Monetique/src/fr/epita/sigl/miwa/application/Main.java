@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -37,13 +41,18 @@ public class Main {
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		
 		/* CODE HERE */		
+		Date clockDate = ClockClient.getClock().getHour();
+		System.out.println(clockDate);
+		
+		// Lancement paiement fin de mois
+		ClockClient.getClock().wakeMeUpEveryWeeks(getLastDayInMonth(), "Prélèvement des crédits fidélité en fin de mois");
+		
 		try {
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
 		} catch (IOException e) {
+			System.out.println("LLALA ERROR");
 			e.printStackTrace();
 		}	
-		Date clockDate = ClockClient.getClock().getHour();
-		System.out.println(clockDate);
 	
 		// Init MySQL connector
 		InitMysqlConnector.init();
@@ -89,6 +98,29 @@ public class Main {
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
 				.stopListener();
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
+	}
+	
+	public static Date getLastDayInMonth() 
+	{
+		  Calendar calendar = Calendar.getInstance();
+		  calendar.setTime(new Date());
+		  int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		  int month = new Date().getMonth();
+		  int year = new Date().getYear();
+		  
+		  String s = String.valueOf(maxDay) + String.valueOf(month) + String.valueOf(year);
+		  SimpleDateFormat sdf = new SimpleDateFormat("ddMMyy");
+		  
+		  Date d = null;
+		  try 
+		  {
+			d = sdf.parse(s);
+		  } 
+		  catch (ParseException e) 
+		  {
+			e.printStackTrace();
+		  }
+		  return d;
 	}
 
 }
