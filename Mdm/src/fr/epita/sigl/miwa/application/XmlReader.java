@@ -124,6 +124,7 @@ public class XmlReader {
 
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
+			final Logger LOGGER = Logger.getLogger(XmlReader.class.getName());
 
 			DefaultHandler handler = new DefaultHandler() {
 				boolean firstline = true;
@@ -137,6 +138,7 @@ public class XmlReader {
 						String description = attributes.getValue("description");
 						Integer priceTTC = Integer.parseInt(attributes.getValue("priceTTC"));
 						String modification = attributes.getValue("modification");
+						LOGGER.severe("***** " + "Parsing flux fournisseur delta: " + "produit " + name + "->" + modification);
 					}
 
 					if (qName.equalsIgnoreCase("DESCRIPTION")) {
@@ -168,7 +170,7 @@ public class XmlReader {
 					}
 				}
 			};
-
+			LOGGER.severe("***** " + "Parsing des promotions (Flux fournisseur delta -> MDM)");
 			saxParser.parse(this.filename, handler);
 
 		} catch (Exception e) {
