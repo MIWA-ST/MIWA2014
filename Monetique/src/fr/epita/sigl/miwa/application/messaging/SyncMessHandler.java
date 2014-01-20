@@ -21,7 +21,6 @@ public class SyncMessHandler {
 	//Init logger
 	private static final Logger LOGGER = Logger.getLogger(SyncMessHandler.class.getName());
 	
-	
 	/* 
 	 * A utiliser pour pouvoir envoyer des messages synchrones ou faire des request
 	 */
