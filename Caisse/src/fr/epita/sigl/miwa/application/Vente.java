@@ -132,7 +132,12 @@ public class Vente {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						XmlGenerator.CheckFidPaymentWithMo(""+prixtotal, idClient);
+						
+						String updatedTicket = XmlGenerator.AskReducToBO(selectedproducts, idClient, type);
+						
+						//TODO RECUPERER LE NOUVEAU PRIX TOTAL DE UPDATEDTICKET
+						// TODO CONSTRUIRE LE NOUVEAU SELECTEDPRODUCTS A PARTIR DE UPDATEDTICKET
+						XmlGenerator.CheckFidPaymentWithMo("" + prixtotal, idClient);
 					}
 					System.out.println("-------------------------------------");
 					XmlGenerator.SendTicketToBO(selectedproducts, idClient, type);

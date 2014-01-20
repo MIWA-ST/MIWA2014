@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.application;
 import java.io.File;
 import java.io.StringReader;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +17,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class XmlParser {
+	private static final Logger LOGGER = Logger.getLogger(XmlParser.class
+			.getName());
 
 	/*SAXParserFactory factory = SAXParserFactory.newInstance();
 	   SAXParser saxParser = factory.newSAXParser();
@@ -77,6 +80,8 @@ public class XmlParser {
 
 			NodeList nList = doc.getElementsByTagName("ARTICLE");
 
+			LOGGER.info
+			
 			System.out.println("----------------------------");
 
 			for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -162,6 +167,14 @@ public class XmlParser {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public static String getUpdatedPrice(String xmlFile) {
+		
+	}
+	
+public static set<Produit> getUpdatedProducts(String xmlFile) {
+		
 	}
 
 }

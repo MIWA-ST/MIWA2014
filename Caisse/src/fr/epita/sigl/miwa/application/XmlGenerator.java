@@ -206,12 +206,12 @@ try {
 			LOGGER.info("***** Caisse : l'ID du client est -> " + idClient);
 			LOGGER.info("***** Caisse : le moyen de paiement est -> " + typePaiement);
 		} catch (Exception e1) {
-			LOGGER.info("***** Caisse : erreur, l'envoi du ticket de fin de vente (client fidélisé) au back-office pour éventuelles réductions ciblées a généré une exception");
+			LOGGER.info("***** Caisse : erreur, la demande du ticket de fin de vente (client fidélisé) au back-office pour éventuelles réductions ciblées a généré une exception");
 		}
 		
 		if (result == null)
 		{
-			LOGGER.info("***** Caisse : erreur, l'envoi du ticket de fin de vente (client fidélisé) au back-office pour éventuelles réductions ciblées a fonctionné, mais le retour a généré une exception");
+			LOGGER.info("***** Caisse : erreur, la demande du ticket de fin de vente (client fidélisé) au back-office pour éventuelles réductions ciblées a fonctionné, mais le retour du back-office est incorrect");
 			result = "";
 			return result;
 		}
