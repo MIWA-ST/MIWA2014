@@ -54,6 +54,8 @@ public class Main {
 		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>150.50</montant><matricule_client>C123456789</matricule_client></monetique>"));
 		    // TEST Ajout carte fidé
 		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"c\"><type_cf><id>12GOLD</id><limite_mesuelle>100.00</limite_mesuelle><limite_totale>1200.00</limite_totale><nb_echelon>3</nb_echelon></type_cf></monetique>"));
+		    // TEST Modification d'une carte fidé
+		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"m\"><type_cf id=\"12GOLD\"><limite_mesuelle>500.00</limite_mesuelle><limite_totale>2000.00</limite_totale><nb_echelon>2</nb_echelon></type_cf></monetique>"));
 		    Document doc = db.parse(is);
 			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, doc);
 		} 
