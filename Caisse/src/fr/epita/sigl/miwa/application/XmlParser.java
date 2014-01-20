@@ -156,7 +156,6 @@ public class XmlParser {
 
 				Node nNode = nList.item(temp);
 
-
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element eElement = (Element) nNode;
 					montant = eElement.getAttribute("montanttotal");
@@ -164,15 +163,14 @@ public class XmlParser {
 
 					LOGGER.info("***** Caisse : nouveau montant total -> "
 							+ montant);
-					LOGGER.info("***** Caisse : référence client -> "
-							+ ref);
+					LOGGER.info("***** Caisse : référence client -> " + ref);
 				}
 			}
 		} catch (Exception e) {
 			LOGGER.info("***** Caisse : erreur lors de la réception du message des produits à mettre à jour de la part du back-office, format attendu pas respecté");
 			e.printStackTrace();
 		}
-		
+
 		if (montant == "")
 			LOGGER.info("***** Caisse : erreur, le message des produits à mettre à jour a été reçu, mais le retour du back-office est incorrect");
 
@@ -184,22 +182,7 @@ public class XmlParser {
 		LOGGER.info("***** Caisse : réception de message : mise à jour du prix total du ticket pour un client fidélisé, de la part du back-office");
 
 		Set<Produit> updatedProducts = new HashSet<Produit>();
-		String nom = "";
-		
-		
-		/*ResultSet rs = Main.bdd.select("select produit_nom from produit where produit_ref =" + REF);
-		
-		while (rs.next())
-			nom = rs.getString(1);
-		
-		Produit niou = new Produit(0, PRIX, REF, NOM, PROMO);
-		niou.setQuantite(quantite);
-		updatedProducts.add(niou);*/
-		
-		
-		
-		
-		String montant = "";
+
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 					.newInstance();
@@ -208,31 +191,47 @@ public class XmlParser {
 					xmlFile)));
 			doc.getDocumentElement().normalize();
 
-			NodeList nList = doc.getElementsByTagName("FACTURE");
+			NodeList nList = doc.getElementsByTagName("ARTICLE");
 
 			for (int temp = 0; temp < nList.getLength(); temp++) {
 
 				Node nNode = nList.item(temp);
 
-
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 					Element eElement = (Element) nNode;
-					montant = eElement.getAttribute("montanttotal");
-					String ref = eElement.getAttribute("refclient");
+					String ref = eElement.getAttribute("refarticle");
+					String prix = eElement.getAttribute("nvprix");
+					String quantite = eElement.getAttribute("quantite");
+					String nom = "";
+					String promo = "";
+					String id = "";
+					String prevPrix = "";
 
-					LOGGER.info("***** Caisse : nouveau montant total -> "
-							+ montant);
-					LOGGER.info("***** Caisse : référence client -> "
-							+ ref);
+					ResultSet rs = Main.bdd
+							.select("select produit_id, produit_nom, produit_pourcentagepromo, produit_prix from produit where produit_ref ="
+									+ ref);
+
+					while (rs.next()) {
+						nom = rs.getString("produit_nom");
+						promo = rs.getString("produit_pourcentagepromo");
+						id = rs.getString("produit_id");
+						prevPrix = rs.getString("produit_prix");
+					}
+					
+					LOGGER.info("***** Caisse : ref article -> " + ref);
+					LOGGER.info("***** Caisse : quantité -> " + quantite);
+					LOGGER.info("***** Caisse : ancien prix -> " + prevPrix);
+					LOGGER.info("***** Caisse : nouveau prix -> " + prix);
+
+					Produit niou = new Produit(id, prix, ref, nom, promo);
+					niou.setQuantite(Integer.parseInt(quantite));
+					updatedProducts.add(niou);
 				}
 			}
 		} catch (Exception e) {
-			LOGGER.info("***** Caisse : erreur lors de la réception du message des produits à mettre à jour de la part du back-office, format attendu pas respecté");
+			LOGGER.info("***** Caisse : erreur lors de la réception de message de mise à jour du prix total du ticket pour un client fidélisé, format attendu pas respecté par le back office");
 			e.printStackTrace();
 		}
-		
-		if (montant == "")
-			LOGGER.info("***** Caisse : erreur, le message des produits à mettre à jour a été reçu, mais le retour du back-office est incorrect");
 
 		return updatedProducts;
 	}
