@@ -78,6 +78,12 @@ public class JdbcConnection
 			System.out.println("Insert Articles");
 			if (connection != null)
 			{
+				String verif = "SELECT * FROM articles WHERE ref_article = ?";
+				PreparedStatement verif_req = connection.prepareStatement(verif);
+				verif_req.setString(1, article.getRef_article());
+				ResultSet rs = verif_req.executeQuery();
+				
+				if (rs.wasNull()) {
 				String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepo, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
@@ -89,8 +95,22 @@ public class JdbcConnection
 				statement.setString(6, article.getStock_max_mag());
 				statement.setString(7, article.getCategory());
 				statement.setString(8, article.getQuantite_min_fournisseur());
-			
 				statement.executeUpdate();
+				}
+				else {
+					String request = "UPDATE articles SET nom = ?, prix_fournisseur = ?, prix_vente = ?, stock_max_entrepo = ?, stock_max_magasin = ?, categorie = ?, quantite_min_commande_fournisse = ? WHERE ref_article = ?";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, article.getNom());
+					statement.setString(2, article.getPrix_fournisseur());
+					statement.setString(3, article.getPrix_vente());
+					statement.setString(4, article.getStock_max_entre());
+					statement.setString(5, article.getStock_max_mag());
+					statement.setString(6, article.getCategory());
+					statement.setString(7, article.getQuantite_min_fournisseur());
+					statement.setString(8, article.getRef_article());
+					statement.executeUpdate();
+				}
 			}
 		}
 		catch (SQLException e)
@@ -106,6 +126,12 @@ public class JdbcConnection
 			System.out.println("Insert promo fournisseur");
 			if (connection != null)
 			{
+				String verif = "SELECT * FROM promo_fournisseur WHERE ref_article = ?";
+				PreparedStatement verif_req = connection.prepareStatement(verif);
+				verif_req.setString(1, article.getRef_article());
+				ResultSet rs = verif_req.executeQuery();
+				
+				if (rs.wasNull()) {
 				String request = "INSERT INTO promo_fournisseur (ref_article, datedebut, datefin, pourcentage, quantite_min_application) VALUES (?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
@@ -116,7 +142,21 @@ public class JdbcConnection
 				statement.setString(5, article.getMinquantite());
 			
 				statement.executeUpdate();
-			}
+				}
+				else {
+					String request = "UPDATE promo_fournisseur SET datedebut = ?, datefin = ?, pourcentage = ?, quantite_min_application = ? WHERE ref_article = ?";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, article.getDateDebut());
+					statement.setString(2, article.getDateFin());
+					statement.setString(3, article.getPourcentage());
+					statement.setString(4, article.getMinquantite());
+					statement.setString(5, article.getRef_article());
+				
+					statement.executeUpdate();
+					
+				}
+				}
 		}
 		catch (SQLException e)
 		{
@@ -131,6 +171,12 @@ public class JdbcConnection
 			System.out.println("Insert commandes_fournisseur");
 			if (connection != null)
 			{
+				String verif = "SELECT * FROM commandes_fournisseur WHERE numero_commande = ?";
+				PreparedStatement verif_req = connection.prepareStatement(verif);
+				verif_req.setString(1, cmd.getNumero_commande());
+				ResultSet rs = verif_req.executeQuery();
+				
+				if (rs.wasNull()) {
 				String request = "INSERT INTO commandes_fournisseur (numero_commande, date_bon_de_commande, date_bon_de_livraison, traitee) VALUES (?, ?, ?, ?)";
 
 				PreparedStatement statement = connection.prepareStatement(request);
@@ -154,6 +200,19 @@ public class JdbcConnection
 					statement2.executeUpdate();
 					indice++;
 				}
+				}
+				else {
+					String request = "UPDATE commandes_fournisseur SET date_bon_de_commande = ?, date_bon_de_livraison = ?, traitee = ? WHERE numero_commande = ?";
+
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, cmd.getBon_commande());
+					statement.setString(2, cmd.getBon_livraion());
+					statement.setString(3, cmd.getTraitee());
+					statement.setString(4, cmd.getNumero_commande());
+					
+					statement.executeUpdate();
+
+				}
 			}
 		}
 		catch (SQLException e)
@@ -169,7 +228,7 @@ public class JdbcConnection
 			System.out.println("Insert commandes internet");
 			if (connection != null)
 			{
-				String request = "INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_client, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+				String request = "INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_clien, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, cmd.getCommandNumber());

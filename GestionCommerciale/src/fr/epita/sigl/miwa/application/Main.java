@@ -31,14 +31,35 @@ public class Main {
 		// Pour se faire appeler à une certaine heure :
 		// ClockClient.getClock().wakeMeUpEveryDays(new Date("23/12/2013"), "envoie_msg_BO");
 		// ClockClient.getClock().wakeMeUpEveryDays(new Date ("23/12/2013 07:00"), "envoi_stocks");
+	/*	String xml = "<COMMANDESFOURNISSEUR><COMMANDE><NUMERO>";
+		xml += "0000009</NUMERO><DATEBC>20131225" + "</DATEBC><ARTICLES>";
+			xml += "<ARTICLE><REFERENCE>11111" + 
+					"</REFERENCE><QUANTITE>12"+ "</QUANTITE><CATEGORIE>" 
+					+ "111</CATEGORIE></ARTICLE>";
+		xml += "</ARTICLES></COMMANDE></COMMANDESFOURNISSEUR>";*/
+		// Log > Afficher Commande fournisseur envoyée
+		// Log > Ajouter quantité demandé / reçu pour voir si diff (en principe non mais c'est pou faire genre)
+		// Log > Afficher bla bla reçu
+				
+
+		/*
+		String xml = "<REASSORTSBO><REASSORT><NUMERO>0000099</NUMERO><REFBO>12345</REFBO><ADRESSEBO>Rue machin</ADRESSEBO><TELBO>09090909</TELBO><DATEBC>2014</DATEBC><ARTICLES>";
+		xml += "<ARTICLE><REFERENCE>11111</REFERENCE><QUANTITE>8</QUANTITE><CATEGORIE>Meuble</CATEGORIE></ARTICLE>";
+	xml += "</ARTICLES></REASSORT></REASSORTSBO>";
+*/
+	// Log > Ajout numéro commande / refBO / article / quantité
+	//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.ENTREPOT);
+
+/*
 		String xml = "<COMMANDESFOURNISSEUR><COMMANDE><NUMERO>";
-		xml += "0000007</NUMERO><DATEBC>20131225" + "</DATEBC><ARTICLES>";
+		xml += "0000009</NUMERO><DATEBC>20131225" + "</DATEBC><ARTICLES>";
 			xml += "<ARTICLE><REFERENCE>11111" + 
 					"</REFERENCE><QUANTITE>12"+ "</QUANTITE><CATEGORIE>" 
 					+ "111</CATEGORIE></ARTICLE>";
 		xml += "</ARTICLES></COMMANDE></COMMANDESFOURNISSEUR>";
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.ENTREPOT);
 
+*/		String xml;
 		xml = "<commande_internet>" + "<commande>" + "<numero>125b76"
 				 + "</numero>" + "<refclient>4242"
 				 + "</refclient>" + "<datebc>20131212"
