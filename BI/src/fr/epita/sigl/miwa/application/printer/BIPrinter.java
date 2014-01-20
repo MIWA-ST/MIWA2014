@@ -35,23 +35,23 @@ public class BIPrinter {
 	private static final String ENTREPOT = "entrepot";
 
 	public void publishStockStatistics(List<StockStatistic> stockStatistics){
-		initConsole();
+		StringBuilder builder = new StringBuilder();
+		builder.append(initConsole());
 		boolean headerEntrepot = false;
 		boolean headerMagasin = false;
-		StringBuilder builder = new StringBuilder();
 		if (stockStatistics.isEmpty()){
-			builder.append("Aucun problème relevé sur les stocks");
+			builder.append("Aucun problème relevé sur les stocks\n\n");
 		} else {
 			for (StockStatistic statistic : stockStatistics){
-				if (!headerEntrepot && ENTREPOT.equals(statistic.getStore())){
+				if (!headerEntrepot && ENTREPOT.equalsIgnoreCase(statistic.getStore())){
 					builder.append("\n");
 					builder.append("**** GESTION DES STOCKS : ENTREPOT");
 					builder.append("\n");
 					headerEntrepot = true;
 				}
-				if (!headerMagasin && !ENTREPOT.equals(statistic.getStore())){
+				if (!headerMagasin && !ENTREPOT.equalsIgnoreCase(statistic.getStore())){
 					builder.append("\n");
-					builder.append("**** GESTION DES STOCKS : MAGASIN");
+					builder.append("**** GESTION DES STOCKS : MAGASIN " + statistic.getStore());
 					builder.append("\n");
 					headerMagasin = true;
 				}
@@ -83,7 +83,8 @@ public class BIPrinter {
 	}
 
 	public void publishSaleStatistics(List<SaleStatistic> saleStatistics) {
-		initConsole();
+		StringBuilder builder = new StringBuilder();
+		builder.append(initConsole());
 		StringBuilder builderEvo = new StringBuilder("**** EVOLUTION QUOTIDIENNE DES VENTES PAR CATEGORIE D\'ARTICLES\n");		
 		StringBuilder builderRep = new StringBuilder("**** REPARTITION DU CHIFFRE D\'AFFAIRES PAR CATEGORIE D\'ARTICLES\n");
 		for (SaleStatistic statistic : saleStatistics){
@@ -91,8 +92,9 @@ public class BIPrinter {
 			builderRep.append(getRepartitionPart(statistic));
 		}
 		builderEvo.append("\n");
-		System.out.println(builderEvo.toString());
-		System.out.println(builderRep.toString());
+		builder.append(builderEvo.toString());
+		builder.append(builderRep.toString());
+		System.out.println(builder.toString());
 	}
 
 	public String createSegmentationFile(List<Critere> criteres, List<Segmentation> segmentations){
@@ -123,17 +125,21 @@ public class BIPrinter {
 	}
 
 	public void publishPaiementStatistics(List<PaymentStatistic> paiementStatistics){
-		initConsole();
-		System.out.println("**** REPARTITION DU CHIFFRE D\'AFFAIRES PAR MOYEN DE PAIEMENT");
+		StringBuilder builder = new StringBuilder(initConsole());
+		builder.append("**** REPARTITION DU CHIFFRE D\'AFFAIRES PAR MOYEN DE PAIEMENT");
 		for (PaymentStatistic statistic : paiementStatistics){
-			System.out.println(statistic.toString());
+			builder.append(statistic.toString());
 		}		
+		System.out.println(builder.toString());
 	}
 
-	private void initConsole(){
-		System.out.println("--------------------------------------------------\n--------------------------------------------------");
-		System.out.println("DATE : ");
-		System.out.println(ClockClient.getClock().getHour());
+	private String initConsole(){
+		StringBuilder builder = new StringBuilder();
+		builder.append("--------------------------------------------------\n--------------------------------------------------\n");
+		builder.append("DATE : ");
+		builder.append(ClockClient.getClock().getHour());
+		builder.append("\n");
+		return builder.toString();
 	}
 
 	private String getEvolutionPart(SaleStatistic statistic){

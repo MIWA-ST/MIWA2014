@@ -7,7 +7,6 @@ package fr.epita.sigl.miwa.application.controller;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class BIController {
 
 	private boolean hasStockGC = false;
 
-	private boolean hasMDMData = true;
+	private boolean hasMDMData = false;
 
 	private boolean hasSaleInternet = false;
 
@@ -109,14 +108,9 @@ public class BIController {
 			//return printer.createSegmentationFile(criteres, new ArrayList<Segmentation>());
 		}
 		List<Client> clients = biDao.getClientByCriteria(criteres);
-		LOGGER.info("Nombre de clients récupérés : " + clients.size());
 		List<SoldProduct> soldProducts = new ArrayList<SoldProduct>();
-		SoldProduct sp1 = new SoldProduct("08deb933-bb39-411d-b0ee-59b28812", 15);
+		SoldProduct sp1 = new SoldProduct("042ef636-acbd-40b6-afcd-3c82236c", 15);
 		soldProducts.add(sp1);
-		SoldProduct sp2 = new SoldProduct("08deb933-bb39-411d-b0ee-59b28812", 10);
-		soldProducts.add(sp2);
-		SoldProduct sp3 = new SoldProduct("08deb933-bb39-411d-b0ee-59b28812", 15);
-		soldProducts.add(sp3);
 		List<DetailSale> detailSalesToInsert = new ArrayList<DetailSale>();
 		DetailSale sale1 = new DetailSale(1, EPaiementType.CB, new Date(), 100, "Mag 1", 50762119, soldProducts, "BO");
 		detailSalesToInsert.add(sale1);
@@ -128,7 +122,6 @@ public class BIController {
 		detailSalesToInsert.add(sale4);
 		biDao.insertDetailSales(detailSalesToInsert);
 		List<DetailSale> detailSales = biDao.getDetailSalesForClients(clients);
-		LOGGER.info("Nombre de detail sale récupérées : " + detailSalesToInsert.size());
 		List<Product> products = biDao.getAllProducts();
 		List<Segmentation> segmentations = computer.computeSegmentation(detailSales, products);
 		biDao.insertSegmentation(segmentations);

@@ -3,7 +3,6 @@ package fr.epita.sigl.miwa.application.clock;
 import java.util.Date;
 import java.util.logging.Logger;
 
-import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.controller.BIController;
 import fr.epita.sigl.miwa.application.enums.EClockMessage;
 import fr.epita.sigl.miwa.st.clock.ClockFactory;

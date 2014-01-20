@@ -3,16 +3,13 @@ package fr.epita.sigl.miwa.application.computer;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.postgresql.core.Field;
 
-import fr.epita.sigl.miwa.application.controller.BIController;
 import fr.epita.sigl.miwa.application.criteres.AgeValue;
 import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.application.data.DetailSale;
@@ -33,12 +30,7 @@ public class BIComputerTest {
 
 	private BIComputer computer = new BIComputer();
 
-	@Test
-	public void insertProductsTest(){
-		File file = new File("C:/Users/Laura/Downloads/BI/outputFileBI.xml");
-		BIController controller = BIController.getInstance();
-		controller.parseMDMFile(file);
-	}
+	
 	@Test
 	public void computeStockStatisticsTest() {
 		List<Stock> stocks = new ArrayList<Stock>();

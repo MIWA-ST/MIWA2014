@@ -92,8 +92,7 @@ public class BIParser {
 				stock.setStockQty(Integer.valueOf(tmpInfo));
 				tmpInfo = stockNode.getAttributes().getNamedItem("max").getNodeValue();
 				stock.setMaxQty(Integer.valueOf(tmpInfo));
-				Date dateTime = new SimpleDateFormat("YYYY-MM-dd").parse(dateInfo);
-				stock.setDateTime(dateTime);
+				stock.setDateTime((new SimpleDateFormat("yyyy-MM-dd")).parse(dateInfo));
 				String store = stockNode.getAttributes().getNamedItem("lieu").getNodeValue();
 				stock.setStore(store);
 
@@ -186,9 +185,9 @@ public class BIParser {
 				tmpInfo = promotionNode.getAttributes().getNamedItem("ref-article").getNodeValue();
 				promotion.setProductReference(tmpInfo);
 				tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
-				promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
+				promotion.setBeginDate((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(tmpInfo));
 				tmpInfo = promotionNode.getAttributes().getNamedItem("fin").getNodeValue();
-				promotion.setEndDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
+				promotion.setEndDate((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(tmpInfo));
 				tmpInfo = promotionNode.getAttributes().getNamedItem("pourcent").getNodeValue();
 				promotion.setPercentage(Integer.valueOf(tmpInfo));
 				promotion.setStore(storeId);
@@ -215,7 +214,7 @@ public class BIParser {
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = saleFile.getElementsByTagName("ENTETE");
 			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
-			Date saleDate = (new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(dateStr);
+			Date saleDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(dateStr);
 
 			// Parsage du fichier : Partie corps
 			NodeList bodyNodes = saleFile.getElementsByTagName("VENTES");
@@ -344,7 +343,7 @@ public class BIParser {
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = saleFile.getElementsByTagName("ENTETE");
 			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("dateHeure").getNodeValue();
-			Date saleDate = (new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(dateStr);
+			Date saleDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(dateStr);
 
 			// Parsage du fichier : Partie corps
 			NodeList saleNodes = saleFile.getElementsByTagName("CATEGORIE");
@@ -414,7 +413,7 @@ public class BIParser {
 				if (tmpInfo.equalsIgnoreCase("null")){
 					client.setBirthDate(null);
 				} else {
-					client.setBirthDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
+					client.setBirthDate((new SimpleDateFormat("yyyy-MM-dd")).parse(tmpInfo));
 				}
 				tmpInfo = clientNode.getAttributes().getNamedItem("codepostal").getNodeValue();
 				client.setZipcode(Integer.valueOf(tmpInfo));
@@ -467,9 +466,12 @@ public class BIParser {
 				product.setReference(articleNode.getAttributes().getNamedItem("reference").getNodeValue());
 				product.setCategoryName(articleNode.getAttributes().getNamedItem("categorie").getNodeValue());
 				tmpInfo = articleNode.getAttributes().getNamedItem("prix_fournisseur").getNodeValue();
-				product.setBuyingPrice(Float.valueOf(tmpInfo));
+				Float buyingPrice = Float.valueOf(tmpInfo);
+				product.setBuyingPrice(buyingPrice);
 				tmpInfo = articleNode.getAttributes().getNamedItem("prix_vente").getNodeValue();
-				product.setSellingPrice(Float.valueOf(tmpInfo));
+				Float sellingPrice = Float.valueOf(tmpInfo);
+				product.setSellingPrice(sellingPrice);
+				product.setMargin(sellingPrice - buyingPrice);
 				productList.add(product);
 
 				// Lecture des sous-balises de "Article"
@@ -489,9 +491,9 @@ public class BIParser {
 
 							promotion.setProductReference(product.getReference());
 							tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
-							promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
+							promotion.setBeginDate((new SimpleDateFormat("yyyy-MM-dd")).parse(tmpInfo));
 							tmpInfo = promotionNode.getAttributes().getNamedItem("fin").getNodeValue();
-							promotion.setEndDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
+							promotion.setEndDate((new SimpleDateFormat("yyyy-MM-dd")).parse(tmpInfo));
 							tmpInfo = promotionNode.getAttributes().getNamedItem("pourcent").getNodeValue();
 							promotion.setPercentage(Integer.valueOf(tmpInfo));
 							promotion.setStore("");
@@ -553,7 +555,7 @@ public class BIParser {
 					detailSale.setPaymentMean(EPaiementType.ES);
 
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("dateHeure").getNodeValue();
-				detailSale.setDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
+				detailSale.setDate((new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(tmpInfo));
 
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("montant").getNodeValue();
 				detailSale.setTotal(Integer.valueOf(tmpInfo));
