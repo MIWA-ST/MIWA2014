@@ -32,16 +32,18 @@ public class Main {
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		
 		/* CODE HERE */		
-		try {
-			new BufferedReader(new InputStreamReader(System.in)).readLine();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
 		Date clockDate = ClockClient.getClock().getHour();
 		System.out.println(clockDate);
 		
-		// Lancement paiement fin de fin
+		// Lancement paiement fin de mois
 		ClockClient.getClock().wakeMeUpEveryWeeks(getLastDayInMonth(), "Prélèvement des crédits fidélité en fin de mois");
+		
+		try {
+			new BufferedReader(new InputStreamReader(System.in)).readLine();
+		} catch (IOException e) {
+			System.out.println("LLALA ERROR");
+			e.printStackTrace();
+		}	
 	
 		// Init MySQL connector
 		InitMysqlConnector.init();

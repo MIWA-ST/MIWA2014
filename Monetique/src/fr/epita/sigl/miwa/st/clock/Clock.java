@@ -10,15 +10,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.db.DbHandler;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.ConfigurationException;
@@ -163,10 +161,13 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 	@Override
 	public String wakeUp(Date date, Object message) throws RemoteException 
 	{
+
 		// Paiement fidélité en fin de mois
 		//ClockClient.wakeUp(date, message);
+		log.info("***** REQUEST -> Paiement of fidelity credits the : " + date);
+		
 		if (counter == 0)
-		{
+		{			
 			Map<Integer, Float> comptes = new HashMap<>();
 			
 			DbHandler dbHandler = new DbHandler();
@@ -198,16 +199,47 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 					}
 				}
 
-					
-				log.info("***** REQUEST -> Done");	
+				for (Integer c : comptes.keySet()) 
+				{
+					if (!getBankPaiement())
+					{
+						ps = connection.prepareStatement("UPDATE fidelity_credit_account SET IS_BLACKLISTED = true, BLAKLISTED_DATE = NOW() WHERE ID_FIDELITY_CREDIT_ACCOUNT = ?;");
+						ps.setInt(1, c);
+						ps.executeUpdate();
+						
+						log.info("***** Fidelity account with ID : " + c + "is now blacklisted because bank refuses paiement.");
+
+					}
+					else
+					{
+						ps = connection.prepareStatement("UPDATE fidelity_credit_account SET IS_BLACKLISTED = false, BLAKLISTED_DATE = NOW(), TOTAL_REPAID_CREDIT__AMOUNT = TOTAL_REPAID_CREDIT__AMOUNT + ? WHERE ID_FIDELITY_CREDIT_ACCOUNT = ?;");
+						ps.setFloat(1, comptes.get(c));
+						ps.setInt(2, c);
+						ps.executeUpdate();
+						
+						log.info("***** Fidelity account with ID : " + c + "have been updated.");
+						
+						ps = connection.prepareStatement("UPDATE fidelity_credit SET REPAID_AMOUNT = REPAID_AMOUNT + (AMOUNT / ECHELON_NB) WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false;");
+						ps.setInt(1, c);
+						ps.executeUpdate();
+						
+						ps = connection.prepareStatement("UPDATE fidelity_credit SET IS_REPAID = true WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false AND REPAID_AMOUNT >= AMOUNT;");
+						ps.setInt(1, c);
+						ps.executeUpdate();
+						
+						log.info("***** Fidelity credit with ID : " + c + "have been updated.");
+					}
+				}	
 			} 
 			catch (SQLException e) 
 			{
 				System.err.println("ERROR : " + e.getMessage());		
-				return false;
+				return "ERROR";
 			}
 			finally
 			{
+				log.info("***** REQUEST DONE");
+				counter++;
 				dbHandler.close();
 			}				
 
@@ -216,10 +248,6 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		{
 			counter = (counter + 1) % 4;
 		}
-		
-		// Pour chaque élément de la liste, appliquer la fonction de banque et associé un booléen
-		// Pour chaque élement blacklisté si false
-		// Si true mettre à jour le repaid amount et le isrepaid éventuellement et si blacklisté, déblacklisté
 		
 		return null;
 	}
@@ -278,4 +306,15 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		clock.wakeMeUpEveryDays(hour, "DAY");
 		clock.wakeMeUpEveryHours(hour, "HOUR");
 	}
+	
+	private static boolean getBankPaiement() 
+	{
+		log.info("***** Bank Paiement service call started.");		
+		Random rnd = new Random();
+		Integer myRnd = rnd.nextInt(100);
+		
+		log.info("***** Bank Paiement service call stopped with : " + (myRnd < 70) + ".");
+		return myRnd < 70;
+	}
+
 }
