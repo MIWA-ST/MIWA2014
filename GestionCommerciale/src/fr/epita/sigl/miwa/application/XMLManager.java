@@ -320,7 +320,7 @@ public class XMLManager {
 		command.setArticles(articles);
 		command.setquantity(quantities);
 		JdbcConnection.getInstance().getConnection();
-		JdbcConnection.getInstance().insertCommandeInternet(command);
+		JdbcConnection.getInstance().insertCommandeInternet_entrepot(command);
 		JdbcConnection.getInstance().closeConnection();
 		return command;
 	}
@@ -558,6 +558,7 @@ public class XMLManager {
 		for (StockMagasin stockMagasin : magasin) {
 			xml += "<STOCK ref-article=\"" + stockMagasin.getRef_article() + "\" stock=\"" + stockMagasin.getQuantity() +"\" commande=\"false\" max=\"50\" lieu=\""+ stockMagasin.getIdmag() +"\"/>";
 		}
+		xml += "</STOCKS></XML>";
 		
 		return xml;
 	}
