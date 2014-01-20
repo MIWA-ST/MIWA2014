@@ -304,19 +304,22 @@ public class JdbcConnection {
 
 					// / Si y a un bug, ça vient de là
 					ResultSet res = statement.getGeneratedKeys();
-					int id = res.getInt(1);
-					int indice = 0;
-					for (Articles a : dmd.getArticles()) {
-						String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
+					if (res.first()) {
+						int id = res.getInt(1);
+						int indice = 0;
+						for (Articles a : dmd.getArticles()) {
+							String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
 
-						PreparedStatement statement2 = connection
-								.prepareStatement(request2);
-						statement.setString(1, Integer.toString(id));
-						statement.setString(2, a.getRef_article());
-						statement.setString(3, dmd.getQuantity().get(indice));
+							PreparedStatement statement2 = connection
+									.prepareStatement(request2);
+							statement.setString(1, Integer.toString(id));
+							statement.setString(2, a.getRef_article());
+							statement.setString(3, dmd.getQuantity()
+									.get(indice));
 
-						statement2.executeUpdate();
-						indice++;
+							statement2.executeUpdate();
+							indice++;
+						}
 					}
 				} else {
 					String request = "UPDATE demandes_reassort SET ref_bo = ?, adresse_bo = ?, tel_bo = ?, date_bc = ?, traite = ? WHERE numero_commande = ?";
@@ -474,19 +477,21 @@ public class JdbcConnection {
 
 				// / Si y a un bug, ça vient de là
 				ResultSet res = statement.getGeneratedKeys();
-				int id = res.getInt(1);
-				int indice = 0;
-				for (Articles a : dmd.getArticles()) {
-					String request2 = "INSERT INTO articles_map (ref_article, id_demande, quantite) VALUES (?, ?, ?)";
+				if (res.first()) {
+					int id = res.getInt(1);
+					int indice = 0;
+					for (Articles a : dmd.getArticles()) {
+						String request2 = "INSERT INTO articles_map (ref_article, id_demande, quantite) VALUES (?, ?, ?)";
 
-					PreparedStatement statement2 = connection
-							.prepareStatement(request2);
-					statement.setString(1, a.getRef_article());
-					statement.setString(2, Integer.toString(id));
-					statement.setString(3, dmd.getQuantity().get(indice));
+						PreparedStatement statement2 = connection
+								.prepareStatement(request2);
+						statement.setString(1, a.getRef_article());
+						statement.setString(2, Integer.toString(id));
+						statement.setString(3, dmd.getQuantity().get(indice));
 
-					statement2.executeUpdate();
-					indice++;
+						statement2.executeUpdate();
+						indice++;
+					}
 				}
 			}
 		} catch (SQLException e) {
