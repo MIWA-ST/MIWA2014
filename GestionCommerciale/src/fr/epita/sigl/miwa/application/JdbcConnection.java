@@ -7,11 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class JdbcConnection {
 	private static JdbcConnection instance = null;
 	private Connection connection = null;
-
+	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+	
 	public static JdbcConnection getInstance() {
 		if (instance == null)
 			instance = new JdbcConnection();
@@ -339,14 +341,16 @@ public class JdbcConnection {
 		try {
 			// System.out.println("Insert demande reassort");
 			if (connection != null) {
-				String verif = "SELECT * FROM demandes_reassort WHERE numero_commande = ?";
+				String verif = "SELECT * FROM demandes_reassort WHERE numero_demande = ?";
 				PreparedStatement verif_req = connection
 						.prepareStatement(verif);
 				verif_req.setString(1, dmd.getCommandNumber());
 				ResultSet rs = verif_req.executeQuery();
+				
+				System.out.println(dmd.getBackOfficeRef());
 
 				if (!rs.next()) {
-					String request = "INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traite) VALUES (?, ?, ?, ?, ?, ?)";
+					String request = "INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traitee) VALUES (?, ?, ?, ?, ?, ?)";
 
 					PreparedStatement statement = connection
 							.prepareStatement(request);
@@ -359,36 +363,27 @@ public class JdbcConnection {
 
 					statement.executeUpdate();
 
-					// / Si y a un bug, ça vient de là
-					ResultSet res = statement.getGeneratedKeys();
-					if (res.first()) {
-						int id = res.getInt(1);
-						int indice = 0;
-						for (Articles a : dmd.getArticles()) {
-							String request2 = "INSERT INTO demande_reassort_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
+					int indice = 0;
+					for (Articles a : dmd.getArticles()) {
 
-							PreparedStatement statement2 = connection
-									.prepareStatement(request2);
-							statement.setString(1, Integer.toString(id));
-							statement.setString(2, a.getRef_article());
-							statement.setString(3, dmd.getQuantity()
-									.get(indice));
+						String request2 = "INSERT INTO demande_reassort_line (numero_demande, ref_article, quantite) VALUES (?, ?, ?)";
 
-							statement2.executeUpdate();
-							indice++;
-						}
+						PreparedStatement statement2 = connection
+								.prepareStatement(request2);
+						statement2.setString(1, dmd.getCommandNumber());
+						statement2.setString(2, a.getRef_article());
+						statement2.setString(3, dmd.getQuantity().get(indice));
+
+						statement2.executeUpdate();
+						indice++;
 					}
 				} else {
-					String request = "UPDATE demandes_reassort SET ref_bo = ?, adresse_bo = ?, tel_bo = ?, date_bc = ?, traite = ? WHERE numero_commande = ?";
+					String request = "UPDATE demandes_reassort SET traitee = ? WHERE numero_demande = ?";
 
 					PreparedStatement statement = connection
 							.prepareStatement(request);
-					statement.setString(1, dmd.getBackOfficeRef());
-					statement.setString(2, dmd.getBackOfficeAddress());
-					statement.setString(3, dmd.getBackOfficePhone());
-					statement.setString(4, dmd.getDateBC());
-					statement.setString(5, dmd.getTraite());
-					statement.setString(6, dmd.getCommandNumber());
+					statement.setString(1, dmd.getTraite());
+					statement.setString(2, dmd.getCommandNumber());
 
 					statement.executeUpdate();
 
@@ -704,6 +699,7 @@ public class JdbcConnection {
 					sm.setRef_article(ret.getString("ref_article"));
 					result.add(sm);
 				}
+				LOGGER.severe("***** Envois des stocks terminé");
 				return result;
 			}
 		} catch (SQLException e) {
