@@ -19,13 +19,53 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 	@Override
 	public void onMessage(String message, EApplication source) {
-		//LOGGER.severe(message);
-		//System.out.println(message);
+		if (source == EApplication.CRM)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(message, ParseXML.TYPE_LANGUAGE.STRING))
+				parser.parseCRM();
+		}
+		else if (source == EApplication.GESTION_COMMERCIALE)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(message, ParseXML.TYPE_LANGUAGE.STRING))
+				parser.parseGC();
+		}
+		else if (source == EApplication.MDM)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(message, ParseXML.TYPE_LANGUAGE.STRING))
+				parser.parseMDM();
+		}
 	}
 
 	@Override
 	public void onFile(File file, EApplication source) {
-		LOGGER.severe(source + " : " + file.getAbsolutePath());		
+		LOGGER.severe(source + " : " + file.getAbsolutePath());
+		if (source == EApplication.CRM)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(file, ParseXML.TYPE_LANGUAGE.FICHIER))
+				parser.parseCRM();
+		}
+		else if (source == EApplication.GESTION_COMMERCIALE)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(file, ParseXML.TYPE_LANGUAGE.FICHIER))
+				parser.parseGC();
+		}
+		else if (source == EApplication.MDM)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(file, ParseXML.TYPE_LANGUAGE.FICHIER))
+				parser.parseMDM();
+		}
 	}
 
 }

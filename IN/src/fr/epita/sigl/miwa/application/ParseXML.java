@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
+import org.jdom2.input.DOMBuilder;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.Element;
 
@@ -68,19 +69,19 @@ public class ParseXML {
 			1 -> String
 			2 -> Document
 	 */
-	public void readXML(String flux, ParseXML.TYPE_LANGUAGE typeFlux)
+	public Boolean readXML(String flux, ParseXML.TYPE_LANGUAGE typeFlux)
 	{
 		SAXBuilder saxBuilder = new SAXBuilder();
 		
 		if (typeFlux == ParseXML.TYPE_LANGUAGE.FICHIER)
 		{
-			
 			File file = new File(flux);
 			try {
 				document = saxBuilder.build(file);
 				
 			} catch (JDOMException | IOException e) {
 				LOGGER.info("***** " + e.getMessage());
+				return  false;
 			}
 		}
 		else if (typeFlux == ParseXML.TYPE_LANGUAGE.STRING)
@@ -97,36 +98,70 @@ public class ParseXML {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				LOGGER.info("***** Erreur à la création du fichier depuis le flux : " + e.getMessage());
+				return false;
 			} catch (JDOMException e) {
 				// TODO Auto-generated catch block
 				LOGGER.info("***** Erreur à la lecture du fichier depuis le flux : " + e.getMessage());
+				return false;
 			}
 		}
 		else
+		{
 			LOGGER.info("***** Type de flux inconnu.");
+			return false;
+		}
 		
 		if (document != null)
+		{
 			root = document.getRootElement();
+			return true;
+		}
+		return false;
+	}
+
+	public Boolean readXML(File file, ParseXML.TYPE_LANGUAGE typeFlux)
+	{
+		SAXBuilder saxBuilder = new SAXBuilder();
+		
+		try {
+			document = saxBuilder.build(file);
+			
+		} catch (JDOMException | IOException e) {
+			LOGGER.info("***** " + e.getMessage());
+			return  false;
+		}
+			
+		if (document != null)
+		{
+			root = document.getRootElement();
+			return true;
+		}
+		return false;
 	}
 	
-	public void readXml(Document document, ParseXML.TYPE_LANGUAGE typeFlux)
+	public Boolean readXML(org.w3c.dom.Document document, ParseXML.TYPE_LANGUAGE typeFlux)
 	{
 		if (typeFlux == ParseXML.TYPE_LANGUAGE.DOCUMENT)
 		{
-			this.document = document;
+			DOMBuilder dom = new DOMBuilder();
+			
+			this.document = dom.build(document);
 			root = this.document.getRootElement();
+			return true;
 		}
+		return false;
 	}
 	
-	public void parseMDM()
+	public Boolean parseMDM()
 	{
+		LOGGER.info("***** Message reçu du MDM :\n");
 		if (root == null)
-			return;
+			return false;
 		// Vérification du premier objet
 		if (!root.getName().equals("XML"))
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux MDM : la balise <XML> n'existe pas.");
-			return;
+			return false;
 		}
 		
 		// Creation de l'objet correspondant
@@ -139,7 +174,7 @@ public class ParseXML {
 		if (e1 == null)
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux MDM : la balise <ENTETE> n'existe pas.");
-			return;
+			return false;
 		}
 		productsClient.setEntete(new ProductsClientEnteteMDM(e1.getAttributeValue("objet"),
 															e1.getAttributeValue("source"),
@@ -150,7 +185,7 @@ public class ParseXML {
 		if (articlesProductClient == null)
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux MDM : la balise <ARTICLES> n'existe pas.");
-			return;
+			return false;
 		}
 		
 		List<Element> listProducts = articlesProductClient.getChildren("ARTICLE");
@@ -179,18 +214,19 @@ public class ParseXML {
 		}
 		
 		LOGGER.info(productsClient.print_logger());
+		return true;
 	}
 
-	
-	public void parseCRM()
+	public Boolean parseCRM()
 	{
+		LOGGER.info("***** Message reçu du CRM :\n");
 		// Récupération des informations du fichier XML
 		if (root == null)
-			return;
+			return false;
 		if (!root.getName().equals("ENTETE"))
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux CRM : la balise <ENTETE> n'existe pas.");
-			return;
+			return false;
 		}
 		
 		// Récupération de l'entete
@@ -201,17 +237,17 @@ public class ParseXML {
 		if (entete.getObjet() == null || entete.getObjet().equals(""))
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux CRM : l'attribut \"objet\" n'est pas correct ou n'existe pas.");
-			return;
+			return false;
 		}
 		if (entete.getSource() == null || entete.getSource().equals(""))
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux CRM : l'attribut \"source\" n'est pas correct ou n'existe pas.");
-			return;
+			return false;
 		}
 		if (entete.getDate() == null)
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux CRM : l'attribut \"date\" n'est pas correct ou n'existe pas.");
-			return;
+			return false;
 		}
 		
 		if (entete.getObjet().equals("information-client"))
@@ -224,14 +260,14 @@ public class ParseXML {
 			if (informations == null)
 			{
 				LOGGER.info("***** Erreur lors du parsing du flux CRM : la balise <INFORMATIONS> n'existe pas.");
-				return;
+				return false;
 			}
 			
 			Element client = informations.getChild("CLIENT");
 			if (client == null)
 			{
 				LOGGER.info("***** Erreur lors du parsing du flux CRM : la balise <CLIENT> n'existe pas.");
-				return;
+				return false;
 			}
 			
 			promotionClient.setMatricule(client.getAttributeValue("matricule"));
@@ -240,7 +276,7 @@ public class ParseXML {
 			if (promotions == null)
 			{
 				LOGGER.info("***** Erreur lors du parsing du flux CRM : la balise <PROMOTIONS> n'existe pas.");
-				return;
+				return false;
 			}
 			
 			List<Element> listPromotions = promotions.getChildren("PROMOTION");
@@ -250,6 +286,7 @@ public class ParseXML {
 						Integer.parseInt(e.getAttributeValue("reduc"))));
 			
 			LOGGER.info(promotionClient.print_logger());
+			return true;
 		}
 		else if (entete.getObjet().equals("matricule-client"))
 		{
@@ -261,14 +298,14 @@ public class ParseXML {
 			if (informations == null)
 			{
 				LOGGER.info("***** Erreur lors du parsing du flux CRM : la balise <INFORMATIONS> n'existe pas.");
-				return;
+				return false;
 			}
 			
 			Element client = informations.getChild("CLIENT");
 			if (client == null)
 			{
 				LOGGER.info("***** Erreur lors du parsing du flux CRM : la balise <CLIENT> n'existe pas.");
-				return;
+				return false;
 			}
 			
 			receptionMatricule.setMatricule(client.getAttributeValue("matricule"));
@@ -276,23 +313,25 @@ public class ParseXML {
 			receptionMatricule.setPrenom(client.getAttributeValue("prenom"));
 			
 			LOGGER.info(receptionMatricule.print_logger());
+			return true;
 		}
 		else
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux CRM : l'attribut \"objet\" n'est pas reconnu.");
-			return;
+			return false;
 		}
 	}
 	
-	public void parseGC()
+	public Boolean parseGC()
 	{
+		LOGGER.info("***** Message reçu de la GC :\n");
 		if (root == null)
-			return;
+			return false;
 		
 		if (!root.getName().equals("DEMANDENIVEAUDESTOCKINTERNET"))
 		{
 			LOGGER.info("***** Erreur lors du parsing du flux GC : la balise <DEMANDENIVEAUDESTOCKINTERNET> n'existe pas.");
-			return;
+			return false;
 		}
 		
 		// Creation de l'objet correspondant
@@ -309,6 +348,7 @@ public class ParseXML {
 					e.getChildText("QUANTITE")));
 		
 		 LOGGER.info(demandeNiveauStock.print_logger());
+		 return true;
 	}
 
 	public  Document getDocument() {

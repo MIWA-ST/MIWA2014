@@ -25,8 +25,34 @@ public class SyncMessHandler {
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
 		// Envoi de message classqiue (XML en String ou messge)
-		System.out.println(message);
-
+		if (sender == EApplication.CRM)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(message, ParseXML.TYPE_LANGUAGE.STRING))
+				return parser.parseCRM();
+			else
+				return false;
+		}
+		else if (sender == EApplication.GESTION_COMMERCIALE)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(message, ParseXML.TYPE_LANGUAGE.STRING))
+				return parser.parseGC();
+			else
+				return false;
+		}
+		else if (sender == EApplication.MDM)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(message, ParseXML.TYPE_LANGUAGE.STRING))
+				return parser.parseMDM();
+			else
+				return false;
+		}
+		
 		return false;
 	}
 
@@ -50,15 +76,33 @@ public class SyncMessHandler {
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
 		// TODO Auto-generated method stub
-//		ParseXML parser = new ParseXML();
-//		
-//		org.jdom2.Document document;
-//		
-//		DOMBuilder d = new DOMBuilder();
-//		
-//		parser.setDocument(d.build(xml));
-//		parser.readXML2(null);
-//		parser.parseCRM("stream");
+		if (sender == EApplication.CRM)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(xml, ParseXML.TYPE_LANGUAGE.DOCUMENT))
+				return parser.parseCRM();
+			else
+				return false;
+		}
+		else if (sender == EApplication.GESTION_COMMERCIALE)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(xml, ParseXML.TYPE_LANGUAGE.DOCUMENT))
+				return parser.parseGC();
+			else
+				return false;
+		}
+		else if (sender == EApplication.MDM)
+		{
+			ParseXML parser = new ParseXML();
+			
+			if (parser.readXML(xml, ParseXML.TYPE_LANGUAGE.DOCUMENT))
+				return parser.parseMDM();
+			else
+				return false;
+		}
 		
 		return false;
 	}
