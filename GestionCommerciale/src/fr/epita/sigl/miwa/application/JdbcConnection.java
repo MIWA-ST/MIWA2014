@@ -247,9 +247,9 @@ public class JdbcConnection {
 
 							PreparedStatement statement2 = connection
 									.prepareStatement(request2);
-							statement.setString(1, cmd.getCommandNumber());
-							statement.setString(2, a.getRef_article());
-							statement.setString(3, cmd.getquantity()
+							statement2.setString(1, cmd.getCommandNumber());
+							statement2.setString(2, a.getRef_article());
+							statement2.setString(3, cmd.getquantity()
 									.get(indice));
 
 							statement2.executeUpdate();
@@ -277,6 +277,68 @@ public class JdbcConnection {
 		}
 	}
 
+	public void insertCommandeInternet_entrepot(CommandeInternet cmd) {
+		try {
+			// System.out.println("Insert commandes internet");
+			
+			if (connection != null) {
+				String verif = "SELECT * FROM commandes_internet WHERE numero_commande = ?";
+				PreparedStatement verif_req = connection
+						.prepareStatement(verif);
+				verif_req.setString(1, cmd.getCommandNumber());
+				ResultSet rs = verif_req.executeQuery();
+
+				if (!rs.next()) {
+					String request = "INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_clien, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+					PreparedStatement statement = connection
+							.prepareStatement(request);
+					statement.setString(1, cmd.getCommandNumber());
+					statement.setString(2, cmd.getCustomerRef());
+					statement.setString(3, cmd.getDateBC());
+					statement.setString(4, cmd.getDateBL());
+					statement.setString(5, cmd.getCustomerLastname());
+					statement.setString(6, cmd.getCustomerFirstname());
+					statement.setString(7, cmd.getCustomerAddress());
+					statement.setString(8, cmd.getTraite());
+
+					statement.executeUpdate();
+
+					// Si y a un bug, ça vient de là
+						int indice = 0;
+						for (Articles a : cmd.getArticles()) {
+							String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
+
+							PreparedStatement statement2 = connection
+									.prepareStatement(request2);
+							statement.setString(1, cmd.getCommandNumber());
+							statement.setString(2, a.getRef_article());
+							statement.setString(3, cmd.getquantity()
+									.get(indice));
+
+							statement2.executeUpdate();
+							indice++;
+						}
+				} else {
+					String request = "UPDATE commandes_internet SET date_bon_commande = ?, date_bon_livraison = ?, traitee = ? WHERE numero_commande = ?";
+
+					PreparedStatement statement = connection
+							.prepareStatement(request);
+					statement.setString(1, cmd.getDateBC());
+					statement.setString(2, cmd.getDateBL());
+					statement.setString(3, cmd.getTraite());
+					statement.setString(4, cmd.getCommandNumber());
+
+					statement.executeUpdate();
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+
+	
 	public void insertDemandeReassort(DemandeReassort dmd) {
 		try {
 			// System.out.println("Insert demande reassort");
