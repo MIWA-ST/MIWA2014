@@ -358,7 +358,7 @@ public class DbHandler {
 		}
 	}
 	
-	public void updateProduct(String name, Float priceTTC, String description, String long_desc)
+	public void updateProductDelta(String name, Float priceTTC, String description, String long_desc)
 	{
 		Connection conn = null;
 		Statement stmt = null;
@@ -367,7 +367,7 @@ public class DbHandler {
 			conn = DriverManager.getConnection(dbUrl, user, password);
 			stmt = conn.createStatement();
 
-			String sql = "UPDATE Product SET sellPrice=" + priceTTC + " WHERE name='" + name + "';";
+			String sql = "UPDATE Product SET sellPrice=" + priceTTC + ", description=" + description + ", providerNumber=" + 2 + ", longDesc=" + long_desc + " WHERE name='" + name + "';";
 
 			//System.out.println(sql);
 			stmt.executeUpdate(sql);
@@ -424,5 +424,10 @@ public class DbHandler {
 				se.printStackTrace();
 			}
 		}
+	}
+	
+	public void updatePromoDelta(ArrayList<Product> productList) 
+	{
+		
 	}
 }

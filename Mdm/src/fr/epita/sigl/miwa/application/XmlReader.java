@@ -184,15 +184,17 @@ public class XmlReader {
 						String qName) throws SAXException {
 
 					if (qName.equalsIgnoreCase("PRODUCT")) {
+						Product p = new Product("");
+						p.setBuyPrice(priceTTC);
+						p.setProviderNumber(2);
+						p.setName(name);
+						p.setDescription(description);
+						p.setModification(modification);
+						p.setLong_desc(long_d);
+						p.setPromotionGCList(promoGCList);
+						productList.add(p);
+						
 						if (modification.equals("add")) {
-							Product p = new Product("");
-							p.setBuyPrice(priceTTC);
-							p.setProviderNumber(2);
-							p.setName(name);
-							p.setDescription(description);
-							p.setModification(modification);
-							p.setLong_desc(long_d);
-							p.setPromotionGCList(promoGCList);
 							dbHandler.addNewProduct(p);
 						}
 						
@@ -201,10 +203,14 @@ public class XmlReader {
 						}
 						
 						else if (modification.equals("update")) {
-							
-						}
+							dbHandler.updateProductDelta(name, priceTTC, description, long_d);
+						}	
 					}
 					
+					if (qName.equalsIgnoreCase("PRODUCTS")) {
+						//Mettre à jour les produits si add/delete/update
+						dbHandler.updatePromoDelta(productList);
+					}
 				}
 			};
 			LOGGER.severe("***** " + "Début parsing (Flux fournisseur delta -> MDM)");
