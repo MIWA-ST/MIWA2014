@@ -13,9 +13,11 @@ import fr.epita.sigl.miwa.bo.db.JdbcConnection;
 import fr.epita.sigl.miwa.bo.db.Mapper;
 import fr.epita.sigl.miwa.bo.file.FileManager;
 import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
+import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
 import fr.epita.sigl.miwa.bo.util.Test;
 import fr.epita.sigl.miwa.bo.xmlconstructor.CashRegisterXMLConstructor;
+import fr.epita.sigl.miwa.bo.xmlconstructor.StoreManagementXMLConstructor;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileMessage;
@@ -47,6 +49,10 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().
+		send(PlugStoreManagement.restockRequest, EApplication.GESTION_COMMERCIALE);
+
 		
 		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "coucou");
 

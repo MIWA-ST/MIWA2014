@@ -7,7 +7,7 @@ import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
 import fr.epita.sigl.miwa.bo.parser.DomParserReferential;
 import fr.epita.sigl.miwa.bo.parser.DomParserWarehouse;
 import fr.epita.sigl.miwa.bo.plug.PlugBusinessIntelligence;
-import fr.epita.sigl.miwa.bo.plug.PlugBusinessManagement;
+import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
 import fr.epita.sigl.miwa.bo.plug.PlugReferential;
 import fr.epita.sigl.miwa.bo.plug.PlugWarehouse;
@@ -87,7 +87,7 @@ public class Test
 		System.out.println("*************************************************");
 		
 		StoreManagementXMLConstructor xmlConstructor = new StoreManagementXMLConstructor();
-		System.out.println(xmlConstructor.restockRequestReception(PlugBusinessManagement.restockRequestReceptionObject()));
+		System.out.println(xmlConstructor.restockRequestReception(PlugStoreManagement.restockRequestReceptionObject()));
 	}
 	
 	public static void constructRestockRequestXML()
@@ -97,7 +97,7 @@ public class Test
 		System.out.println("***************************************");
 		
 		StoreManagementXMLConstructor xmlConstructor = new StoreManagementXMLConstructor();
-		System.out.println(xmlConstructor.restockRequest(PlugBusinessManagement.restockRequestObject()));
+		System.out.println(xmlConstructor.restockRequest(PlugStoreManagement.restockRequestObject()));
 	}
 	
 	public static void constructDetailedSalesXML()
