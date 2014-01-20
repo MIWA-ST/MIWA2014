@@ -198,6 +198,17 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 					"CLOCK CLIENT : Failed to contact Clock Server.\n"
 							+ e.getMessage());
 		}
+		try {
+			try {
+				remoteClock.removeSubscriptions(app);
+			} catch (RemoteException e) {
+				log.severe("Clock : Failed to remove subscriptions");
+				e.printStackTrace();
+			}
+		} catch (Exception e2) {
+			log.severe("Clock : Failed to remove subscriptions 2");
+			e2.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
