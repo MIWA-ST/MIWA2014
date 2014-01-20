@@ -63,22 +63,62 @@ public class Vente {
 				if (selectedproducts.isEmpty())
 					System.out.println("Pas de produit, vente annulée");
 				else {
-					// si client non fidélisé
-					// traiter paiement par espèce OU cb
+					int minclient = 0;
+					int maxclient = 4000;
+					int fid = (int) (Math.random() * (maxclient - minclient))
+							+ minclient;
+					String idClient = "";
+					// je suis fidèle
+					//if (fid == 1) {
+					if (true){	
+					// je cherche un client fidèlisé
+						ArrayList<String> listclient = new ArrayList<String>();
+						int iteratclient = 0;
+						try {
+							ResultSet rs = Main.bdd
+									.select("select client_mat from clientfid");
+
+							while (rs.next()) {
+								idClient = rs.getString(1);
+								listclient.add(rs.getString(1));
+								iteratclient++;
+							}
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						int min = 0;
+						int max = iteratclient;
+						int rclient = (int) (Math.random() * (max - min)) + min;
+						int iterator = 0;
+						for (String el : listclient) {
+							if (iterator == rclient)
+								idClient = el;
+						}
+					}
+					// random sur le paiment
 					int lower = 0;
 					int higher = 3;
 					int paiement = (int) (Math.random() * (higher - lower))
 							+ lower;
 					String type = "";
-					String idClient = "";
+					// si je paye par espece
 					if (paiement == 0) {
 						type = "esp";
-						// paiement espece
-						// selectedproducts = liste des produit
-						// prixtotal = prix à payer
+						if (fid == 1) {
+							String updatedTicket = XmlGenerator.AskReducToBO(
+									selectedproducts, idClient, type);
+							String updatedPrice = XmlParser
+									.getUpdatedPrice(updatedTicket);
+							selectedproducts = XmlParser
+									.getUpdatedProducts(updatedTicket);
+							prixtotal = Float.parseFloat(updatedPrice);
+						}
 						System.out.println(prixtotal);
 						System.out.println("paiement espece ok");
-					} else if (paiement == 1){
+					}
+					// si je paye par CB
+					else if (paiement == 1) {
 						int cbmin = 0;
 						int cbmax = 99999999;
 						int cbchiffre = (int) (Math.random() * (cbmax - cbmin))
@@ -97,68 +137,50 @@ public class Vente {
 						int cbpicto = (int) (Math.random() * (picto2 - picto1))
 								+ picto1;
 						type = "cb";
+						if (fid == 1) {
+							String updatedTicket = XmlGenerator.AskReducToBO(
+									selectedproducts, idClient, type);
+							String updatedPrice = XmlParser
+									.getUpdatedPrice(updatedTicket);
+							selectedproducts = XmlParser
+									.getUpdatedProducts(updatedTicket);
+							prixtotal = Float.parseFloat(updatedPrice);
+						}
 						Boolean result = XmlGenerator.CheckCbPaymentWithMo(""
 								+ prixtotal,
 								Integer.toString(cbchiffre + cbchiffre2),
 								Integer.toString(cbdate2 + cbdate1),
 								Integer.toString(cbpicto));
-						
+
 						if (result)
 							System.out.println("CB OK");
-						else
-						{
+						else {
 							System.out.println("CB NOK");
 							type = "esp";
 						}
-						// paiement CB
-						// selectedproducts = liste des produit
-						// prixtotal = prix à payer
-						// traiter paiement CB avec MONETIQUE
-						// si paiement OK avec CB (ou paiement espèce
-						// automatqieuemtn validé)
-						// appeler fonction generation XML (qui va envoyer le
-						// ticket au BO)
-						// if NOK paiement espece
 					}
-					else
-					{
+					// si je paye par carte de fidelité
+					else {
+						type = "cf";
 						System.out.println("paiement par carte de fidelité");
-						ArrayList<String> listclient = new ArrayList<String>();
-						int iteratclient = 0;
-						try {
-							ResultSet rs = Main.bdd
-									.select("select client_mat from clientfid");
-							
-							while (rs.next()) {
-								idClient = rs.getString(1);
-								listclient.add(rs.getString(1));
-								iteratclient++;
-							}
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+
+						// je veux mettre à jour le ticket (client fid)
+						if (fid == 1) {
+							String updatedTicket = XmlGenerator.AskReducToBO(
+									selectedproducts, idClient, type);
+							String updatedPrice = XmlParser
+									.getUpdatedPrice(updatedTicket);
+							selectedproducts = XmlParser
+									.getUpdatedProducts(updatedTicket);
+							prixtotal = Float.parseFloat(updatedPrice);
 						}
-						int min = 0;
-						int max = iteratclient;
-						int rclient = (int) (Math.random() * (max - min))
-								+ min;
-						int iterator = 0;
-						for (String el : listclient)
-						{
-							if (iterator == rclient)
-								idClient = el;
-						}
-						
-						String updatedTicket = XmlGenerator.AskReducToBO(selectedproducts, idClient, type);
-						
-						String updatedPrice = XmlParser.getUpdatedPrice(updatedTicket);
-						selectedproducts = XmlParser.getUpdatedProducts(updatedTicket);
-						prixtotal = Float.parseFloat(updatedPrice);
-	
-						XmlGenerator.CheckFidPaymentWithMo("" + updatedPrice, idClient);
+
+						XmlGenerator.CheckFidPaymentWithMo("" + prixtotal,
+								idClient);
 					}
 					System.out.println("-------------------------------------");
-					XmlGenerator.SendTicketToBO(selectedproducts, idClient, type);
+					XmlGenerator.SendTicketToBO(selectedproducts, idClient,
+							type);
 				}
 				System.out.println(ClockClient.getClock().getHour());
 				i++;
@@ -168,14 +190,12 @@ public class Vente {
 				} catch (InterruptedException ie) {
 				}
 
-			}
-			else
-			{
-				//System.out.println("je dors");
+			} else {
+				// System.out.println("je dors");
 				Thread.sleep(300);
-				
+
 			}
-			
+
 		}
 	}
 }

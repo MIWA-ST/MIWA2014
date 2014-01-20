@@ -73,6 +73,9 @@ public class Main {
 			//Fin des réveilles
 			new BufferedReader(new InputStreamReader(System.in)).readLine();	
 			
+			// TODO CHECK RECPTION MESSAGe, FILE DU BO + TRUC FIDELITE POUR MAJ PRIX
+			//String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"article-prix-promo-update\" source=\"bo\" date=\"2013-12-18\"/><ARTICLES><ARTICLE nomarticle=\"Chocapic\" refarticle=\"45678765434567\" prix=\"12\" promotion=\"50\" /></ARTICLES>";
+		//XmlParser.ParseBOString(xml);	
 			//fin de la clock
 			
 			// CI DESSOUS TEST MANUEL POUR LE PARSING XML DEPUIS LE BO VERS NOUS
