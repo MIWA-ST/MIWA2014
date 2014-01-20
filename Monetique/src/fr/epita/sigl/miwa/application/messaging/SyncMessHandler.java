@@ -118,6 +118,26 @@ public class SyncMessHandler {
 			if (actionToPerform.equals("c"))
 			{
 				LOGGER.info("***** Create a new card.");
+				
+				String id = "";
+				String month_lim = "";
+				String tot_lim = "";
+				String nb_ech = "";
+				
+				NodeList nl = xml.getDocumentElement().getChildNodes().item(0).getChildNodes();
+				
+				for (int i = 0; i < nl.getLength(); ++i)
+				{
+					if (nl.item(i).getNodeName().equals("id"))
+						id = nl.item(i).getTextContent();
+					if (nl.item(i).getNodeName().equals("limite_mesuelle"))
+						month_lim = nl.item(i).getTextContent();
+					if (nl.item(i).getNodeName().equals("limite_totale"))
+						tot_lim = nl.item(i).getTextContent();
+					if (nl.item(i).getNodeName().equals("nb_echelon"))
+						nb_ech = nl.item(i).getTextContent();					
+				}
+				
 				return true;
 			}
 			else if (actionToPerform.equals("m"))
