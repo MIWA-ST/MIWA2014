@@ -238,8 +238,8 @@ public class XMLManager
 	public String getSendClientBI()
 	{
 		LOGGER.info("***** Creation du XML poir le BI avec la base client");
-		
-		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XML><ENTETE objet=\"information-client\" source=\"crm\" date=\"AAAAA-MM-JJ\"/>"
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XML><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\"/>"
 				+ "<CLIENTS>";
 		
 		for (int i = 0; i < Client.clientsList.size(); i++)
@@ -260,7 +260,8 @@ public class XMLManager
 	public String getDemandeSegmentationClient(String message) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		LOGGER.info("***** Préparation d'une demande de segmentation client");
-		String bl = "<ENTETE objet=\"demande-segmentation-client\" source=\"crm\" date=\"";
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String bl = "<ENTETE objet=\"demande-segmentation-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour());
 		//TODO: heure
 		bl += "\"/><CRITERES>";
 		int lower = 15;
@@ -339,7 +340,8 @@ public class XMLManager
 			JdbcConnection.getInstance().insertClientInternet(client);
 			LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule());
 		}	
-		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"matricule-client\" source=\"crm\" date=\"AAAAA-MM-JJ\">"
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"matricule-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
 				+ "<INFORMATION><CLIENT matricule=\"" + client.getMatricule() + "\" nom=\"" + client.getNom() + "\" prenom=\"" + client.getPrenom() + "\" />";
 		bl += "</INFORMATION></ENTETE>";
 		
