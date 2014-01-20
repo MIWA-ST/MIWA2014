@@ -55,7 +55,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			root = doc.getFirstChild().getNodeName();
 
 			if (source == EApplication.BACK_OFFICE) {
-				if (root.toLowerCase().equals("REASSORT")) {
+				if (root.toLowerCase().equals("reassort")) {
 					LOGGER.severe("*****: Reception demande de reassort depuis BO");
 
 					// A faire envoyer à entrepot demande reassort => GOOD
@@ -87,12 +87,26 @@ LOGGER.severe("*****:Préparation de l'envoi de la demande de réassort à l'ENT
 							.send(content, EApplication.ENTREPOT);
 					LOGGER.severe("*****:demande de réassort envoyé à l'entrepot :" +demandereassort.getCommandNumber());
 
-				} else if (root.toLowerCase().equals("DEMANDENIVEAUDESTOCK")) {
+				} else if (root.toLowerCase().equals("demandeniveaudestock")) {
 					LOGGER.severe("*****: Reception des niveaux de stock depuis BO");
 					List<StockMagasin> stocks = XMLManager.getInstance().getniveauStockfromBO(message, doc);
 					for (StockMagasin stockMagasin : stocks) {
 						LOGGER.info("*****: Article :" + stockMagasin.getArticle().getRef_article() + " Quantité :"+stockMagasin.getQuantity());
 					}
+					
+				}
+				else if (root.toLowerCase().equals("receptionreassort"))
+				{
+					LOGGER.severe("*****: Reception confirmation réassort BO");
+					DemandeReassort demand = XMLManager.getInstance().getconfirmationreassortfromBO(message, doc);
+					LOGGER.info("*****: Confirmation réassort depuis BO :" + demand.getCommandNumber());
+					int i = 0;
+					while (i< demand.getArticles().size())
+					{
+						LOGGER.info("*****: Confirmation Article :" + demand.getArticles().get(i) + " quantite :" +demand.getQuantity().get(i));
+						i++;
+					}
+					LOGGER.severe("*****: Fin Confirmation réassort depuis BO :" + demand.getCommandNumber());
 				}
 			} else if (source == EApplication.ENTREPOT) {
 				if (root.toLowerCase().equals("livraisonscommandefournisseur")) {
@@ -158,7 +172,7 @@ LOGGER.severe("*****:Préparation de l'envoi de la demande de réassort à l'ENT
 			} 
 				else if (source == EApplication.MDM) {
 					LOGGER.severe("*****: Reception des prix fournisseur par le referentiel");
-					if (root.toLowerCase().equals("XML"))
+					if (root.toLowerCase().equals("xml"))
 							{
 						List<Articles> pf = XMLManager.getInstance().getprixfournisseurs(message, doc);
 						for (Articles articles : pf) {
