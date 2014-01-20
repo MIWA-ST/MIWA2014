@@ -122,7 +122,7 @@ public class JdbcConnection {
 				verif_req.setString(1, article.getRef_article());
 				ResultSet rs = verif_req.executeQuery();
 
-				if (rs.wasNull()) {
+				if (!rs.next()) {
 					String request = "INSERT INTO promo_fournisseur (ref_article, datedebut, datefin, pourcentage, quantite_min_application) VALUES (?, ?, ?, ?, ?)";
 
 					PreparedStatement statement = connection
@@ -165,7 +165,7 @@ public class JdbcConnection {
 				verif_req.setString(1, cmd.getNumero_commande());
 				ResultSet rs = verif_req.executeQuery();
 
-				if (rs.wasNull()) {
+				if (!rs.next()) {
 					String request = "INSERT INTO commandes_fournisseur (numero_commande, date_bon_de_commande, date_bon_de_livraison, traitee) VALUES (?, ?, ?, ?)";
 
 					PreparedStatement statement = connection
@@ -221,7 +221,7 @@ public class JdbcConnection {
 				verif_req.setString(1, cmd.getCommandNumber());
 				ResultSet rs = verif_req.executeQuery();
 
-				if (rs.wasNull()) {
+				if (!rs.next()) {
 					String request = "INSERT INTO commandes_internet (numero_commande, ref_client, date_bon_commande, date_bon_livraison, nom_client, prenom_clien, adresse_client, traitee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 					PreparedStatement statement = connection
@@ -285,7 +285,7 @@ public class JdbcConnection {
 				verif_req.setString(1, dmd.getCommandNumber());
 				ResultSet rs = verif_req.executeQuery();
 
-				if (rs.wasNull()) {
+				if (!rs.next()) {
 					String request = "INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traite) VALUES (?, ?, ?, ?, ?, ?)";
 
 					PreparedStatement statement = connection
@@ -347,7 +347,7 @@ public class JdbcConnection {
 				verif_req.setString(1, promo.getRef_article());
 				ResultSet rs = verif_req.executeQuery();
 
-				if (rs.wasNull()) {
+				if (!rs.next()) {
 					String request = "INSERT INTO promotions (ref_article, date_debut, date_fin, pourcentage) VALUES (?, ?, ?, ?)";
 
 					PreparedStatement statement = connection
@@ -388,7 +388,7 @@ public class JdbcConnection {
 				verif_req.setString(1, stck.getArticle().getRef_article());
 				ResultSet rs = verif_req.executeQuery();
 
-				if (rs.wasNull()) {
+				if (!rs.next()) {
 					String request = "INSERT INTO stock_entrepot (ref_article, quantite) VALUES (?, ?)";
 
 					PreparedStatement statement = connection
@@ -425,7 +425,7 @@ public class JdbcConnection {
 				verif_req.setString(1, mgs.getArticle().getRef_article());
 				ResultSet rs = verif_req.executeQuery();
 
-				if (rs.wasNull()) {
+				if (!rs.next()) {
 					String request = "INSERT INTO stock_magasin (ref_article, id_magasin, quantite) VALUES (?, ?, ?)";
 
 					PreparedStatement statement = connection
