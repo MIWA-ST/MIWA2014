@@ -161,13 +161,13 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 	@Override
 	public String wakeUp(Date date, Object message) throws RemoteException 
 	{
-
 		// Paiement fidélité en fin de mois
 		//ClockClient.wakeUp(date, message);
-		log.info("***** REQUEST -> Paiement of fidelity credits the : " + date);
 		
 		if (counter == 0)
-		{			
+		{		
+			log.info("***** REQUEST -> Paiement of fidelity credits the : " + date);
+			
 			Map<Integer, Float> comptes = new HashMap<>();
 			
 			DbHandler dbHandler = new DbHandler();
@@ -185,6 +185,8 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 				while (res.next())
 				{
 					comptes.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), 0f);
+					
+					log.info("***** The account with ID : " + res.getInt("ID_FIDELITY_CREDIT_ACCOUNT") + " has debts to pay this month.");
 				}
 
 				// Foreach compte select montant somme des credit fid en prenant les echelons en compte
@@ -196,6 +198,8 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 					if (res.next())
 					{
 						comptes.put(c, res.getFloat(1));
+						
+						log.info("***** The account with ID : " + c + " has " + res.getFloat(1)+ "€ to pay.");
 					}
 				}
 
