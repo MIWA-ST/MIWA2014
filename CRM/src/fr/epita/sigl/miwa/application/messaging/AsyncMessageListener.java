@@ -94,19 +94,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			// Segmentation client
 			LOGGER.info("*****Fichier reçu du BI");
 			
-			//TODO parer la segmentation reçue
-			LOGGER.info("*****Le path du fichier est : " + file.getAbsolutePath());
-		/*	
-			 byte[] encoded = null;
-			try {
-				encoded = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			String xml = encoding.decode(ByteBuffer.wrap(encoded)).toString();
-	*/		
+			//TODO parser la segmentation reçue
+	
 			/*File res;
 			try {
 				res = AsyncFileFactory.getInstance().getFileHelper().retrieve(file.getAbsolutePath());
@@ -115,24 +104,25 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 				e2.printStackTrace();
 			}
 			*/
+			
 			try {
-				XMLManager.getInstance().dispatchXML("segmentation-client", file.getAbsolutePath());
+				XMLManager.getInstance().dispatchXML(file.getAbsolutePath(), file.getAbsolutePath());
 			} catch (SAXException | IOException | AsyncMessageException
 					| ParseException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
-			String result = null;
+		/*	String result = null;
 			try {
 				result = manager.getSegmentationClient("Segmentation BI", file.getAbsolutePath());
 			} catch (AsyncMessageException | IOException | SAXException
 					| ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			
-			LOGGER.info("*****Résultat : " + result);
+			//LOGGER.info("*****Résultat : " + result);
 			
 		}	
 		// Fichier non attendu

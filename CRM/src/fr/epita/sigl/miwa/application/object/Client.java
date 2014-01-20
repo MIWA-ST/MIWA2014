@@ -27,7 +27,6 @@ public class Client {
 	private String mail;
 	private String IBAN;
 	private String BIC;
-	private String naissance;
 	private CarteFidelite carteFed;
 	
 	public static List<Article> articlesList;
@@ -131,15 +130,6 @@ public class Client {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-
-	public String getNaissance() {
-		return naissance;
-	}
-
-	public void setNaissance(String naissance) {
-		this.naissance = naissance;
-	}
-
 	
 	public static Client getClient(String mat)
 	{
@@ -152,7 +142,6 @@ public class Client {
 				break;
 			}
 		}
-		
 		return c;
 	}
 	

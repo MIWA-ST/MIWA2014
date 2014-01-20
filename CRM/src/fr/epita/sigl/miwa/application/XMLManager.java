@@ -172,7 +172,7 @@ public class XMLManager
 			for (Promotion p : Segmentation.promotions)
 			{
 				
-				bl += "<PROMOTION article=\"" + p.getId() + "\" fin=\"" + p.getDate() + "\" reduc=\"" + p.getReduction() + "\" />";
+				bl += "<PROMOTION article=\"" + p.getId() + "\" fin=\"" + (new SimpleDateFormat("YYYY-MM-dd")).format(p.getDate()) + "\" reduc=\"" + p.getReduction() + "\" />";
 				
 			}
 			bl +="</PROMOTIONS>";
@@ -337,7 +337,7 @@ public class XMLManager
 		LOGGER.info("***** Creation du XML pour le BI avec la base client");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		//<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-		String bl = "<XML><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\"/>"
+		String bl = "<XML><ENTETE objet=\"information-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\" />"
 				+ "<CLIENTS>";
 		
 		for (int i = 0; i < Client.clientsList.size(); i++)
@@ -345,11 +345,11 @@ public class XMLManager
 			Client c = Client.clientsList.get(i);
 			LOGGER.info("***** Ajout d'un client dans le XML : " + c.getMatricule());
 			bl += "<CLIENT id=\"" + c.getMatricule() + "\" civilite=\"" + c.getCivilite()
-					+ "\" naissance=\"" + c.getDate() + "\" codepostal=\"" + c.getCodePostal() 
+					+ "\" naissance=\"" + (new SimpleDateFormat("YYYY-MM-dd")).format(c.getDate()) + "\" codepostal=\"" + c.getCodePostal() 
 					+ "\" situationfam=\"" + c.getSituation() + "\" nbenfant=\"" + c.getNbenfant() + "\" typecarte=\"" + c.getCarteFed().getType() + "\" />";
 		}
 		
-		bl += "<CLIENTS><XML>";
+		bl += "</CLIENTS></XML>";
 		LOGGER.info("***** Envoi des clients au BI");
 		
 		try {
@@ -368,7 +368,7 @@ public class XMLManager
 	{
 		LOGGER.info("***** Préparation d'une demande de segmentation client");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String bl = "<ENTETE objet=\"demande-segmentation-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour());
+		String bl = "<XML><ENTETE objet=\"demande-segmentation-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour());
 		//TODO: heure
 		bl += "\"/><CRITERES>";
 		int lower = 15;
@@ -376,31 +376,31 @@ public class XMLManager
 
 		int random = (int)(Math.random() * (higher-lower)) + lower;
 		
-		bl += "<CRITERE type=\"age\" max=" + (random - 10) + " min=" + (random + 10) + "/>"
-				+ "<CRITERE type=\"geographie\" valeur=" + (random + 3) + "/>";
+		bl += "<CRITERE type=\"age\" max=\"" + (random - 10) + "\" min=\"" + (random + 10) + "\" />"
+				+ "<CRITERE type=\"geographie\" valeur=\"" + (random + 3) + "\" />";
 				
 		if (random%2 == 0)
 		{
 			bl += "<CRITERE type=\"situation-familiale\" valeur=\"célibataire\"/>"
-					+ "<CRITERE type=\"sexe\" valeur=\"M\"/>";
+					+ "<CRITERE type=\"sexe\" valeur=\"M\" />";
 		}
 		else
 		{
 			bl += "<CRITERE type=\"situation-familiale\" valeur=\"marié\"/>"
-					+ "<CRITERE type=\"sexe\" valeur=\"F\"/>";
+					+ "<CRITERE type=\"sexe\" valeur=\"F\" />";
 		}
 		if (random%3 == 0)
 		{
-			bl += "<CRITERE type=\"enfant\" valeur=TRUE/>"
-					+ "<CRITERE type=\"fidelite\" valeur=1/>";
+			bl += "<CRITERE type=\"enfant\" valeur=\"TRUE\" />"
+					+ "<CRITERE type=\"fidelite\" valeur=\"1\" />";
 		}
 		else
 		{
-			bl += "<CRITERE type=\"enfant\" valeur=FALSE/>"
-					+ "<CRITERE type=\"fidelite\" valeur=2/>";
+			bl += "<CRITERE type=\"enfant\" valeur=\"FALSE\" />"
+					+ "<CRITERE type=\"fidelite\" valeur=\"2\" />";
 		}	
 		
-		bl += "</CRITERES>";
+		bl += "</CRITERES></XML>";
 		return bl;
 	}
 	
@@ -430,7 +430,7 @@ public class XMLManager
 			client.setTelephone(infoNodes.getAttributes().getNamedItem("telephone").getNodeValue());
 			client.setCivilite(infoNodes.getAttributes().getNamedItem("civilite").getNodeValue());
 			client.setSituation(infoNodes.getAttributes().getNamedItem("situation").getNodeValue());
-			client.setNaissance(infoNodes.getAttributes().getNamedItem("naissance").getNodeValue());
+			client.setDate((new SimpleDateFormat("YYYY-MM-dd")).parse(infoNodes.getAttributes().getNamedItem("naissance").getNodeValue()));
 			client.setNbenfant(Integer.parseInt(infoNodes.getAttributes().getNamedItem("nbenfant").getNodeValue()));
 			client.setIBAN(infoNodes.getAttributes().getNamedItem("iban").getNodeValue());
 			client.setBIC(infoNodes.getAttributes().getNamedItem("bic").getNodeValue());
@@ -516,6 +516,7 @@ public class XMLManager
 			client.setMatricule(Integer.parseInt(infoNodes.getAttributes().getNamedItem("matricule").getNodeValue()));
 			LOGGER.info("***** Recherche des informations clients");
 			LOGGER.info("***** " + client.toString());
+			
 			for (int j = 0 ; j < Client.clientsList.size(); j++)
 			{
 				if (Client.clientsList.get(j).getMatricule() == client.getMatricule())
@@ -570,11 +571,6 @@ public class XMLManager
 		}
 		String bl = "true";
 		
-		// Retour des info à Internet
-		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.INTERNET, bl);
-		LOGGER.info("***** Confirmation de la suppression auprès d'Internet");
-		
 		// Suppression des comptes chez la monétique
 		if (matricule != 0)
 		{
@@ -582,8 +578,13 @@ public class XMLManager
 					EApplication.MONETIQUE, getSupprCompteCreditFed(matricule)) == false)
 			{
 				LOGGER.warning("Impossible de contacter la monétique pour la suppression d'un compte crédit");
+			} else {
+				LOGGER.info("***** Suppression du compte crédit " + matricule + " effectué auprès de la Monétique");
+				// Retour des info à Internet
+				SyncMessHandler.getSyncMessSender().sendMessage(
+						EApplication.INTERNET, bl);
+				LOGGER.info("***** Confirmation de la suppression auprès d'Internet");
 			}
-			LOGGER.info("***** Suppression du compte crédit " + matricule + " effectué auprès de la Monétique");
 		}
 			return bl;
 	}

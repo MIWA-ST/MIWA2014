@@ -44,22 +44,33 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		//Client.clientsList = new ArrayList<>();
+
+		/**************** Initialisation ******************/
+		JdbcConnection.getInstance().getConnection();
 		
+		Client.clientsList = new ArrayList<Client>();
+		TicketVente.ticketVentesList = new ArrayList<TicketVente>();
+		JdbcConnection.getInstance().GetClients();
+		
+		/**************** Fin Initialisation ******************/
+		
+	
+		
+		/**************** BI ******************/
 		// Automatisation base client
 		//Date date = ClockClient.getClock().getHour();
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(XMLManager.getInstance().getDemandeSegmentationClient("plop"), EApplication.BI);
+		
+		/**************** Fin BI ******************/
+		
 		//XMLManager.getInstance().getSegmentationClient("coucou");
-		Client.clientsList = new ArrayList<Client>();
-		TicketVente.ticketVentesList = new ArrayList<TicketVente>();
 		
 		//Promotion promo = new Promotion(1, 1, 2, 10, 10, new Date("2014-02-06"));
 		
 		//Client client = new Client();
 		
-		JdbcConnection.getInstance().getConnection();
-		JdbcConnection.getInstance().GetClients();
 		//XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
 		/*XMLManager.getInstance().getCreationTypeCarte("Silver");
 		XMLManager.getInstance().getCreationTypeCarte("Gold");

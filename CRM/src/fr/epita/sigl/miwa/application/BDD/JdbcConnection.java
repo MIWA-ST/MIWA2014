@@ -1,10 +1,13 @@
 package fr.epita.sigl.miwa.application.BDD;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
@@ -269,7 +272,7 @@ public class JdbcConnection
 				}
 				statement.setString(10, client.getCarteFed().getType());
 				statement.setString(11, client.getCivilite());
-				statement.setString(12, client.getNaissance());
+				statement.setString(12, (client.getDate()).toString());
 				statement.setString(13, Integer.toString(client.getNbenfant()));
 				statement.setString(14, client.getSituation());
 				
@@ -308,7 +311,7 @@ public class JdbcConnection
 				statement.setString(9, client.getBIC());
 				statement.setString(10, client.getCarteFed().getType());
 				statement.setString(11, client.getCivilite());
-				statement.setString(12, client.getNaissance());
+				statement.setString(12, client.getDate().toString());
 				statement.setString(13, Integer.toString(client.getNbenfant()));
 				statement.setString(14, client.getSituation());
 
@@ -380,18 +383,29 @@ public class JdbcConnection
 					client.setIBAN(result.getString(9));
 					client.setBIC(result.getString(10));
 					CarteFidelite c = new CarteFidelite(result.getString(11));
-					client.setCivilite(result.getString(12));
-					client.setNaissance(result.getString(13));
-					client.setNbenfant(Integer.parseInt(result.getString(14)));
-					client.setSituation(result.getString(15));
-					
+					client.setCivilite(result.getString(12));					
+					client.setNbenfant(Integer.parseInt(result.getString(13)));
+					client.setSituation(result.getString(14));
+				/*	
+					System.out.println("**************");
+					System.out.println(result.getString(15));
+					System.out.println("**************");
+					System.out.println((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(15)));
+					System.out.println("**************");
+				*/
+					client.setDate((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(15)));
 					client.setCarteFed(c);
+				
+					//System.out.println((new SimpleDateFormat("YYYY-MM-dd")).format(client.getDate()));
 					
 					Client.clientsList.add(client);
+					
+					
+					
 				}
 			}
 		}
-		catch (SQLException e)
+		catch (SQLException | ParseException e)
 		{
 			System.out.println("Erreur récupération des clients en base");
 			e.printStackTrace();
@@ -425,7 +439,7 @@ public class JdbcConnection
 					client.setBIC(result.getString(10));
 					CarteFidelite c = new CarteFidelite(result.getString(11));
 					client.setCivilite(result.getString(12));
-					client.setNaissance(result.getString(13));
+					client.setDate((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(13)));
 					client.setNbenfant(Integer.parseInt(result.getString(14)));
 					client.setSituation(result.getString(15));
 					
@@ -436,6 +450,9 @@ public class JdbcConnection
 		catch (SQLException e)
 		{
 			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return client;
