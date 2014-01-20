@@ -5,6 +5,24 @@ import java.util.List;
 
 public class Product {
 	
+	public String getLong_desc() {
+		return long_desc;
+	}
+	public void setLong_desc(String long_desc) {
+		this.long_desc = long_desc;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getModification() {
+		return modification;
+	}
+	public void setModification(String modification) {
+		this.modification = modification;
+	}
 	private ArrayList<Promotion> promotionList;
 	private ArrayList<PromotionForGC> promotionGCList; 
 	

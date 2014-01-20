@@ -129,15 +129,20 @@ public class XmlReader {
 				ArrayList<Product> productList = new ArrayList<>();
 				ArrayList<PromotionForGC> promoGCList = new ArrayList<>();
 				String long_d = null;
+				String name = null;
+				String description = null;
+				Float priceTTC;
+				String modification = null;
+				
 
 				public void startElement(String uri, String localName,String qName, 
 						Attributes attributes) throws SAXException {
 
 					if (qName.equalsIgnoreCase("PRODUCT")) {
-						String name = attributes.getValue("name");
-						String description = attributes.getValue("description");
-						Float priceTTC = Float.parseFloat(attributes.getValue("priceTTC"));
-						String modification = attributes.getValue("modification");
+						name = attributes.getValue("name");
+						description = attributes.getValue("description");
+						priceTTC = Float.parseFloat(attributes.getValue("priceTTC"));
+						modification = attributes.getValue("modification");
 						LOGGER.severe("***** " + "Parsing flux fournisseur delta: " + "produit " + name + "->" + modification);
 					}
 
@@ -166,7 +171,11 @@ public class XmlReader {
 				
 				public void characters(char ch[], int start, int length) throws SAXException {
 					if (long_desc) {
-						long_d = new String(ch, start, length);
+						String tmp = new String(ch, start, length);
+						if(long_d == null || long_d.isEmpty())
+							long_d = tmp;
+						else
+							long_d += tmp;
 						long_desc = false;
 					}
 				}
@@ -175,7 +184,27 @@ public class XmlReader {
 						String qName) throws SAXException {
 
 					if (qName.equalsIgnoreCase("PRODUCT")) {
+						if (modification.equals("add")) {
+							Product p = new Product("");
+							p.setBuyPrice(priceTTC);
+							p.setProviderNumber(2);
+							p.setName(name);
+							p.setDescription(description);
+							p.setModification(modification);
+							p.setLong_desc(long_d);
+							p.setPromotionGCList(promoGCList);
+							dbHandler.addNewProduct(p);
+						}
+						
+						else if (modification.equals("delete")) {
+							dbHandler.deleteProduct(name);
+						}
+						
+						else if (modification.equals("update")) {
+							
+						}
 					}
+					
 				}
 			};
 			LOGGER.severe("***** " + "Début parsing (Flux fournisseur delta -> MDM)");
