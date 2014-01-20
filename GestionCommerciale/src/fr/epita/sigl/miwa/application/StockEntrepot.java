@@ -31,6 +31,41 @@ public void setMax_q(String max_q) {
 	this.max_q = max_q;
 }
 
+public boolean stock_suffisant(Articles art, String quant_dem) {
+	int demande = 0;
+	int stock = 0;
+	
+	JdbcConnection.getInstance().getConnection();
+	DemandeNiveauStock dns = JdbcConnection.getInstance().envoi_all_stock();
+	JdbcConnection.getInstance().closeConnection();
+	
+	this.article = dns.getArticles().get(0);
+	this.quantity = dns.getQuantity().get(0);
+	
+	stock = Integer.parseInt(this.quantity);
+	demande = Integer.parseInt(quant_dem);
+	
+	if (stock >= demande)
+		return true;
+	else
+		return false;
+}
 
+public void ajout_stock (Articles art, String ajout) {
+	JdbcConnection.getInstance().getConnection();
+	int n_qt = Integer.parseInt(quantity) + Integer.parseInt(ajout);
+	String nouvelle_qt = String.valueOf(n_qt);
+	quantity = nouvelle_qt;
+	JdbcConnection.getInstance().modif_stock(art, nouvelle_qt);;
+	JdbcConnection.getInstance().closeConnection();
+}
 
+public void retrait_stock (Articles art, String retrait) {
+	JdbcConnection.getInstance().getConnection();
+	int n_qt = Integer.parseInt(quantity) + Integer.parseInt(retrait);
+	String nouvelle_qt = String.valueOf(n_qt);
+	quantity = nouvelle_qt;
+	JdbcConnection.getInstance().modif_stock(art, nouvelle_qt);;
+	JdbcConnection.getInstance().closeConnection();	
+}
 }
