@@ -131,7 +131,8 @@ public class XMLManager
 		for (int i = 0; i < groupsNodes.getLength(); i++)
 		{
 			LOGGER.info("***** Analyse du groupe " + i);
-			Node groupNode = groupsNodes.item(i);
+			//Node groupNode = groupsNodes.item(i);
+			Element groupNode = (Element)groupsNodes.item(i);
 			Group group = new Group();
 			List<Critere> list = new  ArrayList<>();
 			group.setCriteres(list);
@@ -144,7 +145,7 @@ public class XMLManager
 				{
 					if (cNode.getNodeName() == "CRITERES")
 					{
-						NodeList criteriasNodes = criteriaFile.getElementsByTagName("CRITERE");
+						NodeList criteriasNodes = groupNode.getElementsByTagName("CRITERE");
 						LOGGER.info("***** Nombre de critères: " + criteriasNodes.getLength());
 						for (int k = 0; k < criteriasNodes.getLength(); k++) 
 						{
@@ -193,7 +194,7 @@ public class XMLManager
 					}
 					else if (cNode.getNodeName() == "CLIENTS")
 					{
-						NodeList clientsNodes = criteriaFile.getElementsByTagName("CLIENT");
+						NodeList clientsNodes = groupNode.getElementsByTagName("CLIENT");
 						LOGGER.info("***** Nombre de clients: " + clientsNodes.getLength());
 						for (int k = 0; k < clientsNodes.getLength(); k++) 
 						{
