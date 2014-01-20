@@ -43,6 +43,28 @@ public class PromotionArticleCR {
 		this.reduc = reduc;
 	}
 	
+	public String print_logger()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		if (article != null && !article.equals(""))
+			result.append("***** 		Article : " + this.article + "\n");
+		else
+			result.append("***** 		Article : NULL\n");
+		
+		if (fin != null)
+			result.append("***** 		Fin : " + this.fin + "\n");
+		else
+			result.append("***** 		Fin : NULL\n");
+		
+		if (reduc != null)
+			result.append("***** 		Reduc : " + this.reduc + "\n");
+		else
+			result.append("***** 		Reduc : NULL\n");
+		
+		return result.toString();
+	}
+	
 	public void print()
 	{
 		if (this.article != null)

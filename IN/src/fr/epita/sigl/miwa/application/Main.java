@@ -32,18 +32,23 @@ public class Main {
 		try {
 			//ClockClient.getClock().wakeMeUp(new Date("12/13/2013 23:12:13"), "Test");
 			EApplication to = EApplication.INTERNET;
+			
+			ParseXML parser = new ParseXML();
+			
+			parser.readXML("src/fr/epita/sigl/miwa/application/GC/Envoi_stock_GC_to_IN.xml",
+					ParseXML.TYPE_LANGUAGE.FICHIER);
+			
+			parser.parseGC();
+			
 //			ClockClient.getClock().wakeMeUp(date, message);
 			
 			//AsyncMessageFactory.getInstance().getAsyncMessageManager().send("coucou", EApplication.MDM);
-			new BufferedReader(new InputStreamReader(System.in)).readLine();
+//			new BufferedReader(new InputStreamReader(System.in)).readLine();
 			
 			// ENvoi des messages (wakeMeUp...)
 			
 			Thread.sleep(40000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

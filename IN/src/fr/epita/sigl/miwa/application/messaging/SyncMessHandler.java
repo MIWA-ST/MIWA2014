@@ -27,7 +27,6 @@ public class SyncMessHandler {
 		// Envoi de message classqiue (XML en String ou messge)
 		System.out.println(message);
 
-		
 		return false;
 	}
 
@@ -51,15 +50,15 @@ public class SyncMessHandler {
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
 		// TODO Auto-generated method stub
-		ParseXML parser = new ParseXML();
-		
-		org.jdom2.Document document;
-		
-		DOMBuilder d = new DOMBuilder();
-		
-		parser.setDocument(d.build(xml));
-		parser.readXML2(null);
-		parser.parseCRM("stream");
+//		ParseXML parser = new ParseXML();
+//		
+//		org.jdom2.Document document;
+//		
+//		DOMBuilder d = new DOMBuilder();
+//		
+//		parser.setDocument(d.build(xml));
+//		parser.readXML2(null);
+//		parser.parseCRM("stream");
 		
 		return false;
 	}

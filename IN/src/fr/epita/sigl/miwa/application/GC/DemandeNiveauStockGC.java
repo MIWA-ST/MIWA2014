@@ -42,6 +42,34 @@ public class DemandeNiveauStockGC {
 		this.articles = articles;
 	}
 	
+	public String print_logger()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append("***** DEMANDENIVEAUDESTOCKINTERNET : [\n");
+		if (this.numero != null)
+			result.append("***** 	Numero : " + this.numero + "\n");
+		else
+			result.append("*****	Numero : NULL\n");
+		
+		if (this.date != null)
+			result.append("***** 	Date : " + this.date + "\n");
+		else
+			result.append("*****	Date : NULL\n");
+		
+		if (articles != null || !articles.isEmpty())
+		{
+			result.append("***** 	Articles : [\n");
+			for(DemandeNiveauStockArticlesGC article : articles)
+				result.append(article.print_logger());
+			result.append("*****		]\n");
+		}
+		else
+			System.out.println("	Articles : NULL");
+		
+		return result.toString();
+	}
+	
 	public void print()
 	{
 		System.out.println("DEMANDENIVEAUDESTOCKINTERNET : [");

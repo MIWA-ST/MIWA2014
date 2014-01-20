@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<XML>
+  <ENTETE date="2014-01-19" objet="liste-article" source="mdm"/>
+  <ARTICLES>
+    <ARTICLE categorie="Nourriture" ean="1234567891221" prix_fournisseur="49" prix_vente="" reference="058bdb5b-6e4f-4fe5-9976-bdc5d974">
+      <DESCRIPTION>Description du produit 2</DESCRIPTION>
+      <PROMOTIONS/>
+    </ARTICLE>
+    <ARTICLE categorie="Nourriture" ean="1234567891224" prix_fournisseur="259" prix_vente="" reference="6d7f7610-f5e7-4cb9-9496-cb627ca0">
+      <DESCRIPTION>Description du produit 5</DESCRIPTION>
+      <PROMOTIONS>
+        <PROMOTION debut="2014-janv.-20" fin="2014-janv.-25" pourcent="10"/>
+        <PROMOTION debut="2014-janv.-22" fin="2014-janv.-28" pourcent="5"/>
+        <PROMOTION debut="2014-janv.-25" fin="2014-janv.-27" pourcent="25"/>
+      </PROMOTIONS>
+    </ARTICLE>
+    <ARTICLE categorie="Nourriture" ean="1234567891234" prix_fournisseur="23" prix_vente="" reference="a5c24e0d-5004-478b-bbb5-afa3a802">
+      <DESCRIPTION>Description du produit 1</DESCRIPTION>
+      <PROMOTIONS>
+        <PROMOTION debut="2014-janv.-20" fin="2014-janv.-25" pourcent="10"/>
+        <PROMOTION debut="2014-janv.-22" fin="2014-janv.-28" pourcent="5"/>
+      </PROMOTIONS>
+    </ARTICLE>
+    <ARTICLE categorie="Nourriture" ean="1234567891222" prix_fournisseur="141" prix_vente="" reference="acacc5dc-1e90-4bc8-b4b5-8172424a">
+      <DESCRIPTION>Description du produit 3</DESCRIPTION>
+      <PROMOTIONS>
+        <PROMOTION debut="2014-janv.-20" fin="2014-janv.-25" pourcent="10"/>
+      </PROMOTIONS>
+    </ARTICLE>
+    <ARTICLE categorie="Nourriture" ean="1234567891223" prix_fournisseur="141" prix_vente="" reference="ad0f0ac0-3ed6-40c3-b530-7673e2de">
+      <DESCRIPTION>Description du produit 4</DESCRIPTION>
+      <PROMOTIONS/>
+    </ARTICLE>
+  </ARTICLES>
+</XML>

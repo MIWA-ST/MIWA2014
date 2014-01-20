@@ -1,20 +1,20 @@
-package fr.epita.sigl.miwa.application.MDM;
+package fr.epita.sigl.miwa.application.CR;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ProductsClientEnteteMDM {
+public class EnteteCRM {
 	private String objet;
 	private String source;
 	private Date date;
 	
-	public ProductsClientEnteteMDM()
+	public EnteteCRM()
 	{
 	}
 	
-	public ProductsClientEnteteMDM(String objet, String source, String date)
+	public EnteteCRM(String objet, String source, String date)
 	{
 		this.objet = objet;
 		this.source = source;

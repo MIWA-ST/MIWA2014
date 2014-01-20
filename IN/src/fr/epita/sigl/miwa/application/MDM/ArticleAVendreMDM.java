@@ -19,13 +19,19 @@ public class ArticleAVendreMDM {
 	}
 	
 	public ArticleAVendreMDM(String reference, String ean, String categorie,
-			Integer prix_fournisseur, Integer prix_vente, String description, ArrayList<PromotionArticleMDM> promotions)
+			String prix_fournisseur, String prix_vente, String description, ArrayList<PromotionArticleMDM> promotions)
 	{
 		this.reference = reference;
 		this.ean = ean;
 		this.categorie = categorie;
-		this.prix_fournisseur = prix_fournisseur;
-		this.prix_vente = prix_vente;
+		if (prix_fournisseur != null && !prix_fournisseur.equals(""))
+			this.prix_fournisseur = Integer.parseInt(prix_fournisseur);
+		else
+			this.prix_fournisseur = 0;
+		if (prix_vente != null && !prix_vente.equals(""))
+			this.prix_vente = Integer.parseInt(prix_vente);
+		else
+			this.prix_vente = 0;
 		this.description = description;
 		this.promotions = promotions;
 	}
@@ -60,6 +66,21 @@ public class ArticleAVendreMDM {
 	public void setPrix_vente(Integer prix_vente) {
 		this.prix_vente = prix_vente;
 	}
+	
+	public void setPrix_vente(String prix_vente) {
+		if (prix_vente != null && !prix_vente.equals(""))
+			this.prix_vente = Integer.parseInt(prix_vente);
+		else
+			this.prix_vente = 0;
+	}
+	
+	public void setPrix_fournisseur(String prix_fournisseur) {
+		if (prix_fournisseur != null && !prix_fournisseur.equals(""))
+			this.prix_fournisseur = Integer.parseInt(prix_fournisseur);
+		else
+			this.prix_fournisseur = 0;
+	}
+	
 	public String getDescription() {
 		return description;
 	}
@@ -73,24 +94,92 @@ public class ArticleAVendreMDM {
 		this.promotions = promotions;
 	}
 	
+//	public String print_logger()
+//	{
+//		String result = "";
+//		
+//		if (this.reference != null && !this.reference.equals(""))
+//			result = 
+//		
+//		return result;
+//	}
+	
+	public String print_logger()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append("***** 		reference : ");
+		if (this.reference != null && !this.reference.equals(""))
+			result.append(this.reference + "\n");
+		else
+			result.append("NULL\n");
+		
+		result.append("***** 		ean : ");
+		if (this.ean != null && !this.ean.equals(""))
+			result.append(this.ean + "\n");
+		else
+			result.append("NULL\n");
+		
+		result.append("***** 		categorie : ");
+		if (this.categorie != null && !this.categorie.equals(""))
+			result.append(this.categorie + "\n");
+		else
+			result.append("NULL\n");
+		
+		result.append("***** 		description : ");
+		if (this.description != null && !this.description.equals(""))
+			result.append(this.description + "\n");
+		else
+			result.append("NULL\n");
+		
+		result.append("***** 		prix_fournisseur : ");
+		if (this.prix_fournisseur != null)
+			result.append(this.prix_fournisseur + "\n");
+		else
+			result.append("NULL\n");
+		
+		result.append("***** 		prix_vente : ");
+		if (this.prix_vente != null)
+			result.append(this.prix_vente + "\n");
+		else
+			result.append("NULL\n");
+		
+		if (promotions != null && !promotions.isEmpty())
+		{
+			Integer i = 0;
+			for(PromotionArticleMDM a : promotions)
+			{
+				result.append("***** 	PROMOTIONS : [\n");
+				
+				result.append(a.print_logger() + "\n");
+				
+				result.append("***** 	]\n");
+			}
+		}
+		else
+			result.append("***** 	PROMOTIONS : [ NULL ]\n");
+		
+		return result.toString();
+	}
+	
 	public void print()
 	{
-		if (this.reference != null)
+		if (this.reference != null && !this.reference.equals(""))
 			System.out.println("	reference : " + this.reference);
 		else
 			System.out.println("	reference : NULL");
 		
-		if (this.ean != null)
+		if (this.ean != null && !this.ean.equals(""))
 			System.out.println("	ean : " + this.ean);
 		else
 			System.out.println("	ean : NULL");
 		
-		if (this.categorie != null)
+		if (this.categorie != null && !this.categorie.equals(""))
 			System.out.println("	categorie : " + this.categorie);
 		else
 			System.out.println("	categorie : NULL");
 		
-		if (this.description != null)
+		if (this.description != null && !this.description.equals(""))
 			System.out.println("	description : " + this.description);
 		else
 			System.out.println("	description : NULL");

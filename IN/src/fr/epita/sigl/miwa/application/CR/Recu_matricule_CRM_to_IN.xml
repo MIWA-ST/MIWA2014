@@ -8,7 +8,8 @@ prenom : text
 Aprés création du compte fidélité
 -->
 
-<ENETE objet="matricule-client" source="crm" date="2014-01-13"/>
-<INFORMATIONS>
-<CLIENT matricule="001223" nom="Dooe" prenom="SIMPSOIN" />
-</INFORMATIONS>
+<ENTETE objet="matricule-client" source="crm" date="2014-01-13">
+	<INFORMATIONS>
+		<CLIENT matricule="001223" nom="Dooe" prenom="SIMPSOIN" />
+	</INFORMATIONS>
+</ENTETE>

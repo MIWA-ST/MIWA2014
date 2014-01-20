@@ -13,7 +13,7 @@ public class PromotionArticleMDM {
 	public PromotionArticleMDM(String debut, String fin, Integer percent)
 	{
 		this.percent = percent;
-		DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			this.debut = df1.parse(debut);
 		} catch (ParseException e) {
@@ -21,7 +21,7 @@ public class PromotionArticleMDM {
 			e.printStackTrace();
 		}
 		
-		DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
+		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			this.fin = df2.parse(fin);
 		} catch (ParseException e) {
@@ -47,6 +47,31 @@ public class PromotionArticleMDM {
 	}
 	public void setPercent(Integer percent) {
 		this.percent = percent;
+	}
+	
+	public String print_logger()
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append("***** 		debut : ");
+		if (this.debut != null)
+			result.append(this.debut + "\n");
+		else
+			result.append("NULL\n");
+		
+		result.append("***** 		fin : ");
+		if (this.fin != null)
+			result.append(this.fin + "\n");
+		else
+			result.append("NULL\n");
+		
+		result.append("***** 		percent : ");
+		if (this.percent != null)
+			result.append(this.percent + "\n");
+		else
+			result.append("NULL\n");
+		
+		return result.toString();
 	}
 	
 	public void print()
