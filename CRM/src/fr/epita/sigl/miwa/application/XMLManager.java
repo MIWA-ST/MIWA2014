@@ -234,6 +234,45 @@ public class XMLManager
 		
 	}
 	
+	public String getDemandeSegmentationClient(String message) throws AsyncMessageException, IOException, SAXException, ParseException
+	{
+		LOGGER.info("***** Préparation d'une demande de segmentation client");
+		String bl = "<ENTETE objet=\"demande-segmentation-client\" source=\"crm\" date=\"";
+		//TODO: heure
+		bl += "\"/><CRITERES>";
+		int lower = 15;
+		int higher = 80;
+
+		int random = (int)(Math.random() * (higher-lower)) + lower;
+		
+		bl += "<CRITERE type=\"age\" max=" + (random - 10) + " min=" + (random + 10) + "/>"
+				+ "<CRITERE type=\"geographie\" valeur=" + (random + 3) + "/>";
+				
+		if (random%2 == 0)
+		{
+			bl += "<CRITERE type=\"situation-familiale\" valeur=\"célibataire\"/>"
+					+ "<CRITERE type=\"sexe\" valeur=\"M\"/>";
+		}
+		else
+		{
+			bl += "<CRITERE type=\"situation-familiale\" valeur=\"marié\"/>"
+					+ "<CRITERE type=\"sexe\" valeur=\"F\"/>";
+		}
+		if (random%3 == 0)
+		{
+			bl += "<CRITERE type=\"enfant\" valeur=TRUE/>"
+					+ "<CRITERE type=\"fidelite\" valeur=1/>";
+		}
+		else
+		{
+			bl += "<CRITERE type=\"enfant\" valeur=FALSE/>"
+					+ "<CRITERE type=\"fidelite\" valeur=2/>";
+		}	
+		
+		bl += "</CRITERES>";
+		return bl;
+	}
+	
 	public String getDemandeCreationCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		LOGGER.info("***** Analyse du flux XML: création d'un compte fidélité");
