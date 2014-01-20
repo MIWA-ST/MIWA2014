@@ -171,7 +171,7 @@ public class SyncMessHandler {
 			out.print(request);
 			out.close();
 			
-			LOGGER.info("*****Fichier crée");
+			//LOGGER.info("*****Fichier crée");
 			
 			try {
 				XMLManager.getInstance().dispatchXML("", "internet.xml");
@@ -181,7 +181,7 @@ public class SyncMessHandler {
 				e.printStackTrace();
 			}
 			
-			LOGGER.info("*****Envoi des information client à Internet");
+			//LOGGER.info("*****Envoi des information client à Internet");
 		}
 		else if (sender == EApplication.MONETIQUE)
 		{

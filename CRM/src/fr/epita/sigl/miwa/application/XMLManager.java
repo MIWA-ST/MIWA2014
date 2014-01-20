@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -23,6 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
@@ -443,7 +445,7 @@ public class XMLManager
 			client.setMatricule(random);
 			Client.clientsList.add(client);
 			JdbcConnection.getInstance().insertClientInternet(client);
-			LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule());
+			LOGGER.info("***** Enregistrement en BDD sous le matricule: " + client.getMatricule() + " et nom : " + client.getNom());
 		}	
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String bl = "<ENTETE objet=\"matricule-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\">"
@@ -452,24 +454,38 @@ public class XMLManager
 		
 		// Retour des info à Internet
 		try
-		{
-			SyncMessHandler.getSyncMessSender().sendMessage(
-					EApplication.INTERNET, bl);
-			LOGGER.info("***** Envoi de la réponse auprès d'Internet");
+		{	
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(new InputSource(new StringReader(
+					getCreationCompteCreditFed(client))));
+			doc.getDocumentElement().normalize();
 			
 			// Creation des comptes chez la monétique
-			if (SyncMessHandler.getSyncMessSender().sendMessage(
-					EApplication.MONETIQUE, getCreationCompteCreditFed(client)) == false)
+			if (SyncMessHandler.getSyncMessSender().sendXML(
+					EApplication.MONETIQUE, doc) == false)
 			{
 				LOGGER.warning("Impossible de contacter la monétique pour la création d'un compte crédit carte");
 			}
+			else
+			{
+				LOGGER.info("***** Création du compte crédit " + client.getMatricule() + " effectué auprès de la Monétique");
+				
+				SyncMessHandler.getSyncMessSender().sendMessage(
+						EApplication.INTERNET, bl);
+				LOGGER.info("***** Envoi de la réponse auprès d'Internet. Matricule : " + client.getMatricule() + " et nom : " + client.getNom());
+			}
+			
+			
 		}
 		catch (Exception e)
 		{
 			LOGGER.warning("Impossible de contacter la monétique pour la création d'un compte crédit carte");
 		}
-		LOGGER.info("***** Création du compte crédit " + client.getMatricule() + " effectué auprès de la Monétique");
+		
 		return bl;
+		
 	}
 	
 	
