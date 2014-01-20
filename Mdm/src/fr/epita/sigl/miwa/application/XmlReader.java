@@ -28,6 +28,7 @@ public class XmlReader {
 
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
+			final Logger LOGGER = Logger.getLogger(XmlReader.class.getName());
 
 			DefaultHandler handler = new DefaultHandler() {
 				boolean firstline = true;
@@ -37,10 +38,9 @@ public class XmlReader {
 
 					if (qName.equalsIgnoreCase("ARTICLE")) {
 						String ref = attributes.getValue("reference");
-						Integer sellPrice = Integer.parseInt(attributes.getValue("prix_vente"));
+						float sellPrice = Float.parseFloat(attributes.getValue("prix_vente"));
 
 						if (firstline) {
-							final Logger LOGGER = Logger.getLogger(XmlReader.class.getName());
 							LOGGER.severe("***** " + "Parsing des prix (Flux GC -> MDM) : Référence du produit=" + ref + " / Prix de vente du produit (TTC)=" + sellPrice);
 							firstline = false;
 						}
@@ -49,7 +49,9 @@ public class XmlReader {
 				}
 			};
 
+			LOGGER.severe("***** " + "Début du parsing des prix (Flux GC -> MDM)");
 			saxParser.parse(this.filename, handler);
+			LOGGER.severe("***** " + "Fin du parsing des promotions (Flux GC -> MDM)");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -72,7 +74,7 @@ public class XmlReader {
 						Attributes attributes) throws SAXException {
 					if (qName.equalsIgnoreCase("PROMOTION")) {
 						SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-						
+
 						Date startDate = null;
 						Date endDate = null;
 						try {
@@ -82,7 +84,7 @@ public class XmlReader {
 							e.printStackTrace();
 						}
 
-						Integer rebate = Integer.parseInt(attributes.getValue("promotion_pourcentage"));
+						int rebate = Integer.parseInt(attributes.getValue("promotion_pourcentage"));
 						if (firstline) {
 							LOGGER.severe("***** " + "Première promotion : Date de début=" + startDate + " / Taux de remise=" + rebate + "%");
 							firstline = false;
@@ -105,15 +107,11 @@ public class XmlReader {
 						productList = new ArrayList<>();
 						promo = null;
 					}
-
 				}
 			};
-
-
-			LOGGER.severe("***** " + "Parsing des promotions (Flux GC -> MDM)");
-			
+			LOGGER.severe("***** " + "Début du parsing des promotions (Flux GC -> MDM)");
 			saxParser.parse(this.filename, handler);
-
+			LOGGER.severe("***** " + "Fin du parsing des promotions (Flux GC -> MDM)");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -124,28 +122,94 @@ public class XmlReader {
 
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
+			final Logger LOGGER = Logger.getLogger(XmlReader.class.getName());
 
 			DefaultHandler handler = new DefaultHandler() {
-
+				boolean long_desc;
+				ArrayList<Product> productList = new ArrayList<>();
+				ArrayList<PromotionForGC> promoGCList = new ArrayList<>();
+				String long_d = null;
+				String name = null;
+				String description = null;
+				Float priceTTC;
+				String modification = null;
+				
 
 				public void startElement(String uri, String localName,String qName, 
 						Attributes attributes) throws SAXException {
 
 					if (qName.equalsIgnoreCase("PRODUCT")) {
-						String name = attributes.getValue("name");
-						String description = attributes.getValue("description");
-						Integer priceTTC = Integer.parseInt(attributes.getValue("priceTTC"));
-						//dbHandler.updateProduct(ref, sellPrice);
+						name = attributes.getValue("name");
+						description = attributes.getValue("description");
+						priceTTC = Float.parseFloat(attributes.getValue("priceTTC"));
+						modification = attributes.getValue("modification");
+						LOGGER.severe("***** " + "Parsing flux fournisseur delta: " + "produit " + name + "->" + modification);
 					}
 
 					if (qName.equalsIgnoreCase("DESCRIPTION")) {
-						String long_desc = attributes.getValue("name");
-						//dbHandler.updateProduct(ref, sellPrice);
+						long_desc = true;
+					}
+					
+					if (qName.equalsIgnoreCase("PROMOTION")) {
+						String id = attributes.getValue("id");
+						int quantityMin = Integer.parseInt(attributes.getValue("quantityMin"));
+						int rebate = Integer.parseInt(attributes.getValue("rebate"));
+						
+						SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+						Date startDate = null;
+						Date endDate = null;
+						try {
+							startDate = formatter.parse(attributes.getValue("debut"));
+							endDate = formatter.parse(attributes.getValue("fin"));
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+						PromotionForGC promo = new PromotionForGC(id, quantityMin, rebate, startDate, endDate);
+						promoGCList.add(promo);
 					}
 				}
-			};
+				
+				public void characters(char ch[], int start, int length) throws SAXException {
+					if (long_desc) {
+						String tmp = new String(ch, start, length);
+						if(long_d == null || long_d.isEmpty())
+							long_d = tmp;
+						else
+							long_d += tmp;
+						long_desc = false;
+					}
+				}
+				
+				public void endElement(String uri, String localName,
+						String qName) throws SAXException {
 
+					if (qName.equalsIgnoreCase("PRODUCT")) {
+						if (modification.equals("add")) {
+							Product p = new Product("");
+							p.setBuyPrice(priceTTC);
+							p.setProviderNumber(2);
+							p.setName(name);
+							p.setDescription(description);
+							p.setModification(modification);
+							p.setLong_desc(long_d);
+							p.setPromotionGCList(promoGCList);
+							dbHandler.addNewProduct(p);
+						}
+						
+						else if (modification.equals("delete")) {
+							dbHandler.deleteProduct(name);
+						}
+						
+						else if (modification.equals("update")) {
+							
+						}
+					}
+					
+				}
+			};
+			LOGGER.severe("***** " + "Début parsing (Flux fournisseur delta -> MDM)");
 			saxParser.parse(this.filename, handler);
+			LOGGER.severe("***** " + "Fin du parsing (Flux fournisseur delta -> MDM)");
 
 		} catch (Exception e) {
 			e.printStackTrace();
