@@ -55,7 +55,6 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
-
 		LOGGER.info("***** Recepting message.");
 
 		xml.getDocumentElement().normalize();
@@ -86,6 +85,27 @@ public class SyncMessHandler {
 					cb[i] = cnl.item(i).getTextContent();
 				if (cnl.item(i).getNodeName().equals("pictogramme"))
 					cb[i] = cnl.item(i).getTextContent();
+			}
+			
+			if (montant.equals("") || cb[0].equals("") || cb[1].equals("") || cb[2].equals(""))
+			{
+				LOGGER.info("***** ERROR : Bad XML input.");
+				return false;
+			}
+			Float mt;
+			try 
+			{
+				mt = Float.parseFloat(montant);
+				if (mt < 0)
+				{
+					LOGGER.info("***** ERROR : The amount indicated is not a positive number.");
+					return false;
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				LOGGER.info("***** ERROR : The amount indicated is not a valid number.");
+				return false;
 			}
 			LOGGER.info("***** REQUEST -> " + montant + "€ for the credit card : " + cb[0]);
 			Boolean bankResponse = getBankPaiement();

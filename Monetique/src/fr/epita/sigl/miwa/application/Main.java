@@ -44,14 +44,19 @@ public class Main {
 		InitMysqlConnector.init();
 				
 	    DocumentBuilder db;
-		try {
+		try 
+		{
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
-		    /*is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>XX.XX</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));*/
+		    // TEST Paiement CB
+		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>12.00</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));
+		    // TEST Paiement CF
 		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>150.50</montant><matricule_client>C123456789</matricule_client></monetique>"));
 		    Document doc = db.parse(is);
 			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, doc);
-		} catch (Exception e1) {
+		} 
+		catch (Exception e1) 
+		{
 			e1.printStackTrace();
 		}
 		
