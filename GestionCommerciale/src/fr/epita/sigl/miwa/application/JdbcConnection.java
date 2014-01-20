@@ -596,7 +596,6 @@ public class JdbcConnection
 				statement.executeUpdate();
 				
 				// Si y a un bug, ça vient de là
-					
 				ResultSet ret = statement.executeQuery();
 
 				while (ret.next()) {
