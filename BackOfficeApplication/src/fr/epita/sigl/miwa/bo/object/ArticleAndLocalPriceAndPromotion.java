@@ -15,21 +15,21 @@ public class ArticleAndLocalPriceAndPromotion
 	}
 	public void print()
 	{
-		System.out.println("==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=BEGIN==========");
+		System.out.println("***** ==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=BEGIN==========");
 		if (this.date != null)
 		{
-			System.out.println("DATE:" + this.date.toString());			
+			System.out.println("***** DATE:" + this.date.toString());			
 		}
 		else
 		{
-			System.out.println("DATE:");
+			System.out.println("***** DATE:");
 		}
-		System.out.println("==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=>ARTICLES=BEGIN==========");
+		System.out.println("***** ==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=>ARTICLES=BEGIN==========");
 		for (Article article : this.articles)
 		{
 			article.print();
 		}
-		System.out.println("==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=>ARTICLES=END==========");
-		System.out.println("==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=END==========");
+		System.out.println("***** ==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=>ARTICLES=END==========");
+		System.out.println("***** ==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=END==========");
 	}
 }

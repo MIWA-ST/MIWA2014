@@ -61,8 +61,14 @@ public class DomParserHelper
 		
 		for (int i = 1; i < xmlSplited.length; i++)
 		{
-			res += xmlSplited[i] + ">";
+			if (xmlSplited[i].length() > 2)
+			{
+				res += xmlSplited[i] + ">";
+			}
+			
 		}
+		
+		System.out.println("===" + res);
 
 		return res;
 	}

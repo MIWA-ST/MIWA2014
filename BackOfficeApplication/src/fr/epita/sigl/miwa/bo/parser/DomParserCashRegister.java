@@ -105,10 +105,6 @@ public class DomParserCashRegister extends DomParser
 	
 		sale.dateAndTime= Convert.stringToDate(DomParserHelper.getNodeAttr("ENTETE", "date", this.doc.getChildNodes()), "AAAA-MM-JJ");
 		
-		System.out.println(body);
-		System.out.println("Malteser");
-		System.out.println(xml);
-		
 		this.setXml(body);
 		this.updateDoc();
 		

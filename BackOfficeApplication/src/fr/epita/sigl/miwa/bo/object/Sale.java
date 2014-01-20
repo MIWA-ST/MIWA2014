@@ -21,31 +21,31 @@ public class Sale
 	
 	public void print()
 	{
-		System.out.println("==========SALE=BEGIN==========");
-		System.out.println("CUSOMER:" + this.customer);
-		System.out.println("CUSOMER NUMBER:" + this.customerNumber);
-		System.out.println("PAYMENT MEANS:" + this.paymentMeans);
-		System.out.println("TOTAL:" + this.total);
+		System.out.println("***** ==========SALE=BEGIN==========");
+		System.out.println("***** CUSOMER:" + this.customer);
+		System.out.println("***** CUSOMER NUMBER:" + this.customerNumber);
+		System.out.println("***** PAYMENT MEANS:" + this.paymentMeans);
+		System.out.println("***** TOTAL:" + this.total);
 		if (this.dateAndTime != null)
 		{
-			System.out.println("DATE AND TIME:" + this.dateAndTime.toString());			
+			System.out.println("***** DATE AND TIME:" + this.dateAndTime.toString());			
 		}
 		else
 		{
-			System.out.println("DATE AND TIME:");
+			System.out.println("***** DATE AND TIME:");
 		}
-		System.out.println("==========SALE=>PAYMENT=BEGIN==========");
+		System.out.println("***** ==========SALE=>PAYMENT=BEGIN==========");
 		if (this.payment != null)
 		{
 			this.payment.print();
 		}
-		System.out.println("==========SALE=>PAYMENT=END==========");
-		System.out.println("==========SALE=>ARTICLES=BEGIN==========");
+		System.out.println("***** ==========SALE=>PAYMENT=END==========");
+		System.out.println("***** ==========SALE=>ARTICLES=BEGIN==========");
 		for (Article article : this.articles)
 		{
 			article.print();
 		}
-		System.out.println("==========SALE=>ARTICLES=END==========");
-		System.out.println("==========SALE=END==========");
+		System.out.println("***** ==========SALE=>ARTICLES=END==========");
+		System.out.println("***** ==========SALE=END==========");
 	}
 }
