@@ -319,6 +319,7 @@ public class XMLManager {
 		}
 		command.setArticles(articles);
 		command.setquantity(quantities);
+		command.setTraite("TRUE");
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertCommandeInternet_entrepot(command);
 		JdbcConnection.getInstance().closeConnection();
@@ -369,6 +370,7 @@ public class XMLManager {
 		}
 		commande.setArticles(articles);
 		commande.setquantity(quantities);
+		commande.setTraite("FALSE");
 		// FIXME SAVEBDD
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertCommandeInternet(commande);
