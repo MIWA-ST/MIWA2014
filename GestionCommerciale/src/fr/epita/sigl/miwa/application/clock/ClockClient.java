@@ -9,7 +9,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.InputSource;
 
+import fr.epita.sigl.miwa.application.DemandeNiveauStock;
+import fr.epita.sigl.miwa.application.JdbcConnection;
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.XMLManager;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -35,25 +38,19 @@ public class ClockClient {
 	static public void wakeUp(Date date, Object message) {
 		try {
 		if (message instanceof String) {
-			if (message.equals("Hello World!")) {
-				System.out.println(date.toString() + " : Hello dear client!");
-			} else if (message.equals("envoie_msg_BO")) {
+			if (message.equals("BO")) {
 				String content = "";
-				try {
-					DocumentBuilder db = DocumentBuilderFactory.newInstance()
-							.newDocumentBuilder();
-					InputSource is = new InputSource();
-					LOGGER.info("On demande les niveaux de stock à Back office");
-					// A faire envoi niveau de stock
-					content = "<DEMANDENIVEAUDESTOCK><NUMERO>CV398719873</NUMERO><REFMAGASIN>PA218765</REFMAGASIN><DATE>20131225</DATE><ARTICLES><ARTICLE><REFERENCE>AU736827</REFERENCE></ARTICLE><ARTICLE><REFERENCE>AU736829</REFERENCE></ARTICLE></ARTICLES></DEMANDENIVEAUDESTOCK>";
-
-						AsyncMessageFactory.getInstance().getAsyncMessageManager()
-								.send(content, EApplication.BACK_OFFICE);
-					LOGGER.info("Envoi des stocks au back office");
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				DemandeNiveauStock demand = new DemandeNiveauStock();
+				demand.setCommandNumber(ClockClient.getClock().getHour().toString());
+				demand.setRefbo("0000001");
+				JdbcConnection.getInstance().getConnection();
+				demand.setArticles(JdbcConnection.getInstance().envoiPrixArticle());
+				JdbcConnection.getInstance().closeConnection();
+				content = XMLManager.getInstance().envoidemandeniveaudestocktoBO(demande);
+			}
+			else if ("BI")
+			{
+				
 			}
 			else {
 				System.out.println(date.toString() + " : " + message);

@@ -546,8 +546,18 @@ public class XMLManager {
 
 	}
 
-	public String envoiStockToBI(StockEntrepot entrepot, StockMagasin magasin) {
-		return null;
+	public String envoiStockToBI(List<StockEntrepot> entrepot, List<StockMagasin> magasin) {
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		String xml = "<XML> <ENTETE objet=\"information stock\" source=\"gc\" date=\"" + df.format(ClockClient.getClock().getHour())
+				+ "\" /><STOCKS>";
+		for (StockEntrepot stockEntrepot : entrepot) {
+			xml += "<STOCK ref-article=\"" + stockEntrepot.getRef_article() + "\" stock=\"" + stockEntrepot.getQuantity() +"\" commande=\"false\" max=\"500\" lieu=\"Entrepot\"/>";
+		}
+		for (StockMagasin stockMagasin : magasin) {
+			xml += "<STOCK ref-article=\"" + stockMagasin.getRef_article() + "\" stock=\"" + stockMagasin.getQuantity() +"\" commande=\"false\" max=\"50\" lieu=\""+ stockMagasin.getIdmag() +"\"/>";
+		}
+		
+		return xml;
 	}
 
 	// public String getCommandeFournisseur(String message, Document doc) throws
