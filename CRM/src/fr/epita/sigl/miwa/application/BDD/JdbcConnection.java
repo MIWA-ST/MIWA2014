@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
 import fr.epita.sigl.miwa.application.crm.ReassortBO;
+import fr.epita.sigl.miwa.application.object.Article;
 import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Segmentation;
@@ -377,10 +378,10 @@ public class JdbcConnection
 					client.setIBAN(result.getString(9));
 					client.setBIC(result.getString(10));
 					CarteFidelite c = new CarteFidelite(result.getString(11));
-					client.setCivilite(result.getString(11));
-					client.setNaissance(result.getString(12));
-					client.setNbenfant(Integer.parseInt(result.getString(13)));
-					client.setSituation(result.getString(14));
+					client.setCivilite(result.getString(12));
+					client.setNaissance(result.getString(13));
+					client.setNbenfant(Integer.parseInt(result.getString(14)));
+					client.setSituation(result.getString(15));
 					
 					client.setCarteFed(c);
 				}
@@ -392,6 +393,33 @@ public class JdbcConnection
 			e.printStackTrace();
 		}
 		return client;
+	}
+	
+	public void insertArticle(Article article)
+	{
+		try
+		{
+			System.out.println("insertion article");
+			if (connection != null)
+			{
+				String request = "INSERT INTO Article (reference, prix) VALUES (?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, article.getRef());
+				statement.setString(2, Integer.toString(article.getPrix()));
+				
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouveau article ajouté en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
 	}
 	
 }

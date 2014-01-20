@@ -142,7 +142,19 @@ public class Client {
 	}
 
 	
-	
+	public static Client getClient(String mat)
+	{
+		Client c = null;
+		for (int i = 0; i < clientsList.size(); i++)
+		{
+			if (clientsList.get(i).getMatricule() == Integer.parseInt(mat))
+			{
+				c = clientsList.get(i);
+				break;
+			}
+		}
+		return c;
+	}
 	
 	public Date getDate() {
 		return date;

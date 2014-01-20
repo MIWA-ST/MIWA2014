@@ -19,8 +19,10 @@ import fr.epita.sigl.miwa.application.BDD.JdbcConnection;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
+import fr.epita.sigl.miwa.application.object.Article;
 import fr.epita.sigl.miwa.application.object.Client;
 import fr.epita.sigl.miwa.application.object.Group;
+import fr.epita.sigl.miwa.application.object.TicketVente;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
@@ -47,16 +49,17 @@ public class Main {
 		
 		//XMLManager.getInstance().getSegmentationClient("coucou");
 		Client.clientsList = new ArrayList<Client>();
-		System.out.println(XMLManager.getInstance().getDemandeSegmentationClient("essai"));
-		//JdbcConnection.getInstance().getConnection();
+		TicketVente.ticketVentesList = new ArrayList<TicketVente>();
+		JdbcConnection.getInstance().getConnection();
 		//XMLManager.getInstance().getDemandeCreationCompte("lol", "creation compte internet.xml");
 		XMLManager.getInstance().getCreationTypeCarte("Silver");
 		XMLManager.getInstance().getCreationTypeCarte("Gold");
 		XMLManager.getInstance().getDemandeCreationCompte("creation", "creation compte internet.xml");
-		XMLManager.getInstance().getTicketClientFidelise("lol", "BO ticket client fidelise.xml");
+		//XMLManager.getInstance().getTicketClientFidelise("lol", "BO ticket client fidelise.xml");
 		XMLManager.getInstance().getSegmentationClient("lol", "segmentation-client.xml");
 		XMLManager.getInstance().dispatchXML("coucou", "BO ticket caisse.xml");
-		JdbcConnection.getInstance().GetClientInternet("831356");
+		JdbcConnection.getInstance().GetClientInternet("57310395");
+		XMLManager.getInstance().getClientConnecteDemandeReduc("reduc", "connexion client.xml");
 		//System.out.println(ClockClient.getClock().getHour());
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
