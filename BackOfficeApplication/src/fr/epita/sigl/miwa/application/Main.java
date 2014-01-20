@@ -67,14 +67,12 @@ public class Main {
 		*/
 		
 
-		// BO => BI envoi des vente détaillé
+		// BO => BI : Envoi des ventes détaillées
 		FileManager.createFile("ventedetaille.xml", PlugBusinessIntelligence.detailedSale);
 			AsyncFileFactory.getInstance().getFileManager().send("ventedetaille.xml", EApplication.BI);
-			System.out.println("***** vente détaillé envoyé à la BI");
-	
-		 
-		
-		
+			System.out.println("***** Ventes détaillées envoyés à la BI");
+
+
 		//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, "coucou");
 
 //		FileManager.createFile("test.xml", PlugCashRegister.articleAndLocalPriceAndPromotion);
