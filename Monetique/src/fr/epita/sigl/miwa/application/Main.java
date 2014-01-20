@@ -42,36 +42,21 @@ public class Main {
 	
 		// Init MySQL connector
 		InitMysqlConnector.init();
-		
-		/*DbHandler dbHandler = new DbHandler();
-
-        try {
-            Connection connection = dbHandler.open();
-
-            PreparedStatement pS = connection.prepareStatement("SELECT id_loyalty_card_type as id, card_type_code as type FROM loyalty_card_type;");
-            //pS.setInt(1, idEM);
-            ResultSet result = pS.executeQuery();
-
-            while (result.next()) {
-                Integer id = result.getInt("id");
-                String nom = result.getString("type");
-                System.out.println("*****" + id + " -- " + nom);
-            }
-
-            dbHandler.close();
-
-        } catch ( SQLException e ) {
-            System.err.println("ERROR : " + e.getMessage());
-        }*/
-		
+				
 	    DocumentBuilder db;
-		try {
+		try 
+		{
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
-		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><!-- Demande de paiement par carte bancaire --><monetique service=\"paiement_cb\"><montant>12.00</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));
-		    Document doc_bis = db.parse(is);
-			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, doc_bis);
-		} catch (Exception e1) {
+		    // TEST Paiement CB
+		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>12.00</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));
+		    // TEST Paiement CF
+		    is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>150.50</montant><matricule_client>C123456789</matricule_client></monetique>"));
+		    Document doc = db.parse(is);
+			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, doc);
+		} 
+		catch (Exception e1) 
+		{
 			e1.printStackTrace();
 		}
 		
