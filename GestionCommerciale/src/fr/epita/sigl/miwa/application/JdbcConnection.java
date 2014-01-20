@@ -20,8 +20,8 @@ public class JdbcConnection {
 	}
 
 	public void getConnection() {
-		//System.out.println("-------- PostgreSQL "
-		//		+ "JDBC Connection Testing ------------");
+		// System.out.println("-------- PostgreSQL "
+		// + "JDBC Connection Testing ------------");
 
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -32,7 +32,7 @@ public class JdbcConnection {
 			return;
 		}
 
-		//System.out.println("PostgreSQL JDBC Driver Registered!");
+		// System.out.println("PostgreSQL JDBC Driver Registered!");
 
 		try {
 			connection = DriverManager
@@ -46,7 +46,7 @@ public class JdbcConnection {
 		}
 
 		if (connection != null)
-			;//System.out.println("You made it, take control your database now!");
+			;// System.out.println("You made it, take control your database now!");
 		else
 			System.out.println("Failed to make connection!");
 	}
@@ -56,7 +56,7 @@ public class JdbcConnection {
 			if (connection != null)
 				connection.close();
 
-			;//System.out.println("Connection closed !");
+			;// System.out.println("Connection closed !");
 		} catch (SQLException e) {
 			System.out.println("Failed to close connection!");
 			e.printStackTrace();
@@ -65,14 +65,14 @@ public class JdbcConnection {
 
 	public void insertArticle(Articles article) {
 		try {
-			//System.out.println("Insert Articles");
+			// System.out.println("Insert Articles");
 			if (connection != null) {
 				String verif = "SELECT * FROM articles WHERE ref_article = ?";
 				PreparedStatement verif_req = connection
 						.prepareStatement(verif);
 				verif_req.setString(1, article.getRef_article());
 				ResultSet rs = verif_req.executeQuery();
-				
+
 				if (!rs.next()) {
 					String request = "INSERT INTO articles (ref_article, nom, prix_fournisseur, prix_vente, stock_max_entrepot, stock_max_magasin, categorie, quantite_min_commande_fournisse) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -114,7 +114,7 @@ public class JdbcConnection {
 
 	public void insertPromoFournisseur(PromoFournisseur article) {
 		try {
-			//System.out.println("Insert promo fournisseur");
+			// System.out.println("Insert promo fournisseur");
 			if (connection != null) {
 				String verif = "SELECT * FROM promo_fournisseur WHERE ref_article = ?";
 				PreparedStatement verif_req = connection
@@ -157,7 +157,7 @@ public class JdbcConnection {
 
 	public void insertCommandeFournisseur(CommandeFournisseur cmd) {
 		try {
-			//System.out.println("Insert commandes_fournisseur");
+			// System.out.println("Insert commandes_fournisseur");
 			if (connection != null) {
 				String verif = "SELECT * FROM commandes_fournisseur WHERE numero_commande = ?";
 				PreparedStatement verif_req = connection
@@ -213,7 +213,7 @@ public class JdbcConnection {
 
 	public void insertCommandeInternet(CommandeInternet cmd) {
 		try {
-			//System.out.println("Insert commandes internet");
+			// System.out.println("Insert commandes internet");
 			if (connection != null) {
 				String verif = "SELECT * FROM commandes_internet WHERE numero_commande = ?";
 				PreparedStatement verif_req = connection
@@ -237,21 +237,24 @@ public class JdbcConnection {
 
 					statement.executeUpdate();
 
-					// / Si y a un bug, ça vient de là
+					// Si y a un bug, ça vient de là
 					ResultSet res = statement.getGeneratedKeys();
-					int id = res.getInt(1);
-					int indice = 0;
-					for (Articles a : cmd.getArticles()) {
-						String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
+					if (res.first()) {
+						int id = res.getInt(1);
+						int indice = 0;
+						for (Articles a : cmd.getArticles()) {
+							String request2 = "INSERT INTO commande_internet_line (numero_commande, ref_article, quantite) VALUES (?, ?, ?)";
 
-						PreparedStatement statement2 = connection
-								.prepareStatement(request2);
-						statement.setString(1, Integer.toString(id));
-						statement.setString(2, a.getRef_article());
-						statement.setString(3, cmd.getquantity().get(indice));
+							PreparedStatement statement2 = connection
+									.prepareStatement(request2);
+							statement.setString(1, Integer.toString(id));
+							statement.setString(2, a.getRef_article());
+							statement.setString(3, cmd.getquantity()
+									.get(indice));
 
-						statement2.executeUpdate();
-						indice++;
+							statement2.executeUpdate();
+							indice++;
+						}
 					}
 				} else {
 					String request = "UPDATE commandes_internet SET date_bon_commande = ?, date_bon_livraison = ?, nom_client = ?, prenom_clien = ?, adresse_client = ?, traitee = ? WHERE numero_commande = ?";
@@ -277,7 +280,7 @@ public class JdbcConnection {
 
 	public void insertDemandeReassort(DemandeReassort dmd) {
 		try {
-			//System.out.println("Insert demande reassort");
+			// System.out.println("Insert demande reassort");
 			if (connection != null) {
 				String verif = "SELECT * FROM demandes_reassort WHERE numero_commande = ?";
 				PreparedStatement verif_req = connection
@@ -380,7 +383,7 @@ public class JdbcConnection {
 
 	public void insertStockEntrepot(StockEntrepot stck) {
 		try {
-			//System.out.println("Insert stock entrepôt");
+			// System.out.println("Insert stock entrepôt");
 			if (connection != null) {
 				String verif = "SELECT * FROM stock_entrepot WHERE ref_article = ?";
 				PreparedStatement verif_req = connection
@@ -417,7 +420,7 @@ public class JdbcConnection {
 
 	public void insertStockMagasin(StockMagasin mgs) {
 		try {
-			//System.out.println("Insert stock magasin");
+			// System.out.println("Insert stock magasin");
 			if (connection != null) {
 				String verif = "SELECT * FROM stock_magasin WHERE ref_article = ?";
 				PreparedStatement verif_req = connection
@@ -456,7 +459,7 @@ public class JdbcConnection {
 
 	public void insertDemandeNiveauStock(DemandeNiveauStock dmd) {
 		try {
-			//System.out.println("Insert demande niveau stock");
+			// System.out.println("Insert demande niveau stock");
 			if (connection != null) {
 				String request = "INSERT INTO demande_niveau_stock (numero_demande, date_demande, date_reponse, ref_bo) VALUES (?, ?, ?, ?)";
 
@@ -498,7 +501,7 @@ public class JdbcConnection {
 		res = dns;
 
 		try {
-			//System.out.println("Recup niveau stock");
+			// System.out.println("Recup niveau stock");
 			if (connection != null) {
 				// int indice = 0;
 				for (Articles a : dns.getArticles()) {
@@ -533,7 +536,7 @@ public class JdbcConnection {
 		List<Articles> res = new ArrayList<>();
 
 		try {
-			//System.out.println("Recup prix article");
+			// System.out.println("Recup prix article");
 			if (connection != null) {
 				String request = "SELECT ref_article, prix_vente FROM articles";
 
@@ -562,7 +565,7 @@ public class JdbcConnection {
 		List<Promotions> res = new ArrayList<>();
 
 		try {
-			//System.out.println("Recup promotions");
+			// System.out.println("Recup promotions");
 			if (connection != null) {
 				String request = "SELECT ref_article, date_debut, date_fin, pourcentage FROM promotions";
 
@@ -594,13 +597,13 @@ public class JdbcConnection {
 	public List<StockMagasin> envoi_all_stock_mag() {
 		List<StockMagasin> result = new ArrayList<>();
 		try {
-			//System.out.println("Recup niveau stock");
+			// System.out.println("Recup niveau stock");
 			if (connection != null) {
 				String request = "SELECT ref_article, id_magasin, quantite FROM stock_magasin";
 
 				PreparedStatement statement = connection
 						.prepareStatement(request);
-				statement.executeUpdate();
+				// statement.executeUpdate();
 
 				ResultSet ret = statement.executeQuery();
 
@@ -619,17 +622,17 @@ public class JdbcConnection {
 		}
 		return null;
 	}
-	
+
 	public List<StockEntrepot> envoi_all_stock() {
 		List<StockEntrepot> result = new ArrayList<>();
 		try {
-			//System.out.println("Recup niveau stock");
+			// System.out.println("Recup niveau stock");
 			if (connection != null) {
 				String request = "SELECT ref_article, quantite FROM stock_entrepot";
 
 				PreparedStatement statement = connection
 						.prepareStatement(request);
-				statement.executeUpdate();
+				// statement.executeUpdate();
 
 				ResultSet ret = statement.executeQuery();
 
@@ -653,7 +656,7 @@ public class JdbcConnection {
 		List<Articles> art = new ArrayList<>();
 		List<String> quantites = new ArrayList<String>();
 		try {
-			//System.out.println("Recup niveau stock");
+			// System.out.println("Recup niveau stock");
 			if (connection != null) {
 				// int indice = 0;
 				String request = "SELECT quantite FROM stock_entrepot WHERE ref_article = ?";
@@ -661,7 +664,7 @@ public class JdbcConnection {
 				PreparedStatement statement = connection
 						.prepareStatement(request);
 				statement.setString(1, articl.getRef_article());
-				statement.executeUpdate();
+				// statement.executeUpdate();
 
 				// Si y a un bug, ça vient de là
 				ResultSet ret = statement.executeQuery();
@@ -691,7 +694,7 @@ public class JdbcConnection {
 
 	public void modif_stock(Articles art, String ajout) {
 		try {
-			//System.out.println("Insert demande reassort");
+			// System.out.println("Insert demande reassort");
 			if (connection != null) {
 				String request = "UPDATE stock_entrepot SET (quantite = ?) WHERE ref_article = ?";
 
