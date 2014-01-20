@@ -30,17 +30,19 @@ public class ClockClient {
 			EClockMessage clockMessage = EClockMessage.fromString((String) message);
 			switch (clockMessage) {
 			case STOCK:
-				LOGGER.info("Réveil pour la génération des statistiques des stocks");
+				LOGGER.info("***** Réveil pour la génération des statistiques des stocks");
 				controller.generateStockStatistic();
 				break;
 			case VENTE:
-				LOGGER.info("Réveil pour la génération des statistiques des ventes");
+				LOGGER.info("***** Réveil pour la génération des statistiques des ventes");
 				controller.generateSaleStatistic();
 				break;
 			case REP_PAYMENT:
-				LOGGER.info("Réveil pour la génération des statistiques de payment");
+				LOGGER.info("***** Réveil pour la génération des statistiques de payment");
 				controller.generatePaymentStatistics();
+				break;
 			default:
+				LOGGER.info("***** Unknown : " + (String) message);
 				break;
 			}
 		}

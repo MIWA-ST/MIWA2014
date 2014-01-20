@@ -199,10 +199,11 @@ public class BIDao {
 						SQL = "UPDATE product SET buyingprice = '" + product.getBuyingPrice() + "', sellingprice = '" + product.getSellingPrice()
 								+ "', categoryname = '" + product.getCategoryName() + "', margin = '" + product.getMargin() + "' WHERE reference = '" + product.getReference() + "';";
 						stmt.execute(SQL);
+					} else  {
+						SQL = "INSERT INTO product(reference, buyingprice, sellingprice, categoryname, margin) "
+								+ "VALUES ('" + product.getReference() + "', '" + product.getBuyingPrice() + "', '" + product.getSellingPrice() + "', '" + product.getCategoryName() + "', '" + product.getMargin() + "');";
+						stmt.execute(SQL);	
 					}
-					SQL = "INSERT INTO product(reference, buyingprice, sellingprice, categoryname, margin) "
-							+ "VALUES ('" + product.getReference() + "', '" + product.getBuyingPrice() + "', '" + product.getSellingPrice() + "', '" + product.getCategoryName() + "', '" + product.getMargin() + "');";
-					stmt.execute(SQL);				
 				}
 			}
 		} catch (SQLException e) {
@@ -539,7 +540,7 @@ public class BIDao {
 					saleStatistic.setCategorie(categoryName);
 					String source = result.getString("source");
 					saleStatistic.setSource(source);
-					
+
 					saleStatistics.add(saleStatistic);
 				}
 			}
@@ -651,7 +652,7 @@ public class BIDao {
 						SQL += "birthdate >= '" + birthdateBegin + "' AND birthdate <= '" + birthdateEnd + "' AND ";
 						break;
 					case GEO:
-						Integer begin = (Integer) critere.getValue() * 1000;
+						Integer begin = Integer.valueOf((String) critere.getValue()) * 1000;
 						Integer end = begin + 1000;
 						SQL += "zipcode >= " + begin + " AND zipcode <= " + end + " AND ";
 						break;
@@ -664,12 +665,12 @@ public class BIDao {
 						SQL += "maritalstatus = '" + sf + "' AND ";
 						break;
 					case ENF:
-						boolean enfant = (boolean) critere.getValue();
+						String enfant = (String) critere.getValue();
 						SQL += "children = '" + enfant + "' AND ";
 						break;
 					case FID:
-						Integer fidelity = (Integer) critere.getValue();
-						SQL += "loyaltytype = " + fidelity + " AND ";
+						String fidelity = (String) critere.getValue();
+						SQL += "loyaltytype = '" + fidelity + "' AND ";
 					default:
 						break;
 					}
@@ -690,9 +691,9 @@ public class BIDao {
 					client.setMaritalStatus(maritalStatus);
 					boolean children = result.getBoolean("children");
 					client.setChildren(children);
-					Integer loyaltyType = result.getInt("loyaltytype");
+					String loyaltyType = result.getString("loyaltytype");
 					client.setLoyaltyType(loyaltyType);
-					
+
 					clients.add(client);
 				}
 			}

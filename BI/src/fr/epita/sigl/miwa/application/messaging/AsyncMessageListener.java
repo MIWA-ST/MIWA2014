@@ -1,10 +1,12 @@
 package fr.epita.sigl.miwa.application.messaging;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.controller.BIController;
+import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;
 import fr.epita.sigl.miwa.st.async.file.exception.AsyncFileException;
@@ -25,9 +27,11 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		// Message du CRM (demande de segmentation avec critères)
 		if (source == EApplication.CRM){
 			LOGGER.info("***** Message reçu du CRM");
+			LOGGER.info("Message is : " + message);
 			// Envoi du fichier de segmentation au CRM suite à leur demande
 			try {
-				String filename = controller.generateSegmentation(message);
+				List<Critere> criteres = controller.parseCRMMessage(message);
+				String filename = controller.generateSegmentation(criteres);
 				AsyncFileFactory.getInstance().getFileManager().send(filename, EApplication.CRM);
 				LOGGER.info("***** Fichier " + filename + "envoyé au CRM");
 			} catch (AsyncFileException e) {
@@ -42,6 +46,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		else if (source == EApplication.GESTION_COMMERCIALE){
 			LOGGER.info("***** Message reçu de la GC");
 			try{
+				LOGGER.info("Message is : " + message);
 				controller.parseGCMessage(message);
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur pendant le parsing du message de la GC");
@@ -52,6 +57,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		else if (source == EApplication.BACK_OFFICE){
 			LOGGER.info("***** Message reçu du BO");
 			try{
+				LOGGER.info("Message is : " + message);
 				controller.parseBOMessage(message);
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur pendant le parsing du message du BO");

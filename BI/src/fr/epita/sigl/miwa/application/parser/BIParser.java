@@ -214,7 +214,7 @@ public class BIParser {
 		try {
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = saleFile.getElementsByTagName("ENTETE");
-			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("dateHeure").getNodeValue();
+			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 			Date saleDate = (new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(dateStr);
 
 			// Parsage du fichier : Partie corps
@@ -411,13 +411,21 @@ public class BIParser {
 				client.setNumero(Integer.valueOf(tmpInfo));
 				client.setTitle(clientNode.getAttributes().getNamedItem("civilite").getNodeValue());
 				tmpInfo = clientNode.getAttributes().getNamedItem("naissance").getNodeValue();
-				client.setBirthDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
+				if (tmpInfo.equalsIgnoreCase("null")){
+					client.setBirthDate(null);
+				} else {
+					client.setBirthDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
+				}
 				tmpInfo = clientNode.getAttributes().getNamedItem("codepostal").getNodeValue();
 				client.setZipcode(Integer.valueOf(tmpInfo));
 				client.setMaritalStatus(clientNode.getAttributes().getNamedItem("situationfam").getNodeValue());
 				tmpInfo = clientNode.getAttributes().getNamedItem("nbenfant").getNodeValue();
-				client.setChildren(Boolean.valueOf(tmpInfo));
-				client.setLoyaltyType(Integer.valueOf(clientNode.getAttributes().getNamedItem("typecarte").getNodeValue()));
+				if (tmpInfo.equalsIgnoreCase("null")){
+					client.setChildren(null);
+				} else {
+					client.setChildren(Boolean.valueOf(tmpInfo));
+				}
+				client.setLoyaltyType(clientNode.getAttributes().getNamedItem("typecarte").getNodeValue());
 
 				clientList.add(client);
 			}
