@@ -69,21 +69,5 @@ public class DemandeReassort {
 		this.traite = traite;
 	}
 	
-	public boolean stock_suffisant() {
-		int demande = 0;
-		int stock = 0;
-		
-		JdbcConnection.getInstance().getConnection();
-		DemandeNiveauStock dns = JdbcConnection.getInstance().envoi_all_stock();
-		JdbcConnection.getInstance().closeConnection();
-		
-		dns = dns;
-		
-		if (stock >= demande)
-			return true;
-		else
-			return false;
-	}
-	
-	
+
 }

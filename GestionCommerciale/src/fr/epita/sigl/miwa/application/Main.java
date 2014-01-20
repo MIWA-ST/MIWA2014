@@ -57,7 +57,7 @@ public class Main {
 		
 		xml += "</articles></commande></commande_internet>";
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.ENTREPOT);
-
+/*
 		String XMLENT_BLexp = "<EXPEDITIONCLIENT>";
 				XMLENT_BLexp += "<LIVRAISON>";
 				XMLENT_BLexp += "<NUMERO>CV398719873</NUMERO>";
@@ -180,7 +180,7 @@ public class Main {
 		XMLREF += "</ARTICLES>";
 		XMLREF += "</XML>";
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(XMLREF, EApplication.GESTION_COMMERCIALE);
-		
+		*/
 		try {
 			Thread.sleep(1000000);
 		} catch (InterruptedException e) {
