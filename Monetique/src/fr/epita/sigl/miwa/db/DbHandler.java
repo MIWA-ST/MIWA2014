@@ -6,7 +6,7 @@ public class DbHandler {
 
     String URL = "jdbc:mysql://localhost:3306/monedb";
     String USER = "root";
-    String PASSWORD = "root";
+    String PASSWORD = "9q8ra41*";
 
     Connection connection = null;
 
