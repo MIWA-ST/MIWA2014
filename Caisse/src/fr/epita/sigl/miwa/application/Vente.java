@@ -22,7 +22,7 @@ public class Vente {
 				System.out.println("------------------------------------");
 				System.out.println("Vente : " + i);
 				final Set<Produit> tabproduct = new HashSet<Produit>();
-				final Set<Produit> selectedproducts = new HashSet<Produit>();
+				Set<Produit> selectedproducts = new HashSet<Produit>();
 				// Construction de la liste des produits
 				try {
 					ResultSet rs = Main.bdd
@@ -137,8 +137,8 @@ public class Vente {
 						
 						String updatedPrice = XmlParser.getUpdatedPrice(updatedTicket);
 						selectedproducts = XmlParser.getUpdatedProducts(updatedTicket);
-						//TODO RECUPERER LE NOUVEAU PRIX TOTAL DE UPDATEDTICKET
-						// TODO CONSTRUIRE LE NOUVEAU SELECTEDPRODUCTS A PARTIR DE UPDATEDTICKET
+						prixtotal = Float.parseFloat(updatedPrice);
+	
 						XmlGenerator.CheckFidPaymentWithMo("" + updatedPrice, idClient);
 					}
 					System.out.println("-------------------------------------");
