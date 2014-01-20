@@ -1,6 +1,5 @@
 package fr.epita.sigl.miwa.application.messaging;
 
-import java.beans.XMLDecoder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +8,6 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
