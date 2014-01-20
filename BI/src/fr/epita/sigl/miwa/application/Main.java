@@ -29,23 +29,26 @@ public class Main {
 		// Réveil à 9h pour les statistiques sur les stocks
 		Calendar reveilStock = Calendar.getInstance();
 		reveilStock.setTime(clockDate);
-		reveilStock.set(Calendar.DAY_OF_MONTH, clockDate.getDate() + 1);
+		reveilStock.add(Calendar.DAY_OF_MONTH, 1);
 		reveilStock.set(Calendar.HOUR_OF_DAY, 10);
 		reveilStock.set(Calendar.MINUTE, 0);
+		LOGGER.info("Enregistrement auprès de la Clock pour la génération des statistiques de stock à " + reveilStock.getTime());
 		ClockClient.getClock().wakeMeUpEveryDays(reveilStock.getTime(), EClockMessage.STOCK.toString());
 		// Réveil à 22h pour les ventes
 		Calendar reveilVente = Calendar.getInstance();
 		reveilVente.setTime(clockDate);
-		reveilVente.set(Calendar.DAY_OF_MONTH, clockDate.getDate() + 1);
+		reveilVente.add(Calendar.DAY_OF_MONTH, 1);
 		reveilVente.set(Calendar.HOUR_OF_DAY, 23);
 		reveilVente.set(Calendar.MINUTE, 0);
+		LOGGER.info("Enregistrement auprès de la Clock pour la génération des statistiques de ventes à " + reveilVente.getTime());
 		ClockClient.getClock().wakeMeUpEveryDays(reveilVente.getTime(), EClockMessage.VENTE.toString());
 		//Réveil à 23h pour la répartition des moyens de paiement
 		Calendar reveilPayment = Calendar.getInstance();
 		reveilPayment.setTime(clockDate);
-		reveilPayment.set(Calendar.DAY_OF_MONTH, clockDate.getDate() + 1);
+		reveilPayment.add(Calendar.DAY_OF_MONTH, 1);
 		reveilPayment.set(Calendar.HOUR_OF_DAY, 23);
 		reveilPayment.set(Calendar.MINUTE, 15);
+		LOGGER.info("Enregistrement auprès de la Clock pour la génération des statistiques de paiement à " + reveilPayment.getTime());
 		ClockClient.getClock().wakeMeUpEveryDays(reveilPayment.getTime(), EClockMessage.REP_PAYMENT.toString());
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */

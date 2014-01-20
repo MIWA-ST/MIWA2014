@@ -15,12 +15,15 @@ public class Sale {
    private String productCategory;
    private Integer supplierTotal;
    private Integer salesTotal;
+   private String source;
    
 	public Sale() {
 	}
 
 	public Sale(Integer id, Date dateTime, String store, Integer soldQty,
-			String productCategory, Integer supplierTotal, Integer salesTotal) {
+			String productCategory, Integer supplierTotal, Integer salesTotal,
+			String source) {
+		super();
 		this.id = id;
 		this.dateTime = dateTime;
 		this.store = store;
@@ -28,6 +31,7 @@ public class Sale {
 		this.productCategory = productCategory;
 		this.supplierTotal = supplierTotal;
 		this.salesTotal = salesTotal;
+		this.source = source;
 	}
 
 	public Integer getId() {
@@ -85,4 +89,13 @@ public class Sale {
 	public void setSalesTotal(Integer salesTotal) {
 		this.salesTotal = salesTotal;
 	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
 }

@@ -14,7 +14,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
 	private BIController controller = BIController.getInstance();
-	
+
 	@Override
 	public void onException(Exception e) {
 		LOGGER.severe("Erreur : " + e);		
@@ -27,30 +27,46 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("Message reçu du CRM");
 			// Envoi du fichier de segmentation au CRM suite à leur demande
 			try {
-				// A décommenter quand ça marchera
-				//String filename = controller.generateSegmentation(message);
-				String filename = "/segmentation-client.xml";
+				String filename = controller.generateSegmentation(message);
 				AsyncFileFactory.getInstance().getFileManager().send(filename, EApplication.CRM);
 				LOGGER.info("Fichier " + filename + "envoyé au CRM");
 			} catch (AsyncFileException e) {
 				LOGGER.severe("Erreur pendant l'envoi du fichier au CRM");
+				LOGGER.severe("L'erreur est : " + e);
+			} catch (Exception e){
+				LOGGER.severe("Erreur pendant la segmentation client");
 				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
 		// Message de la GC (stock)
 		else if (source == EApplication.GESTION_COMMERCIALE){
 			LOGGER.info("Message reçu de la GC");
-			controller.parseGCMessage(message);
+			try{
+				controller.parseGCMessage(message);
+			} catch (Exception e){
+				LOGGER.severe("Erreur pendant le parsing du message de la GC");
+				LOGGER.severe("L'erreur est : " + e);
+			}
 		}
 		// Message du BO (stock ou vente (toutes les 15min) ou promo locales)
 		else if (source == EApplication.BACK_OFFICE){
 			LOGGER.info("Message reçu du BO");
-			controller.parseBOMessage(message);
+			try{
+				controller.parseBOMessage(message);
+			} catch (Exception e){
+				LOGGER.severe("Erreur pendant le parsing du message du BO");
+				LOGGER.severe("L'erreur est : " + e);
+			}
 		}
 		// Message de l'internet (vente (toutes les 15min))
 		else if (source == EApplication.INTERNET){
 			LOGGER.info("Message reçu d'Internet");
-			controller.parseInternetMessage(message);
+			try {
+				controller.parseInternetMessage(message);
+			} catch (Exception e){
+				LOGGER.severe("Erreur pendant le parsing du message de l'Internet");
+				LOGGER.severe("L'erreur est : " + e);
+			}
 		}
 		// Message pas attendu
 		else {
@@ -65,26 +81,41 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		if (source == EApplication.CRM){
 			LOGGER.info("Fichier reçu du CRM");
 			try {
-			controller.parseCRMFile(file);
+				controller.parseCRMFile(file);
 			} catch (Exception e){
-				LOGGER.severe("Erreur de parsing");
-				e.printStackTrace();
+				LOGGER.severe("Erreur de parsing du fichier du CRM");
+				LOGGER.severe("L'erreur est : " + e);
 			}
 		}
 		// Fichier du référentiel (liste produits)
 		else if (source == EApplication.MDM){
 			LOGGER.info("Fichier reçu du référentiel");
-			controller.parseMDMFile(file);
+			try {
+				controller.parseMDMFile(file);
+			} catch (Exception e){
+				LOGGER.severe("Erreur de parsing du fichier du MDM");
+				LOGGER.severe("L'erreur est : " + e);
+			}
 		}
 		// Fichier du BO (ventes détaillées)
 		else if (source == EApplication.BACK_OFFICE){
 			LOGGER.info("Fichier reçu du BO");
-			controller.parseBOFile(file);
+			try {
+				controller.parseBOFile(file);
+			} catch (Exception e){
+				LOGGER.severe("Erreur de parsing du fichier du BO");
+				LOGGER.severe("L'erreur est : " + e);
+			}
 		}
 		// Fichier d'Internet (ventes détaillées)
 		else if (source == EApplication.INTERNET){
 			LOGGER.info("Fichier reçu d'Internet");
-			controller.parseInternetFile(file);
+			try {
+				controller.parseInternetFile(file);
+			} catch (Exception e){
+				LOGGER.severe("Erreur de parsing du fichier de l'Internet");
+				LOGGER.severe("L'erreur est : " + e);
+			}
 		}
 		// Fichier non attendu
 		else {

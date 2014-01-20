@@ -34,23 +34,23 @@ public class BIController {
 	private static final Logger LOGGER = Logger.getLogger(BIController.class.getName());
 
 	private BIParser parser = new BIParser();
-	
+
 	private BIComputer computer = new BIComputer();
-	
+
 	private BIPrinter printer = new BIPrinter();
-	
+
 	private BIDao biDao = new BIDao();
-	
+
 	private boolean hasClient = false;
-	
+
 	private boolean hasDetailSaleBOForPayment = false;
-	
+
 	private boolean hasDetailSaleInternetForPayment = false;
-	
+
 	private boolean hasStockGC = false;
-	
+
 	private boolean hasStockBO = false;
-	
+
 	private boolean hasMDMData = false;
 
 	private boolean hasSaleInternet = false;
@@ -69,18 +69,15 @@ public class BIController {
 	private static class BIControllerHolder{
 		private final static BIController instance = new BIController();
 	}
-	
+
 	public static BIController getInstance(){
 		return BIControllerHolder.instance;
 	}
 	public void generateStockStatistic() {
-		while (!hasMDMData && !hasStockBO && !hasStockGC){
-			try {
-				wait(10000);
-			} catch (InterruptedException e) {
-				LOGGER.severe("Probleme pendant la génération des statistiques de stock");
-				LOGGER.severe("L'erreur est : " + e);
-			}
+		if (!hasMDMData || !hasStockBO || !hasStockGC){
+			LOGGER.severe("Génération des statistiques des stocks interrompue : manque d'informations");
+			LOGGER.severe("MDM: " + hasMDMData + ", BO: " + hasStockBO + ", GC: " + hasStockGC);
+			return;
 		}
 		List<Stock> stocks = biDao.getStockOfToday();
 		List<StockStatistic> stockStatistics = computer.computeStockStatistics(stocks);
@@ -91,13 +88,10 @@ public class BIController {
 	}
 
 	public void generateSaleStatistic() {
-		while (!hasSaleBO){
-			try {
-				wait(10000);
-			} catch (InterruptedException e) {
-				LOGGER.severe("Probleme pendant la la génération des statistiques des ventes détaillées");
-				LOGGER.severe("L'erreur est : " + e);
-			}
+		if (!hasSaleBO){
+			LOGGER.severe("Génération des statistiques des ventes interrompue : manque d'informations");
+			LOGGER.severe("BO: " + hasSaleBO);
+			return;
 		}
 		List<Sale> sales = biDao.getSalesOfToday();
 		List<SaleStatistic> lastSaleStatistics = biDao.getSaleStatisticsOfYesterday();
@@ -108,16 +102,12 @@ public class BIController {
 		printer.publishSaleStatistics(saleStatistics);
 	}
 
-	/** @param message */
 	public String generateSegmentation(String message) {
 		List<Critere> criteres = parser.parseCRMMessage(message);
-		while (!hasClient && !hasDetailSaleBOForSegmentation && !hasMDMData){
-			try {
-				wait(10000);
-			} catch (InterruptedException e) {
-				LOGGER.severe("Probleme pendant la segmentation");
-				LOGGER.severe("L'erreur est : " + e);
-			}
+		if (!hasClient || !hasDetailSaleBOForSegmentation){
+			LOGGER.severe("Génération de la segmentation interrompue : manque d'informations");
+			LOGGER.severe("CRM: " + hasClient + ", BO: " + hasDetailSaleBOForSegmentation);
+			return printer.createSegmentationFile(criteres, new ArrayList<Segmentation>());
 		}
 		List<Client> clients = biDao.getClientByCriteria(criteres);
 		List<DetailSale> detailSales = biDao.getDetailSalesForClients(clients);
@@ -129,15 +119,12 @@ public class BIController {
 
 	/** @param path */
 	public void generatePaymentStatistics() {
-		while (!hasDetailSaleBOForPayment && !hasDetailSaleInternetForPayment){
-			try {
-				wait(10000);
-			} catch (InterruptedException e) {
-				LOGGER.severe("Probleme pendant la génération des statistiques du paiement");
-				LOGGER.severe("L'erreur est : " + e);
-			}
+		if (!hasDetailSaleBOForPayment){
+			LOGGER.severe("Génération des statistiques de paiement interrompue : manque d'informations");
+			LOGGER.severe("BO: " + hasDetailSaleBOForPayment);
+			return;
 		}
-		List<DetailSale> detailSales = biDao.getAllDetailSales();
+		List<DetailSale> detailSales = biDao.getAllBODetailSales();
 		List<PaymentStatistic> paiementStatistics = computer.computePaymentStatistics(detailSales);
 		hasDetailSaleBOForPayment = false;
 		hasDetailSaleInternetForPayment = false;
@@ -146,12 +133,22 @@ public class BIController {
 	}
 
 	public void parseGCMessage(String message){
+		if (!hasMDMData){
+			LOGGER.severe("Insertion des stocks en BDD interrompue : manque d'informations");
+			LOGGER.severe("MDM: " + hasMDMData);
+			return;
+		}
 		List<Stock> stocks = parser.parseStockMessage(message);
 		biDao.insertStocks(stocks);
 		hasStockGC = true;
 	}
 
 	public void parseBOMessage(String message) {
+		if (!hasMDMData){
+			LOGGER.severe("Insertion des données du BO en BDD interrompue : manque d'informations");
+			LOGGER.severe("MDM: " + hasMDMData);
+			return;
+		}
 		Map<EBOMessageType, List<Object>> boData = parser.parseBOMessage(message);
 		EBOMessageType boMessageType = boData.keySet().iterator().next();
 		Collection<List<Object>> values = boData.values();
@@ -188,6 +185,11 @@ public class BIController {
 
 	}
 	public void parseInternetMessage(String message) {
+		if (!hasMDMData){
+			LOGGER.severe("Insertion des ventes de l'Internet en BDD interrompue : manque d'informations");
+			LOGGER.severe("MDM: " + hasMDMData);
+			return;
+		}
 		List<Sale> sales = parser.parseSaleMessage(message);
 		biDao.insertSales(sales);
 		hasSaleInternet  = true;
@@ -207,6 +209,11 @@ public class BIController {
 	}
 
 	public void parseBOFile(File file) {
+		if (!hasClient || !hasMDMData){
+			LOGGER.severe("Insertion des ventes détaillées du BO en BDD interrompue : manque d'informations");
+			LOGGER.severe("MDM: " + hasMDMData + ", CRM: " + hasClient);
+			return;
+		}
 		List<DetailSale> detailSales = parser.parseDetailSale(file);
 		biDao.insertDetailSales(detailSales);
 		hasDetailSaleBOForPayment = true;
@@ -214,6 +221,11 @@ public class BIController {
 	}
 
 	public void parseInternetFile(File file) {
+		if (!hasClient || !hasMDMData){
+			LOGGER.severe("Insertion des ventes détaillées de l'Internet en BDD interrompue : manque d'informations");
+			LOGGER.severe("MDM: " + hasMDMData + ", CRM: " + hasClient);
+			return;
+		}
 		List<DetailSale> detailSales = parser.parseDetailSale(file);
 		biDao.insertDetailSales(detailSales);
 		hasDetailSaleInternetForPayment = true;

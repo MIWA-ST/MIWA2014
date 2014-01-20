@@ -15,15 +15,21 @@ public class SaleStatistic {
 	private float caPourcent;
 	
 	private int nbSoldProducts;
+	
+	private String source;
 
 	public SaleStatistic(Date dateTime, String categorie, float evolution,
-			float ca, float caPourcent, int nbSoldProducts) {
+			float ca, float caPourcent, int nbSoldProducts, String source) {
 		this.dateTime = dateTime;
 		this.categorie = categorie;
 		this.evolution = evolution;
 		this.ca = ca;
 		this.caPourcent = caPourcent;
 		this.nbSoldProducts = nbSoldProducts;
+		this.source = source;
+	}
+
+	public SaleStatistic() {
 	}
 
 	public Date getDateTime() {
@@ -73,4 +79,13 @@ public class SaleStatistic {
 	public void setNbSoldProducts(int nbSoldProducts) {
 		this.nbSoldProducts = nbSoldProducts;
 	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
 }

@@ -13,4 +13,15 @@ public enum EClockMessage {
 	public String toString(){
 		return name;
 	}
+	
+	public static EClockMessage fromString(String name){
+		if (name != null){
+			for (EClockMessage c : EClockMessage.values()){
+				if (name.equalsIgnoreCase(c.name)){
+					return c;
+				}
+			}
+		}
+		return null;
+	}
 }

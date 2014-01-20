@@ -37,11 +37,11 @@ import fr.epita.sigl.miwa.application.enums.ECritereType;
 import fr.epita.sigl.miwa.application.enums.EPaiementType;
 
 public class BIParser {
-	
+
 	private static final Logger LOGGER = Logger.getLogger(BIParser.class.getName());
 	private DocumentBuilderFactory dBFactory;
 	private DocumentBuilder dBuilder;
-	
+
 	public BIParser() {
 		try {
 			dBFactory = DocumentBuilderFactory.newInstance();
@@ -51,7 +51,7 @@ public class BIParser {
 			LOGGER.severe("L'erreur est : " + e);
 		}
 	}
-	
+
 	/**
 	 * Parse le message envoyé par la GC
 	 * @param message
@@ -59,28 +59,32 @@ public class BIParser {
 	 */
 	public List<Stock> parseStockMessage(String message){
 		List<Stock> stockList = null;
-		
+
 		try {
 			// Ecriture du message dans un fichier
 			File file = new File ("stock.xml");
-			
+
 			BufferedWriter output = new BufferedWriter(new FileWriter(file));
 			output.write(message);
 			output.close();
-			
+
 			// Parsage du fichier	
 			Document stockFile = dBuilder.parse(file);
-				
+
+			// Parsage du fichier : Partie entête
+			NodeList headerNodes = stockFile.getElementsByTagName("ENTETE");
+			String dateInfo = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
+
 			// Parsage du fichier : Partie corps
 			NodeList stockNodes = stockFile.getElementsByTagName("STOCK");
 			stockList = new ArrayList<Stock>();
-			
+
 			// Création des éléments Stock
 			for (int i = 0; i < stockNodes.getLength(); i++) {
 				Node stockNode = stockNodes.item(i);
 				String tmpInfo;
 				Stock stock = new Stock();
-				
+
 				stock.setProductRef(stockNode.getAttributes().getNamedItem("ref-article").getNodeValue());
 				tmpInfo = stockNode.getAttributes().getNamedItem("commande").getNodeValue();
 				stock.setOrdered(Boolean.valueOf(tmpInfo));
@@ -89,10 +93,12 @@ public class BIParser {
 				tmpInfo = stockNode.getAttributes().getNamedItem("max").getNodeValue();
 				stock.setMaxQty(Integer.valueOf(tmpInfo));
 				stock.setStore("entrepot");
-				
+				Date dateTime = new SimpleDateFormat("YYYY-MM-dd").parse(dateInfo);
+				stock.setDateTime(dateTime);
+
 				stockList.add(stock);
 			}
-				
+
 			// Suppression du fichier
 			file.delete();
 		} catch (IOException e1) {
@@ -101,11 +107,14 @@ public class BIParser {
 		} catch (SAXException e2) {
 			LOGGER.severe("Erreur : impossible de parser le fichier");
 			LOGGER.severe("L'erreur est : " + e2);
+		} catch (ParseException e) {
+			LOGGER.severe("Erreur : date au mauvais format dans le XML");
+			LOGGER.severe("L'erreur est : " + e);
 		}
-			
+
 		return stockList;
 	}
-	
+
 	/**
 	 * Parse les messages envoyés par le BO
 	 * @param message
@@ -113,22 +122,22 @@ public class BIParser {
 	 */
 	public Map<EBOMessageType, List<Object>> parseBOMessage(String message){
 		Map<EBOMessageType, List<Object>> result = null;
-		
+
 		try {
 			// Ecriture du message dans un fichier
 			File file = new File ("bo-object.xml");
-			
+
 			BufferedWriter output = new BufferedWriter(new FileWriter(file));
 			output.write(message);
 			output.close();
-			
+
 			// Parsage du fichier	
 			Document boFile = dBuilder.parse(file);
-			
+
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = boFile.getElementsByTagName("ENTETE");
 			String object = headerNodes.item(0).getAttributes().getNamedItem("objet").getNodeValue();
-			
+
 			// Parsage du fichier : Partie corps
 			if (object.equalsIgnoreCase("ventes 15min")) {
 				result = new HashMap<EBOMessageType, List<Object>>();
@@ -142,7 +151,7 @@ public class BIParser {
 				result = new HashMap<EBOMessageType, List<Object>>();
 				result.put(EBOMessageType.STOCK, parseBOStockMessage(boFile));
 			}
-				
+
 			// Suppression du fichier
 			file.delete();
 		} catch (IOException e1) {
@@ -152,10 +161,10 @@ public class BIParser {
 			LOGGER.severe("Erreur : impossible de parser le fichier");
 			LOGGER.severe("L'erreur est : " + e2);
 		}
-			
+
 		return result;
 	}
-	
+
 	/**
 	 * Parse le message "Stock" envoyé par le BO
 	 * @param message
@@ -163,19 +172,19 @@ public class BIParser {
 	 */
 	private List<Object> parseBOStockMessage(Document stockFile){
 		List<Object> stockList = null;
-		
+
 		// Parsage du fichier : Partie corps
 		NodeList bodyNodes = stockFile.getElementsByTagName("STOCKS");
 		String storeId = bodyNodes.item(0).getAttributes().getNamedItem("lieu").getNodeValue();
 		NodeList stockNodes = bodyNodes.item(0).getChildNodes();
 		stockList = new ArrayList<Object>();
-		
+
 		// Création des éléments Stock
 		for (int i = 0; i < stockNodes.getLength(); i++) {
 			Node stockNode = stockNodes.item(i);
 			String tmpInfo;
 			Stock stock = new Stock();
-			
+
 			stock.setProductRef(stockNode.getAttributes().getNamedItem("ref-article").getNodeValue());
 			tmpInfo = stockNode.getAttributes().getNamedItem("commande").getNodeValue();
 			stock.setOrdered(Boolean.valueOf(tmpInfo));
@@ -184,13 +193,13 @@ public class BIParser {
 			tmpInfo = stockNode.getAttributes().getNamedItem("max").getNodeValue();
 			stock.setMaxQty(Integer.valueOf(tmpInfo));
 			stock.setStore(storeId);
-			
+
 			stockList.add(stock);
 		}
-			
+
 		return stockList;
 	}
-	
+
 	/**
 	 * Parse le message "Promotions" envoyé par le BO
 	 * @param message
@@ -198,20 +207,20 @@ public class BIParser {
 	 */
 	private List<Object> parseBOPromotionMessage(Document promotionFile){
 		List<Object> promotionList = null;
-			
+
 		try {
 			// Parsage du fichier : Partie corps
 			NodeList bodyNodes = promotionFile.getElementsByTagName("PROMOTIONS");
 			String storeId = bodyNodes.item(0).getAttributes().getNamedItem("lieu").getNodeValue();
 			NodeList promotionNodes = bodyNodes.item(0).getChildNodes();
 			promotionList = new ArrayList<Object>();
-			
+
 			// Création des éléments Promotion
 			for (int i = 0; i < promotionNodes.getLength(); i++) {
 				Node promotionNode = promotionNodes.item(i);
 				String tmpInfo;
 				Promotion promotion = new Promotion();
-				
+
 				tmpInfo = promotionNode.getAttributes().getNamedItem("ref-article").getNodeValue();
 				promotion.setProductReference(tmpInfo);
 				tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
@@ -221,17 +230,17 @@ public class BIParser {
 				tmpInfo = promotionNode.getAttributes().getNamedItem("pourcent").getNodeValue();
 				promotion.setPercentage(Integer.valueOf(tmpInfo));
 				promotion.setStore(storeId);
-				
+
 				promotionList.add(promotion);
 			}
 		}  catch (ParseException e) {
 			LOGGER.severe("Erreur : date au mauvais format dans le XML");
 			LOGGER.severe("L'erreur est : " + e);
 		}
-		
+
 		return promotionList;
 	}
-	
+
 	/**
 	 * Parse le message "Ventes 15 minutes" envoyé par le BO
 	 * @param message
@@ -239,25 +248,25 @@ public class BIParser {
 	 */
 	private List<Object> parseBOVentesMessage(Document saleFile){
 		List<Object> saleList = null;
-		
+
 		try {
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = saleFile.getElementsByTagName("ENTETE");
 			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("dateHeure").getNodeValue();
 			Date saleDate = (new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(dateStr);
-				
+
 			// Parsage du fichier : Partie corps
 			NodeList bodyNodes = saleFile.getElementsByTagName("VENTES");
 			String storeId = bodyNodes.item(0).getAttributes().getNamedItem("lieu").getNodeValue();
 			NodeList saleNodes = bodyNodes.item(0).getChildNodes();
 			saleList = new ArrayList<Object>();
-			
+
 			// Création des éléments Sale
 			for (int i = 0; i < saleNodes.getLength(); i++) {
 				Node saleNode = saleNodes.item(i);
 				String tmpInfo;
 				Sale sale = new Sale();
-				
+
 				sale.setDateTime(saleDate);
 				sale.setStore(storeId);
 				tmpInfo = saleNode.getAttributes().getNamedItem("quantité_vendue").getNodeValue();
@@ -267,14 +276,15 @@ public class BIParser {
 				sale.setSupplierTotal(Integer.valueOf(tmpInfo));
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_vente").getNodeValue();
 				sale.setSalesTotal(Integer.valueOf(tmpInfo));
-	
+				sale.setSource("BO");
+
 				saleList.add(sale);
 			}
 		}  catch (ParseException e) {
 			LOGGER.severe("Erreur : date au mauvais format dans le XML");
 			LOGGER.severe("L'erreur est : " + e);
 		}
-		
+
 		return saleList;
 	}
 
@@ -285,27 +295,27 @@ public class BIParser {
 	 */
 	public List<Critere> parseCRMMessage(String message) {
 		List<Critere> criteriaList = null;
-		
+
 		try {
 			// Ecriture du message dans un fichier
 			File file = new File ("criteria.xml");
 			BufferedWriter output = new BufferedWriter(new FileWriter(file));
 			output.write(message);
 			output.close();
-			
+
 			// Parsage du fichier	
 			Document criteriaFile = dBuilder.parse(file);
-				
+
 			// Parsage du fichier : Partie corps
 			NodeList criteriaNodes = criteriaFile.getElementsByTagName("CRITERE");
 			criteriaList = new ArrayList<Critere>();
-			
+
 			// Création des éléments Critere
 			for (int i = 0; i < criteriaNodes.getLength(); i++) {
 				Node criteriaNode = criteriaNodes.item(i);
 				Critere criteria = null;
 				String tmpInfo;
-				
+
 				tmpInfo = criteriaNode.getAttributes().getNamedItem("type").getNodeValue();
 				if (tmpInfo.equalsIgnoreCase("age")) {
 					String min = criteriaNode.getAttributes().getNamedItem("min").getNodeValue();
@@ -333,10 +343,10 @@ public class BIParser {
 					String valeur = criteriaNode.getAttributes().getNamedItem("valeur").getNodeValue();
 					criteria = new Critere(ECritereType.FID, valeur);
 				}
-				
+
 				criteriaList.add(criteria);
 			}
-				
+
 			// Suppression du fichier
 			file.delete();
 		} catch (IOException e1) {
@@ -346,7 +356,7 @@ public class BIParser {
 			LOGGER.severe("Erreur : impossible de parser le fichier");
 			LOGGER.severe("L'erreur est : " + e2);
 		}
-		
+
 		return criteriaList;
 	}
 
@@ -357,33 +367,33 @@ public class BIParser {
 	 */
 	public List<Sale> parseSaleMessage(String message) {
 		List<Sale> saleList = null;
-		
+
 		try {
 			// Ecriture du message dans un fichier
 			File file = new File ("sale.xml");
-			
+
 			BufferedWriter output = new BufferedWriter(new FileWriter(file));
 			output.write(message);
 			output.close();
-			
+
 			// Parsage du fichier	
 			Document saleFile = dBuilder.parse(file);
-			
+
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = saleFile.getElementsByTagName("ENTETE");
 			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("dateHeure").getNodeValue();
 			Date saleDate = (new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(dateStr);
-				
+
 			// Parsage du fichier : Partie corps
 			NodeList saleNodes = saleFile.getElementsByTagName("CATEGORIE");
 			saleList = new ArrayList<Sale>();
-			
+
 			// Création des éléments Sale
 			for (int i = 0; i < saleNodes.getLength(); i++) {
 				Node saleNode = saleNodes.item(i);
 				String tmpInfo;
 				Sale sale = new Sale();
-				
+
 				sale.setDateTime(saleDate);
 				sale.setStore("internet");
 				tmpInfo = saleNode.getAttributes().getNamedItem("quantité_vendue").getNodeValue();
@@ -393,10 +403,11 @@ public class BIParser {
 				sale.setSupplierTotal(Integer.valueOf(tmpInfo));
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_vente").getNodeValue();
 				sale.setSalesTotal(Integer.valueOf(tmpInfo));
+				sale.setSource("INTERNET");
 
 				saleList.add(sale);
 			}
-				
+
 			// Suppression du fichier
 			file.delete();
 		} catch (IOException e1) {
@@ -409,7 +420,7 @@ public class BIParser {
 			LOGGER.severe("Erreur : date au mauvais format dans le XML");
 			LOGGER.severe("L'erreur est : " + e3);
 		}
-			
+
 		return saleList;		
 	}
 
@@ -420,32 +431,32 @@ public class BIParser {
 	 */
 	public List<Client> parseClientFile(File file) {
 		List<Client> clientList = null;
-		
+
 		try {
 			Document clientFile = dBuilder.parse(file);
-				
+
 			// Parsage du fichier : Partie corps
 			NodeList clientNodes = clientFile.getElementsByTagName("CLIENT");
 			clientList = new ArrayList<Client>();
-			
+
 			// Création des éléments Client
 			for (int i = 0; i < clientNodes.getLength(); i++) {
 				Node clientNode = clientNodes.item(i);
 				String tmpInfo;
 				Client client = new Client();
-				
+
 				tmpInfo = clientNode.getAttributes().getNamedItem("id").getNodeValue();
-				client.setId(Integer.valueOf(tmpInfo));
+				client.setNumero(Integer.valueOf(tmpInfo));
 				client.setTitle(clientNode.getAttributes().getNamedItem("civilite").getNodeValue());
 				tmpInfo = clientNode.getAttributes().getNamedItem("naissance").getNodeValue();
 				client.setBirthDate((new SimpleDateFormat("YYYY-MM-dd")).parse(tmpInfo));
 				tmpInfo = clientNode.getAttributes().getNamedItem("codepostal").getNodeValue();
-				client.setId(Integer.valueOf(tmpInfo));
+				client.setZipcode(Integer.valueOf(tmpInfo));
 				client.setMaritalStatus(clientNode.getAttributes().getNamedItem("situationfam").getNodeValue());
 				tmpInfo = clientNode.getAttributes().getNamedItem("nbenfant").getNodeValue();
-				client.setChildrenNb(Integer.valueOf(tmpInfo));
+				client.setChildren(Boolean.valueOf(tmpInfo));
 				client.setLoyaltyType(Integer.valueOf(clientNode.getAttributes().getNamedItem("typecarte").getNodeValue()));
-				
+
 				clientList.add(client);
 			}
 		} catch (IOException | SAXException e1) {
@@ -455,7 +466,7 @@ public class BIParser {
 			LOGGER.severe("Erreur : date au mauvais format dans le XML");
 			LOGGER.severe("L'erreur est : " + e2);
 		}
-		
+
 		return clientList;
 	}
 
@@ -466,22 +477,22 @@ public class BIParser {
 	 */
 	public MDMData parseMDMFile(File file) {
 		MDMData mdmData = null;
-		
+
 		try {
 			Document refFile = dBuilder.parse(file);
-				
+
 			// Parsage du fichier : Partie corps
 			NodeList articleNodes = refFile.getElementsByTagName("ARTICLE");
 			ArrayList<Product> productList = new ArrayList<Product>();
 			ArrayList<Promotion> promotionList = new ArrayList<Promotion>();
 			mdmData = new MDMData();
-				
+
 			// Création des éléments Product
 			for (int i = 0; i < articleNodes.getLength(); i++) {
 				Node articleNode = articleNodes.item(i);
 				String tmpInfo;
 				Product product = new Product();
-				
+
 				// Lecture de la partie "Article"
 				product.setReference(articleNode.getAttributes().getNamedItem("reference").getNodeValue());
 				product.setCategoryName(articleNode.getAttributes().getNamedItem("categorie").getNodeValue());
@@ -490,22 +501,22 @@ public class BIParser {
 				tmpInfo = articleNode.getAttributes().getNamedItem("prix_vente").getNodeValue();
 				product.setSellingPrice(Float.valueOf(tmpInfo));
 				productList.add(product);
-				
+
 				// Lecture des sous-balises de "Article"
 				NodeList childNodes = articleNode.getChildNodes();
-				
+
 				for (int j = 0; j < childNodes.getLength(); j++) {
 					Node childNode = childNodes.item(j);
-					
+
 					// Récupération de la liste des promotions d'un article
 					if (childNode.getNodeName().equalsIgnoreCase("PROMOTIONS")) {
 						NodeList promotionNodes = childNode.getChildNodes();
-						
+
 						// Parsage de l'ensemble des promotions appliquées à l'article
 						for (int k = 0; k < promotionNodes.getLength(); k++) {
 							Node promotionNode = promotionNodes.item(k);
 							Promotion promotion = new Promotion();
-							
+
 							promotion.setProductReference(product.getReference());
 							tmpInfo = promotionNode.getAttributes().getNamedItem("debut").getNodeValue();
 							promotion.setBeginDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
@@ -514,16 +525,16 @@ public class BIParser {
 							tmpInfo = promotionNode.getAttributes().getNamedItem("pourcent").getNodeValue();
 							promotion.setPercentage(Integer.valueOf(tmpInfo));
 							promotion.setStore("");
-							
+
 							promotionList.add(promotion);
 						}
 					}
 				}
 			}
-			
+
 			mdmData.setProducts(productList);
 			mdmData.setPromotions(promotionList);
-			
+
 		} catch (IOException | SAXException e1) {
 			LOGGER.severe("Erreur : impossible de parser le fichier");
 			LOGGER.severe("L'erreur est : " + e1);
@@ -531,7 +542,7 @@ public class BIParser {
 			LOGGER.severe("Erreur : date au mauvais format dans le XML");
 			LOGGER.severe("L'erreur est : " + e2);
 		}
-		
+
 		return mdmData;		
 	}
 
@@ -542,23 +553,25 @@ public class BIParser {
 	 */
 	public List<DetailSale> parseDetailSale(File file) {
 		List<DetailSale> detailSaleList = null;
-		
+
 		try {
 			Document detailSaleFile = dBuilder.parse(file);
-				
+			NodeList headerNodes = detailSaleFile.getElementsByTagName("ENTETE");
+			String source = headerNodes.item(0).getAttributes().getNamedItem("source").getNodeValue();
 			// Parsage du fichier : Partie corps
 			NodeList bodyNodes = detailSaleFile.getElementsByTagName("VENTES-DETAILLEES");
 			String storeId = bodyNodes.item(0).getAttributes().getNamedItem("lieu").getNodeValue();
 			NodeList detailSaleNodes = bodyNodes.item(0).getChildNodes();
 			detailSaleList = new ArrayList<DetailSale>();
-			
+
 			// Création des éléments DetailSale
 			for (int i = 0; i < detailSaleNodes.getLength(); i++) {
 				Node detailSaleNode = detailSaleNodes.item(i);
 				String tmpInfo;
 				DetailSale detailSale = new DetailSale();
+				detailSale.setSource(source);
 				List<SoldProduct> soldProductList = new ArrayList<SoldProduct>();
-				
+
 				String paymentMean = detailSaleNode.getAttributes().getNamedItem("moyen_paiement").getNodeValue();
 				if (paymentMean.equalsIgnoreCase("CB"))
 					detailSale.setPaymentMean(EPaiementType.CB);
@@ -568,32 +581,32 @@ public class BIParser {
 					detailSale.setPaymentMean(EPaiementType.CQ);
 				else if (paymentMean.equalsIgnoreCase("ES"))
 					detailSale.setPaymentMean(EPaiementType.ES);
-				
+
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("dateHeure").getNodeValue();
 				detailSale.setDate((new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")).parse(tmpInfo));
-				
+
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("montant").getNodeValue();
 				detailSale.setTotal(Integer.valueOf(tmpInfo));
-				
+
 				detailSale.setStore(storeId);
-				
+
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("numero_client").getNodeValue();
 				detailSale.setClientNb(Integer.valueOf(tmpInfo));
-				
+
 				// Construction de la liste des produits vendus pour le ticket
 				NodeList soldProductNodes = detailSaleNode.getChildNodes();
 				for (int j = 0; j < soldProductNodes.getLength(); j++) {
 					Node soldProductNode = soldProductNodes.item(j);
 					SoldProduct soldProduct = new SoldProduct();
-					
+
 					soldProduct.setProductRef(soldProductNode.getAttributes().getNamedItem("ref-article").getNodeValue());
 					tmpInfo = soldProductNode.getAttributes().getNamedItem("quantité").getNodeValue();
 					soldProduct.setQuantity(Integer.valueOf(tmpInfo));
-					
+
 					soldProductList.add(soldProduct);
 				}
 				detailSale.setProductList(soldProductList);
-				
+
 				detailSaleList.add(detailSale);
 			}
 		} catch (IOException | SAXException e1) {
@@ -603,7 +616,7 @@ public class BIParser {
 			LOGGER.severe("Erreur : date au mauvais format dans le XML");
 			LOGGER.severe("L'erreur est : " + e2);
 		}
-		
+
 		return detailSaleList;		
 	}
 }

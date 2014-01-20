@@ -41,7 +41,7 @@ public class BIComputer {
 				categoryStatistic.addCA(sale.getSalesTotal());
 				categoryStatistic.addNbSoldProducts(sale.getSoldQty());
 			} else {
-				TemporarySaleStatistic categoryStatistic = new TemporarySaleStatistic(sale.getSalesTotal(), sale.getSoldQty());
+				TemporarySaleStatistic categoryStatistic = new TemporarySaleStatistic(sale.getSalesTotal(), sale.getSoldQty(), sale.getSource());
 				categorieStatistics.put(sale.getProductCategory(), categoryStatistic);
 			}
 		}
@@ -51,17 +51,17 @@ public class BIComputer {
 			if (categorieStatistics.containsKey(category)){
 				TemporarySaleStatistic temp = categorieStatistics.get(category);
 				int diff = temp.getNbSoldProducts() - lastSaleStatistic.getNbSoldProducts();
-				saleStatistic = new SaleStatistic(date, category, (float) diff / (float) lastSaleStatistic.getNbSoldProducts() * 100, temp.getCa() , (float) temp.getCa() / (float) caTotal * 100, temp.getNbSoldProducts());
+				saleStatistic = new SaleStatistic(date, category, (float) diff / (float) lastSaleStatistic.getNbSoldProducts() * 100, temp.getCa() , (float) temp.getCa() / (float) caTotal * 100, temp.getNbSoldProducts(), lastSaleStatistic.getSource());
 				categorieStatistics.remove(category);
 			} else {
 				int diff = 0 - lastSaleStatistic.getNbSoldProducts();
-				saleStatistic = new SaleStatistic(date, category, (float)diff / (float)lastSaleStatistic.getNbSoldProducts() * 100, 0, 0, 0);
+				saleStatistic = new SaleStatistic(date, category, (float)diff / (float)lastSaleStatistic.getNbSoldProducts() * 100, 0, 0, 0, lastSaleStatistic.getSource());
 			}
 			saleStatistics.add(saleStatistic);
 		}
 		for (Entry<String, TemporarySaleStatistic> entry : categorieStatistics.entrySet()){
 			TemporarySaleStatistic value = entry.getValue();
-			SaleStatistic saleStatistic = new SaleStatistic(date, entry.getKey(), value.getNbSoldProducts() * 100, value.getCa(), (float)value.getCa() / (float)caTotal * 100, value.getNbSoldProducts());
+			SaleStatistic saleStatistic = new SaleStatistic(date, entry.getKey(), value.getNbSoldProducts() * 100, value.getCa(), (float)value.getCa() / (float)caTotal * 100, value.getNbSoldProducts(), value.getSource());
 			saleStatistics.add(saleStatistic);
 		}
 		return saleStatistics;

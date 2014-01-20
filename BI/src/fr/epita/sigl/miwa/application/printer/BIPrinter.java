@@ -27,7 +27,6 @@ import fr.epita.sigl.miwa.application.statistics.Segmentation;
 import fr.epita.sigl.miwa.application.statistics.StockStatistic;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.EApplication;
-import fr.epita.sigl.miwa.st.clock.ClockFactory;
 
 public class BIPrinter {
 

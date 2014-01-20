@@ -5,34 +5,28 @@
  ***********************************************************************/
 package fr.epita.sigl.miwa.application.data;
 
+import java.util.Date;
+
 public class Stock {
-	private Integer id;
 	private String productRef;
 	private Boolean ordered;
 	private Integer stockQty;
 	private Integer maxQty;
 	private String store;
+	private Date dateTime;
 	
 	public Stock() {
 	}
 
-	public Stock(Integer id, String productRef, Boolean ordered,
-			Integer stockQty, Integer maxQty, String store) {
+	public Stock(String productRef, Boolean ordered, Integer stockQty,
+			Integer maxQty, String store, Date dateTime) {
 		super();
-		this.id = id;
 		this.productRef = productRef;
 		this.ordered = ordered;
 		this.stockQty = stockQty;
 		this.maxQty = maxQty;
 		this.store = store;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
+		this.dateTime = dateTime;
 	}
 
 	public String getProductRef() {
@@ -74,5 +68,14 @@ public class Stock {
 	public void setStore(String store) {
 		this.store = store;
 	}
+
+	public Date getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
+	}
+
 	
 }

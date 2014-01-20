@@ -20,7 +20,7 @@ CREATE TABLE Client (
   birthDate TIMESTAMP NOT NULL,
   zipcode INT NOT NULL,
   maritalStatus VARCHAR(45) NOT NULL,
-  childrenNb INT NOT NULL,
+  children BOOLEAN NOT NULL,
   loyaltyType INT NOT NULL,
   PRIMARY KEY (numero));
 
@@ -64,13 +64,13 @@ CREATE TABLE Promotion (
 
 
 CREATE TABLE Stock (
-  id SERIAL NOT NULL,
+  datetime TIMESTAMP NOT NULL,
   productReference VARCHAR(45) NOT NULL,
   ordered BOOLEAN NULL,
   stockQty INT NOT NULL,
   maxQty INT NOT NULL,
   store VARCHAR(45) NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (datetime, productreference),
   CONSTRAINT fk_Stock_Product1
     FOREIGN KEY (productReference)
     REFERENCES Product (reference)
@@ -91,6 +91,7 @@ CREATE TABLE Sale (
   categoryName VARCHAR(45) NOT NULL,
   supplierTotal INT NULL,
   salesTotal INT NULL,
+  source VARCHAR(10) NOT NULL,
   PRIMARY KEY (id));
 
 
@@ -102,10 +103,11 @@ CREATE TABLE Sale (
 CREATE TABLE DetailSale (
   id SERIAL NOT NULL,
   paymentMean VARCHAR(45) NOT NULL,
-  dateTime TIMESTAMP NULL,
+  datetime TIMESTAMP NOT NULL,
   total INT NULL,
   store VARCHAR(45) NULL,
   clientNumero INT NOT NULL,
+  source VARCHAR(10) NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_DetailSale_Client1
     FOREIGN KEY (clientNumero)
@@ -165,6 +167,7 @@ CREATE TABLE StatisticSale (
   ca VARCHAR(45) NOT NULL,
   soldQty INT NOT NULL,
   categoryName VARCHAR(45) NOT NULL,
+  source VARCHAR(10) NOT NULL,
   PRIMARY KEY (dateTime, categoryName));
 
 

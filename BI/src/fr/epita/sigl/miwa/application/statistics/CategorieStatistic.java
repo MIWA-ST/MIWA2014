@@ -1,7 +1,5 @@
 package fr.epita.sigl.miwa.application.statistics;
 
-import java.util.Date;
-
 public class CategorieStatistic {
 
 	private String ref;

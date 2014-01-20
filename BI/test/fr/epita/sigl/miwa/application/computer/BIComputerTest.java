@@ -33,9 +33,9 @@ public class BIComputerTest {
 	@Test
 	public void computeStockStatisticsTest() {
 		List<Stock> stocks = new ArrayList<Stock>();
-		Stock stock1 = new Stock(1, "1", true, 100, 100, "Mag 1");
-		Stock stock2 = new Stock(2, "2", false, 5, 100, "Mag 1");
-		Stock stock3 = new Stock(3, "3", true, 5, 100, "Mag 1");
+		Stock stock1 = new Stock("1", true, 100, 100, "Mag 1", new Date());
+		Stock stock2 = new Stock("2", false, 5, 100, "Mag 1", new Date());
+		Stock stock3 = new Stock("3", true, 5, 100, "Mag 1", new Date());
 		stocks.add(stock1);
 		stocks.add(stock2);
 		stocks.add(stock3);
@@ -48,24 +48,24 @@ public class BIComputerTest {
 	@Test
 	public void computeSaleStatisticsTest(){
 		List<Sale> sales = new ArrayList<Sale>();
-		Sale sale1 = new Sale(1, new Date(), "Mag 1", 50, "1", 100, 100000);
+		Sale sale1 = new Sale(1, new Date(), "Mag 1", 50, "1", 100, 100000, "BO");
 		sales.add(sale1);
-		Sale sale2 = new Sale(2, new Date(), "Mag 1", 100, "2", 100, 100000);
+		Sale sale2 = new Sale(2, new Date(), "Mag 1", 100, "2", 100, 100000, "BO");
 		sales.add(sale2);
-		Sale sale3 = new Sale(3, new Date(), "Mag 1", 3, "3", 100, 100000);
+		Sale sale3 = new Sale(3, new Date(), "Mag 1", 3, "3", 100, 100000, "BO");
 		sales.add(sale3);
-		Sale sale4 = new Sale(4, new Date(), "Mag 1", 50, "1", 100, 100000);
+		Sale sale4 = new Sale(4, new Date(), "Mag 1", 50, "1", 100, 100000, "BO");
 		sales.add(sale4);
-		Sale sale5 = new Sale(5, new Date(), "Mag 1", 50, "5", 100, 100000);
+		Sale sale5 = new Sale(5, new Date(), "Mag 1", 50, "5", 100, 100000, "BO");
 		sales.add(sale5);
 		List<SaleStatistic> lastSaleStatistics = new ArrayList<SaleStatistic>();
-		SaleStatistic stat1 = new SaleStatistic(null, "1", 1, 100000, 10, 50);
+		SaleStatistic stat1 = new SaleStatistic(null, "1", 1, 100000, 10, 50, "BO");
 		lastSaleStatistics.add(stat1);
-		SaleStatistic stat2 = new SaleStatistic(null, "2", 1, 100000, 10, 150);
+		SaleStatistic stat2 = new SaleStatistic(null, "2", 1, 100000, 10, 150, "BO");
 		lastSaleStatistics.add(stat2);
-		SaleStatistic stat3 = new SaleStatistic(null, "4", 1, 100000, 10, 150);
+		SaleStatistic stat3 = new SaleStatistic(null, "4", 1, 100000, 10, 150, "BO");
 		lastSaleStatistics.add(stat3);
-		SaleStatistic stat4 = new SaleStatistic(null, "5", 1, 100000, 10, 50);
+		SaleStatistic stat4 = new SaleStatistic(null, "5", 1, 100000, 10, 50, "BO");
 		lastSaleStatistics.add(stat4);
 		List<SaleStatistic> statistics = computer.computeSaleStatistics(sales, lastSaleStatistics);
 		Assert.assertEquals(50f / 50f * 100, statistics.get(0).getEvolution(), 0);
@@ -83,15 +83,15 @@ public class BIComputerTest {
 	@Test
 	public void computePaymentStatisticsTest(){
 		List<DetailSale> detailSales = new ArrayList<DetailSale>();
-		DetailSale sale1 = new DetailSale(1, EPaiementType.CB, null, 100, "Mag 1", null, null);
+		DetailSale sale1 = new DetailSale(1, EPaiementType.CB, null, 100, "Mag 1", null, null, "BO");
 		detailSales.add(sale1);
-		DetailSale sale2 = new DetailSale(2, EPaiementType.CB, null, 50, "Mag 1", null, null);
+		DetailSale sale2 = new DetailSale(2, EPaiementType.CB, null, 50, "Mag 1", null, null, "BO");
 		detailSales.add(sale2);
-		DetailSale sale3 = new DetailSale(3, EPaiementType.CQ, null, 100, "Mag 1", null, null);
+		DetailSale sale3 = new DetailSale(3, EPaiementType.CQ, null, 100, "Mag 1", null, null, "BO");
 		detailSales.add(sale3);
-		DetailSale sale4 = new DetailSale(4, EPaiementType.CF, null, 150, "Mag 1", null, null);
+		DetailSale sale4 = new DetailSale(4, EPaiementType.CF, null, 150, "Mag 1", null, null, "BO");
 		detailSales.add(sale4);
-		DetailSale sale5 = new DetailSale(5, EPaiementType.ES, null, 25, "Mag 1", null, null);
+		DetailSale sale5 = new DetailSale(5, EPaiementType.ES, null, 25, "Mag 1", null, null, "BO");
 		detailSales.add(sale5);
 		List<PaymentStatistic> statistics = computer.computePaymentStatistics(detailSales);
 		Assert.assertEquals(150f / 425f * 100, statistics.get(0).getCaPourcent(), 0);
@@ -110,11 +110,11 @@ public class BIComputerTest {
 		SoldProduct sp3 = new SoldProduct("2", 15);
 		soldProducts.add(sp3);
 		List<DetailSale> detailSales = new ArrayList<DetailSale>();
-		DetailSale ds1 = new DetailSale(1, EPaiementType.CB, null, 0, null, 1, soldProducts);
+		DetailSale ds1 = new DetailSale(1, EPaiementType.CB, null, 0, null, 1, soldProducts, "BO");
 		detailSales.add(ds1);
-		DetailSale ds2 = new DetailSale(2, EPaiementType.CB, null, 0, null, 1, soldProducts);
+		DetailSale ds2 = new DetailSale(2, EPaiementType.CB, null, 0, null, 1, soldProducts, "BO");
 		detailSales.add(ds2);
-		DetailSale ds3 = new DetailSale(3, EPaiementType.CB, null, 0, null, 2, soldProducts);
+		DetailSale ds3 = new DetailSale(3, EPaiementType.CB, null, 0, null, 2, soldProducts, "BO");
 		detailSales.add(ds3);
 		List<Product> products = new ArrayList<Product>();
 		Product p1 = new Product("1", 0f, 0f, 0f, "1");
