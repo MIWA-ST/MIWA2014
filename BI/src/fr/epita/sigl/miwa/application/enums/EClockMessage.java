@@ -3,7 +3,7 @@ package fr.epita.sigl.miwa.application.enums;
 public enum EClockMessage {
 	STOCK ("Stock"),
 	VENTE("Ventes"),
-	REP_PAYMENT("Répartition des moyens de paiement");
+	REP_PAYMENT("Répartition_des_moyens_de_paiement");
 
 	private String name = "";
 

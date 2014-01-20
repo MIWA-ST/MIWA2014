@@ -13,16 +13,15 @@ public class Client {
 	private Date birthDate;
 	private Integer zipcode;
 	private String maritalStatus;
-	private boolean children;
-	private Integer loyaltyType;
+	private Boolean children;
+	private String loyaltyType;
    
 	public Client() {
 	}
 
 	public Client(Integer numero, String title, Date birthDate,
-			Integer zipcode, String maritalStatus, boolean children,
-			Integer loyaltyType) {
-		super();
+			Integer zipcode, String maritalStatus, Boolean children,
+			String loyaltyType) {
 		this.numero = numero;
 		this.title = title;
 		this.birthDate = birthDate;
@@ -72,19 +71,19 @@ public class Client {
 		this.maritalStatus = maritalStatus;
 	}
 
-	public boolean isChildren() {
+	public Boolean isChildren() {
 		return children;
 	}
 
-	public void setChildren(boolean children) {
+	public void setChildren(Boolean children) {
 		this.children = children;
 	}
 
-	public Integer getLoyaltyType() {
+	public String getLoyaltyType() {
 		return loyaltyType;
 	}
 
-	public void setLoyaltyType(Integer loyaltyType) {
+	public void setLoyaltyType(String loyaltyType) {
 		this.loyaltyType = loyaltyType;
 	}
 

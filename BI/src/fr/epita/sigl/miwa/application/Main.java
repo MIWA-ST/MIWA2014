@@ -26,6 +26,7 @@ public class Main {
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
 		Date clockDate = ClockClient.getClock().getHour();
+		System.out.println("***** Current date  : " + clockDate);
 		// Réveil à 9h pour les statistiques sur les stocks
 		Calendar reveilStock = Calendar.getInstance();
 		reveilStock.setTime(clockDate);

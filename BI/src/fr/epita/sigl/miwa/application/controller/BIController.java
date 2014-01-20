@@ -8,6 +8,7 @@ package fr.epita.sigl.miwa.application.controller;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -21,8 +22,10 @@ import fr.epita.sigl.miwa.application.data.MDMData;
 import fr.epita.sigl.miwa.application.data.Product;
 import fr.epita.sigl.miwa.application.data.Promotion;
 import fr.epita.sigl.miwa.application.data.Sale;
+import fr.epita.sigl.miwa.application.data.SoldProduct;
 import fr.epita.sigl.miwa.application.data.Stock;
 import fr.epita.sigl.miwa.application.enums.EBOMessageType;
+import fr.epita.sigl.miwa.application.enums.EPaiementType;
 import fr.epita.sigl.miwa.application.parser.BIParser;
 import fr.epita.sigl.miwa.application.printer.BIPrinter;
 import fr.epita.sigl.miwa.application.statistics.PaymentStatistic;
@@ -49,7 +52,7 @@ public class BIController {
 
 	private boolean hasStockGC = false;
 
-	private boolean hasMDMData = false;
+	private boolean hasMDMData = true;
 
 	private boolean hasSaleInternet = false;
 
@@ -99,15 +102,33 @@ public class BIController {
 		printer.publishSaleStatistics(saleStatistics);
 	}
 
-	public String generateSegmentation(String message) {
-		List<Critere> criteres = parser.parseCRMMessage(message);
+	public String generateSegmentation(List<Critere> criteres) {
 		if (!hasClient || !hasDetailSaleBOForSegmentation){
 			LOGGER.severe("***** Génération de la segmentation interrompue : manque d'informations");
 			LOGGER.severe("***** CRM: " + hasClient + ", BO: " + hasDetailSaleBOForSegmentation);
-			return printer.createSegmentationFile(criteres, new ArrayList<Segmentation>());
+			//return printer.createSegmentationFile(criteres, new ArrayList<Segmentation>());
 		}
 		List<Client> clients = biDao.getClientByCriteria(criteres);
+		LOGGER.info("Nombre de clients récupérés : " + clients.size());
+		List<SoldProduct> soldProducts = new ArrayList<SoldProduct>();
+		SoldProduct sp1 = new SoldProduct("08deb933-bb39-411d-b0ee-59b28812", 15);
+		soldProducts.add(sp1);
+		SoldProduct sp2 = new SoldProduct("08deb933-bb39-411d-b0ee-59b28812", 10);
+		soldProducts.add(sp2);
+		SoldProduct sp3 = new SoldProduct("08deb933-bb39-411d-b0ee-59b28812", 15);
+		soldProducts.add(sp3);
+		List<DetailSale> detailSalesToInsert = new ArrayList<DetailSale>();
+		DetailSale sale1 = new DetailSale(1, EPaiementType.CB, new Date(), 100, "Mag 1", 50762119, soldProducts, "BO");
+		detailSalesToInsert.add(sale1);
+		DetailSale sale2 = new DetailSale(2, EPaiementType.CB, new Date(), 50, "Mag 1", 38167037, soldProducts, "BO");
+		detailSalesToInsert.add(sale2);
+		DetailSale sale3 = new DetailSale(3, EPaiementType.CQ, new Date(), 100, "Mag 1", 68523705, soldProducts, "BO");
+		detailSalesToInsert.add(sale3);
+		DetailSale sale4 = new DetailSale(4, EPaiementType.CF, new Date(), 150, "Mag 1", 86710410, soldProducts, "BO");
+		detailSalesToInsert.add(sale4);
+		biDao.insertDetailSales(detailSalesToInsert);
 		List<DetailSale> detailSales = biDao.getDetailSalesForClients(clients);
+		LOGGER.info("Nombre de detail sale récupérées : " + detailSalesToInsert.size());
 		List<Product> products = biDao.getAllProducts();
 		List<Segmentation> segmentations = computer.computeSegmentation(detailSales, products);
 		biDao.insertSegmentation(segmentations);
@@ -148,7 +169,7 @@ public class BIController {
 		}
 		Map<EBOMessageType, List<Object>> boData = parser.parseBOMessage(message);
 		EBOMessageType boMessageType = boData.keySet().iterator().next();
-		Collection<List<Object>> values = boData.values();
+		List<Object> values = boData.get(boMessageType);
 		switch (boMessageType) {
 		case PROMO:
 			List<Promotion> promotions = new ArrayList<Promotion>();
@@ -218,5 +239,9 @@ public class BIController {
 		biDao.insertDetailSales(detailSales);
 		hasDetailSaleInternetForPayment = true;
 		hasDetailSaleInternetSegmentation = true;
+	}
+
+	public List<Critere> parseCRMMessage(String message){
+		return parser.parseCRMMessage(message);
 	}
 }

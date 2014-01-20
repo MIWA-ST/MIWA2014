@@ -39,40 +39,44 @@ public class BIPrinter {
 		boolean headerEntrepot = false;
 		boolean headerMagasin = false;
 		StringBuilder builder = new StringBuilder();
-		for (StockStatistic statistic : stockStatistics){
-			if (!headerEntrepot && ENTREPOT.equals(statistic.getStore())){
-				builder.append("\n");
-				builder.append("**** GESTION DES STOCKS : ENTREPOT");
-				builder.append("\n");
-				headerEntrepot = true;
-			}
-			if (!headerMagasin && !ENTREPOT.equals(statistic.getStore())){
-				builder.append("\n");
-				builder.append("**** GESTION DES STOCKS : MAGASIN");
-				builder.append("\n");
-				headerMagasin = true;
-			}
-			if (!statistic.isPlein() && !statistic.isVide()){
-				continue;
-			}
-			else{
-				builder.append("ARTICLE ");
-				builder.append(statistic.getArticle());
-				builder.append(" : ");
-				if (statistic.isPlein()){
-					if (statistic.isCommande()){
-						builder.append(EAlerteType.AP);						
-					}
+		if (stockStatistics.isEmpty()){
+			builder.append("Aucun problème relevé sur les stocks");
+		} else {
+			for (StockStatistic statistic : stockStatistics){
+				if (!headerEntrepot && ENTREPOT.equals(statistic.getStore())){
+					builder.append("\n");
+					builder.append("**** GESTION DES STOCKS : ENTREPOT");
+					builder.append("\n");
+					headerEntrepot = true;
 				}
-				if (statistic.isVide()){
-					if (statistic.isCommande()){
-						builder.append(EAlerteType.AV);
-					}
-					else {
-						builder.append(EAlerteType.AC);
-					}
+				if (!headerMagasin && !ENTREPOT.equals(statistic.getStore())){
+					builder.append("\n");
+					builder.append("**** GESTION DES STOCKS : MAGASIN");
+					builder.append("\n");
+					headerMagasin = true;
 				}
-				builder.append("\n");
+				if (!statistic.isPlein() && !statistic.isVide()){
+					continue;
+				}
+				else{
+					builder.append("ARTICLE ");
+					builder.append(statistic.getArticle());
+					builder.append(" : ");
+					if (statistic.isPlein()){
+						if (statistic.isCommande()){
+							builder.append(EAlerteType.AP);						
+						}
+					}
+					if (statistic.isVide()){
+						if (statistic.isCommande()){
+							builder.append(EAlerteType.AV);
+						}
+						else {
+							builder.append(EAlerteType.AC);
+						}
+					}
+					builder.append("\n");
+				}
 			}
 		}
 		System.out.print(builder.toString());
@@ -97,9 +101,9 @@ public class BIPrinter {
 		Element entete = getEnteteElement();
 		Element groupes = new Element("GROUPES");
 		Element groupe = new Element("GROUPE");
-		groupes.addContent(groupe);
 		groupe.addContent(getCriteresElement(criteres));
 		groupe.addContent(getClientsElement(segmentations));
+		groupes.addContent(groupe);
 		xml.addContent(entete);
 		xml.addContent(groupes);
 		XMLOutputter out = new XMLOutputter(Format.getPrettyFormat());
@@ -187,22 +191,22 @@ public class BIPrinter {
 				Attribute value;
 				switch (critere.getType()) {
 				case GEO:
-					value = new Attribute("value", critere.getValue().toString());
+					value = new Attribute("valeur", critere.getValue().toString());
 					break;
 				case SEXE:
-					value = new Attribute("value", critere.getValue().toString());
+					value = new Attribute("valeur", critere.getValue().toString());
 					break;
 				case SF:
-					value = new Attribute("value", critere.getValue().toString());
+					value = new Attribute("valeur", critere.getValue().toString());
 					break;
 				case ENF:
-					value = new Attribute("value", critere.getValue().toString());
+					value = new Attribute("valeur", critere.getValue().toString());
 					break;
 				case FID:
-					value = new Attribute("value", critere.getValue().toString());
+					value = new Attribute("valeur", critere.getValue().toString());
 					break;
 				default:
-					value = new Attribute("value", "error");
+					value = new Attribute("valeur", "error");
 					break;
 				}
 				critereElement.setAttribute(value);
@@ -214,21 +218,23 @@ public class BIPrinter {
 
 	private Element getClientsElement(List<Segmentation> segmentations) {
 		Element clients = new Element("CLIENTS");
-		for (Segmentation segmentation : segmentations){
-			Element client = new Element("CLIENT");
-			Attribute numero = new Attribute("numero", segmentation.getClientNumero().toString());
-			client.setAttribute(numero);
-			Element categorieArticles = new Element("CATEGORIEARTICLES");
-			for (CategorieStatistic statistic : segmentation.getCategorieStatistics()){
-				Element categorie = new Element("CATEGORIE");
-				Attribute ref = new Attribute("ref", statistic.getRef());
-				Attribute achat = new Attribute("achat", statistic.getAchat().toString());
-				categorie.setAttribute(ref);
-				categorie.setAttribute(achat);
-				categorieArticles.addContent(categorie);
+		if (!segmentations.isEmpty()){
+			for (Segmentation segmentation : segmentations){
+				Element client = new Element("CLIENT");
+				Attribute numero = new Attribute("numero", segmentation.getClientNumero().toString());
+				client.setAttribute(numero);
+				Element categorieArticles = new Element("CATEGORIEARTICLES");
+				for (CategorieStatistic statistic : segmentation.getCategorieStatistics()){
+					Element categorie = new Element("CATEGORIE");
+					Attribute ref = new Attribute("ref", statistic.getRef());
+					Attribute achat = new Attribute("achat", statistic.getAchat().toString());
+					categorie.setAttribute(ref);
+					categorie.setAttribute(achat);
+					categorieArticles.addContent(categorie);
+				}
+				client.addContent(categorieArticles);
+				clients.addContent(client);
 			}
-			client.addContent(categorieArticles);
-			clients.addContent(client);
 		}
 		return clients;
 	}
