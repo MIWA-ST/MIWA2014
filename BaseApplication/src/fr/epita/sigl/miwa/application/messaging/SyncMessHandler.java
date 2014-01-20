@@ -22,7 +22,11 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
+<<<<<<< HEAD
+		System.out.println("Merci");
+=======
 		System.out.println("Message reçu chez le GC");
+>>>>>>> 799d1cccfa260c19e3ec46f7a264361d7859b66c
 		return false;
 	}
 

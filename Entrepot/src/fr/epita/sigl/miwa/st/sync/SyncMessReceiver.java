@@ -3,6 +3,7 @@ package fr.epita.sigl.miwa.st.sync;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import org.w3c.dom.Document;
 
 import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.st.Conf;
+import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.ISyncMessReceiver;
 
@@ -91,6 +93,19 @@ class SyncMessReceiver extends UnicastRemoteObject implements ISyncMessReceiver 
 	
 	private void initConnection() {
 		EApplication app = Conf.getInstance().getCurrentApplication();
+		try {
+			if (!Conf.getInstance().clockIsLocal()) {
+			try {
+				LocateRegistry.createRegistry(1099);
+				LOG.severe("registry runned");
+			} catch (RemoteException e1) {
+				LOG.severe("Failed to create Registry" + e1.getMessage());
+			}
+			}
+		} catch (ConfigurationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		String url = "rmi://"
 				+ Conf.getInstance()
 						.getApplicationHostAddress() + "/SyncMessReceiver"
