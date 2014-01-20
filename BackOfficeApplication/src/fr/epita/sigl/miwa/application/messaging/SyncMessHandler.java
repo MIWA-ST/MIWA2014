@@ -2,6 +2,7 @@ package fr.epita.sigl.miwa.application.messaging;
 
 import org.w3c.dom.Document;
 
+import fr.epita.sigl.miwa.bo.parser.DomParserReferential;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.sync.ISyncMessSender;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;

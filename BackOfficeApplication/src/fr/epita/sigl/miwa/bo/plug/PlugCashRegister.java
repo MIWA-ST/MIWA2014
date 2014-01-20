@@ -28,6 +28,13 @@ public class PlugCashRegister {
 		"  </VENTE>\n\r" +
 	"</VENTES>\n\r";
 	
+	public static String saleTicket =
+			"<ENTETE objet='ticket-caisse' source='caisse' date='2014-01-19'/>\n\r" +
+	"<TICKETVENTE refclient='nimportequoi' moyenpayement='CB' >\n\r" +
+	    "<ARTICLE refarticle='2361' quantite='42' prix='23' />\n\r" +
+	    "<ARTICLE refarticle='2452' quantite='10' prix='43' />\n\r" +
+	"</TICKETVENTE>\n\r";
+	
 	@SuppressWarnings("deprecation")
 	public static ArticleAndLocalPriceAndPromotion articleAndLocalPriceAndPromotionObject()
 	{

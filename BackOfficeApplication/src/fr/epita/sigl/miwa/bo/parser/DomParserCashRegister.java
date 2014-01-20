@@ -82,4 +82,57 @@ public class DomParserCashRegister extends DomParser
 		
 		return salesTicket;
 	}
+
+	
+	/*
+	 * 
+	<ENTETE objet="ticket-caisse" source="caisse" date="AAAAA-MM-JJ"/>
+	<TICKETVENTE refclient="" moyenpayement="" >
+	    <ARTICLE refarticle="" quantite="" prix="" />
+	    <ARTICLE refarticle="" quantite="" prix="" />
+	</TICKETVENTE>
+	 
+	 */
+	public Sale saleTicket(String xml)
+	{
+		Sale sale = new Sale();
+		
+		String header = DomParserHelper.getHeader(xml);
+		String body = DomParserHelper.getBody(xml);
+		
+		this.setXml(header);
+		this.updateDoc();
+	
+		sale.dateAndTime= Convert.stringToDate(DomParserHelper.getNodeAttr("ENTETE", "date", this.doc.getChildNodes()), "AAAA-MM-JJ");
+		
+		System.out.println(body);
+		System.out.println("Malteser");
+		System.out.println(xml);
+		
+		this.setXml(body);
+		this.updateDoc();
+		
+
+		Node saleNode = DomParserHelper.getNode("TICKETVENTE", this.doc);
+		sale.customer = DomParserHelper.getNodeAttr("refclient", saleNode);
+		sale.paymentMeans = DomParserHelper.getNodeAttr("moyenpaiement", saleNode);			
+
+		List<Node> articleNodes = DomParserHelper.getNodes("ARTICLE", saleNode.getChildNodes());
+		
+			for (Node articleNode : articleNodes)
+			{
+				Article article = new Article();
+			
+				article.reference = DomParserHelper.getNodeAttr("refarticle", articleNode);
+				article.quantity = DomParserHelper.getNodeAttr("quantite", articleNode);
+				article.salesPrice = DomParserHelper.getNodeAttr("prix", articleNode);
+				
+				sale.articles.add(article);
+			}
+
+		sale.print();
+		
+		return sale;
+	}
+
 }
