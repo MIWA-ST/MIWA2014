@@ -25,6 +25,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
+import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
@@ -96,6 +97,8 @@ try {
 }*/
 		
 		LOGGER.info("***** Caisse : envoi d'une demande de paiement CB vers la monétique");
+		LOGGER.info("***** Caisse : numero de carte bancaire -> " + numCB);
+		LOGGER.info("***** Caisse : prix total -> " + total + " €");
 		boolean resultat = SyncMessFactory.getSyncMessSender().sendXML(
 				EApplication.MONETIQUE, doc);
 		
@@ -136,6 +139,8 @@ try {
 		}
 
 		LOGGER.info("***** Caisse : envoi d'une demande de paiement fidélité vers la monétique");
+		LOGGER.info("***** Caisse : id client -> " + idClient);
+		LOGGER.info("***** Caisse : montant de la vente -> " + total + " €");
 		boolean resultat = SyncMessFactory.getSyncMessSender().sendXML(
 				EApplication.MONETIQUE, doc);
 
@@ -174,6 +179,45 @@ try {
 		} catch (AsyncMessageException e1) {
 			LOGGER.info("***** Caisse : erreur, l'envoi du ticket de fin de vente au back-office a généré une exception");
 		}
+	}
+	
+	public static String AskReducToBO(Set<Produit> produits, String idClient, String typePaiement)
+	{
+		String result = "";
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ENTETE objet=\"ticket-client-fidelise\" source=\"caisse\" date=\""
+				+ GetCurrentClockDate()
+				+ "\"/><TICKETVENTE refclient="
+				+ "\""
+				+ idClient + "\"" + " moyenpayement=\"" + typePaiement + "\">";
+
+		Iterator<Produit> e = produits.iterator();
+		Produit current = new Produit();
+
+		while (e.hasNext()) {
+			current = e.next();
+			xml += "<ARTICLE refarticle=\"" + current.getId()
+					+ "\" quantite=\"" + current.getQuantite() + "\" prix=\""
+					+ current.getPrix() + "\" />";
+		}
+
+		xml += "</TICKETVENTE>";
+		
+		try {
+			result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.BACK_OFFICE, xml);
+			LOGGER.info("***** Caisse : ticket de fin de vente (client fidélisé) envoyé au back-office pour appliquer des éventuelles réductions ciblées");
+			LOGGER.info("***** Caisse : l'ID du client est -> " + idClient);
+			LOGGER.info("***** Caisse : le moyen de paiement est -> " + typePaiement);
+		} catch (Exception e1) {
+			LOGGER.info("***** Caisse : erreur, la demande du ticket de fin de vente (client fidélisé) au back-office pour éventuelles réductions ciblées a généré une exception");
+		}
+		
+		if (result == null)
+		{
+			LOGGER.info("***** Caisse : erreur, la demande du ticket de fin de vente (client fidélisé) au back-office pour éventuelles réductions ciblées a fonctionné, mais le retour du back-office est incorrect");
+			result = "";
+			return result;
+		}
+		return result;
 	}
 
 }

@@ -40,7 +40,6 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
-		
 		try {
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
 			
@@ -54,7 +53,7 @@ public class Main {
 			dateouverture.set(Calendar.MINUTE, 0);
 			dateouverture.set(Calendar.SECOND, 0);
 			dateouverture.set(Calendar.MILLISECOND, 0);
-			if (dateouverture.get(Calendar.HOUR_OF_DAY) > 9) 
+			if (dateouverture.get(Calendar.HOUR_OF_DAY) >= 9) 
 			dateouverture.add((Calendar.DAY_OF_MONTH), 1);
 			nextOccurence = dateouverture.getTime();
 			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "ouverture");
@@ -67,13 +66,12 @@ public class Main {
 			dateouverture.set(Calendar.MINUTE, 0);
 			dateouverture.set(Calendar.SECOND, 0);
 			dateouverture.set(Calendar.MILLISECOND, 0);
-			if (dateouverture.get(Calendar.HOUR_OF_DAY) > 21) 
+			if (dateouverture.get(Calendar.HOUR_OF_DAY) >= 21) 
 			dateouverture.add((Calendar.DAY_OF_MONTH), 1);
 			nextOccurence = dateouverture.getTime();
 			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "fermeture");
 			//Fin des réveilles
-			
-			
+			new BufferedReader(new InputStreamReader(System.in)).readLine();	
 			
 			//fin de la clock
 			
