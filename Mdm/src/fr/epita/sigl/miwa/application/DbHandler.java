@@ -357,4 +357,72 @@ public class DbHandler {
 			}
 		}
 	}
+	
+	public void updateProduct(String name, Float priceTTC, String description, String long_desc)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(dbUrl, user, password);
+			stmt = conn.createStatement();
+
+			String sql = "UPDATE Product SET sellPrice=" + priceTTC + " WHERE name='" + name + "';";
+
+			//System.out.println(sql);
+			stmt.executeUpdate(sql);
+			stmt.close();
+			conn.close();
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
+	}
+
+
+	public void deleteProduct(String name)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(dbUrl, user, password);
+			stmt = conn.createStatement();
+			
+			String sql = "DELETE Product WHERE name='" + name + "';";
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
+	}
 }
