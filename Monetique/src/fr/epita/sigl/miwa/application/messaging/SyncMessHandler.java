@@ -233,7 +233,7 @@ public class SyncMessHandler {
 				{
 					if (nl.item(i).getNodeName().equals("id"))
 						id = nl.item(i).getTextContent();
-					if (nl.item(i).getNodeName().equals("limite_mesuelle"))
+					if (nl.item(i).getNodeName().equals("limite_mensuelle"))
 						month_lim = nl.item(i).getTextContent();
 					if (nl.item(i).getNodeName().equals("limite_totale"))
 						tot_lim = nl.item(i).getTextContent();
@@ -302,7 +302,7 @@ public class SyncMessHandler {
 				
 				for (int i = 0; i < nl.getLength(); ++i)
 				{
-					if (nl.item(i).getNodeName().equals("limite_mesuelle"))
+					if (nl.item(i).getNodeName().equals("limite_mensuelle"))
 						month_lim = nl.item(i).getTextContent();
 					if (nl.item(i).getNodeName().equals("limite_totale"))
 						tot_lim = nl.item(i).getTextContent();
@@ -360,6 +360,81 @@ public class SyncMessHandler {
 			else if (actionToPerform.equals("s"))
 			{
 				LOGGER.info("***** Delete a card.");
+				
+				NamedNodeMap attrs = xml.getDocumentElement().getChildNodes().item(0).getAttributes();
+				String id_old = attrs.item(0).getTextContent();
+				String id_new = xml.getDocumentElement().getChildNodes().item(0).getChildNodes().item(0).getTextContent();
+				
+				if (id_old == null || id_old.equalsIgnoreCase("") || id_new == null || id_new.equalsIgnoreCase(""))
+				{
+					LOGGER.info("***** ERROR: Bad XML input: blank parameters.");
+					return false;
+				}
+
+				DbHandler dbHandler = new DbHandler();
+				try 
+				{
+					// Connexion à la BDD
+					Connection connection = dbHandler.open();
+
+					LOGGER.info("***** REQUEST -> Delete the card with ID : " + id_old + " and replace it with " + id_new);			
+						
+					// Récupérer l'ID de la nouvelle carte
+					PreparedStatement ps = connection.prepareStatement("SELECT ID_LOYALTY_CARD_TYPE FROM loyalty_card_type WHERE CARD_TYPE_CODE = ?;");
+					ps.setString(1, id_old);
+					ResultSet res = ps.executeQuery();
+					
+					Integer id_old_key = null;
+					Integer id_new_key = null;
+					
+					if (res.next())
+					{
+						id_old_key = res.getInt("ID_LOYALTY_CARD_TYPE");
+					}
+					else
+					{
+						LOGGER.info("***** ERROR : The card to change is Not an existing fidelity card.");
+						return false;
+					}
+					
+					ps = connection.prepareStatement("SELECT ID_LOYALTY_CARD_TYPE FROM loyalty_card_type WHERE CARD_TYPE_CODE = ?;");
+					ps.setString(1, id_new);
+					res = ps.executeQuery();
+					
+					if (res.next())
+					{
+						id_new_key = res.getInt("ID_LOYALTY_CARD_TYPE");
+					}
+					else
+					{
+						LOGGER.info("***** ERROR : The card for replacement is not an existing fidelity card.");
+						return false;
+					}
+					
+					// Modifier la carte des clients de l'ancienne carte
+					ps = connection.prepareStatement("UPDATE fidelity_credit_account SET ID_LOYALTY_CARD_TYPE = ? WHERE ID_LOYALTY_CARD_TYPE = ?;");
+					ps.setInt(1, id_new_key);
+					ps.setInt(2, id_old_key);
+					ps.executeUpdate();
+					
+					// Supprimer l'ancienn carte
+					ps = connection.prepareStatement("DELETE FROM LOYALTY_CARD_TYPE WHERE CARD_TYPE_CODE = ?");
+					ps.setString(1, id_old);
+					ps.executeUpdate();
+						
+					LOGGER.info("***** REQUEST -> Done");	
+				} 
+				catch (SQLException e) 
+				{
+					System.err.println("ERROR : " + e.getMessage());		
+					return false;
+				}
+				finally
+				{
+					dbHandler.close();
+				}	
+
+				LOGGER.info("***** Card modification service terminated normally with : " + true + ".");
 				return true;
 			}
 			else
