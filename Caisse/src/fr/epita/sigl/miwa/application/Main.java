@@ -80,8 +80,8 @@ public class Main {
 			
 			// CI DESSOUS TEST MANUEL POUR LE PARSING XML DEPUIS LE BO VERS NOUS
 			//AsyncFileFactory.getInstance().getFileManager().send("toto.xml", EApplication.CAISSE);
-					//String myXML = "<?xml version=\"1.0\"?><ARTICLES><ARTICLE nomarticle=\"toto\" refarticle=\"565644\" prix=\"54.76\" promotion=\"34\" /></ARTICLES>";
-					//ReadXMLFile.ParseBOString(myXML);
+				//	String myXML = "<?xml version=\"1.0\"?><ARTICLES><ARTICLE nomarticle=\"toto\" refarticle=\"565644\" prix=\"54.76\" promotion=\"45\" /></ARTICLES>";
+					//XmlParser.ParseBOString(myXML);
 			
 			
 		} catch (IOException e) {
