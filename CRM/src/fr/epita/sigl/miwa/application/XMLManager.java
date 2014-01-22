@@ -204,10 +204,7 @@ public class XMLManager
 		Segmentation segmentation = new Segmentation();
 		
 		File file = new File (xml);
-		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
-		output.write(message);
-		output.close();
-		*/
+		
 		// Parsage du fichier
 		Document criteriaFile = dBuilder.parse(file);
 		LOGGER.info("***** Parsage du fichier");
@@ -233,22 +230,29 @@ public class XMLManager
 			Group group = new Group();
 			List<Critere> list = new  ArrayList<>();
 			group.setCriteres(list);
+			int idCritere = 0;
 			
 			NodeList childNodes = groupNode.getChildNodes();
-			for (int j = 0; j < childNodes.getLength(); j++) 
+			for (int j = 0; j < childNodes.getLength(); j++)
 			{
 				Node cNode = childNodes.item(j);
 				if (cNode instanceof Element)
 				{
+					Critere c = null;
 					if (cNode.getNodeName() == "CRITERES")
 					{
+						int lower = 1;
+						int higher = 99999999;
+						int random = (int)(Math.random() * (higher-lower)) + lower;
+						
 						NodeList criteriasNodes = groupNode.getElementsByTagName("CRITERE");
 						LOGGER.info("***** Nombre de critères: " + criteriasNodes.getLength());
 						for (int k = 0; k < criteriasNodes.getLength(); k++) 
 						{
 							Node criteriaNodes = criteriasNodes.item(k);
-							Critere c = new Critere();
-							String tmp = criteriaNodes.getNodeName();
+							c = new Critere();
+							c.setId(random);
+							
 							String type = criteriaNodes.getAttributes().getNamedItem("type").getNodeValue();
 							LOGGER.info("***** Analyse du critère "+ k +": " + type);
 							switch (type) 
@@ -261,32 +265,34 @@ public class XMLManager
 									break;
 								case "geographie":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("departement").getNodeValue());
 									LOGGER.info("***** Le département est: " + c.getValue());
 								    break;
 								case "sexe":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("sexe").getNodeValue());
 									LOGGER.info("***** Le sexe est: " + c.getValue());
 								    break;
 								case "situation-familiale":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("situation").getNodeValue());
 									LOGGER.info("***** La situation familiale est: " + c.getValue());
 								    break;
 								case "enfant":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("enfant").getNodeValue());
 									LOGGER.info("***** Le nombre d'enfants est de: " + c.getValue());
 								    break;
 								case "fidelite":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("carte").getNodeValue());
 									LOGGER.info("***** La fidélité est: " + c.getValue());
 								    break;
 							}
 							group.getCriteres().add(c);
 							segmentation.addCritere(c);
+							idCritere = JdbcConnection.getInstance().insertCritere(c);
+							c.setId(idCritere);
 						}
 					}
 					else if (cNode.getNodeName() == "CLIENTS")
@@ -296,10 +302,10 @@ public class XMLManager
 						for (int k = 0; k < clientsNodes.getLength(); k++) 
 						{
 							Element clientNodes = (Element)clientsNodes.item(k);
-							Client c = new Client();
-							c.setMatricule(Integer.parseInt(clientNodes.getAttributes().getNamedItem("numero").getNodeValue()));
-							c.articlesList = new ArrayList<>();
-							LOGGER.info("***** Analyse du client " + k + ": " + c.getMatricule());
+							Client client = new Client();
+							client.setMatricule(Integer.parseInt(clientNodes.getAttributes().getNamedItem("numero").getNodeValue()));
+							client.articlesList = new ArrayList<>();
+							LOGGER.info("***** Analyse du client " + k + ": " + client.getMatricule());
 							
 							NodeList articlessNodes = clientNodes.getElementsByTagName("CATEGORIE");
 							for (int l = 0; l < articlessNodes.getLength(); l++) 
@@ -308,10 +314,12 @@ public class XMLManager
 								Article a = new Article();
 								a.setRef(articleNodes.getAttributes().getNamedItem("ref").getNodeValue());
 								a.setQuantite(Integer.parseInt(articleNodes.getAttributes().getNamedItem("achat").getNodeValue()));
-								c.articlesList.add(a);
+								client.articlesList.add(a);
 								LOGGER.info("***** Catégorie d'article: ref:" + a.getRef() + " - achat:" + a.getQuantite());
 							}
-							segmentation.addClient(c);
+							segmentation.addClient(client);
+							if (c != null)
+								JdbcConnection.getInstance().insertMapCritereClient(c, client);
 						}
 					}
 				}

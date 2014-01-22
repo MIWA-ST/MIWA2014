@@ -15,6 +15,7 @@ import fr.epita.sigl.miwa.application.crm.ReassortBO;
 import fr.epita.sigl.miwa.application.object.Article;
 import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
+import fr.epita.sigl.miwa.application.object.Critere;
 import fr.epita.sigl.miwa.application.object.Promotion;
 import fr.epita.sigl.miwa.application.object.Segmentation;
 
@@ -52,7 +53,7 @@ public class JdbcConnection
  
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/MIWA", "postgres", "plop");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/postgres", "postgres", "root");
 		}
 		catch (SQLException e)
 		{
@@ -387,9 +388,9 @@ public class JdbcConnection
 					client.setIBAN(result.getString(9));
 					client.setBIC(result.getString(10));
 					CarteFidelite c = new CarteFidelite(result.getString(11));
-					client.setCivilite(result.getString(12));					
-					client.setNbenfant(Integer.parseInt(result.getString(13)));
-					client.setSituation(result.getString(14));
+					client.setCivilite(result.getString(12));
+					client.setNbenfant(Integer.parseInt(result.getString(14)));
+					client.setSituation(result.getString(15));
 				/*	
 					System.out.println("**************");
 					System.out.println(result.getString(15));
@@ -397,7 +398,7 @@ public class JdbcConnection
 					System.out.println((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(15)));
 					System.out.println("**************");
 				*/
-					client.setDate((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(15)));
+					client.setDate((new SimpleDateFormat("YYYY/MM/dd")).parse(result.getString(13)));
 					client.setCarteFed(c);
 				
 					//System.out.println((new SimpleDateFormat("YYYY-MM-dd")).format(client.getDate()));
@@ -572,6 +573,125 @@ public class JdbcConnection
 		catch (SQLException e)
 		{
 			System.out.println("Erreur suppr en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	public int insertCritere(Critere critere)
+	{
+		int random = 0;
+		try
+		{
+			System.out.println("insertion critere");
+			if (connection != null)
+			{	
+				String request = "INSERT INTO critere (id, type, value, min, max) VALUES (?, ?, ?, ?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(critere.getId()));
+				statement.setString(2, critere.getType());
+				statement.setString(3, critere.getValue());
+				statement.setString(4, Integer.toString(critere.getMin()));
+				statement.setString(5, Integer.toString(critere.getMax()));
+				
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouveau critere ajouté en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+		return random;
+	}
+	
+	public void updateCritere(Critere critere)
+	{
+		try
+		{
+			System.out.println("update critere");
+			if (connection != null)
+			{
+				String request = "UPDATE critere SET type=?, value=?, min=?, max=? WHERE id = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(5, Integer.toString(critere.getId()));
+				statement.setString(1, critere.getType());
+				statement.setString(2, critere.getValue());
+				statement.setString(3, Integer.toString(critere.getMin()));
+				statement.setString(3, Integer.toString(critere.getMax()));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Critere modifié en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur update en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void deleteCritere(int id)
+	{
+		try
+		{
+			System.out.println("suppr critere");
+			if (connection != null)
+			{
+				String request = "DELETE FROM critere WHERE id = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(id));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Critere suppr en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur suppr en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void insertMapCritereClient(Critere critere, Client client)
+	{
+		try
+		{
+			System.out.println("insertion mappage critere/client");
+			if (connection != null)
+			{	
+				String request = "INSERT INTO mapclientcritere (idclient, idcritere) VALUES (?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(critere.getId()));
+				statement.setString(2, Integer.toString(client.getMatricule()));
+				
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouveau mappage critere/client ajouté en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
 			e.printStackTrace();
 		}
 	}

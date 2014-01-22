@@ -13,10 +13,25 @@ public class Critere {
 	private String value;
 	private int min;
 	private int max;
+	private int id;
 	
 	public Critere() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+
+	public int getId() {
+		return id;
+	}
+
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
 
 	/**
 	 * @return the type
