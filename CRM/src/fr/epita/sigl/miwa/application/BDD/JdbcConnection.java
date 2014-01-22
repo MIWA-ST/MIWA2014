@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
@@ -706,4 +708,62 @@ public class JdbcConnection
 		}
 	}
 	
+	
+	public List<String> GetSegmentationCriteres()
+	{
+		List<String> criteresList = new ArrayList<>();
+
+		try
+		{
+			if (connection != null)
+			{
+				String request = "SELECT * FROM mapclientcritere";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				
+				ResultSet result = statement.executeQuery();
+				while(result.next())
+				{
+					String tmp = result.getString(2);
+					criteresList.add(tmp);
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur récupération des mappage client/critere en base");
+			e.printStackTrace();
+		}
+		return criteresList;
+	}
+	
+	
+	public List<String> GetSegmentation(String id)
+	{
+		List<String> clientIdList = new ArrayList<>();
+
+		try
+		{
+			if (connection != null)
+			{
+				String request = "SELECT * FROM mapclientcritere WHERE idcritere=?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, id);
+				
+				ResultSet result = statement.executeQuery();
+				while(result.next())
+				{
+					String tmp = result.getString(1);
+					clientIdList.add(tmp);
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur récupération des mappage client/critere en base");
+			e.printStackTrace();
+		}
+		return clientIdList;
+	}
 }
