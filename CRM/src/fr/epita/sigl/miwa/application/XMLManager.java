@@ -916,7 +916,7 @@ public class XMLManager
 		List<Article> list = new  ArrayList<>();
 		List<Article> listReduc = new  ArrayList<>();
 		ticketVente.setArticle(list);
-		int totalPrice = 0;
+		float totalPrice = 0;
 		
 		NodeList ticketVenteNodes = ticketVenteFile.getElementsByTagName("TICKETVENTE");
 		
@@ -937,16 +937,28 @@ public class XMLManager
 				Article articleReduc = new Article();
 				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
 				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
-				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+				article.setPrix(Float.parseFloat(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
 				LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
 				ticketVente.getArticle().add(article);
-				
-				articleReduc.setRef(article.getRef());
-				articleReduc.setQuantite(article.getQuantite());
-				articleReduc.setPrix(article.getPrix() - 1);
-				listReduc.add(articleReduc);
-				LOGGER.info("********* Application de la réduction : " + articleReduc.getPrix());
-				totalPrice = totalPrice + (article.getPrix() - 1);
+				//Traitement des possibles promotions
+				if (j%10 == 0)
+				{
+					int lower = 5;
+					int higher = 50;
+
+					int random = (int)(Math.random() * (higher-lower)) + lower;
+					articleReduc.setRef(article.getRef());
+					articleReduc.setQuantite(article.getQuantite());
+					articleReduc.setPrix(article.getPrix() - ((random * article.getPrix())/100));
+					listReduc.add(articleReduc);
+					totalPrice = totalPrice + (articleReduc.getPrix());
+					LOGGER.info("********* Application de la réduction : " + articleReduc.getPrix());
+				}
+				else
+				{
+					listReduc.add(article);
+					totalPrice = totalPrice + (article.getPrix());
+				}
 			}
 		}
 		LOGGER.info("***** Montant total : " + totalPrice);

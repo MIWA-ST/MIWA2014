@@ -473,7 +473,7 @@ public class JdbcConnection
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, article.getRef());
-				statement.setString(2, Integer.toString(article.getPrix()));
+				statement.setString(2, Float.toString(article.getPrix()));
 				
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
