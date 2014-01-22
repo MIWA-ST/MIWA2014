@@ -230,7 +230,7 @@ public class XMLManager
 			Group group = new Group();
 			List<Critere> list = new  ArrayList<>();
 			group.setCriteres(list);
-			int idCritere = 0;
+			Critere c = null;
 			
 			NodeList childNodes = groupNode.getChildNodes();
 			for (int j = 0; j < childNodes.getLength(); j++)
@@ -238,7 +238,7 @@ public class XMLManager
 				Node cNode = childNodes.item(j);
 				if (cNode instanceof Element)
 				{
-					Critere c = null;
+					
 					if (cNode.getNodeName() == "CRITERES")
 					{
 						int lower = 1;
@@ -291,8 +291,7 @@ public class XMLManager
 							}
 							group.getCriteres().add(c);
 							segmentation.addCritere(c);
-							idCritere = JdbcConnection.getInstance().insertCritere(c);
-							c.setId(idCritere);
+							JdbcConnection.getInstance().insertCritere(c);
 						}
 					}
 					else if (cNode.getNodeName() == "CLIENTS")
@@ -325,18 +324,8 @@ public class XMLManager
 				}
 			}
 		}
-		
-		//DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		//segmentation.setDateBL(df.format(ClockClient.getClock().getHour()));
-		
-		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertCommandeInternet(command);
-		
-		//Construction du xml
 		String bl = "<EXPEDITIONCLIENT>";
-		
 		return bl;
-		
 	}
 	
 

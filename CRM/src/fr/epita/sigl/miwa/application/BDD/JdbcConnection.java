@@ -591,9 +591,8 @@ public class JdbcConnection
 	
 	
 	
-	public int insertCritere(Critere critere)
+	public void insertCritere(Critere critere)
 	{
-		int random = 0;
 		try
 		{
 			System.out.println("insertion critere");
@@ -620,7 +619,6 @@ public class JdbcConnection
 			System.out.println("Erreur insertion en base");
 			e.printStackTrace();
 		}
-		return random;
 	}
 	
 	public void updateCritere(Critere critere)
@@ -691,8 +689,8 @@ public class JdbcConnection
 				String request = "INSERT INTO mapclientcritere (idclient, idcritere) VALUES (?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
-				statement.setString(1, Integer.toString(critere.getId()));
-				statement.setString(2, Integer.toString(client.getMatricule()));
+				statement.setString(2, Integer.toString(critere.getId()));
+				statement.setString(1, Integer.toString(client.getMatricule()));
 				
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
