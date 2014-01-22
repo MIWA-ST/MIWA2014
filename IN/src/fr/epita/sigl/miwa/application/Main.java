@@ -108,12 +108,12 @@ public class Main {
 			
 
 			
-			List<DemandeNiveauStockArticlesGC> articles = new ArrayList<DemandeNiveauStockArticlesGC>();
-			
-			articles.add(new DemandeNiveauStockArticlesGC("042ef636-acbd-40b6-afcd-3c82236c"));
-			
-			DemandeNiveauStockGC testDmandeNiveauStock = new DemandeNiveauStockGC("CV6598", "20131225", articles);
-			boolean result = SyncMessHandler.getSyncMessSender().sendMessage(EApplication.DEBUG, testDmandeNiveauStock.sendXML());
+//			List<DemandeNiveauStockArticlesGC> articles = new ArrayList<DemandeNiveauStockArticlesGC>();
+//			
+//			articles.add(new DemandeNiveauStockArticlesGC("042ef636-acbd-40b6-afcd-3c82236c"));
+//			
+//			DemandeNiveauStockGC testDmandeNiveauStock = new DemandeNiveauStockGC("CV6598", "20131225", articles);
+//			boolean result = SyncMessHandler.getSyncMessSender().sendMessage(EApplication.DEBUG, testDmandeNiveauStock.sendXML());
 //			
 //			
 			

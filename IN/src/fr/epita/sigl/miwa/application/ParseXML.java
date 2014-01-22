@@ -93,11 +93,16 @@ public class ParseXML {
 				LOGGER.info("***** Parsing du fichier CRM : Client introuvable.");
 				return true;
 			}
-//			else if (flux != null && flux.equals("Client introuvable"))
-//			{
-//				LOGGER.info("***** Parsing du fichier CRM : Client introuvable.");
-//				return true;
-//			}
+			else if (flux != null && flux.equals("OK MAJ"))
+			{
+				LOGGER.info("***** CRM : Mise à jour effectuée avec succès.");
+				return true;
+			}
+			else if (flux != null && flux.equals("KO MAJ"))
+			{
+				LOGGER.info("***** CRM : Une erreure s'est produite lors de la mise à jour.");
+				return true;
+			}
 			File file = new File("temp.xml");
 			
 			try {
