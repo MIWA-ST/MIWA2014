@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -469,17 +470,28 @@ public class JdbcConnection
 			System.out.println("insertion article");
 			if (connection != null)
 			{
-				String request = "INSERT INTO Article (reference, prix) VALUES (?, ?)";
+				String search = "SELECT * FROM Article WHERE reference = ? AND prix = ?";
+				PreparedStatement statement1 = connection.prepareStatement(search);
+				statement1.setString(1, article.getRef());
+				statement1.setString(2, Float.toString(article.getPrix()));
+				ResultSet rs  = statement1.executeQuery();
 				
-				PreparedStatement statement = connection.prepareStatement(request);
-				statement.setString(1, article.getRef());
-				statement.setString(2, Float.toString(article.getPrix()));
-				
-				int rowsInserted = statement.executeUpdate();
-				if (rowsInserted > 0)
+				if (!rs.next())
 				{
-					System.out.println("Nouveau article ajouté en base !");
+					String request = "INSERT INTO Article (reference, prix) VALUES (?, ?)";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, article.getRef());
+					statement.setString(2, Float.toString(article.getPrix()));
+					
+					int rowsInserted = statement.executeUpdate();
+					if (rowsInserted > 0)
+					{
+						System.out.println("Nouveau article ajouté en base !");
+					}
 				}
+				else
+					System.out.println("Article déjà existant");
 			}
 		}
 		catch (SQLException e)

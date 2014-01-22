@@ -891,7 +891,7 @@ public class XMLManager
 			}
 		}
 		
-		String bl = "<EXPEDITIONCLIENT>";
+		String bl = "";
 		
 		return bl;
 	}
