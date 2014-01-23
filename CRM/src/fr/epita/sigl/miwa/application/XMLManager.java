@@ -806,13 +806,13 @@ public class XMLManager
 			{
 				LOGGER.info("***** Client retrouvé en BDD:" + client.getNom() + " " + client.getPrenom());
 				
-				/*if (client.articlesList == null)
+				if (client.articlesList == null)
 				{
 					Article e = new Article();
 					e.setRef("001");
 					client.articlesList = new ArrayList<>();
 					client.articlesList.add(e);
-				}*/
+				}
 				for (int j = 0; j < client.articlesList.size(); j++)
 				{
 					int lower = 5;
