@@ -54,7 +54,7 @@ public class Main {
 		JdbcConnection.getInstance().GetClients();
 		
 		/**************** Fin Initialisation ******************/
-	
+		
 		
 		/**************** BI ******************/
 		// Automatisation base client
