@@ -44,21 +44,20 @@ public class Main {
 		Date clockDate = ClockClient.getClock().getHour();
 		System.out.println(clockDate);
 		
-		// Lancement paiement fin de mois
+		// Mise en place de l'alerte pour le remboursement des crédits en fin de mois
 		ClockClient.getClock().wakeMeUpEveryWeeks(getLastDayInMonth(), "Prélèvement des crédits fidélité en fin de mois");
 		
 		try {
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
 		} catch (IOException e) {
-			System.out.println("LLALA ERROR");
 			e.printStackTrace();
-		}	
-	
+		}
+		
 		// Init MySQL connector
 		InitMysqlConnector.init();
 				
-	    DocumentBuilder db;
-		/*try 
+	    /*DocumentBuilder db;
+		try 
 		{
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
@@ -89,9 +88,6 @@ public class Main {
 		{
 			e1.printStackTrace();
 		}*/
-
-		
-		//ClockClient.getClock().wakeMeUp(date, message);
 		/* !CODE HERE */
 		
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */

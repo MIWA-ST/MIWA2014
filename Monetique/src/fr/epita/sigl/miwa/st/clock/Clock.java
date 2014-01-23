@@ -162,13 +162,13 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 	public String wakeUp(Date date, Object message) throws RemoteException 
 	{
 		// Paiement fidélité en fin de mois
-		//ClockClient.wakeUp(date, message);
-		
 		if (counter == 0)
 		{		
-			log.info("***** REQUEST -> Paiement of fidelity credits the : " + date);
+			System.out.println("***** BEGIN SERVICE PAYOFF CREDITS *****");
+			log.info("***** MONETIQUE SERVICE CALL: REQUEST -> Payoff fidelity credits the: " + date + ".");
 			
 			Map<Integer, Float> comptes = new HashMap<>();
+			Map<Integer, String> idToMatricule = new HashMap<>();
 			
 			DbHandler dbHandler = new DbHandler();
 			try 
@@ -176,22 +176,22 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 				// Connexion à la BDD
 				Connection connection = dbHandler.open();
 
-				log.info("***** REQUEST -> Fetching in-debts accounts.");			
+				log.info("***** SERVICE PAYOFF CREDITS: Fetching in-debts accounts.");	
 					
-				// Fetching account
-				PreparedStatement ps = connection.prepareStatement("SELECT ID_FIDELITY_CREDIT_ACCOUNT FROM fidelity_credit_account WHERE TOTAL_CREDIT_AMOUNT - TOTAL_REPAID_CREDIT__AMOUNT > 0;");
+				// Sélection des comptes qui ont des crédits à rembourser
+				PreparedStatement ps = connection.prepareStatement("SELECT ID_FIDELITY_CREDIT_ACCOUNT, CUSTOMER_CODE FROM fidelity_credit_account WHERE IS_DELETED = FALSE AND (TOTAL_CREDIT_AMOUNT - TOTAL_REPAID_CREDIT__AMOUNT) > 0;");
 				ResultSet res = ps.executeQuery();
 				
 				while (res.next())
 				{
 					comptes.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), 0f);
-					
-					log.info("***** The account with ID : " + res.getInt("ID_FIDELITY_CREDIT_ACCOUNT") + " has debts to pay this month.");
+					idToMatricule.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), res.getString("CUSTOMER_CODE"));
 				}
 
-				// Foreach compte select montant somme des credit fid en prenant les echelons en compte
+				// Pour chaque compte sélectionné
 				for (Integer c : comptes.keySet()) 
 				{
+					// Sélection des crédits en cours du compte
 					ps = connection.prepareStatement("SELECT SUM(AMOUNT / ECHELON_NB) FROM fidelity_credit WHERE IS_REPAID = false AND ID_FIDELITY_CREDIT_ACCOUNT = ?;");
 					ps.setInt(1, c);
 					res = ps.executeQuery();
@@ -199,7 +199,7 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 					{
 						comptes.put(c, res.getFloat(1));
 						
-						log.info("***** The account with ID : " + c + " has " + res.getFloat(1)+ "€ to pay.");
+						log.info("***** SERVICE PAYOFF CREDITS: Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' has " + res.getFloat(1)+ "€ to pay.");
 					}
 				}
 
@@ -211,8 +211,7 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 						ps.setInt(1, c);
 						ps.executeUpdate();
 						
-						log.info("***** Fidelity account with ID : " + c + "is now blacklisted because bank refuses paiement.");
-
+						log.info("***** SERVICE PAYOFF CREDITS : Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' is now blacklisted because bank refuses paiement.");
 					}
 					else
 					{
@@ -221,8 +220,6 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 						ps.setInt(2, c);
 						ps.executeUpdate();
 						
-						log.info("***** Fidelity account with ID : " + c + "have been updated.");
-						
 						ps = connection.prepareStatement("UPDATE fidelity_credit SET REPAID_AMOUNT = REPAID_AMOUNT + (AMOUNT / ECHELON_NB) WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false;");
 						ps.setInt(1, c);
 						ps.executeUpdate();
@@ -230,23 +227,26 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 						ps = connection.prepareStatement("UPDATE fidelity_credit SET IS_REPAID = true WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false AND REPAID_AMOUNT >= AMOUNT;");
 						ps.setInt(1, c);
 						ps.executeUpdate();
-						
-						log.info("***** Fidelity credit with ID : " + c + "have been updated.");
+
+						log.info("***** SERVICE PAYOFF CREDITS : Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' repaid his depts for this month.");
 					}
 				}	
 			} 
 			catch (SQLException e) 
 			{
-				System.err.println("ERROR : " + e.getMessage());		
-				return "ERROR";
+				System.err.println("ERROR : " + e.getMessage());
+				log.info("***** SERVICE PAYOFF CREDITS: REQUEST -> ERROR.");
+				System.out.println("***** END SERVICE *****");
+				return null;
 			}
 			finally
 			{
-				log.info("***** REQUEST DONE");
 				counter++;
 				dbHandler.close();
-			}				
-
+			}
+			
+			log.info("***** SERVICE PAYOFF CREDITS: REQUEST -> DONE.");
+			System.out.println("***** END SERVICE *****");
 		}
 		else
 		{
