@@ -16,6 +16,7 @@ import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.clock.IClock;
 import fr.epita.sigl.miwa.st.clock.IClockClient;
+import fr.epita.sigl.miwa.st.clock.IExposedClock;
 
 class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 
@@ -151,7 +152,24 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 
 	@Override
 	public String wakeUp(Date date, Object message) throws RemoteException {
-		ClockClient.wakeUp(date, message);
+		class OneShotTask implements Runnable {
+			Date date;
+			Object message;
+			OneShotTask(Date date, Object message) {
+				this.date = date;
+				this.message = message;
+			}
+			public void run() {
+				try {
+					ClockClient.wakeUp(date, message);
+				} catch (Exception e) {
+					log.severe("wakeUp : error in functional code");
+				}
+			}
+		}
+
+		Thread thread = new Thread(new OneShotTask(date, message));
+		thread.start();
 		return null;
 	}
 

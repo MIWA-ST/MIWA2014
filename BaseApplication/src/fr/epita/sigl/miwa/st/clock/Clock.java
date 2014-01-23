@@ -151,7 +151,24 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 
 	@Override
 	public String wakeUp(Date date, Object message) throws RemoteException {
-		ClockClient.wakeUp(date, message);
+		class OneShotTask implements Runnable {
+			Date date;
+			Object message;
+			OneShotTask(Date date, Object message) {
+				this.date = date;
+				this.message = message;
+			}
+			public void run() {
+				try {
+					ClockClient.wakeUp(date, message);
+				} catch (Exception e) {
+					log.severe("wakeUp : error in functional code");
+				}
+			}
+		}
+
+		Thread thread = new Thread(new OneShotTask(date, message));
+		thread.start();
 		return null;
 	}
 
@@ -174,7 +191,7 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		}
 		String url = "rmi://"
 				+ Conf.getInstance()
-						.getApplicationHostAddress() + "/Clock"
+				.getApplicationHostAddress() + "/Clock"
 				+ app.getShortName();
 		try {
 			Naming.rebind(url, _instance);
@@ -197,12 +214,12 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 							+ e.getMessage());
 		}
 		try {
-		try {
-			remoteClock.removeSubscriptions(app);
-		} catch (RemoteException e) {
-			log.severe("Clock : Failed to remove subscriptions");
-			e.printStackTrace();
-		}
+			try {
+				remoteClock.removeSubscriptions(app);
+			} catch (RemoteException e) {
+				log.severe("Clock : Failed to remove subscriptions");
+				e.printStackTrace();
+			}
 		} catch (Exception e2) {
 			log.severe("Clock : Failed to remove subscriptions 2");
 			e2.printStackTrace();
