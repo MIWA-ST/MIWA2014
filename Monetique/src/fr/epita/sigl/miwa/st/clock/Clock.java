@@ -17,12 +17,14 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.db.DbHandler;
 import fr.epita.sigl.miwa.st.Conf;
 import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.clock.IClock;
 import fr.epita.sigl.miwa.st.clock.IClockClient;
+import fr.epita.sigl.miwa.st.clock.IExposedClock;
 
 class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 
@@ -159,100 +161,25 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 	}
 
 	@Override
-	public String wakeUp(Date date, Object message) throws RemoteException 
-	{
-		// Paiement fidélité en fin de mois
-		if (counter == 0)
-		{		
-			System.out.println("***** BEGIN SERVICE PAYOFF CREDITS *****");
-			log.info("***** MONETIQUE SERVICE CALL: REQUEST -> Payoff fidelity credits the: " + date + ".");
-			
-			Map<Integer, Float> comptes = new HashMap<>();
-			Map<Integer, String> idToMatricule = new HashMap<>();
-			
-			DbHandler dbHandler = new DbHandler();
-			try 
-			{
-				// Connexion à la BDD
-				Connection connection = dbHandler.open();
-
-				log.info("***** SERVICE PAYOFF CREDITS: Fetching in-debts accounts.");	
-					
-				// Sélection des comptes qui ont des crédits à rembourser
-				PreparedStatement ps = connection.prepareStatement("SELECT ID_FIDELITY_CREDIT_ACCOUNT, CUSTOMER_CODE FROM fidelity_credit_account WHERE IS_DELETED = FALSE AND (TOTAL_CREDIT_AMOUNT - TOTAL_REPAID_CREDIT__AMOUNT) > 0;");
-				ResultSet res = ps.executeQuery();
-				
-				while (res.next())
-				{
-					comptes.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), 0f);
-					idToMatricule.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), res.getString("CUSTOMER_CODE"));
-				}
-
-				// Pour chaque compte sélectionné
-				for (Integer c : comptes.keySet()) 
-				{
-					// Sélection des crédits en cours du compte
-					ps = connection.prepareStatement("SELECT SUM(AMOUNT / ECHELON_NB) FROM fidelity_credit WHERE IS_REPAID = false AND ID_FIDELITY_CREDIT_ACCOUNT = ?;");
-					ps.setInt(1, c);
-					res = ps.executeQuery();
-					if (res.next())
-					{
-						comptes.put(c, res.getFloat(1));
-						
-						log.info("***** SERVICE PAYOFF CREDITS: Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' has " + res.getFloat(1)+ "€ to pay.");
-					}
-				}
-
-				for (Integer c : comptes.keySet()) 
-				{
-					if (!getBankPaiement())
-					{
-						ps = connection.prepareStatement("UPDATE fidelity_credit_account SET IS_BLACKLISTED = true, BLAKLISTED_DATE = NOW() WHERE ID_FIDELITY_CREDIT_ACCOUNT = ?;");
-						ps.setInt(1, c);
-						ps.executeUpdate();
-						
-						log.info("***** SERVICE PAYOFF CREDITS : Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' is now blacklisted because bank refuses paiement.");
-					}
-					else
-					{
-						ps = connection.prepareStatement("UPDATE fidelity_credit_account SET IS_BLACKLISTED = false, BLAKLISTED_DATE = NOW(), TOTAL_REPAID_CREDIT__AMOUNT = TOTAL_REPAID_CREDIT__AMOUNT + ? WHERE ID_FIDELITY_CREDIT_ACCOUNT = ?;");
-						ps.setFloat(1, comptes.get(c));
-						ps.setInt(2, c);
-						ps.executeUpdate();
-						
-						ps = connection.prepareStatement("UPDATE fidelity_credit SET REPAID_AMOUNT = REPAID_AMOUNT + (AMOUNT / ECHELON_NB) WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false;");
-						ps.setInt(1, c);
-						ps.executeUpdate();
-						
-						ps = connection.prepareStatement("UPDATE fidelity_credit SET IS_REPAID = true WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false AND REPAID_AMOUNT >= AMOUNT;");
-						ps.setInt(1, c);
-						ps.executeUpdate();
-
-						log.info("***** SERVICE PAYOFF CREDITS : Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' repaid his depts for this month.");
-					}
-				}	
-			} 
-			catch (SQLException e) 
-			{
-				System.err.println("ERROR : " + e.getMessage());
-				log.info("***** SERVICE PAYOFF CREDITS: REQUEST -> ERROR.");
-				System.out.println("***** END SERVICE *****");
-				return null;
+	public String wakeUp(Date date, Object message) throws RemoteException {
+		class OneShotTask implements Runnable {
+			Date date;
+			Object message;
+			OneShotTask(Date date, Object message) {
+				this.date = date;
+				this.message = message;
 			}
-			finally
-			{
-				counter++;
-				dbHandler.close();
+			public void run() {
+				try {
+					ClockClient.wakeUp(date, message);
+				} catch (Exception e) {
+					log.severe("wakeUp : error in functional code");
+				}
 			}
-			
-			log.info("***** SERVICE PAYOFF CREDITS: REQUEST -> DONE.");
-			System.out.println("***** END SERVICE *****");
-		}
-		else
-		{
-			counter = (counter + 1) % 4;
-		}
-		
+		}		
+
+		Thread thread = new Thread(new OneShotTask(date, message));
+		thread.start();
 		return null;
 	}
 
@@ -331,5 +258,98 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		log.info("***** Bank Paiement service call stopped with : " + (myRnd < 70) + ".");
 		return myRnd < 70;
 	}
+	
+	/*
+	// Paiement fidélité en fin de mois
+	if (counter == 0)
+	{		
+		System.out.println("***** BEGIN SERVICE PAYOFF CREDITS *****");
+		log.info("***** MONETIQUE SERVICE CALL: REQUEST -> Payoff fidelity credits the: " + date + ".");
+		
+		Map<Integer, Float> comptes = new HashMap<>();
+		Map<Integer, String> idToMatricule = new HashMap<>();
+		
+		DbHandler dbHandler = new DbHandler();
+		try 
+		{
+			// Connexion à la BDD
+			Connection connection = dbHandler.open();
+
+			log.info("***** SERVICE PAYOFF CREDITS: Fetching in-debts accounts.");	
+				
+			// Sélection des comptes qui ont des crédits à rembourser
+			PreparedStatement ps = connection.prepareStatement("SELECT ID_FIDELITY_CREDIT_ACCOUNT, CUSTOMER_CODE FROM fidelity_credit_account WHERE IS_DELETED = FALSE AND (TOTAL_CREDIT_AMOUNT - TOTAL_REPAID_CREDIT__AMOUNT) > 0;");
+			ResultSet res = ps.executeQuery();
+			
+			while (res.next())
+			{
+				comptes.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), 0f);
+				idToMatricule.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), res.getString("CUSTOMER_CODE"));
+			}
+
+			// Pour chaque compte sélectionné
+			for (Integer c : comptes.keySet()) 
+			{
+				// Sélection des crédits en cours du compte
+				ps = connection.prepareStatement("SELECT SUM(AMOUNT / ECHELON_NB) FROM fidelity_credit WHERE IS_REPAID = false AND ID_FIDELITY_CREDIT_ACCOUNT = ?;");
+				ps.setInt(1, c);
+				res = ps.executeQuery();
+				if (res.next())
+				{
+					comptes.put(c, res.getFloat(1));
+					
+					log.info("***** SERVICE PAYOFF CREDITS: Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' has " + res.getFloat(1)+ "€ to pay.");
+				}
+			}
+
+			for (Integer c : comptes.keySet()) 
+			{
+				if (!getBankPaiement())
+				{
+					ps = connection.prepareStatement("UPDATE fidelity_credit_account SET IS_BLACKLISTED = true, BLAKLISTED_DATE = NOW() WHERE ID_FIDELITY_CREDIT_ACCOUNT = ?;");
+					ps.setInt(1, c);
+					ps.executeUpdate();
+					
+					log.info("***** SERVICE PAYOFF CREDITS : Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' is now blacklisted because bank refuses paiement.");
+				}
+				else
+				{
+					ps = connection.prepareStatement("UPDATE fidelity_credit_account SET IS_BLACKLISTED = false, BLAKLISTED_DATE = NOW(), TOTAL_REPAID_CREDIT__AMOUNT = TOTAL_REPAID_CREDIT__AMOUNT + ? WHERE ID_FIDELITY_CREDIT_ACCOUNT = ?;");
+					ps.setFloat(1, comptes.get(c));
+					ps.setInt(2, c);
+					ps.executeUpdate();
+					
+					ps = connection.prepareStatement("UPDATE fidelity_credit SET REPAID_AMOUNT = REPAID_AMOUNT + (AMOUNT / ECHELON_NB) WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false;");
+					ps.setInt(1, c);
+					ps.executeUpdate();
+					
+					ps = connection.prepareStatement("UPDATE fidelity_credit SET IS_REPAID = true WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false AND REPAID_AMOUNT >= AMOUNT;");
+					ps.setInt(1, c);
+					ps.executeUpdate();
+
+					log.info("***** SERVICE PAYOFF CREDITS : Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' repaid his depts for this month.");
+				}
+			}	
+		} 
+		catch (SQLException e) 
+		{
+			System.err.println("ERROR : " + e.getMessage());
+			log.info("***** SERVICE PAYOFF CREDITS: REQUEST -> ERROR.");
+			System.out.println("***** END SERVICE *****");
+			return null;
+		}
+		finally
+		{
+			counter++;
+			dbHandler.close();
+		}
+		
+		log.info("***** SERVICE PAYOFF CREDITS: REQUEST -> DONE.");
+		System.out.println("***** END SERVICE *****");
+	}
+	else
+	{
+		counter = (counter + 1) % 4;
+	}*/
 
 }
