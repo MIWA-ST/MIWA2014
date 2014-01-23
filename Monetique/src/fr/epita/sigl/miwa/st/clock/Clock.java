@@ -16,7 +16,6 @@ import fr.epita.sigl.miwa.st.ConfigurationException;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.clock.IClock;
 import fr.epita.sigl.miwa.st.clock.IClockClient;
-import fr.epita.sigl.miwa.st.clock.IExposedClock;
 
 class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 
@@ -166,7 +165,7 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 					log.severe("wakeUp : error in functional code");
 				}
 			}
-		}		
+		}
 
 		Thread thread = new Thread(new OneShotTask(date, message));
 		thread.start();

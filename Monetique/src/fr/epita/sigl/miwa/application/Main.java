@@ -59,8 +59,8 @@ public class Main {
 		// Init MySQL connector
 		InitMysqlConnector.init();
 				
-	    /*DocumentBuilder db;
-		try 
+	    DocumentBuilder db;
+		/*try 
 		{
 			db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		    InputSource is = new InputSource();
