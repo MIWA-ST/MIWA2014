@@ -446,7 +446,7 @@ public class BIDao {
 	public List<Stock> getStockOfToday() {
 		List<Stock> stocks = new ArrayList<Stock>();
 		Date today = ClockClient.getClock().getHour();
-		SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar dateBegin = Calendar.getInstance();
 		dateBegin.setTime(today);
 		dateBegin.set(Calendar.SECOND, 0);
@@ -634,7 +634,7 @@ public class BIDao {
 					case AGE:
 						Date today = ClockClient.getClock().getHour();
 						AgeValue values = (AgeValue) critere.getValue();
-						SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						Calendar beginBirthdate = Calendar.getInstance();
 						beginBirthdate.setTime(today);
 						beginBirthdate.add(Calendar.YEAR, -values.getMax());
@@ -654,7 +654,7 @@ public class BIDao {
 					case GEO:
 						Integer begin = Integer.valueOf((String) critere.getValue()) * 1000;
 						Integer end = begin + 1000;
-						SQL += "zipcode >= " + begin + " AND zipcode <= " + end + " AND ";
+						SQL += "zipcode >= " + begin + " AND zipcode < " + end + " AND ";
 						break;
 					case SEXE:
 						String sexe = (String) critere.getValue();
