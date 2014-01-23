@@ -17,11 +17,11 @@ DROP TABLE Client ;
 CREATE TABLE Client (
   numero INT NOT NULL,
   title VARCHAR(10) NOT NULL,
-  birthDate TIMESTAMP NOT NULL,
+  birthDate TIMESTAMP NULL,
   zipcode INT NOT NULL,
-  maritalStatus VARCHAR(45) NOT NULL,
-  children BOOLEAN NOT NULL,
-  loyaltyType INT NOT NULL,
+  maritalStatus VARCHAR(45) NULL,
+  children BOOLEAN NULL,
+  loyaltyType VARCHAR(45) NOT NULL,
   PRIMARY KEY (numero));
 
 -- -----------------------------------------------------
@@ -46,10 +46,10 @@ CREATE TABLE Product (
 CREATE TABLE Promotion (
   id SERIAL NOT NULL,
   productReference VARCHAR(45) NOT NULL,
-  beginDate DATE NULL,
-  endDate DATE NULL,
-  percentage INT NULL,
-  store VARCHAR(45) NULL,
+  beginDate DATE NOT NULL,
+  endDate DATE NOT NULL,
+  percentage INT NOT NULL,
+  store VARCHAR(45) NOT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_Promotion_Product
     FOREIGN KEY (productReference)
@@ -66,11 +66,11 @@ CREATE TABLE Promotion (
 CREATE TABLE Stock (
   datetime TIMESTAMP NOT NULL,
   productReference VARCHAR(45) NOT NULL,
-  ordered BOOLEAN NULL,
+  ordered BOOLEAN NOT NULL,
   stockQty INT NOT NULL,
   maxQty INT NOT NULL,
-  store VARCHAR(45) NULL,
-  PRIMARY KEY (datetime, productreference),
+  store VARCHAR(45) NOT NULL,
+  PRIMARY KEY (datetime, productreference, store),
   CONSTRAINT fk_Stock_Product1
     FOREIGN KEY (productReference)
     REFERENCES Product (reference)
@@ -89,8 +89,8 @@ CREATE TABLE Sale (
   store VARCHAR(45) NOT NULL,
   soldQty VARCHAR(45) NOT NULL,
   categoryName VARCHAR(45) NOT NULL,
-  supplierTotal INT NULL,
-  salesTotal INT NULL,
+  supplierTotal INT NOT NULL,
+  salesTotal INT NOT NULL,
   source VARCHAR(10) NOT NULL,
   PRIMARY KEY (id));
 
@@ -104,8 +104,8 @@ CREATE TABLE DetailSale (
   id SERIAL NOT NULL,
   paymentMean VARCHAR(45) NOT NULL,
   datetime TIMESTAMP NOT NULL,
-  total INT NULL,
-  store VARCHAR(45) NULL,
+  total INT NOT NULL,
+  store VARCHAR(45) NOT NULL,
   clientNumero INT NOT NULL,
   source VARCHAR(10) NOT NULL,
   PRIMARY KEY (id),
@@ -147,9 +147,9 @@ CREATE TABLE StatisticStock (
   isWide BOOLEAN NOT NULL,
   isEmpty BOOLEAN NOT NULL,
   ordered BOOLEAN NOT NULL,
-  store VARCHAR(45) NULL,
+  store VARCHAR(45) NOT NULL,
   productReference VARCHAR(45) NOT NULL,
-  PRIMARY KEY (dateTime),
+  PRIMARY KEY (dateTime, productReference, store),
   CONSTRAINT fk_StatisticStock_Product1
     FOREIGN KEY (productReference)
     REFERENCES Product (reference)
