@@ -11,6 +11,12 @@ import java.util.logging.Logger;
 import fr.epita.sigl.miwa.application.MO.PaiementCbMO;
 import fr.epita.sigl.miwa.application.MO.PaiementCfMO;
 import fr.epita.sigl.miwa.application.ParseXML.TYPE_LANGUAGE;
+import fr.epita.sigl.miwa.application.BI.ArticleVenteBI;
+import fr.epita.sigl.miwa.application.BI.CategorieVenteBI;
+import fr.epita.sigl.miwa.application.BI.EnteteBI;
+import fr.epita.sigl.miwa.application.BI.EnvoiInformationVentesBI;
+import fr.epita.sigl.miwa.application.BI.EnvoiVenteDetailleeBI;
+import fr.epita.sigl.miwa.application.BI.VenteBI;
 import fr.epita.sigl.miwa.application.CR.CreationClientCR;
 import fr.epita.sigl.miwa.application.CR.EnvoiEnteteCR;
 import fr.epita.sigl.miwa.application.CR.EnvoiMatriculeCR;
@@ -44,7 +50,6 @@ public class Main {
 		/* CODE HERE */
 		
 		try {
-			//ClockClient.getClock().wakeMeUp(new Date("12/13/2013 23:12:13"), "Test");
 			EApplication to = EApplication.INTERNET;
 			
 //			ParseXML parser = new ParseXML();
@@ -60,7 +65,7 @@ public class Main {
 			//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.CRM, "<XML><ENTETE objet=\"connection_client\" source=\"Internet\" date=\"2014-01-23\" /><COMPTE matricule=\"50762119\"></COMPTE></XML>");
 			
 			// Test demande info client CRM
-//			EnvoiMatriculeCR test = new EnvoiMatriculeCR("68523705");
+//			EnvoiMatriculeCR test = new EnvoiMatriculeCR("58749566");
 //			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.CRM, test.sendXML());
 			
 //			CreationClientCR testCreationCRM = new CreationClientCR(new EnvoiEnteteCR("creation_compte", "Internet", ClockClient.getClock().getHour()),
@@ -72,18 +77,19 @@ public class Main {
 //					"0630189798",
 //					"M",
 //					"Marie",
-//					"09/12/1989",
+//					"1989-12-09",
 //					"IBAN",
 //					"BIC",
 //					"3");
-//			System.out.println(testCreationCRM.sendXML());
 //			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.CRM, testCreationCRM.sendXML());
 			
 			
-//			SupprimerUtilisateurCR deleteTest = new SupprimerUtilisateurCR(new EnvoiEnteteCR("suppression_compte", "Internet", ClockClient.getClock().getHour()), "38167037");
+//			SupprimerUtilisateurCR deleteTest = new SupprimerUtilisateurCR(new EnvoiEnteteCR("suppression_compte", "Internet", ClockClient.getClock().getHour()), "58749566");
 //			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.CRM, deleteTest.sendXML());
+			
+//			System.out.println(result);
 //			
-//			ModifierUtilisateurCR modifierTest = new ModifierUtilisateurCR(new EnvoiEnteteCR("modifier_compte", "Internet", ClockClient.getClock().getHour()), "68523705", "HADDAD", "Chawqui", "ADRESSE", "code_postal", "email", "213265413", "civilite", "situation", "2014-12-13", "65465", "2313123", "12321");
+//			ModifierUtilisateurCR modifierTest = new ModifierUtilisateurCR(new EnvoiEnteteCR("modifier_compte", "Internet", ClockClient.getClock().getHour()), "58749566", "BOUDERBALA", "Chawqui", "ADRESSE", "code_postal", "email", "213265413", "civilite", "situation", "2014-12-13", "65465", "2313123", "12321");
 //			String result2 = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.CRM, modifierTest.sendXML());
 			
 			
@@ -109,12 +115,10 @@ public class Main {
 			
 //			List<DemandeNiveauStockArticlesGC> articles = new ArrayList<DemandeNiveauStockArticlesGC>();
 //			
-//			articles.add(new DemandeNiveauStockArticlesGC("TF265D"));
-//			articles.add(new DemandeNiveauStockArticlesGC("PLO659"));
-//			articles.add(new DemandeNiveauStockArticlesGC("AL56DQ"));
+//			articles.add(new DemandeNiveauStockArticlesGC("042ef636-acbd-40b6-afcd-3c82236c"));
 //			
 //			DemandeNiveauStockGC testDmandeNiveauStock = new DemandeNiveauStockGC("CV6598", "20131225", articles);
-//			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.GESTION_COMMERCIALE, testDmandeNiveauStock.sendXML());
+//			boolean result = SyncMessHandler.getSyncMessSender().sendMessage(EApplication.DEBUG, testDmandeNiveauStock.sendXML());
 //			
 //			
 			
@@ -124,9 +128,41 @@ public class Main {
 //			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, paiementCF.sendXMLDocument());
 			
 			
-			PaiementCbMO paiementCB = new PaiementCbMO("93.93", "1234569856985214", "1116", "586");
-			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, paiementCB.sendXMLDocument());
+//			PaiementCbMO paiementCB = new PaiementCbMO("93.93", "1234569856985214", "1116", "586");
+//			Boolean retr = SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, paiementCB.sendXMLDocument());
+//			LOGGER.info(retr.toString());
 			
+			
+			ArticleVenteBI a1 = new ArticleVenteBI("TEST1", 33);
+			ArticleVenteBI a2 = new ArticleVenteBI("TEST2", 22);
+			ArticleVenteBI a3 = new ArticleVenteBI("TEST3", 11);
+			
+			List<ArticleVenteBI> articles = new ArrayList<ArticleVenteBI>();
+			articles.add(a1);
+			articles.add(a2);
+			articles.add(a3);
+			
+			VenteBI v1 = new VenteBI("32AB", 37, "CF", new Date(), articles);
+			List<VenteBI> ventes = new ArrayList<VenteBI>();
+			ventes.add(v1);
+			EnteteBI enteteBI1 = new EnteteBI("ventes detaillees", "internet", new Date());
+			EnvoiVenteDetailleeBI envoiVenteBI = new EnvoiVenteDetailleeBI(enteteBI1, ventes);
+			
+			System.out.println(envoiVenteBI.sendXML());
+			
+			EnteteBI enteteBI2 = new EnteteBI("ventes 15min", "internet", new Date());
+			CategorieVenteBI c1 = new CategorieVenteBI("TEST1", 1, 2, 3);
+			CategorieVenteBI c2 = new CategorieVenteBI("TEST2", "4", "5", "6");
+			
+			List<CategorieVenteBI> categories = new ArrayList<CategorieVenteBI>();
+			
+			categories.add(c1);
+			categories.add(c2);
+			
+			EnvoiInformationVentesBI envoiInfoVenteBI = new EnvoiInformationVentesBI(enteteBI2, categories);
+			System.out.println(envoiInfoVenteBI.sendXML());
+			
+		
 			
 			
 			
@@ -139,8 +175,8 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		SyncMessHandler.getSyncMessSender().sendMessage(
-				EApplication.INTERNET, "Coucou IN");
+	//	SyncMessHandler.getSyncMessSender().sendMessage(
+			//	EApplication.INTERNET, "Coucou IN");
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()

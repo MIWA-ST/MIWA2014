@@ -1,9 +1,13 @@
-package fr.epita.sigl.miwa.application.MO;
+package fr.epita.sigl.miwa.application.BI;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.jdom2.JDOMException;
@@ -13,35 +17,48 @@ import org.w3c.dom.Document;
 
 import fr.epita.sigl.miwa.application.ParseXML;
 
-public class PaiementCfMO {
+public class EnvoiVenteDetailleeBI {
 	private static final Logger LOGGER = Logger.getLogger(ParseXML.class.getName());
-	private Float montant;
-	private String matricule;
+	private EnteteBI entete;
+	private String lieu = "internet";
+	private List<VenteBI> ventes = new ArrayList<VenteBI>();
 	
-	public PaiementCfMO(Float montant, String matricule)
+	public EnvoiVenteDetailleeBI()
 	{
-		this.matricule = matricule;
-		this.montant = montant;
+		
 	}
 	
-	public PaiementCfMO(String montant, String matricule)
+	public EnvoiVenteDetailleeBI(EnteteBI entete, List<VenteBI> ventes)
 	{
-		this.matricule = matricule;
-		if (montant != null && !montant.equals(""))
-			this.montant = Float.parseFloat(montant);
-		else
-			this.montant = 0.0f;
+		this.entete = entete;
+		this.ventes = ventes;
 	}
-
+	
+	public EnvoiVenteDetailleeBI(EnteteBI entete, List<VenteBI> ventes, String lieu)
+	{
+		this.entete = entete;
+		this.ventes = ventes;
+		this.lieu = lieu;
+	}
+	
 	public String sendXML()
 	{
 		StringBuilder result = new StringBuilder();
 		
-		LOGGER.info("***** Envoi d'un message à MO : demande de paiement par CF - " + this.montant + " € pour le client " + this.matricule + ".");
+		LOGGER.info("***** Envoi d'un message à BI : envoi des ventes détaillées Internet");
 		
-		result.append("<monetique service=\"paiement_cf\">");
-		result.append("<montant>" + this.montant + "</montant>");
-		result.append("<matricule_client>" + this.matricule + "</matricule_client></monetique>");
+		result.append("<XML>");
+		
+		result.append(entete.sendXML());
+		
+		result.append("<VENTES-DETAILLEES lieu=\"" + lieu + "\">");
+		
+		for (VenteBI v : ventes)
+			result.append(v.sendXML());
+		
+		result.append("</VENTES-DETAILLEES>");
+		
+		result.append("</XML>");
 		
 		return result.toString();
 	}
@@ -68,19 +85,10 @@ public class PaiementCfMO {
 		return null;
 	}
 	
-	public Float getMontant() {
-		return montant;
+	public EnteteBI getEntete() {
+		return entete;
 	}
-
-	public void setMontant(Float montant) {
-		this.montant = montant;
-	}
-
-	public String getMatricule() {
-		return matricule;
-	}
-
-	public void setMatricule(String matricule) {
-		this.matricule = matricule;
+	public void setEntete(EnteteBI entete) {
+		this.entete = entete;
 	}
 }

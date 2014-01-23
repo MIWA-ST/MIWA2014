@@ -46,24 +46,7 @@ public class ParseXML {
 	{
 		this.filename = filename;
 	}
-	
-	public String createXML(String destination, String feedName)
-	{
-		if (destination.equals("BI"))
-			createXMLBI(feedName);
-		
-		return null;
-	}
-	
-	public String createXMLBI(String feedName)
-	{
-		if (feedName.equals("ventes détaillées"))
-		{
-			
-		}
-		
-		return null;
-	}
+
 	
 	/*
 		typeFlux :
@@ -91,6 +74,16 @@ public class ParseXML {
 			if (flux != null && flux.equals("Client introuvable"))
 			{
 				LOGGER.info("***** Parsing du fichier CRM : Client introuvable.");
+				return true;
+			}
+			else if (flux != null && flux.equals("OK MAJ"))
+			{
+				LOGGER.info("***** CRM : Mise à jour effectuée avec succès.");
+				return true;
+			}
+			else if (flux != null && flux.equals("KO MAJ"))
+			{
+				LOGGER.info("***** CRM : Une erreure s'est produite lors de la mise à jour.");
 				return true;
 			}
 			File file = new File("temp.xml");
@@ -362,7 +355,7 @@ public class ParseXML {
 	}
 
 	public  void setDocument(Document document) {
-		document = document;
+		this.document = document;
 	}
 
 	public  Element getRoot() {
@@ -370,7 +363,7 @@ public class ParseXML {
 	}
 
 	public  void setRoot(Element root) {
-		root = root;
+		this.root = root;
 	}
 
 	public String getFilename() {
