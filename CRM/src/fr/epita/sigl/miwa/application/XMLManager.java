@@ -817,15 +817,18 @@ public class XMLManager
 			{
 				LOGGER.info("***** Client retrouvé en BDD:" + client.getNom() + " " + client.getPrenom());
 				
-				if (client.articlesList == null)
+				/*if (client.articlesList == null)
 				{
 					Article e = new Article();
 					e.setRef("001");
 					client.articlesList = new ArrayList<>();
 					client.articlesList.add(e);
+				}*/
+				for (int j = 0; j < client.articlesList.size(); j++)
+				{
+					bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
+						+ "<PROMOTION article=\"" + client.articlesList.get(j).getRef() + "\" fin=\"2014-02-20\" reduc=\"-1\" />";
 				}
-				bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
-						+ "<PROMOTION article=\"" + client.articlesList.get(0).getRef() + "\" fin=\"2014-02-20\" reduc=\"-1\" />";
 			} else
 				LOGGER.info("***** ERREUR: Client inconnu de la part du CRM");
 		}
