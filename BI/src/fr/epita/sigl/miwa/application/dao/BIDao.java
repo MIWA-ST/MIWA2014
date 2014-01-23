@@ -383,14 +383,14 @@ public class BIDao {
 		}
 	}
 
-	public List<DetailSale> getAllBODetailSales() {
+	public List<DetailSale> getAllDetailSales() {
 		List<DetailSale> detailSales = new ArrayList<DetailSale>();
 		Statement stmtDetailSale = null;
 		Statement stmtProduct = null;
 		try {
 			if (connect()){
 				stmtDetailSale = conn.createStatement();
-				String SQL = "SELECT id, paymentmean, datetime, total, store, clientnumero, source FROM detailsale WHERE source = 'BO';";
+				String SQL = "SELECT id, paymentmean, datetime, total, store, clientnumero, source FROM detailsale;";
 				ResultSet result = stmtDetailSale.executeQuery(SQL);
 				while (result.next()){
 					DetailSale detailSale = new DetailSale();
@@ -503,7 +503,7 @@ public class BIDao {
 	public List<SaleStatistic> getSaleStatisticsOfYesterday() {
 		List<SaleStatistic> saleStatistics = new ArrayList<SaleStatistic>();
 		Date today = ClockClient.getClock().getHour();
-		SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar dateBegin = Calendar.getInstance();
 		dateBegin.setTime(today);
 		dateBegin.set(Calendar.SECOND, 0);
@@ -522,7 +522,7 @@ public class BIDao {
 		try {
 			if (connect()){
 				stmt = conn.createStatement();
-				String SQL = "SELECT datetime, percentageca, evolution, ca, soldqty, categoryname, source FROM statisticsale WHERE source = 'BO' AND datetime >= '" + beginDate + "' AND datetime <= '" + endDate + "';";
+				String SQL = "SELECT datetime, percentageca, evolution, ca, soldqty, categoryname, source FROM statisticsale WHERE datetime >= '" + beginDate + "' AND datetime <= '" + endDate + "';";
 				ResultSet result = stmt.executeQuery(SQL);
 				while (result.next()){
 					SaleStatistic saleStatistic = new SaleStatistic();
@@ -564,7 +564,7 @@ public class BIDao {
 	public List<Sale> getSalesOfToday() {
 		List<Sale> sales = new ArrayList<Sale>();
 		Date today = ClockClient.getClock().getHour();
-		SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar dateBegin = Calendar.getInstance();
 		dateBegin.setTime(today);
 		dateBegin.set(Calendar.SECOND, 0);
@@ -581,7 +581,7 @@ public class BIDao {
 		try {
 			if (connect()){
 				stmt = conn.createStatement();
-				String SQL = "SELECT id, datetime, store, soldqty, categoryname, suppliertotal, salestotal, source FROM sale WHERE source = 'BO' AND datetime >= '" + beginDate + "' AND datetime <= '" + endDate + "';";
+				String SQL = "SELECT id, datetime, store, soldqty, categoryname, suppliertotal, salestotal, source FROM sale WHERE datetime >= '" + beginDate + "' AND datetime <= '" + endDate + "';";
 				ResultSet result = stmt.executeQuery(SQL);
 				while (result.next()){
 					Sale sale = new Sale();
@@ -723,7 +723,7 @@ public class BIDao {
 				for (Client client : clients){
 
 					stmtDetailSale = conn.createStatement();
-					String SQL = "SELECT id, paymentmean, datetime, total, store, clientnumero, source FROM detailsale WHERE source = 'BO' AND clientnumero = '" + client.getNumero() + "';";
+					String SQL = "SELECT id, paymentmean, datetime, total, store, clientnumero, source FROM detailsale WHERE clientnumero = '" + client.getNumero() + "';";
 					ResultSet result = stmtDetailSale.executeQuery(SQL);
 					while (result.next()){
 						DetailSale detailSale = new DetailSale();
