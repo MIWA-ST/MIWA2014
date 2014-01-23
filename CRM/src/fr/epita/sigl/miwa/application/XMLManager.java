@@ -815,8 +815,12 @@ public class XMLManager
 				}*/
 				for (int j = 0; j < client.articlesList.size(); j++)
 				{
+					int lower = 5;
+					int higher = 50;
+
+					int random = (int)(Math.random() * (higher-lower)) + lower;
 					bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
-						+ "<PROMOTION article=\"" + client.articlesList.get(j).getRef() + "\" fin=\"2014-02-20\" reduc=\"-1\" />";
+						+ "<PROMOTION article=\"" + client.articlesList.get(j).getRef() + "\" fin=\"2014-02-20\" reduc=\"" + random + "\" />";
 				}
 			} else
 				LOGGER.info("***** ERREUR: Client inconnu de la part du CRM");

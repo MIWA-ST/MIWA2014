@@ -30,6 +30,14 @@ public class Client {
 	private CarteFidelite carteFed;
 	
 	public static List<Article> articlesList;
+	public List<Article> getArticlesList() {
+		return articlesList;
+	}
+
+	public void setArticlesList(List<Article> articlesList) {
+		this.articlesList = articlesList;
+	}
+
 	public static List<Client> clientsList;
 	
 	public Client (int id, String nom, String prenom)
