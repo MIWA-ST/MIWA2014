@@ -50,7 +50,6 @@ public class Main {
 		/* CODE HERE */
 		
 		try {
-			//ClockClient.getClock().wakeMeUp(new Date("12/13/2013 23:12:13"), "Test");
 			EApplication to = EApplication.INTERNET;
 			
 //			ParseXML parser = new ParseXML();
@@ -163,8 +162,7 @@ public class Main {
 //			EnvoiInformationVentesBI envoiInfoVenteBI = new EnvoiInformationVentesBI(enteteBI2, categories);
 //			System.out.println(envoiInfoVenteBI.sendXML());
 			
-			
-			
+		
 			
 			
 			

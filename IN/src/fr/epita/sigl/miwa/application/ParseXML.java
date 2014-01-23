@@ -46,24 +46,7 @@ public class ParseXML {
 	{
 		this.filename = filename;
 	}
-	
-	public String createXML(String destination, String feedName)
-	{
-		if (destination.equals("BI"))
-			createXMLBI(feedName);
-		
-		return null;
-	}
-	
-	public String createXMLBI(String feedName)
-	{
-		if (feedName.equals("ventes détaillées"))
-		{
-			
-		}
-		
-		return null;
-	}
+
 	
 	/*
 		typeFlux :
@@ -372,7 +355,7 @@ public class ParseXML {
 	}
 
 	public  void setDocument(Document document) {
-		document = document;
+		this.document = document;
 	}
 
 	public  Element getRoot() {
@@ -380,7 +363,7 @@ public class ParseXML {
 	}
 
 	public  void setRoot(Element root) {
-		root = root;
+		this.root = root;
 	}
 
 	public String getFilename() {
