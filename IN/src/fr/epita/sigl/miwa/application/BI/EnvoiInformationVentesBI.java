@@ -4,9 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -17,27 +15,27 @@ import org.w3c.dom.Document;
 
 import fr.epita.sigl.miwa.application.ParseXML;
 
-public class EnvoiVenteDetailleeBI {
+public class EnvoiInformationVentesBI {
 	private static final Logger LOGGER = Logger.getLogger(ParseXML.class.getName());
 	private EnteteBI entete;
 	private String lieu = "internet";
-	private List<VenteBI> ventes = new ArrayList<VenteBI>();
+	private List<CategorieVenteBI> categories = new ArrayList<CategorieVenteBI>();
 	
-	public EnvoiVenteDetailleeBI()
+	public EnvoiInformationVentesBI()
 	{
 		
 	}
 	
-	public EnvoiVenteDetailleeBI(EnteteBI entete, List<VenteBI> ventes)
+	public EnvoiInformationVentesBI(EnteteBI entete, List<CategorieVenteBI> categories)
 	{
 		this.entete = entete;
-		this.ventes = ventes;
+		this.categories = categories;
 	}
 	
-	public EnvoiVenteDetailleeBI(EnteteBI entete, List<VenteBI> ventes, String lieu)
+	public EnvoiInformationVentesBI(EnteteBI entete, List<CategorieVenteBI> categories, String lieu)
 	{
 		this.entete = entete;
-		this.ventes = ventes;
+		this.categories = categories;
 		this.lieu = lieu;
 	}
 	
@@ -45,18 +43,16 @@ public class EnvoiVenteDetailleeBI {
 	{
 		StringBuilder result = new StringBuilder();
 		
-		LOGGER.info("***** Envoi d'un message à BI : envoi des ventes détaillées Internet");
+		LOGGER.info("***** Envoi d'un message à BI : envoi des informations sur les ventes Internet");
 		
 		result.append("<XML>");
 		
 		result.append(entete.sendXML());
 		
-		result.append("<VENTES-DETAILLEES lieu=\"" + lieu + "\">");
-		
-		for (VenteBI v : ventes)
-			result.append(v.sendXML());
-		
-		result.append("</VENTES-DETAILLEES>");
+		result.append("<VENTES lieu=\"" + lieu + "\">");
+		for (CategorieVenteBI c : categories)
+			result.append(c.sendXML());
+		result.append("</VENTES>");
 		
 		result.append("</XML>");
 		
@@ -84,11 +80,28 @@ public class EnvoiVenteDetailleeBI {
 		}
 		return null;
 	}
-	
+
 	public EnteteBI getEntete() {
 		return entete;
 	}
+
 	public void setEntete(EnteteBI entete) {
 		this.entete = entete;
+	}
+
+	public String getLieu() {
+		return lieu;
+	}
+
+	public void setLieu(String lieu) {
+		this.lieu = lieu;
+	}
+
+	public List<CategorieVenteBI> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<CategorieVenteBI> categories) {
+		this.categories = categories;
 	}
 }

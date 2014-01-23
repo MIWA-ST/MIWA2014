@@ -12,7 +12,7 @@ public class EnteteBI {
 	private static final Logger LOGGER = Logger.getLogger(ParseXML.class.getName());
 	private String objet;
 	private String source;
-	private String date;
+	private Date date;
 	
 	public EnteteBI()
 	{
@@ -22,14 +22,28 @@ public class EnteteBI {
 	{
 		this.objet = objet;
 		this.source = source;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			this.date = df.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public EnteteBI(String objet, String source, Date date)
+	{
+		this.objet = objet;
+		this.source = source;
 		this.date = date;
 	}
 	
 	public String sendXML()
 	{
 		StringBuilder result = new StringBuilder();
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		
-		result.append("<ENTETE objet=\"" + objet + "\" source=\"" + source + "\" date=\"" + date + "\" />");
+		result.append("<ENTETE objet=\"" + objet + "\" source=\"" + source + "\" date=\"" + df.format(date) + "\" />");
 		
 		return result.toString();
 	}
@@ -46,10 +60,10 @@ public class EnteteBI {
 	public void setSource(String source) {
 		this.source = source;
 	}
-	public String getDate() {
+	public Date getDate() {
 		return date;
 	}
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 }
