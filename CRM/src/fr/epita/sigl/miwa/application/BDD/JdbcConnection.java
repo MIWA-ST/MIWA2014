@@ -6,8 +6,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.epita.sigl.miwa.application.crm.TicketReduc;
 import fr.epita.sigl.miwa.application.crm.LivraisonFournisseur;
@@ -15,6 +18,8 @@ import fr.epita.sigl.miwa.application.crm.ReassortBO;
 import fr.epita.sigl.miwa.application.object.Article;
 import fr.epita.sigl.miwa.application.object.CarteFidelite;
 import fr.epita.sigl.miwa.application.object.Client;
+import fr.epita.sigl.miwa.application.object.Critere;
+import fr.epita.sigl.miwa.application.object.Promotion;
 import fr.epita.sigl.miwa.application.object.Segmentation;
 
 
@@ -51,7 +56,7 @@ public class JdbcConnection
  
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/MIWA", "postgres", "plop");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/postgres", "postgres", "root");
 		}
 		catch (SQLException e)
 		{
@@ -253,7 +258,7 @@ public class JdbcConnection
 			System.out.println("insertion client internet");
 			if (connection != null)
 			{
-				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule, iban, bic, fedelite, civilite, naissance, nbenfant, situation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				String request = "INSERT INTO Client (nom, prenom, cp, adresse, mail, tel, matricule, iban, bic, fidelite, civilite, naissance, nbenfant, situation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -297,7 +302,7 @@ public class JdbcConnection
 			System.out.println("update client internet");
 			if (connection != null)
 			{
-				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, matricule=?, iban=?, bic=?, fidelite=?, civilite=? nbenfant=? situation=? naissance=? WHERE matricule = ?";
+				String request = "UPDATE Client SET nom=?, prenom=?, cp=?, adresse=?, mail=?, tel=?, matricule=?, iban=?, bic=?, fidelite=?, civilite=?, nbenfant=?, situation=? WHERE matricule = ?";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
 				statement.setString(1, client.getNom());
@@ -313,11 +318,11 @@ public class JdbcConnection
 				statement.setString(11, client.getCivilite());
 				statement.setString(12, Integer.toString(client.getNbenfant()));
 				statement.setString(13, client.getSituation());
-				statement.setString(14, new SimpleDateFormat("YYYY-MM-dd").format(client.getDate()));
+				//statement.setString(14, new SimpleDateFormat("YYYY-MM-dd").format(client.getDate()));
+				statement.setString(14, Integer.toString(client.getMatricule()));
 				
-				System.out.println(client.getDate().toString());
-				System.out.println(new SimpleDateFormat("YYYY-MM-dd").format(client.getDate()));
-
+				System.out.println(statement);
+				
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
 				{
@@ -386,9 +391,9 @@ public class JdbcConnection
 					client.setIBAN(result.getString(9));
 					client.setBIC(result.getString(10));
 					CarteFidelite c = new CarteFidelite(result.getString(11));
-					client.setCivilite(result.getString(12));					
-					client.setNbenfant(Integer.parseInt(result.getString(13)));
-					client.setSituation(result.getString(14));
+					client.setCivilite(result.getString(12));
+					client.setNbenfant(Integer.parseInt(result.getString(14)));
+					client.setSituation(result.getString(15));
 				/*	
 					System.out.println("**************");
 					System.out.println(result.getString(15));
@@ -396,7 +401,7 @@ public class JdbcConnection
 					System.out.println((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(15)));
 					System.out.println("**************");
 				*/
-					client.setDate((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(15)));
+					client.setDate((new SimpleDateFormat("YYYY/MM/dd")).parse(result.getString(13)));
 					client.setCarteFed(c);
 				
 					//System.out.println((new SimpleDateFormat("YYYY-MM-dd")).format(client.getDate()));
@@ -468,16 +473,57 @@ public class JdbcConnection
 			System.out.println("insertion article");
 			if (connection != null)
 			{
-				String request = "INSERT INTO Article (reference, prix) VALUES (?, ?)";
+				String search = "SELECT * FROM Article WHERE reference = ? AND prix = ?";
+				PreparedStatement statement1 = connection.prepareStatement(search);
+				statement1.setString(1, article.getRef());
+				statement1.setString(2, Float.toString(article.getPrix()));
+				ResultSet rs  = statement1.executeQuery();
+				
+				if (!rs.next())
+				{
+					String request = "INSERT INTO Article (reference, prix) VALUES (?, ?)";
+					
+					PreparedStatement statement = connection.prepareStatement(request);
+					statement.setString(1, article.getRef());
+					statement.setString(2, Float.toString(article.getPrix()));
+					
+					int rowsInserted = statement.executeUpdate();
+					if (rowsInserted > 0)
+					{
+						System.out.println("Nouveau article ajouté en base !");
+					}
+				}
+				else
+					System.out.println("Article déjà existant");
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
+	public void insertPromotion(Promotion promo)
+	{
+		try
+		{
+			System.out.println("insertion promotion");
+			if (connection != null)
+			{
+				String request = "INSERT INTO promotion (id, produit, reduction, segmentation, date) VALUES (?, ?, ?, ?, ?)";
 				
 				PreparedStatement statement = connection.prepareStatement(request);
-				statement.setString(1, article.getRef());
-				statement.setString(2, Integer.toString(article.getPrix()));
+				statement.setString(1, Integer.toString(promo.getId()));
+				statement.setString(2, Integer.toString(promo.getProduit()));
+				statement.setString(3, Integer.toString(promo.getReduction()));
+				statement.setString(4, Integer.toString(promo.getSegmentation()));
+				statement.setString(5, promo.getDate().toString());
 				
 				int rowsInserted = statement.executeUpdate();
 				if (rowsInserted > 0)
 				{
-					System.out.println("Nouveau article ajouté en base !");
+					System.out.println("Nouvelle promotion ajoutée en base !");
 				}
 			}
 		}
@@ -488,4 +534,236 @@ public class JdbcConnection
 		}
 	}
 	
+	public void updatePromotion(Promotion promo)
+	{
+		try
+		{
+			System.out.println("update promotion");
+			if (connection != null)
+			{
+				String request = "UPDATE promotion SET produit=?, reduction=?, segmentation=?, date=? WHERE id = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(5, Integer.toString(promo.getId()));
+				statement.setString(1, Integer.toString(promo.getProduit()));
+				statement.setString(2, Integer.toString(promo.getReduction()));
+				statement.setString(3, Integer.toString(promo.getSegmentation()));
+				statement.setString(4, promo.getDate().toString());
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Promotion modifiée en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur update en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void deletePromotion(int id)
+	{
+		try
+		{
+			System.out.println("suppr promotion");
+			if (connection != null)
+			{
+				String request = "DELETE FROM promotion WHERE id = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(id));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Promotion suppr en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur suppr en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	public void insertCritere(Critere critere)
+	{
+		try
+		{
+			System.out.println("insertion critere");
+			if (connection != null)
+			{	
+				String request = "INSERT INTO critere (id, type, value, min, max) VALUES (?, ?, ?, ?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(critere.getId()));
+				statement.setString(2, critere.getType());
+				statement.setString(3, critere.getValue());
+				statement.setString(4, Integer.toString(critere.getMin()));
+				statement.setString(5, Integer.toString(critere.getMax()));
+				
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouveau critere ajouté en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateCritere(Critere critere)
+	{
+		try
+		{
+			System.out.println("update critere");
+			if (connection != null)
+			{
+				String request = "UPDATE critere SET type=?, value=?, min=?, max=? WHERE id = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(5, Integer.toString(critere.getId()));
+				statement.setString(1, critere.getType());
+				statement.setString(2, critere.getValue());
+				statement.setString(3, Integer.toString(critere.getMin()));
+				statement.setString(3, Integer.toString(critere.getMax()));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Critere modifié en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur update en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void deleteCritere(int id)
+	{
+		try
+		{
+			System.out.println("suppr critere");
+			if (connection != null)
+			{
+				String request = "DELETE FROM critere WHERE id = ?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, Integer.toString(id));
+
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Critere suppr en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur suppr en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void insertMapCritereClient(Critere critere, Client client)
+	{
+		try
+		{
+			System.out.println("insertion mappage critere/client");
+			if (connection != null)
+			{	
+				String request = "INSERT INTO mapclientcritere (idclient, idcritere) VALUES (?, ?)";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(2, Integer.toString(critere.getId()));
+				statement.setString(1, Integer.toString(client.getMatricule()));
+				
+				int rowsInserted = statement.executeUpdate();
+				if (rowsInserted > 0)
+				{
+					System.out.println("Nouveau mappage critere/client ajouté en base !");
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur insertion en base");
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public List<String> GetSegmentationCriteres()
+	{
+		List<String> criteresList = new ArrayList<>();
+
+		try
+		{
+			if (connection != null)
+			{
+				String request = "SELECT * FROM mapclientcritere";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				
+				ResultSet result = statement.executeQuery();
+				while(result.next())
+				{
+					String tmp = result.getString(2);
+					criteresList.add(tmp);
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur récupération des mappage client/critere en base");
+			e.printStackTrace();
+		}
+		return criteresList;
+	}
+	
+	
+	public List<String> GetSegmentation(String id)
+	{
+		List<String> clientIdList = new ArrayList<>();
+
+		try
+		{
+			if (connection != null)
+			{
+				String request = "SELECT * FROM mapclientcritere WHERE idcritere=?";
+				
+				PreparedStatement statement = connection.prepareStatement(request);
+				statement.setString(1, id);
+				
+				ResultSet result = statement.executeQuery();
+				while(result.next())
+				{
+					String tmp = result.getString(1);
+					clientIdList.add(tmp);
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			System.out.println("Erreur récupération des mappage client/critere en base");
+			e.printStackTrace();
+		}
+		return clientIdList;
+	}
 }

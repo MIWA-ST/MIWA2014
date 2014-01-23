@@ -4,7 +4,7 @@ public class Article {
 
 	private String ref;
 	private int quantite;
-	private int prix;
+	private float prix;
 	
 	public String getRef() {
 		return ref;
@@ -18,10 +18,10 @@ public class Article {
 	public void setQuantite(int quantite) {
 		this.quantite = quantite;
 	}
-	public int getPrix() {
+	public float getPrix() {
 		return prix;
 	}
-	public void setPrix(int prix) {
+	public void setPrix(float prix) {
 		this.prix = prix;
 	}
 	

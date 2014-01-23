@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -38,10 +39,12 @@ public class Main {
 	public static void main(String[] args) throws AsyncFileException,
 			AsyncMessageException, IOException, SAXException, ParseException {
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
-		Conf.getInstance();
+		
+		/*Conf.getInstance();
 		SyncMessFactory.initSyncMessReceiver();	
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
-				.initListener(new AsyncMessageListener());
+				.initListener(new AsyncMessageListener());*/
+		
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
 
@@ -53,7 +56,6 @@ public class Main {
 		JdbcConnection.getInstance().GetClients();
 		
 		/**************** Fin Initialisation ******************/
-		
 	
 		
 		/**************** BI ******************/
@@ -61,9 +63,40 @@ public class Main {
 		//Date date = ClockClient.getClock().getHour();
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
-		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(XMLManager.getInstance().getDemandeSegmentationClient("plop"), EApplication.BI);
+		//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(XMLManager.getInstance().getDemandeSegmentationClient("plop"), EApplication.BI);
+		XMLManager.getInstance().getSegmentationClient("lol", "segmentation-client.xml");
 		
 		/**************** Fin BI ******************/
+		
+		
+		
+		/**************** BO ******************/
+		/*DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+				.newInstance();
+		DocumentBuilder dBuilder = null;
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Document doc = dBuilder.parse(new InputSource(new StringReader(
+				XMLManager.getInstance().getCreationTypeCarte("Gold"))));
+		doc.getDocumentElement().normalize();
+		
+		if (SyncMessHandler.getSyncMessSender().sendXML(
+				EApplication.MONETIQUE, doc) == false)
+		{
+			LOGGER.warning("Impossible de contacter la monétique pour la création d'un compte crédit carte");
+		}
+		else
+		{
+			LOGGER.info("***** Création du type de carte Gold effectué auprès de la Monétique");
+		}
+		*/
+		
+		/**************** Fin BO ******************/
+		
 		
 		//XMLManager.getInstance().getSegmentationClient("coucou");
 		

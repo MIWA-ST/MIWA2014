@@ -8,6 +8,11 @@ public class Segmentation {
 
 	private int id;
 	private Date date;
+	private static List<Client> clients;
+	private List<Critere> criteres;
+	public static ArrayList<Promotion> promotions = new ArrayList<Promotion>();
+	
+	
 	public Date getDate() {
 		return date;
 	}
@@ -15,10 +20,6 @@ public class Segmentation {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-
-	private static List<Client> clients;
-	private List<Critere> criteres;
-	public static ArrayList<Promotion> promotions = new ArrayList<Promotion>();
 	
 	public Segmentation ()
 	{

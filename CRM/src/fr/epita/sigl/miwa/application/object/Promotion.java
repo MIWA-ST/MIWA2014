@@ -9,16 +9,14 @@ public class Promotion {
 	private int segmentation;
 	private int produit;
 	private int reduction;
-	private int points;
 	private Date date;
 	
-	public Promotion (int id, int segmentation, int produit, int reduction, int points, Date date)
+	public Promotion (int id, int segmentation, int produit, int reduction, Date date)
 	{
 		this.id = id;
 		this.segmentation = segmentation;
 		this.produit = produit;
 		this.reduction = reduction;
-		this.points = points;
 		this.setDate(date);
 	}
 
@@ -76,20 +74,6 @@ public class Promotion {
 	 */
 	public void setReduction(int reduction) {
 		this.reduction = reduction;
-	}
-
-	/**
-	 * @return the points
-	 */
-	public int getPoints() {
-		return points;
-	}
-
-	/**
-	 * @param points the points to set
-	 */
-	public void setPoints(int points) {
-		this.points = points;
 	}
 
 	/**

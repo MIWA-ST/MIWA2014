@@ -62,6 +62,8 @@ public class SyncMessHandler {
 			// Demande d'information client
 			LOGGER.info("*****Message synchrone reçu d'internet :" + message);
 			
+			String res = null;
+			
 			PrintWriter out = null;
 			try {
 				out = new PrintWriter("internet.xml");
@@ -72,20 +74,25 @@ public class SyncMessHandler {
 			out.print(message);
 			out.close();
 			
-			LOGGER.info("*****Fichier crée");
+			//LOGGER.info("*****Fichier crée");
 			
 			try {
-				XMLManager.getInstance().dispatchXML("", "internet.xml");
+				res = XMLManager.getInstance().dispatchXML("", "internet.xml");
 			} catch (SAXException | IOException | AsyncMessageException
 					| ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			LOGGER.info("*****Envoi des information client à Internet");
+			
+			
+			//LOGGER.info("*****Envoi des information client à Internet");
 			//SyncMessHandler.getSyncMessSender().sendMessage(EApplication.INTERNET, res);
 			
-			//TODO : envoyer les infos client demandées à internet
+			if (res.equals("true"))
+				return true;
+			else
+				return false;
 		}
 		else if (sender == EApplication.MONETIQUE)
 		{
@@ -232,7 +239,7 @@ public class SyncMessHandler {
 			String res = null;
 			
 			try {
-				XMLManager.getInstance().dispatchXML("", xml.getDocumentURI());
+				res = XMLManager.getInstance().dispatchXML("", xml.getDocumentURI());
 			} catch (SAXException | IOException | AsyncMessageException
 					| ParseException e) {
 				// TODO Auto-generated catch block
@@ -240,6 +247,11 @@ public class SyncMessHandler {
 			}
 			LOGGER.info("*****Envoi des information client à Internet");
 			SyncMessHandler.getSyncMessSender().sendMessage(EApplication.INTERNET, res);
+			
+			if (res.equals("true"))
+				return true;
+			else
+				return false;
 		}
 		else if (sender == EApplication.MONETIQUE)
 		{
