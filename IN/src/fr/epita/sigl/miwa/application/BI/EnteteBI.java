@@ -41,7 +41,11 @@ public class EnteteBI {
 	public String sendXML()
 	{
 		StringBuilder result = new StringBuilder();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat df;
+		if (objet != null && objet.equals("ventes 15min"))
+			df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		else
+			df = new SimpleDateFormat("yyyy-MM-dd");
 		
 		result.append("<ENTETE objet=\"" + objet + "\" source=\"" + source + "\" date=\"" + df.format(date) + "\" />");
 		

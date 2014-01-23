@@ -33,7 +33,7 @@ public class CategorieVenteBI {
 		
 		
 		result.append("<CATEGORIE ref-categorie=\"" + ref_categorie
-		+ "\" quantité_vendue=\"" + quantite_vendue
+		+ "\" quantite_vendue=\"" + quantite_vendue
 		+ "\" montant_fournisseur=\"" + montant_fournisseur
 		+ "\" montant_vente=\"" + montant_vente + "\" />");
 		

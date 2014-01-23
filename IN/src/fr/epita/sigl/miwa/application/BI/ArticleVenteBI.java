@@ -20,7 +20,7 @@ public class ArticleVenteBI {
 		StringBuilder result = new StringBuilder();
 		
 		
-		result.append("<ARTICLE ref-article=\"" + ref_article + "\" quantité=\"" + quantite + "\" />");
+		result.append("<ARTICLE ref-article=\"" + ref_article + "\" quantite=\"" + quantite + "\" />");
 		
 		return result.toString();
 	}

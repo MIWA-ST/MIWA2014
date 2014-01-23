@@ -133,34 +133,34 @@ public class Main {
 //			LOGGER.info(retr.toString());
 			
 			
-//			ArticleVenteBI a1 = new ArticleVenteBI("TEST1", 33);
-//			ArticleVenteBI a2 = new ArticleVenteBI("TEST2", 22);
-//			ArticleVenteBI a3 = new ArticleVenteBI("TEST3", 11);
-//			
-//			List<ArticleVenteBI> articles = new ArrayList<ArticleVenteBI>();
-//			articles.add(a1);
-//			articles.add(a2);
-//			articles.add(a3);
-//			
-//			VenteBI v1 = new VenteBI("32AB", 37, "CF", new Date(), articles);
-//			List<VenteBI> ventes = new ArrayList<VenteBI>();
-//			ventes.add(v1);
-//			EnteteBI enteteBI1 = new EnteteBI("ventes détaillées", "Internet", new Date());
-//			EnvoiVenteDetailleeBI envoiVenteBI = new EnvoiVenteDetailleeBI(enteteBI1, ventes);
-//			
-//			System.out.println(envoiVenteBI.sendXML());
-//			
-//			EnteteBI enteteBI2 = new EnteteBI("ventes 15min", "Internet", new Date());
-//			CategorieVenteBI c1 = new CategorieVenteBI("TEST1", 1, 2, 3);
-//			CategorieVenteBI c2 = new CategorieVenteBI("TEST2", "4", "5", "6");
-//			
-//			List<CategorieVenteBI> categories = new ArrayList<CategorieVenteBI>();
-//			
-//			categories.add(c1);
-//			categories.add(c2);
-//			
-//			EnvoiInformationVentesBI envoiInfoVenteBI = new EnvoiInformationVentesBI(enteteBI2, categories);
-//			System.out.println(envoiInfoVenteBI.sendXML());
+			ArticleVenteBI a1 = new ArticleVenteBI("TEST1", 33);
+			ArticleVenteBI a2 = new ArticleVenteBI("TEST2", 22);
+			ArticleVenteBI a3 = new ArticleVenteBI("TEST3", 11);
+			
+			List<ArticleVenteBI> articles = new ArrayList<ArticleVenteBI>();
+			articles.add(a1);
+			articles.add(a2);
+			articles.add(a3);
+			
+			VenteBI v1 = new VenteBI("32AB", 37, "CF", new Date(), articles);
+			List<VenteBI> ventes = new ArrayList<VenteBI>();
+			ventes.add(v1);
+			EnteteBI enteteBI1 = new EnteteBI("ventes detaillees", "internet", new Date());
+			EnvoiVenteDetailleeBI envoiVenteBI = new EnvoiVenteDetailleeBI(enteteBI1, ventes);
+			
+			System.out.println(envoiVenteBI.sendXML());
+			
+			EnteteBI enteteBI2 = new EnteteBI("ventes 15min", "internet", new Date());
+			CategorieVenteBI c1 = new CategorieVenteBI("TEST1", 1, 2, 3);
+			CategorieVenteBI c2 = new CategorieVenteBI("TEST2", "4", "5", "6");
+			
+			List<CategorieVenteBI> categories = new ArrayList<CategorieVenteBI>();
+			
+			categories.add(c1);
+			categories.add(c2);
+			
+			EnvoiInformationVentesBI envoiInfoVenteBI = new EnvoiInformationVentesBI(enteteBI2, categories);
+			System.out.println(envoiInfoVenteBI.sendXML());
 			
 		
 			

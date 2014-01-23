@@ -65,26 +65,6 @@ public class SyncMessHandler {
 	@Deprecated
 	static public String answerToRequestMessage(EApplication sender, String request){
 		// Réponse à la request demandée ... Renvoi laString (XML ou info...)
-		/*
-		else if (sender == EApplication.GESTION_COMMERCIALE)
-		{
-			ParseXML parser = new ParseXML();
-			
-			if (parser.readXML(message, ParseXML.TYPE_LANGUAGE.STRING))
-				return parser.parseGC();
-			else
-				return false;
-		}
-		else if (sender == EApplication.MDM)
-		{
-			ParseXML parser = new ParseXML();
-			
-			if (parser.readXML(message, ParseXML.TYPE_LANGUAGE.STRING))
-				return parser.parseMDM();
-			else
-				return false;
-		}
-		*/
 		
 		return null;
 	}

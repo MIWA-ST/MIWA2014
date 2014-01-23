@@ -20,9 +20,9 @@ Champs du XML :
 <XML>
     <ENTETE objet="ventes 15min" source="" date="" />
     <VENTES lieu="">
-        <CATEGORIE ref-categorie="" quantité_vendue="" montant_fournisseur="" montant_vente="" />
-        <CATEGORIE ref-categorie="" quantité_vendue="" montant_fournisseur="" montant_vente="" />
-        <CATEGORIE ref-categorie="" quantité_vendue="" montant_fournisseur="" montant_vente="" />
+        <CATEGORIE ref-categorie="" quantite_vendue="" montant_fournisseur="" montant_vente="" />
+        <CATEGORIE ref-categorie="" quantite_vendue="" montant_fournisseur="" montant_vente="" />
+        <CATEGORIE ref-categorie="" quantite_vendue="" montant_fournisseur="" montant_vente="" />
         <!-- plusieurs catégories -->
     </STOCKS>
 </XML>

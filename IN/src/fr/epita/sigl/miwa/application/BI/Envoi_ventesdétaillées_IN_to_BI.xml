@@ -21,11 +21,11 @@ Champs du XML :
 -->
 
 <XML>
-    <ENTETE objet="ventes détaillées" source="" date="" />
+    <ENTETE objet="ventes détaillees" source="" date="" />
     <VENTES-DETAILLEES lieu="">
         <VENTE numero_client="" montant="" moyen_paiement="" dateHeure="">
             <ARTICLES>
-                <ARTICLE ref-article="" quantité="" />
+                <ARTICLE ref-article="" quantite="" />
                 <!-- plusieurs articles -->
             </ARTICLES>
         </VENTE>
