@@ -8,6 +8,7 @@ import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleAndLocalPriceAndPromotion;
 import fr.epita.sigl.miwa.bo.object.ArticleList;
 import fr.epita.sigl.miwa.bo.object.NodeAttribute;
+import fr.epita.sigl.miwa.bo.object.Sale;
 
 public class CashRegisterXMLConstructor extends XMLConstructor
 {
@@ -104,9 +105,9 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 	    <ARTICLE refarticle="" quantite="" nvprix="" />
 	</FACTURE>
 	*/
-	public String facture(ArticleList articleList)
+	public String facture(Sale sale)
 	{
-		if (articleList == null)
+		if (sale.articles == null)
 		{
 			return null;
 		}
@@ -114,14 +115,14 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 		List<NodeAttribute> headerAttributes = new ArrayList<NodeAttribute>();
 		headerAttributes.add(new NodeAttribute("objet", "facture-client"));
 		headerAttributes.add(new NodeAttribute("source", "bo"));
-		headerAttributes.add(new NodeAttribute("date", new SimpleDateFormat("YYYY-MM-dd").format(articleList.date)));
+		headerAttributes.add(new NodeAttribute("date", new SimpleDateFormat("YYYY-MM-dd").format(sale.dateAndTime)));
 		this.openClosedNode("ENTETE", headerAttributes, 0);
 		
 		List<NodeAttribute> factureAttributes = new ArrayList<NodeAttribute>();
-		factureAttributes.add(new NodeAttribute("refclient", articleList.refclient));
-		factureAttributes.add(new NodeAttribute("montanttotal", articleList.totalamount));
+		factureAttributes.add(new NodeAttribute("refclient", sale.customer)); // NBA : changer en customernumber normalement, avec le parser !
+		factureAttributes.add(new NodeAttribute("montanttotal", sale.total));
 		this.openNode("FACTURE", factureAttributes, 0);
-		for (Article article : articleList.articles)
+		for (Article article : sale.articles)
 		{
 			List<NodeAttribute> articleAttributes = new ArrayList<NodeAttribute>();
 			articleAttributes.add(new NodeAttribute("refarticle", article.reference));

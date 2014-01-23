@@ -85,7 +85,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			try {
 				AsyncMessageFactory.getInstance().getAsyncMessageManager().
 				send(PlugStoreManagement.stockLevel, EApplication.GESTION_COMMERCIALE);
-				System.out.println("***** niveau de stock envoyé à la GC");
+				System.out.println("***** Le niveau de stock a été envoyé à la Gestion Commerciale");
 			} catch (AsyncMessageException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

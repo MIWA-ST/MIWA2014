@@ -50,4 +50,9 @@ public class CRMXMLConstructor extends XMLConstructor
 		
 		return this.xml;
 	}
+
+	public String saleTicket(String message) {
+
+		return null;
+	}
 }

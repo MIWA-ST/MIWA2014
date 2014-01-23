@@ -139,4 +139,17 @@ public class PlugStoreManagement {
 		
 		return al;
 	}
+	
+	@SuppressWarnings("deprecation")
+	public static void getstockLevel(ArticleList articlesSource)
+	{
+		for (Article article : articlesSource.articles)
+		{
+			// Temporaire, attente de BDD
+			if (article != null)
+			{
+				article.quantity = "23";
+			}
+		}
+	}
 }
