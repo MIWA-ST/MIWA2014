@@ -541,7 +541,7 @@ public class XMLManager {
 		int i = 0;
 		while (i < demande.getArticles().size()) {
 			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i)
-					+ "</REFERENCE>";
+					+ "</REFERENCE></ARTICLE>";
 			i++;
 		}
 		xml += "</ARTICLES></DEMANDENIVEAUDESTOCK>";
