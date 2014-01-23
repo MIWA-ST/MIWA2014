@@ -7,6 +7,7 @@ import java.util.List;
 
 import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleAndLocalPriceAndPromotion;
+import fr.epita.sigl.miwa.bo.object.ArticleList;
 import fr.epita.sigl.miwa.bo.object.Delivery;
 import fr.epita.sigl.miwa.bo.object.NodeAttribute;
 import fr.epita.sigl.miwa.bo.object.RestockRequest;
@@ -185,6 +186,79 @@ public class StoreManagementXMLConstructor extends XMLConstructor
 		this.closeNode("ARTICLES", 1);
 		
 		this.closeNode("REASSORT", 0);
+		
+		return this.xml;
+	}
+	
+	/*
+	<!-- 
+	BO => GC
+		NUMERO : CHAR(32) (Numéro de l'envoi)
+		DATE : Datetime  (Date de l'envoi du niveau de stock)
+		REFERENCE : CHAR(32)
+		QUANTITE : Numeric(10)
+		CAPACITE : Numeric(10)
+	-->
+	<DEMANDENIVEAUDESTOCK>
+		<NUMERO>CV398719873</NUMERO>
+		<REFMAGASIN>PA218765</REFMAGASIN>
+		<DATE>20131225</DATE> <!-- AAAAMMJJ -->
+		<ARTICLES>
+			<ARTICLE>
+				<REFERENCE>AU736827</REFERENCE>
+				<QUANTITE>7</QUANTITE>
+				<CAPACITE>10</CAPACITE>
+			</ARTICLE>
+			<ARTICLE>
+				<REFERENCE>AU736829</REFERENCE>
+				<QUANTITE>3</QUANTITE>
+				<CAPACITE>20</CAPACITE>
+			</ARTICLE>
+		</ARTICLES>
+	</DEMANDENIVEAUDESTOCK>
+	*/
+	public String stockLevel(ArticleList articleList)
+	{
+		
+		if (articleList == null)
+		{
+			return null;
+		}
+
+		this.openNode("DEMANDENIVEAUDESTOCK", null, 0);
+		
+		this.openNodeWithoutNewLine("NUMERO", null, 1);
+		this.printText(articleList.number);
+		this.closeNode("NUMERO", 0);
+		
+		this.openNodeWithoutNewLine("REFMAGASIN", null, 1);
+		this.printText(articleList.refshop);
+		this.closeNode("REFMAGASIN", 0);
+		
+		this.openNodeWithoutNewLine("DATE", null, 1);
+		this.printText(new SimpleDateFormat("YYYYMMdd").format(articleList.date));
+		this.closeNode("DATE", 0);
+		
+		this.openNode("ARTICLES", null, 1);
+		
+		for (Article article : articleList.articles)
+		{
+			this.openNode("ARTICLE", null, 2);
+			
+			this.openNodeWithoutNewLine("REFERENCE", null, 3);
+			this.printText(article.reference);
+			this.closeNode("REFERENCE", 0);
+			
+			this.openNodeWithoutNewLine("QUANTITE", null, 3);
+			this.printText(article.quantity);
+			this.closeNode("QUANTITE", 0);
+
+			this.closeNode("ARTICLE", 2);
+		}
+		
+		this.closeNode("ARTICLES", 1);
+		
+		this.closeNode("DEMANDENIVEAUDESTOCK", 0);
 		
 		return this.xml;
 	}
