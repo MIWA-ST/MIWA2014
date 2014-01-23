@@ -44,14 +44,17 @@ public class Main {
 		Date clockDate = ClockClient.getClock().getHour();
 		System.out.println(clockDate);
 		
-		// Mise en place de l'alerte pour le remboursement des crédits en fin de mois
-		ClockClient.getClock().wakeMeUpEveryWeeks(getLastDayInMonth(), "Prélèvement des crédits fidélité en fin de mois");
-		
 		try {
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println("------------- MONETIQUE IS LISTENING -------------");
+		System.out.println("");
+		
+		// Mise en place de l'alerte pour le remboursement des crédits en fin de mois
+		ClockClient.getClock().wakeMeUpEveryWeeks(getLastDayInMonth(), "newWeek");
 		
 		// Init MySQL connector
 		InitMysqlConnector.init();
