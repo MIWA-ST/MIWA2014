@@ -24,11 +24,12 @@ public class ClockClient {
 	 */
 	@Deprecated
 	static public void wakeUp(Date date, Object message){
+		try {
 		if (message instanceof String) {
 			
 			if (message.equals("ouverture")) {
 				Main.open = true;
-				//System.out.println(date.toString() + " : Caisse start !");
+				System.out.println(date.toString() + " : Caisse start !");
 				if (!Main.ventealeatoires.isAlive())
 				Main.ventealeatoires.start();
 				
@@ -37,12 +38,16 @@ public class ClockClient {
 			} else if (message.equals("fermeture")){
 				Main.open = false;
 				//Main.ventealeatoires.interrupt();
-				//System.out.println(date.toString() + " : Bye Caisse, its over for today!");
+				System.out.println(date.toString() + " : Bye Caisse, its over for today!");
 			}
 			else
 			{
 				System.out.println(date.toString() + " : " + message);
 			}
+		}
+		} catch (Exception e) {
+			System.out.println("Error during wakeUp");
+			e.printStackTrace();
 		}
 	}	
 }

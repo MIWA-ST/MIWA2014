@@ -26,7 +26,7 @@ public class XmlParser {
 					.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(xmlFile);
-			doc.getDocumentElement().normalize();
+			//doc.getDocumentElement().normalize();
 
 			NodeList nList = doc.getElementsByTagName("ARTICLE");
 
@@ -81,7 +81,7 @@ public class XmlParser {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(new InputSource(new StringReader(
 					xmlFile)));
-			doc.getDocumentElement().normalize();
+			//doc.getDocumentElement().normalize();
 
 			NodeList nList = doc.getElementsByTagName("ARTICLE");
 
@@ -140,7 +140,7 @@ public class XmlParser {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(new InputSource(new StringReader(
 					xmlFile)));
-			doc.getDocumentElement().normalize();
+			//doc.getDocumentElement().normalize();
 
 			NodeList nList = doc.getElementsByTagName("FACTURE");
 
@@ -181,7 +181,7 @@ public class XmlParser {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(new InputSource(new StringReader(
 					xmlFile)));
-			doc.getDocumentElement().normalize();
+			//doc.getDocumentElement().normalize();
 
 			NodeList nList = doc.getElementsByTagName("ARTICLE");
 

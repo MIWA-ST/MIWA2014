@@ -53,14 +53,14 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 	public Date getHour() {
 		try {
 			return remoteClock.getHour();
-		} catch (RemoteException e) {
+		} catch (Exception e) {
 			log.log(Level.WARNING,
 					"CLOCK CLIENT : Failed to getHour, try to reinit the connection.");
 			e.printStackTrace();
 			initConnection();
 			try {
 				return remoteClock.getHour();
-			} catch (RemoteException e1) {
+			} catch (Exception e1) {
 				log.log(Level.SEVERE,
 						"CLOCK CLIENT : Failed to getHour for the second time.");
 				e1.printStackTrace();
