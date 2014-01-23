@@ -39,10 +39,12 @@ public class Main {
 	public static void main(String[] args) throws AsyncFileException,
 			AsyncMessageException, IOException, SAXException, ParseException {
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
-		Conf.getInstance();
+		
+		/*Conf.getInstance();
 		SyncMessFactory.initSyncMessReceiver();	
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
-				.initListener(new AsyncMessageListener());
+				.initListener(new AsyncMessageListener());*/
+		
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
 
@@ -62,6 +64,7 @@ public class Main {
 		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
 		//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(XMLManager.getInstance().getDemandeSegmentationClient("plop"), EApplication.BI);
+		XMLManager.getInstance().getSegmentationClient("lol", "segmentation-client.xml");
 		
 		/**************** Fin BI ******************/
 		

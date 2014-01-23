@@ -204,10 +204,7 @@ public class XMLManager
 		Segmentation segmentation = new Segmentation();
 		
 		File file = new File (xml);
-		/*BufferedWriter output = new BufferedWriter(new FileWriter(file));
-		output.write(message);
-		output.close();
-		*/
+		
 		// Parsage du fichier
 		Document criteriaFile = dBuilder.parse(file);
 		LOGGER.info("***** Parsage du fichier");
@@ -233,22 +230,29 @@ public class XMLManager
 			Group group = new Group();
 			List<Critere> list = new  ArrayList<>();
 			group.setCriteres(list);
+			Critere c = null;
 			
 			NodeList childNodes = groupNode.getChildNodes();
-			for (int j = 0; j < childNodes.getLength(); j++) 
+			for (int j = 0; j < childNodes.getLength(); j++)
 			{
 				Node cNode = childNodes.item(j);
 				if (cNode instanceof Element)
 				{
+					
 					if (cNode.getNodeName() == "CRITERES")
 					{
+						int lower = 1;
+						int higher = 99999999;
+						int random = (int)(Math.random() * (higher-lower)) + lower;
+						
 						NodeList criteriasNodes = groupNode.getElementsByTagName("CRITERE");
 						LOGGER.info("***** Nombre de critères: " + criteriasNodes.getLength());
 						for (int k = 0; k < criteriasNodes.getLength(); k++) 
 						{
 							Node criteriaNodes = criteriasNodes.item(k);
-							Critere c = new Critere();
-							String tmp = criteriaNodes.getNodeName();
+							c = new Critere();
+							c.setId(random);
+							
 							String type = criteriaNodes.getAttributes().getNamedItem("type").getNodeValue();
 							LOGGER.info("***** Analyse du critère "+ k +": " + type);
 							switch (type) 
@@ -261,32 +265,33 @@ public class XMLManager
 									break;
 								case "geographie":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("departement").getNodeValue());
 									LOGGER.info("***** Le département est: " + c.getValue());
 								    break;
 								case "sexe":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("sexe").getNodeValue());
 									LOGGER.info("***** Le sexe est: " + c.getValue());
 								    break;
 								case "situation-familiale":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("situation").getNodeValue());
 									LOGGER.info("***** La situation familiale est: " + c.getValue());
 								    break;
 								case "enfant":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("enfant").getNodeValue());
 									LOGGER.info("***** Le nombre d'enfants est de: " + c.getValue());
 								    break;
 								case "fidelite":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("carte").getNodeValue());
 									LOGGER.info("***** La fidélité est: " + c.getValue());
 								    break;
 							}
 							group.getCriteres().add(c);
 							segmentation.addCritere(c);
+							JdbcConnection.getInstance().insertCritere(c);
 						}
 					}
 					else if (cNode.getNodeName() == "CLIENTS")
@@ -296,10 +301,10 @@ public class XMLManager
 						for (int k = 0; k < clientsNodes.getLength(); k++) 
 						{
 							Element clientNodes = (Element)clientsNodes.item(k);
-							Client c = new Client();
-							c.setMatricule(Integer.parseInt(clientNodes.getAttributes().getNamedItem("numero").getNodeValue()));
-							c.articlesList = new ArrayList<>();
-							LOGGER.info("***** Analyse du client " + k + ": " + c.getMatricule());
+							Client client = new Client();
+							client.setMatricule(Integer.parseInt(clientNodes.getAttributes().getNamedItem("numero").getNodeValue()));
+							client.articlesList = new ArrayList<>();
+							LOGGER.info("***** Analyse du client " + k + ": " + client.getMatricule());
 							
 							NodeList articlessNodes = clientNodes.getElementsByTagName("CATEGORIE");
 							for (int l = 0; l < articlessNodes.getLength(); l++) 
@@ -308,27 +313,19 @@ public class XMLManager
 								Article a = new Article();
 								a.setRef(articleNodes.getAttributes().getNamedItem("ref").getNodeValue());
 								a.setQuantite(Integer.parseInt(articleNodes.getAttributes().getNamedItem("achat").getNodeValue()));
-								c.articlesList.add(a);
+								client.articlesList.add(a);
 								LOGGER.info("***** Catégorie d'article: ref:" + a.getRef() + " - achat:" + a.getQuantite());
 							}
-							segmentation.addClient(c);
+							segmentation.addClient(client);
+							if (c != null)
+								JdbcConnection.getInstance().insertMapCritereClient(c, client);
 						}
 					}
 				}
 			}
 		}
-		
-		//DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		//segmentation.setDateBL(df.format(ClockClient.getClock().getHour()));
-		
-		//TODO sauvergarde en base
-		//JdbcConnection.getInstance().insertCommandeInternet(command);
-		
-		//Construction du xml
 		String bl = "<EXPEDITIONCLIENT>";
-		
 		return bl;
-		
 	}
 	
 
@@ -816,8 +813,15 @@ public class XMLManager
 					client.articlesList = new ArrayList<>();
 					client.articlesList.add(e);
 				}
-				bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
-						+ "<PROMOTION article=\"" + client.articlesList.get(0).getRef() + "\" fin=\"2014-02-20\" reduc=\"-1\" />";
+				for (int j = 0; j < client.articlesList.size(); j++)
+				{
+					int lower = 5;
+					int higher = 50;
+
+					int random = (int)(Math.random() * (higher-lower)) + lower;
+					bl += "<CLIENT matricule=\"" + client.getMatricule() + "\" />"
+						+ "<PROMOTION article=\"" + client.articlesList.get(j).getRef() + "\" fin=\"2014-02-20\" reduc=\"" + random + "\" />";
+				}
 			} else
 				LOGGER.info("***** ERREUR: Client inconnu de la part du CRM");
 		}
@@ -891,7 +895,7 @@ public class XMLManager
 			}
 		}
 		
-		String bl = "<EXPEDITIONCLIENT>";
+		String bl = "";
 		
 		return bl;
 	}
@@ -916,7 +920,7 @@ public class XMLManager
 		List<Article> list = new  ArrayList<>();
 		List<Article> listReduc = new  ArrayList<>();
 		ticketVente.setArticle(list);
-		int totalPrice = 0;
+		float totalPrice = 0;
 		
 		NodeList ticketVenteNodes = ticketVenteFile.getElementsByTagName("TICKETVENTE");
 		
@@ -937,16 +941,28 @@ public class XMLManager
 				Article articleReduc = new Article();
 				article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
 				article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
-				article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+				article.setPrix(Float.parseFloat(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
 				LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
 				ticketVente.getArticle().add(article);
-				
-				articleReduc.setRef(article.getRef());
-				articleReduc.setQuantite(article.getQuantite());
-				articleReduc.setPrix(article.getPrix() - 1);
-				listReduc.add(articleReduc);
-				LOGGER.info("********* Application de la réduction : " + articleReduc.getPrix());
-				totalPrice = totalPrice + (article.getPrix() - 1);
+				//Traitement des possibles promotions
+				if (j%10 == 0)
+				{
+					int lower = 5;
+					int higher = 50;
+
+					int random = (int)(Math.random() * (higher-lower)) + lower;
+					articleReduc.setRef(article.getRef());
+					articleReduc.setQuantite(article.getQuantite());
+					articleReduc.setPrix(article.getPrix() - ((random * article.getPrix())/100));
+					listReduc.add(articleReduc);
+					totalPrice = totalPrice + (articleReduc.getPrix());
+					LOGGER.info("********* Application de la réduction : " + articleReduc.getPrix());
+				}
+				else
+				{
+					listReduc.add(article);
+					totalPrice = totalPrice + (article.getPrix());
+				}
 			}
 		}
 		LOGGER.info("***** Montant total : " + totalPrice);
