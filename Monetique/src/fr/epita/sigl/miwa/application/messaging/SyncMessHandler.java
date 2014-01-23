@@ -57,7 +57,7 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
-		LOGGER.info("***** Recepting message.");
+		LOGGER.info("***** MONETIQUE SERVICE CALL : Recepting message.");
 
 		xml.getDocumentElement().normalize();
 		String serviceToPerform = xml.getDocumentElement().getAttribute("service");
@@ -65,9 +65,10 @@ public class SyncMessHandler {
 
 		if (serviceToPerform.equals("paiement_cb"))
 		{
-			LOGGER.info("***** Paiement by CB service started.");
+			System.out.println("***** BEGIN SERVICE PAYMENT CB *****");
+			LOGGER.info("***** SERVICE CB : Paiement by CB service started.");
 
-			String montant = "";
+			String montant = null;
 			String[] cb = {"", "", ""};
 
 			NodeList nl = xml.getDocumentElement().getChildNodes();
@@ -79,6 +80,13 @@ public class SyncMessHandler {
 				if (nl.item(i).getNodeName().equalsIgnoreCase("cb"))
 					cnl = nl.item(i).getChildNodes();
 			}
+			if (cnl == null)
+			{
+				LOGGER.info("***** SERVICE CB : ERROR -> Missing data in request ('cb' balise).");
+				LOGGER.info("***** SERVICE CB : Paiement by CB service terminated normally with: " + false + ".");
+				System.out.println("***** END SERVICE *****");
+				return false;
+			}
 			for (int i = 0; i < cnl.getLength(); ++i) 
 			{
 				if (cnl.item(i).getNodeName().equalsIgnoreCase("numero"))
@@ -88,11 +96,11 @@ public class SyncMessHandler {
 				if (cnl.item(i).getNodeName().equalsIgnoreCase("pictogramme"))
 					cb[i] = cnl.item(i).getTextContent();
 			}
-			
-			if (montant.equals("") || cb[0].equals("") || cb[1].equals("") || cb[2].equals(""))
+			if (montant == null || cb[0].equals("") || cb[1].equals("") || cb[2].equals(""))
 			{
-				LOGGER.info("***** ERROR -> Missing data in request ('montant' or 'cb' balise or 'numero' or 'date_validite' or 'pictogramme').");
-				LOGGER.info("***** Paiement by CB service terminated normally with: " + false + ".");
+				LOGGER.info("***** SERVICE CB : ERROR -> Missing data in request ('montant' or 'numero' or 'date_validite' or 'pictogramme').");
+				LOGGER.info("***** SERVICE CB : Paiement by CB service terminated normally with: " + false + ".");
+				System.out.println("***** END SERVICE *****");
 				return false;
 			}
 			Float mt;
@@ -101,26 +109,30 @@ public class SyncMessHandler {
 				mt = Float.parseFloat(montant);
 				if (mt < 0)
 				{
-					LOGGER.info("***** ERROR -> Invalid data ('montant' : " + mt + ") in request.");
-					LOGGER.info("***** Paiement by CB service terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE CB : ERROR -> Invalid data ('montant' : " + mt + ") in request.");
+					LOGGER.info("***** SERVICE CB : Paiement by CB service terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 			}
-			catch (NumberFormatException e)
+			catch (Exception e)
 			{
-				LOGGER.info("***** ERROR -> Invalid data ('montant' : " + montant + ") in request.");
-				LOGGER.info("***** Paiement by CB service terminated normally with: " + false + ".");
+				LOGGER.info("***** SERVICE CB : ERROR -> Invalid data ('montant' : " + montant + ") in request.");
+				LOGGER.info("***** SERVICE CB : Paiement by CB service terminated normally with: " + false + ".");
+				System.out.println("**** END SERVICE ****");
 				return false;
 			}
-			LOGGER.info("***** REQUEST -> " + montant + "€ for the credit card : " + cb[0]);
+			LOGGER.info("***** SERVICE CB : REQUEST -> " + montant + "€ for the credit card : " + cb[0]);
 			Boolean bankResponse = getBankPaiement();
-			LOGGER.info("***** REQUEST -> Done.");
-			LOGGER.info("***** Paiement by CB service terminated normally with : " + bankResponse + ".");
+			LOGGER.info("***** SERVICE CB : REQUEST -> Done.");
+			LOGGER.info("***** SERVICE CB : Paiement by CB service terminated normally with : " + bankResponse + ".");
+			System.out.println("***** END SERVICE *****");
 			return bankResponse;
 		}
 		else if (serviceToPerform.equals("paiement_cf"))
 		{
-			LOGGER.info("***** Paiement by fidelity service started.");
+			System.out.println("***** BEGIN SERVICE PAYMENT CF *****");
+			LOGGER.info("***** SERVICE CB : Paiement by fidelity service started.");
 
 			String montantXML = null;
 			String matriculeClientXML = null;
@@ -137,8 +149,9 @@ public class SyncMessHandler {
 			// En cas d'absence de données dans le XML
 			if (montantXML == null || matriculeClientXML == null) 
 			{
-				LOGGER.info("***** ERROR -> Missing data in request ('montant' or 'matricule_client').");
-				LOGGER.info("***** Paiement by fidelity service terminated normally with: " + false + ".");
+				LOGGER.info("***** SERVICE CF : ERROR -> Missing data in request ('montant' or 'matricule_client').");
+				LOGGER.info("***** SERVICE CF : Paiement by fidelity service terminated normally with: " + false + ".");
+				System.out.println("***** END SERVICE *****");
 				return false;
 			}
 			// En cas de données incohérentes dans le XML
@@ -148,15 +161,17 @@ public class SyncMessHandler {
 				montantFloat = Float.parseFloat(montantXML);
 				if (montantFloat <= 0f)
 				{
-					LOGGER.info("***** ERROR -> Invalid data ('montant' : " + montantFloat + ") in request.");
-					LOGGER.info("***** Paiement by fidelity service terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE CF : ERROR -> Invalid data ('montant' : " + montantFloat + ") in request.");
+					LOGGER.info("***** SERVICE CF : Paiement by fidelity service terminated normally with: " + false + ".");
+					System.out.println("**** END SERVICE ****");
 					return false;
 				}
 			} 
 			catch (Exception e) 
 			{
-				LOGGER.info("***** ERROR -> Invalid data ('montant' : " + montantXML + ") in request.");
-				LOGGER.info("***** Paiement by fidelity service terminated normally with: " + false + ".");
+				LOGGER.info("***** SERVICE CF : ERROR -> Invalid data ('montant' : " + montantXML + ") in request.");
+				LOGGER.info("***** SERVICE CF : Paiement by fidelity service terminated normally with: " + false + ".");
+				System.out.println("***** END SERVICE *****");
 				return false;
 			}
 			
@@ -167,19 +182,21 @@ public class SyncMessHandler {
 				Connection connection = dbHandler.open();
 
 				// Récupération de l'id du client en vérifiant limite crédit totale et liste noire
-				// TODO vérifier limite crédit mensuelle
-				PreparedStatement pS = connection.prepareStatement("SELECT id_fidelity_credit_account as id, customer_code, echelon_nb, total_credit_limit "
+				// TODO AND monthCreditSum < montly_credit_limit
+				PreparedStatement pS = connection.prepareStatement("SELECT id_fidelity_credit_account as id, customer_code, echelon_nb, total_credit_limit, montly_credit_limit "
 						+ "FROM fidelity_credit_account as fca LEFT JOIN loyalty_card_type as lct ON fca.id_loyalty_card_type = lct.id_loyalty_card_type "
-						+ "WHERE customer_code = ? AND (total_credit_amount - total_repaid_credit__amount) < total_credit_limit AND is_blacklisted = FALSE AND IS_DELETED = FALSE;");
+						+ "WHERE customer_code = ? AND (total_credit_amount - total_repaid_credit__amount) < total_credit_limit "
+						//+ "AND (SELECT SUM(amount / echelon_nb) FROM fidelity_credit WHERE fidelity_credit.id_fidelity_credit_account = fca.id_fidelity_credit_account AND is_repaid = FALSE) < montly_credit_limit "
+						+ "AND is_blacklisted = FALSE AND IS_DELETED = FALSE;");
 				pS.setString(1, matriculeClientXML);
 				ResultSet result = pS.executeQuery();
 
 				if (result.next()) 
 				{				
 					Integer idClient = result.getInt("id");
-					Integer echelonNb = result.getInt("echelon_nb");
+					Integer echelonNb = result.getInt("echelon_nb");					
 					
-					LOGGER.info("***** REQUEST -> Credit of " + montantFloat + "€ (" + echelonNb + " month(s)) for the fidelity account: " + matriculeClientXML + ".");			
+					LOGGER.info("***** SERVICE CF : REQUEST -> Credit of " + montantFloat + "€ (" + echelonNb + " month(s)) for the fidelity account: " + matriculeClientXML + ".");			
 					
 					// Ajout crédit
 					pS = connection.prepareStatement("INSERT INTO fidelity_credit (id_fidelity_credit_account, fidelity_credit_date, amount, repaid_amount, is_repaid, echelon_nb) VALUES "
@@ -195,19 +212,22 @@ public class SyncMessHandler {
 					pS.setInt(2, idClient);
 					pS.executeUpdate();	
 					
-					LOGGER.info("***** REQUEST -> Done.");
+					LOGGER.info("***** SERVICE CF : REQUEST -> Done.");
 				}			
 				// En cas de client inexistant ou non éligible pour crédit
 				else
 				{
+					LOGGER.info("***** ERROR -> Unknown or ineligible fidelity credit account with customer matricule : " + matriculeClientXML + ".");
 					LOGGER.info("***** Paiement by fidelity service terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}		
 			} 
 			catch (SQLException e) 
 			{
 				System.err.println("ERROR : " + e.getMessage());
-				LOGGER.info("***** Fidelity account service (create) terminated normally with: " + false + ".");
+				LOGGER.info("***** SERVICE CF : Paiement by fidelity service terminated normally with: " + false + ".");
+				System.out.println("***** END SERVICE *****");
 				return false;
 			}
 			finally
@@ -215,16 +235,19 @@ public class SyncMessHandler {
 				dbHandler.close();
 			}
 
-			LOGGER.info("***** Paiement by fidelity service terminated normally with: " + true + ".");
+			LOGGER.info("***** SERVICE CF : Paiement by fidelity service terminated normally with: " + true + ".");
+			System.out.println("***** END SERVICE *****");
 			return true;
 		}
 		else if (serviceToPerform.equals("cms_type_carte"))
 		{
-			LOGGER.info("***** Carte type service started.");
+			System.out.println("***** BEGIN SERVICE CARD TYPE *****");
+			LOGGER.info("***** SERVICE CARD TYPE : Card type service started.");
 						
 			if (actionToPerform.equals("c"))
 			{
-				LOGGER.info("***** Create a card.");
+				System.out.println("     ***** ACTION CREATE *****");
+				LOGGER.info("***** SERVICE CARD TYPE : Create a card.");
 				
 				String id = "";
 				String month_lim = "";
@@ -255,15 +278,17 @@ public class SyncMessHandler {
 					nb_ech_db = Integer.parseInt(nb_ech);
 					if (month_lim_db < 0f || tot_lim_db < 0f || nb_ech_db < 0f)
 					{
-						LOGGER.info("***** ERROR -> Invalid data in request.");
-						LOGGER.info("***** Card type service (create) terminated normally with: " + false + ".");
+						LOGGER.info("***** SERVICE CARD TYPE : ERROR -> Invalid data in request.");
+						LOGGER.info("***** SERVICE CARD TYPE : Card type service (create) terminated normally with: " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 				}
 				catch (Exception e)
 				{
-					LOGGER.info("***** ERROR -> Invalid data in request.");
-					LOGGER.info("***** Card type service (create) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE CARD TYPE : ERROR -> Invalid data in request.");
+					LOGGER.info("***** SERVICE CARD TYPE : Card type service (create) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 
@@ -273,7 +298,7 @@ public class SyncMessHandler {
 					// Connexion à la BDD
 					Connection connection = dbHandler.open();
 
-					LOGGER.info("***** REQUEST -> Creation of a new card with ID : " + id + ", MONTH LIMIT : " + month_lim + ", TOTAL LIMIT : " + tot_lim + " AND WITH " + nb_ech + " ECHELONS.");			
+					LOGGER.info("***** SERVICE CARD TYPE : REQUEST -> Creation of a new card with ID : " + id + ", MONTH LIMIT : " + month_lim + ", TOTAL LIMIT : " + tot_lim + " AND WITH " + nb_ech + " ECHELONS.");			
 						
 					// Ajout carte
 					PreparedStatement pS = connection.prepareStatement("INSERT INTO loyalty_card_type(CARD_TYPE_CODE, MONTLY_CREDIT_LIMIT, TOTAL_CREDIT_LIMIT, ECHELON_NB) VALUES (?, ?, ?, ?);");
@@ -283,12 +308,13 @@ public class SyncMessHandler {
 					pS.setInt(4, nb_ech_db);
 					pS.executeUpdate();
 						
-					LOGGER.info("***** REQUEST -> Done");	
+					LOGGER.info("***** SERVICE CARD TYPE : REQUEST -> Done");	
 				} 
 				catch (SQLException e) 
 				{
 					System.err.println("ERROR : " + e.getMessage());
-					LOGGER.info("***** Card type service (create) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE CARD TYPE : Card type service (create) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 				finally
@@ -296,12 +322,14 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}				
 
-				LOGGER.info("***** Card type service (create) terminated normally with: " + true + ".");
+				LOGGER.info("***** SERVICE CARD TYPE : Card type service (create) terminated normally with: " + true + ".");
+				System.out.println("***** END SERVICE *****");
 				return true;
 			}
 			else if (actionToPerform.equals("m"))
 			{
-				LOGGER.info("***** Modify a card.");
+				System.out.println("     ***** ACTION UPDATE *****");
+				LOGGER.info("***** SERVICE CARD TYPE : Modify a card.");
 			
 				NamedNodeMap attrs = xml.getDocumentElement().getChildNodes().item(0).getAttributes();
 				String id = attrs.item(0).getTextContent();
@@ -331,15 +359,17 @@ public class SyncMessHandler {
 					nb_ech_db = Integer.parseInt(nb_ech);
 					if (month_lim_db < 0f || tot_lim_db < 0f || nb_ech_db < 0f)
 					{
-						LOGGER.info("***** ERROR -> Invalid data in request.");
-						LOGGER.info("***** Card type service (update) terminated normally with: " + false + ".");
+						LOGGER.info("***** SERVICE CARD TYPE : ERROR -> Invalid data in request.");
+						LOGGER.info("***** SERVICE CARD TYPE : Card type service (update) terminated normally with: " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 				}
 				catch (Exception e)
 				{
-					LOGGER.info("***** ERROR -> Invalid data in request.");
-					LOGGER.info("***** Card type service (update) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE CARD TYPE : ERROR -> Invalid data in request.");
+					LOGGER.info("***** SERVICE CARD TYPE : Card type service (update) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 
@@ -349,7 +379,7 @@ public class SyncMessHandler {
 					// Connexion à la BDD
 					Connection connection = dbHandler.open();
 
-					LOGGER.info("***** REQUEST -> Modification of the card with ID : " + id + ", with the following values -> MONTH LIMIT : " + month_lim + ", TOTAL LIMIT : " + tot_lim + " AND WITH " + nb_ech + " ECHELONS.");			
+					LOGGER.info("***** SERVICE CARD TYPE : REQUEST -> Modification of the card with ID : " + id + ", with the following values -> MONTH LIMIT : " + month_lim + ", TOTAL LIMIT : " + tot_lim + " AND WITH " + nb_ech + " ECHELONS.");			
 						
 					// Modifier carte
 					PreparedStatement pS = connection.prepareStatement("UPDATE loyalty_card_type SET MONTLY_CREDIT_LIMIT = ?, TOTAL_CREDIT_LIMIT = ?, ECHELON_NB = ? WHERE CARD_TYPE_CODE = ?;");
@@ -359,12 +389,13 @@ public class SyncMessHandler {
 					pS.setString(4, id);
 					pS.executeUpdate();
 						
-					LOGGER.info("***** REQUEST -> Done");	
+					LOGGER.info("***** SERVICE CARD TYPE : REQUEST -> Done");	
 				} 
 				catch (SQLException e) 
 				{
 					System.err.println("ERROR : " + e.getMessage());	
-					LOGGER.info("***** Card type service (update) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE CARD TYPE : Card type service (update) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 				finally
@@ -372,12 +403,14 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}	
 
-				LOGGER.info("***** Card type service (update) terminated normally with: " + true + ".");
+				LOGGER.info("***** SERVICE CARD TYPE : Card type service (update) terminated normally with: " + true + ".");
+				System.out.println("***** END SERVICE *****");
 				return true;
 			}
 			else if (actionToPerform.equals("s"))
 			{
-				LOGGER.info("***** Delete a card.");
+				System.out.println("     ***** ACTION DELETE *****");
+				LOGGER.info("***** SERVICE CARD TYPE : Delete a card.");
 				
 				NamedNodeMap attrs = xml.getDocumentElement().getChildNodes().item(0).getAttributes();
 				String id_old = attrs.item(0).getTextContent();
@@ -385,8 +418,9 @@ public class SyncMessHandler {
 				
 				if (id_old == null || id_new == null)
 				{
-					LOGGER.info("***** ERROR -> Invalid data in request.");
-					LOGGER.info("***** Card type service (delete) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE CARD TYPE : ERROR -> Invalid data in request.");
+					LOGGER.info("***** SERVICE CARD TYPE : Card type service (delete) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 
@@ -396,7 +430,7 @@ public class SyncMessHandler {
 					// Connexion à la BDD
 					Connection connection = dbHandler.open();
 
-					LOGGER.info("***** REQUEST -> Delete the card with ID: " + id_old + " and replace it with " + id_new + ".");			
+					LOGGER.info("***** SERVICE CARD TYPE : REQUEST -> Delete the card with ID: " + id_old + " and replace it with " + id_new + ".");			
 						
 					// Récupérer l'ID de la nouvelle carte
 					PreparedStatement ps = connection.prepareStatement("SELECT ID_LOYALTY_CARD_TYPE FROM loyalty_card_type WHERE CARD_TYPE_CODE = ?;");
@@ -412,8 +446,9 @@ public class SyncMessHandler {
 					}
 					else
 					{
-						LOGGER.info("***** ERROR -> Unknown fidelity card type for id: " + id_old + ".");
-						LOGGER.info("***** Card type service (delete) terminated normally with: " + false + ".");
+						LOGGER.info("***** SERVICE CARD TYPE : ERROR -> Unknown fidelity card type for id: " + id_old + ".");
+						LOGGER.info("***** SERVICE CARD TYPE : Card type service (delete) terminated normally with: " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 					
@@ -428,8 +463,9 @@ public class SyncMessHandler {
 					}
 					else
 					{
-						LOGGER.info("***** ERROR -> Unknown fidelity card type for id: " + id_new + ".");
-						LOGGER.info("***** Card type service (delete) terminated normally with: " + false + ".");
+						LOGGER.info("***** SERVICE CARD TYPE : ERROR -> Unknown fidelity card type for id: " + id_new + ".");
+						LOGGER.info("***** SERVICE CARD TYPE : Card type service (delete) terminated normally with: " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 					
@@ -444,12 +480,13 @@ public class SyncMessHandler {
 					ps.setString(1, id_old);
 					ps.executeUpdate();
 						
-					LOGGER.info("***** REQUEST -> Done");	
+					LOGGER.info("***** SERVICE CARD TYPE : REQUEST -> Done");	
 				} 
 				catch (SQLException e) 
 				{
 					System.err.println("ERROR : " + e.getMessage());	
-					LOGGER.info("***** Card type service (delete) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE CARD TYPE : Card type service (delete) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 				finally
@@ -457,21 +494,25 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}	
 
-				LOGGER.info("***** Card type service (delete) terminated normally with: " + true + ".");
+				LOGGER.info("***** SERVICE CARD TYPE : Card type service (delete) terminated normally with: " + true + ".");
+				System.out.println("***** END SERVICE *****");
 				return true;
 			}
 			else
 			{
-				LOGGER.severe("***** ERROR: Unknown action (" + actionToPerform + ") for card type service.");
+				LOGGER.severe("***** SERVICE CARD TYPE : ERROR: Unknown action (" + actionToPerform + ") for card type service.");
+				System.out.println("***** END SERVICE *****");
 				return false;
 			}
 		}
 		else if (serviceToPerform.equals("cms_compte_cf"))
 		{
-			LOGGER.info("***** Fidelity account service started.");
+			System.out.println("***** BEGIN SERVICE FIDELITY ACCOUNT *****");
+			LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service started.");
 			if (actionToPerform.equals("c"))
 			{
-				LOGGER.info("***** Create a new account.");
+				System.out.println("     ***** ACTION CREATE *****");
+				LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Create a new account.");
 				
 				String matriculeClientXML = null;
 				String BICXML = null;
@@ -502,15 +543,17 @@ public class SyncMessHandler {
 					// En cas d'absence de données dans le XML
 					if (matriculeClientXML == null || BICXML == null || IBANXML == null || idTypeCfXML == null) 
 					{
-						LOGGER.info("***** ERROR -> Missing data in request ('matricule_client' or 'BIC' or 'IBAN' or 'id_type_cf').");
-						LOGGER.info("***** Fidelity account service (create) terminated normally with : " + false + ".");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Missing data in request ('matricule_client' or 'BIC' or 'IBAN' or 'id_type_cf').");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (create) terminated normally with : " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 				}
 				else
 				{
-					LOGGER.info("***** ERROR -> Missing balise 'compte_cf' in request.");
-					LOGGER.info("***** Fidelity account service (create) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Missing balise 'compte_cf' in request.");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (create) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 				
@@ -529,7 +572,7 @@ public class SyncMessHandler {
 					{				
 						Integer idCardType = result.getInt("id");
 						
-						LOGGER.info("***** REQUEST -> Creation of fidelity credit account for customer with matricule: " + matriculeClientXML + ".");		
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : REQUEST -> Creation of fidelity credit account for customer with matricule: " + matriculeClientXML + ".");		
 						
 						// Ajout du compte client fidélité
 						pS = connection.prepareStatement("INSERT INTO fidelity_credit_account "
@@ -539,21 +582,23 @@ public class SyncMessHandler {
 						pS.setString(2, matriculeClientXML);
 						pS.executeUpdate();
 						
-						LOGGER.info("***** REQUEST -> Done.");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : REQUEST -> Done.");
 					}
 					// En cas de type de carte inexistant
 					else 
 					{
-						LOGGER.info("***** ERROR -> Unknown fidelity card type for id: " + idTypeCfXML + ".");
-						LOGGER.info("***** Fidelity account (create) service terminated normally with: " + false + ".");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Unknown fidelity card type for id: " + idTypeCfXML + ".");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account (create) service terminated normally with: " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 				} 
 				catch (SQLException e) 
 				{
 					System.err.println("ERROR : " + e.getMessage());
-					LOGGER.info("***** ERROR -> Duplicate fidelity credit account for customer matricule: " + matriculeClientXML + ".");
-					LOGGER.info("***** Fidelity account service (create) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Duplicate fidelity credit account for customer matricule: " + matriculeClientXML + ".");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (create) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 				finally
@@ -561,12 +606,14 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}
 				
-				LOGGER.info("***** Fidelity account service (create) terminated normally with: " + true + ".");
+				LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (create) terminated normally with: " + true + ".");
+				System.out.println("***** END SERVICE *****");
 				return true;
 			}
 			else if (actionToPerform.equals("m"))
 			{
-				LOGGER.info("***** Modify an account.");
+				System.out.println("     ***** ACTION UPDATE *****");
+				LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Modify an account.");
 				
 				String matriculeClientXML = null;
 				String BICXML = null;
@@ -598,15 +645,17 @@ public class SyncMessHandler {
 					// En cas d'absence de données dans le XML
 					if (matriculeClientXML == null || BICXML == null || IBANXML == null || idTypeCfXML == null) 
 					{
-						LOGGER.info("***** ERROR -> Missing data in request ('matricule_client' or 'BIC' or 'IBAN' or 'id_type_cf').");
-						LOGGER.info("***** Fidelity account service (update) terminated normally with : " + false + ".");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Missing data in request ('matricule_client' or 'BIC' or 'IBAN' or 'id_type_cf').");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (update) terminated normally with : " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 				}
 				else
 				{
-					LOGGER.info("***** ERROR -> Missing balise 'compte_cf' in request.");
-					LOGGER.info("***** Fidelity account service (update) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Missing balise 'compte_cf' in request.");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (update) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 				
@@ -634,7 +683,7 @@ public class SyncMessHandler {
 						{				
 							Integer idCardType = result.getInt("id");
 						
-							LOGGER.info("***** REQUEST -> Modify fidelity credit account for customer with matricule: " + matriculeClientXML + ".");		
+							LOGGER.info("***** SERVICE FIDELITY ACCOUNT : REQUEST -> Modify fidelity credit account for customer with matricule: " + matriculeClientXML + ".");		
 							
 							// Modification du compte client fidélité
 							pS = connection.prepareStatement("UPDATE fidelity_credit_account SET id_loyalty_card_type = ? WHERE id_fidelity_credit_account = ?;");
@@ -642,28 +691,31 @@ public class SyncMessHandler {
 							pS.setInt(2, idAccount);
 							pS.executeUpdate();
 							
-							LOGGER.info("***** REQUEST -> Done.");
+							LOGGER.info("***** SERVICE FIDELITY ACCOUNT : REQUEST -> Done.");
 						}
 						// En cas de type de carte inexistant
 						else 
 						{
-							LOGGER.info("***** ERROR -> Unknown fidelity card type for id: " + idTypeCfXML + ".");
-							LOGGER.info("***** Fidelity account (delete) service terminated normally with: " + false + ".");
+							LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Unknown fidelity card type for id: " + idTypeCfXML + ".");
+							LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account (delete) service terminated normally with: " + false + ".");
+							System.out.println("***** END SERVICE *****");
 							return false;
 						}
 					}
 					// En cas de client inexistant
 					else 
 					{
-						LOGGER.info("***** ERROR -> Unknown customer with matricule: " + matriculeClientXML + ".");
-						LOGGER.info("***** Fidelity account (update) service terminated normally with: " + false + ".");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Unknown customer with matricule: " + matriculeClientXML + ".");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account (update) service terminated normally with: " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 				} 
 				catch (SQLException e) 
 				{
 					System.err.println("ERROR : " + e.getMessage());
-					LOGGER.info("***** Fidelity account service (update) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (update) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 				finally
@@ -671,12 +723,14 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}
 				
-				LOGGER.info("***** Fidelity account service (update) terminated normally with: " + true + ".");
+				LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (update) terminated normally with: " + true + ".");
+				System.out.println("***** END SERVICE *****");
 				return true;
 			}
 			else if (actionToPerform.equals("s"))
 			{
-				LOGGER.info("***** Delete an account.");
+				System.out.println("     ***** ACTION DELETE *****");
+				LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Delete an account.");
 				
 				String matriculeClientXML = null;
 
@@ -690,8 +744,9 @@ public class SyncMessHandler {
 				// En cas d'absence de données dans le XML
 				if (matriculeClientXML == null) 
 				{
-					LOGGER.info("***** ERROR -> Missing data in request ('compte_cf' balise or 'matricule_client').");
-					LOGGER.info("***** Fidelity account service (delete) terminated normally with : " + false + ".");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Missing data in request ('compte_cf' balise or 'matricule_client').");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (delete) terminated normally with : " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}		
 				
@@ -710,27 +765,29 @@ public class SyncMessHandler {
 					{				
 						Integer idAccount = result.getInt("id");
 						
-						LOGGER.info("***** REQUEST -> Suppression of fidelity credit account for customer with matricule: " + matriculeClientXML + ".");		
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : REQUEST -> Suppression of fidelity credit account for customer with matricule: " + matriculeClientXML + ".");		
 						
 						// Suppression du compte crédit fidélité
 						pS = connection.prepareStatement("UPDATE fidelity_credit_account SET is_deleted = TRUE WHERE id_fidelity_credit_account = ?");
 						pS.setInt(1, idAccount);
 						pS.executeUpdate();
 						
-						LOGGER.info("***** REQUEST -> Done.");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : REQUEST -> Done.");
 					}
 					// En cas de client inexistant
 					else 
 					{
-						LOGGER.info("***** ERROR -> Unknown customer with matricule: " + matriculeClientXML + ".");
-						LOGGER.info("***** Fidelity account (delete) service terminated normally with: " + false + ".");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : ERROR -> Unknown customer with matricule: " + matriculeClientXML + ".");
+						LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account (delete) service terminated normally with: " + false + ".");
+						System.out.println("***** END SERVICE *****");
 						return false;
 					}
 				} 
 				catch (SQLException e) 
 				{
 					System.err.println("ERROR : " + e.getMessage());
-					LOGGER.info("***** Fidelity account service (delete) terminated normally with: " + false + ".");
+					LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (delete) terminated normally with: " + false + ".");
+					System.out.println("***** END SERVICE *****");
 					return false;
 				}
 				finally
@@ -738,29 +795,33 @@ public class SyncMessHandler {
 					dbHandler.close();
 				}
 				
-				LOGGER.info("***** Fidelity account service (delete) terminated normally with: " + true + ".");
+				LOGGER.info("***** SERVICE FIDELITY ACCOUNT : Fidelity account service (delete) terminated normally with: " + true + ".");
+				System.out.println("***** END SERVICE *****");
 				return true;
 			}
 			else
 			{
-				LOGGER.severe("***** ERROR: Unknown action (" + actionToPerform + ") for fidelity account service.");
+				LOGGER.severe("***** SERVICE FIDELITY ACCOUNT : ERROR: Unknown action (" + actionToPerform + ") for fidelity account service.");
+				System.out.println("***** END SERVICE *****");
 				return false;
 			}			
 		}
 		else
 		{
-			LOGGER.severe("***** ERROR: Unknown service.");
+			LOGGER.severe("***** MONETIQUE ERROR: Unknown service.");
 			return false;
 		}
 	}
 
 	private static boolean getBankPaiement() 
 	{
-		LOGGER.info("***** Bank Paiement service call started.");		
+		System.out.println("     ***** BEGIN BANK *****");
+		LOGGER.info("***** BANK SERVICE : Bank Paiement service call started.");		
 		Random rnd = new Random();
 		Integer myRnd = rnd.nextInt(100);
 		
-		LOGGER.info("***** Bank Paiement service call stopped with : " + (myRnd < 70) + ".");
+		LOGGER.info("***** BANK SERVICE : Bank Paiement service call stopped with : " + (myRnd < 70) + ".");
+		System.out.println("     ***** END BANK *****");
 		return myRnd < 70;
 	}
 
