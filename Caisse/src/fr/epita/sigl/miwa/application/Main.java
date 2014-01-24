@@ -158,7 +158,7 @@ public class Main {
 			myXML += "<ARTICLE nomarticle=\"saumon\" refarticle=\"12121578\" prix=\"13.45\" promotion=\"0\" />";
 			myXML += "<ARTICLE nomarticle=\"truite\" refarticle=\"6754287452\" prix=\"16.20\" promotion=\"0\" />";
 			myXML += "<ARTICLE nomarticle=\"thon\" refarticle=\"6724826748\" prix=\"3.10\" promotion=\"5\" />";
-			myXML += "<ARTICLE nomarticle=\"oasis\" refarticle=\"13751734875\" prix=\"2.32\" promotion=\"0\" />";
+			myXML += "<ARTICLE nomarticle=\"oasis\" refarticle=\"13751734875\" prix=\"2.67\" promotion=\"0\" />";
 			myXML += "</ARTICLES>";
 			//XmlParser.ParseBOString(myXML);
 			
