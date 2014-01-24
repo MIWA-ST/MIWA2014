@@ -17,7 +17,6 @@ public class FileManager
 		try {
 			
 			File file = new File("C:/git_repository/miwa_env/LoacalRepository/BO/" + fileName);
-		    System.out.println("pomme");
 
 			// if file exists, then delete it
 			if (file.exists()) {
@@ -30,7 +29,6 @@ public class FileManager
 			BufferedWriter bw = new BufferedWriter(fw);
 			bw.write(content);
 			bw.close();
-			
 			
 //	        FileOutputStream out = new FileOutputStream(" C:\\git_repository\\miwa_env\\LoacalRepository\\BO\\" + fileName);
 //		    PrinterWriter writer = new PrinterWriter(BufferedWriter(new OutputStreamWriter(out, "utf-8")));

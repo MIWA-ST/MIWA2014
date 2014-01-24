@@ -100,37 +100,32 @@ public class DomParserCashRegister extends DomParser
 		String header = DomParserHelper.getHeader(xml);
 		String body = DomParserHelper.getBody(xml);
 		
-		System.out.println(header);
-		
 		this.setXml(header);
 		this.updateDoc();
 	
 		sale.dateAndTime= Convert.stringToDate(DomParserHelper.getNodeAttr("ENTETE", "date", this.doc.getChildNodes()), "AAAA-MM-JJ");
 		
-		System.out.println("===>" + body);
 		this.setXml(body);
 		
 		this.updateDoc();
 		
 
 		Node saleNode = DomParserHelper.getNode("TICKETVENTE", this.doc);
-		sale.customer = DomParserHelper.getNodeAttr("refclient", saleNode);
-		sale.paymentMeans = DomParserHelper.getNodeAttr("moyenpaiement", saleNode);			
+		sale.customerNumber = DomParserHelper.getNodeAttr("refclient", saleNode);
+		sale.paymentMeans = DomParserHelper.getNodeAttr("moyenpayement", saleNode);			
 
-		List<Node> articleNodes = DomParserHelper.getNodes("ARTICLE", saleNode.getChildNodes());
+		List<Node> articleNodes = DomParserHelper.getNodes("ARTICLE", saleNode);
 		
-			for (Node articleNode : articleNodes)
-			{
-				Article article = new Article();
+		for (Node articleNode : articleNodes)
+		{
+			Article article = new Article();
+		
+			article.reference = DomParserHelper.getNodeAttr("refarticle", articleNode);
+			article.quantity = DomParserHelper.getNodeAttr("quantite", articleNode);
+			article.salesPrice = DomParserHelper.getNodeAttr("prix", articleNode);
 			
-				article.reference = DomParserHelper.getNodeAttr("refarticle", articleNode);
-				article.quantity = DomParserHelper.getNodeAttr("quantite", articleNode);
-				article.salesPrice = DomParserHelper.getNodeAttr("prix", articleNode);
-				
-				sale.articles.add(article);
-			}
-
-		sale.print();
+			sale.articles.add(article);
+		}
 		
 		return sale;
 	}

@@ -17,6 +17,7 @@ import fr.epita.sigl.miwa.bo.object.Sale;
 import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
 import fr.epita.sigl.miwa.bo.parser.DomParserStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugBusinessIntelligence;
+import fr.epita.sigl.miwa.bo.plug.PlugReferential;
 import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
 import fr.epita.sigl.miwa.bo.util.Test;
@@ -37,7 +38,7 @@ public class Main {
 			AsyncMessageException {
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		Conf.getInstance();
-		SyncMessFactory.initSyncMessReceiver();	
+		SyncMessFactory.initSyncMessReceiver();
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
@@ -49,14 +50,12 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		/*
+
 		// BO => GC demande de réassort
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
 		send(PlugStoreManagement.restockRequest, EApplication.GESTION_COMMERCIALE);
-		System.out.println("***** demande de réassort envoyé à la GC");
-		*/
-		
+		System.out.println("***** demande de réassort envoyé à la GC"); // mettre + d'infos
+
 		/*
 		// BO => BI envoi des vente par catégorie
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
@@ -70,7 +69,7 @@ public class Main {
 			AsyncFileFactory.getInstance().getFileManager().send("ventedetaille.xml", EApplication.BI);
 			System.out.println("***** Ventes détaillées envoyés à la BI");
 		*/
-		
+
 		/*
 		// BO => GC envoi niveau de stock
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().

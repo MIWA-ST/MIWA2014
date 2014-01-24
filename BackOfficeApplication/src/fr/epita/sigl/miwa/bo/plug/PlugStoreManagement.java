@@ -18,12 +18,12 @@ public class PlugStoreManagement {
 		"<DATEBC>20130427</DATEBC>" + // AAAAMMJJ
 		"<ARTICLES>" +
 			"<ARTICLE>" +
-				"<REFERENCE>08deb933-bb39-411d-b0ee-59b28812</REFERENCE>" +
-				"<QUANTITE>265000</QUANTITE>" +
+				"<REFERENCE>05280cc5-6804-4687-a39b-6c0446df</REFERENCE>" +
+				"<QUANTITE>12</QUANTITE>" +
 				"<CATEGORIE>001</CATEGORIE>" +
 			"</ARTICLE>" +
 			"<ARTICLE>" +
-				"<REFERENCE>292f8025-58bf-498a-a092-1404d30f</REFERENCE>" +
+				"<REFERENCE>096252df-1961-4133-a9a4-aa9debda</REFERENCE>" +
 				"<QUANTITE>12</QUANTITE>" +
 				"<CATEGORIE>001</CATEGORIE>" +
 			"</ARTICLE>" +
@@ -141,15 +141,18 @@ public class PlugStoreManagement {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static void getstockLevel(ArticleList articlesSource)
+	public static ArticleList getstockLevel(ArticleList articlesSource)
 	{
-		for (Article article : articlesSource.articles)
+		ArticleList articleResult = articlesSource;
+		for (Article article : articleResult.articles)
 		{
 			// Temporaire, attente de BDD
 			if (article != null)
 			{
 				article.quantity = "23";
+				article.capacity = "42";
 			}
 		}
+		return articleResult;
 	}
 }

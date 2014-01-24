@@ -253,6 +253,10 @@ public class StoreManagementXMLConstructor extends XMLConstructor
 			this.printText(article.quantity);
 			this.closeNode("QUANTITE", 0);
 
+			this.openNodeWithoutNewLine("CAPACITE", null, 3);
+			this.printText(article.capacity);
+			this.closeNode("CAPACITE", 0);
+
 			this.closeNode("ARTICLE", 2);
 		}
 		

@@ -8,11 +8,32 @@ public class ArticleAndLocalPriceAndPromotion
 {
 	public Date date = null;
 	public List<Article> articles = null;
-	
+
+	public String number = null;
+	public String refclient = null;
+	public String refshop = null;
+	public String totalamount = null;
+
 	public ArticleAndLocalPriceAndPromotion()
 	{
 		this.articles = new ArrayList<Article>();
 	}
+	
+	public ArticleAndLocalPriceAndPromotion(ArticleList articles)
+	{
+		this.articles = new ArrayList<Article>();
+		this.number = articles.number;
+		this.refclient = articles.refclient;
+		this.refshop = articles.refshop;
+		this.totalamount = articles.totalamount;
+		this.date = articles.date;
+		
+		for (Article artiste : articles.articles)
+		{
+			this.articles.add(artiste);
+		}
+	}
+	
 	public void print()
 	{
 		System.out.println("***** ==========ARTICLE=AND=LOCAL=PRICE=AND=PROMOTION=BEGIN==========");

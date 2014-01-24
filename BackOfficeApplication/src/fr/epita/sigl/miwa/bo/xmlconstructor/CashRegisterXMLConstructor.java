@@ -37,6 +37,7 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 		List<NodeAttribute> headerAttributes = new ArrayList<NodeAttribute>();
 		headerAttributes.add(new NodeAttribute("objet", "article-prix-promo"));
 		headerAttributes.add(new NodeAttribute("source", "bo"));
+		System.out.println("toto : " + articleAndLocalPriceAndPromotion.date);
 		headerAttributes.add(new NodeAttribute("date", new SimpleDateFormat("YYYY-MM-dd").format(articleAndLocalPriceAndPromotion.date)));
 		this.openClosedNode("ENTETE", headerAttributes, 0);
 		
