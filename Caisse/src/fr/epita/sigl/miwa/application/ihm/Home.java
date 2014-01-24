@@ -174,11 +174,6 @@ public class Home {
 				Produit current = new Produit();
 				while (e.hasNext()) {
 					current = e.next();
-					if (current.getRef() == (Long.parseLong(prod))) {
-						selectedproducts.add(current);
-						System.out.println("Ajout de : " + current.getRef()
-								+ " dans le panier");
-					}
 				}
 				// je l'add dans la liste visuel
 				listproduct.add(select + "-*" + nbtext.getText());

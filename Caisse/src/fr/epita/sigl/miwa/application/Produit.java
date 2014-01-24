@@ -3,7 +3,7 @@ package fr.epita.sigl.miwa.application;
 public class Produit {
 	private int id = 0;
 	private String nom = "";
-	private long ref = 0;
+	private String ref = "";
 	private float prix = 0;
 	private int promo = 0;
 	private int quantite = 0;
@@ -11,12 +11,12 @@ public class Produit {
 	public Produit(String string, String string2, String string3, String string4, String string5) {
 		this.id = Integer.parseInt(string);
 		this.prix = Float.parseFloat(string2);
-		this.setRef(Long.parseLong(string3));
+		this.setRef(string3);
 		this.nom = string4;
 		this.promo = Integer.parseInt(string5);
 	}
 
-	public Produit(int id, float prix, Long ref, String nom, int promo)
+	public Produit(int id, float prix, String ref, String nom, int promo)
 	{
 		this.id = id;
 		this.ref = ref;
@@ -62,11 +62,11 @@ public class Produit {
 		this.promo = promo;
 	}
 
-	public long getRef() {
+	public String getRef() {
 		return ref;
 	}
 
-	public void setRef(long ref) {
+	public void setRef(String ref) {
 		this.ref = ref;
 	}
 
