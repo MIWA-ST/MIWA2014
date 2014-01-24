@@ -64,10 +64,11 @@ public class Vente {
 					System.out.println("Pas de produit, vente annulée");
 				else {
 					int minclient = 0;
-					int maxclient = 4000;
+					int maxclient = 5;
 					int fid = (int) (Math.random() * (maxclient - minclient))
 							+ minclient;
 					String idClient = "";
+					System.out.println("SI FID VAUT 1 ALORS CLIENT FIDELISE : " + fid);
 					// je suis fidèle
 					//if (fid == 1) {
 					if (true){	
@@ -96,6 +97,8 @@ public class Vente {
 								idClient = el;
 						}
 					}
+					
+					System.out.println("id du client : " + idClient);
 					// random sur le paiment
 					int lower = 0;
 					int higher = 3;
@@ -108,11 +111,13 @@ public class Vente {
 						if (fid == 1) {
 							String updatedTicket = XmlGenerator.AskReducToBO(
 									selectedproducts, idClient, type);
+							{
 							String updatedPrice = XmlParser
 									.getUpdatedPrice(updatedTicket);
 							selectedproducts = XmlParser
 									.getUpdatedProducts(updatedTicket);
 							prixtotal = Float.parseFloat(updatedPrice);
+							}
 						}
 						System.out.println(prixtotal);
 						System.out.println("paiement espece ok");
@@ -140,11 +145,14 @@ public class Vente {
 						if (fid == 1) {
 							String updatedTicket = XmlGenerator.AskReducToBO(
 									selectedproducts, idClient, type);
+							if (updatedTicket == null)
+							{
 							String updatedPrice = XmlParser
 									.getUpdatedPrice(updatedTicket);
 							selectedproducts = XmlParser
 									.getUpdatedProducts(updatedTicket);
 							prixtotal = Float.parseFloat(updatedPrice);
+							}
 						}
 						Boolean result = XmlGenerator.CheckCbPaymentWithMo(""
 								+ prixtotal,
@@ -156,6 +164,7 @@ public class Vente {
 							System.out.println("CB OK");
 						else {
 							System.out.println("CB NOK");
+							System.out.println("paiement par espece finalement : ok");
 							type = "esp";
 						}
 					}
@@ -163,16 +172,21 @@ public class Vente {
 					else {
 						type = "cf";
 						System.out.println("paiement par carte de fidelité");
+						System.out.println("si fidèle doit être égale à 1 : " + fid);
 
+						//TODO SI JE RENTRE ICI MAIS QUE JE NE SUIS PAS FIDELISE (fid != 1), ERREUR ? PAIEMENT PAR ESPECE
 						// je veux mettre à jour le ticket (client fid)
 						if (fid == 1) {
 							String updatedTicket = XmlGenerator.AskReducToBO(
 									selectedproducts, idClient, type);
+							if (updatedTicket == null)
+							{
 							String updatedPrice = XmlParser
 									.getUpdatedPrice(updatedTicket);
 							selectedproducts = XmlParser
 									.getUpdatedProducts(updatedTicket);
 							prixtotal = Float.parseFloat(updatedPrice);
+							}
 						}
 
 						XmlGenerator.CheckFidPaymentWithMo("" + prixtotal,
