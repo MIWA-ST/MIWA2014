@@ -45,9 +45,9 @@ public class XmlParser {
 
 					Main.bdd.insert("insert into produit (produit_prix, produit_ref, produit_nom, produit_pourcentagepromo) values ("
 							+ prix
-							+ ","
-							+ ref
 							+ ",'"
+							+ ref
+							+ "','"
 							+ nom
 							+ "',"
 							+ promotion
@@ -102,13 +102,13 @@ public class XmlParser {
 							.update("update produit set produit_prix = " + prix
 									+ ", produit_nom = '" + nom
 									+ "', produit_pourcentagepromo = "
-									+ promotion + "where produit_ref = " + ref);
+									+ promotion + "where produit_ref = '" + ref + "'");
 					if (n == 0)
 						Main.bdd.insert("insert into produit (produit_prix, produit_ref, produit_nom, produit_pourcentagepromo) values ("
 								+ prix
-								+ ","
-								+ ref
 								+ ",'"
+								+ ref
+								+ "','"
 								+ nom
 								+ "',"
 								+ promotion + ")");
