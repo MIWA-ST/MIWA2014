@@ -48,7 +48,7 @@ public class BIController {
 
 	private boolean hasStockGC = false;
 
-	private boolean hasMDMData = true;
+	private boolean hasMDMData = false;
 
 	private boolean hasSaleInternet = false;
 
@@ -56,9 +56,9 @@ public class BIController {
 
 	private boolean hasPromoBO = false;
 
-	private boolean hasDetailSaleBOForSegmentation = true;
+	private boolean hasDetailSaleBOForSegmentation = false;
 
-	private boolean hasDetailSaleInternetSegmentation = true;
+	private boolean hasDetailSaleInternetSegmentation = false;
 
 	private BIController(){
 	}

@@ -2,27 +2,27 @@ package fr.epita.sigl.miwa.application.statistics;
 
 public class TemporarySaleStatistic {
 
-	private int ca;
+	private float ca;
 
 	private int nbSoldProducts;
 
 	private String source;
+	
 	public TemporarySaleStatistic() {
-		super();
 	}
-	public TemporarySaleStatistic(int ca, int nbSoldProducts, String source) {
+	public TemporarySaleStatistic(float ca, int nbSoldProducts, String source) {
 		this.ca = ca;
 		this.nbSoldProducts = nbSoldProducts;
 		this.source = source;
 	}
 
 
-	public int getCa() {
+	public float getCa() {
 		return ca;
 	}
 
 
-	public void setCa(int ca) {
+	public void setCa(float ca) {
 		this.ca = ca;
 	}
 
@@ -46,10 +46,7 @@ public class TemporarySaleStatistic {
 		this.source = source;
 	}
 
-
-
-
-	public void addCA(int ca){
+	public void addCA(float ca){
 		this.ca += ca;
 	}
 

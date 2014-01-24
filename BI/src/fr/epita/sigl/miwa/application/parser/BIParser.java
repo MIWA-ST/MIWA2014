@@ -234,9 +234,9 @@ public class BIParser {
 				sale.setSoldQty(Integer.valueOf(tmpInfo));
 				sale.setProductCategory(saleNode.getAttributes().getNamedItem("ref-categorie").getNodeValue());
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_fournisseur").getNodeValue();
-				sale.setSupplierTotal(Integer.valueOf(tmpInfo));
+				sale.setSupplierTotal(Float.valueOf(tmpInfo));
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_vente").getNodeValue();
-				sale.setSalesTotal(Integer.valueOf(tmpInfo));
+				sale.setSalesTotal(Float.valueOf(tmpInfo));
 				sale.setSource("bo");
 
 				saleList.add(sale);
@@ -361,9 +361,9 @@ public class BIParser {
 				sale.setSoldQty(Integer.valueOf(tmpInfo));
 				sale.setProductCategory(saleNode.getAttributes().getNamedItem("ref-categorie").getNodeValue());
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_fournisseur").getNodeValue();
-				sale.setSupplierTotal(Integer.valueOf(tmpInfo));
+				sale.setSupplierTotal(Float.valueOf(tmpInfo));
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_vente").getNodeValue();
-				sale.setSalesTotal(Integer.valueOf(tmpInfo));
+				sale.setSalesTotal(Float.valueOf(tmpInfo));
 				sale.setSource("internet");
 
 				saleList.add(sale);

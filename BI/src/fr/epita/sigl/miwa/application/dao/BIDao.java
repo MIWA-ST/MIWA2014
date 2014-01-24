@@ -599,9 +599,9 @@ public class BIDao {
 					sale.setSoldQty(soldQty);
 					String categoryName = result.getString("categoryname");
 					sale.setProductCategory(categoryName);
-					Integer supplierTotal = result.getInt("supplierTotal");
+					Float supplierTotal = result.getFloat("supplierTotal");
 					sale.setSupplierTotal(supplierTotal);
-					Integer salesTotal = result.getInt("salestotal");
+					Float salesTotal = result.getFloat("salestotal");
 					sale.setSalesTotal(salesTotal);
 					String source = result.getString("source");
 					sale.setSource(source);

@@ -13,17 +13,16 @@ public class Sale {
    private String store;
    private Integer soldQty;
    private String productCategory;
-   private Integer supplierTotal;
-   private Integer salesTotal;
+   private Float supplierTotal;
+   private Float salesTotal;
    private String source;
    
 	public Sale() {
 	}
 
 	public Sale(Integer id, Date dateTime, String store, Integer soldQty,
-			String productCategory, Integer supplierTotal, Integer salesTotal,
+			String productCategory, Float supplierTotal, Float salesTotal,
 			String source) {
-		super();
 		this.id = id;
 		this.dateTime = dateTime;
 		this.store = store;
@@ -74,19 +73,19 @@ public class Sale {
 		this.productCategory = productCategory;
 	}
 
-	public Integer getSupplierTotal() {
+	public float getSupplierTotal() {
 		return supplierTotal;
 	}
 
-	public void setSupplierTotal(Integer supplierTotal) {
+	public void setSupplierTotal(float supplierTotal) {
 		this.supplierTotal = supplierTotal;
 	}
 
-	public Integer getSalesTotal() {
+	public Float getSalesTotal() {
 		return salesTotal;
 	}
 
-	public void setSalesTotal(Integer salesTotal) {
+	public void setSalesTotal(Float salesTotal) {
 		this.salesTotal = salesTotal;
 	}
 

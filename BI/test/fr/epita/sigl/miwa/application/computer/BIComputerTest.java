@@ -49,15 +49,15 @@ public class BIComputerTest {
 	@Test
 	public void computeSaleStatisticsTest(){
 		List<Sale> sales = new ArrayList<Sale>();
-		Sale sale1 = new Sale(1, new Date(), "Mag 1", 50, "1", 100, 100000, "BO");
+		Sale sale1 = new Sale(1, new Date(), "Mag 1", 50, "1", 100f, 100000f, "BO");
 		sales.add(sale1);
-		Sale sale2 = new Sale(2, new Date(), "Mag 1", 100, "2", 100, 100000, "BO");
+		Sale sale2 = new Sale(2, new Date(), "Mag 1", 100, "2", 100f, 100000f, "BO");
 		sales.add(sale2);
-		Sale sale3 = new Sale(3, new Date(), "Mag 1", 3, "3", 100, 100000, "BO");
+		Sale sale3 = new Sale(3, new Date(), "Mag 1", 3, "3", 100f, 100000f, "BO");
 		sales.add(sale3);
-		Sale sale4 = new Sale(4, new Date(), "Mag 1", 50, "1", 100, 100000, "BO");
+		Sale sale4 = new Sale(4, new Date(), "Mag 1", 50, "1", 100f, 100000f, "BO");
 		sales.add(sale4);
-		Sale sale5 = new Sale(5, new Date(), "Mag 1", 50, "5", 100, 100000, "BO");
+		Sale sale5 = new Sale(5, new Date(), "Mag 1", 50, "5", 100f, 100000f, "BO");
 		sales.add(sale5);
 		List<SaleStatistic> lastSaleStatistics = new ArrayList<SaleStatistic>();
 		SaleStatistic stat1 = new SaleStatistic(null, "1", 1, 100000, 10, 50, "BO");

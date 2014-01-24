@@ -14,6 +14,7 @@ import fr.epita.sigl.miwa.application.enums.EPaiementType;
 import fr.epita.sigl.miwa.application.statistics.*;
 
 public class BIComputer {
+	/** @param stocks */
 	public Map<String, List<StockStatistic>> computeStockStatistics(List<Stock> stocks) {
 		Date date = ClockClient.getClock().getHour();
 		Map<String, List<StockStatistic>> stockStatistics = new HashMap<String, List<StockStatistic>>();

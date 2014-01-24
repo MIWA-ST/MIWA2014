@@ -89,8 +89,8 @@ CREATE TABLE Sale (
   store VARCHAR(45) NOT NULL,
   soldQty VARCHAR(45) NOT NULL,
   categoryName VARCHAR(45) NOT NULL,
-  supplierTotal INT NOT NULL,
-  salesTotal INT NOT NULL,
+  supplierTotal VARCHAR(45) NOT NULL,
+  salesTotal VARCHAR(45) NOT NULL,
   source VARCHAR(10) NOT NULL,
   PRIMARY KEY (id));
 
