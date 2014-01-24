@@ -22,13 +22,13 @@ Référentiel => BO, BI, Internet
 				<PROMOTION debut="2014-01-02" fin="2014-01-17" pourcent="39" />
 			</PROMOTIONS>
 		</ARTICLE>
-		<ARTICLE reference="REF5" ean="EAN" categorie="CAT2" prix_fournisseur="33" prix_vente="68">
+		<ARTICLE reference="REF5" ean="EAN" categorie="CAT3" prix_fournisseur="33" prix_vente="68">
 			<DESCRIPTION><![CDATA[<Texte multi lignes de description du produit.>]]> </DESCRIPTION>
 			<PROMOTIONS>
 				<PROMOTION debut="2014-01-02" fin="2014-01-17" pourcent="39" />
 			</PROMOTIONS>
 		</ARTICLE>
-		<ARTICLE reference="REF9" ean="EAN" categorie="CAT2" prix_fournisseur="33" prix_vente="68">
+		<ARTICLE reference="01" ean="EAN" categorie="CAT4" prix_fournisseur="33" prix_vente="68">
 			<DESCRIPTION><![CDATA[<Texte multi lignes de description du produit.>]]> </DESCRIPTION>
 			<PROMOTIONS>
 				<PROMOTION debut="2014-01-02" fin="2014-01-17" pourcent="39" />

@@ -1,8 +1,13 @@
 package fr.epita.sigl.miwa.application.GC;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import fr.epita.sigl.miwa.application.MiwaBDDIn;
+
 public class ArticleNiveauStockRecuGC {
 	private String reference;
-	private String quantite;
+	private Integer quantite;
 	
 	public ArticleNiveauStockRecuGC()
 	{
@@ -11,7 +16,24 @@ public class ArticleNiveauStockRecuGC {
 	public ArticleNiveauStockRecuGC(String reference, String quantite)
 	{
 		this.reference = reference;
-		this.quantite = quantite;
+		this.quantite = Integer.parseInt(quantite);
+	}
+	
+	public void MAJBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		ResultSet rs = bdd.executeStatement_result("SELECT * FROM article WHERE reference='" + reference + "';");
+		
+		try {
+			if (rs.next())
+			{
+				bdd.executeStatement("UPDATE article SET stock=" + quantite + " WHERE reference='" + reference + "';");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public String print_logger()
@@ -40,11 +62,15 @@ public class ArticleNiveauStockRecuGC {
 		this.reference = reference;
 	}
 
-	public String getQuantite() {
+	public Integer getQuantite() {
 		return quantite;
 	}
 
 	public void setQuantite(String quantite) {
+		this.quantite = Integer.parseInt(quantite);
+	}
+	
+	public void setQuantite(Integer quantite) {
 		this.quantite = quantite;
 	}
 }

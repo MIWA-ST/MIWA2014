@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.application.MiwaBDDIn;
 import fr.epita.sigl.miwa.application.ParseXML;
 
 public class NiveauStockGC {
@@ -23,6 +24,12 @@ public class NiveauStockGC {
 		this.articles = articles;
 	}
 
+	public void MAJBDD()
+	{
+		for (ArticleNiveauStockRecuGC a : articles)
+			a.MAJBDD();
+	}
+	
 	public String print_logger()
 	{
 		StringBuilder result = new StringBuilder();

@@ -72,7 +72,7 @@ public class ArticleAVendreMDM {
 			}		
 			else
 			{
-				bdd.executeStatement("INSERT INTO article VALUES('" + reference + "', '" 
+				bdd.executeStatement("INSERT INTO article (reference, ean, categorie, prix_fournisseur, prix_vente, description) VALUES('" + reference + "', '" 
 			+ ean + "', '" + categorie + ""
 					+ "', " + prix_fournisseur + ""
 							+ ", '" + prix_vente + ""

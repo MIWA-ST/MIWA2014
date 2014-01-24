@@ -4,6 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +19,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.DOMOutputter;
 import org.w3c.dom.Document;
 
+import fr.epita.sigl.miwa.application.MiwaBDDIn;
 import fr.epita.sigl.miwa.application.ParseXML;
 
 public class EnvoiVenteDetailleeBI {
@@ -39,6 +44,33 @@ public class EnvoiVenteDetailleeBI {
 		this.entete = entete;
 		this.ventes = ventes;
 		this.lieu = lieu;
+	}
+	
+	public Boolean getBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		ResultSet rs = bdd.executeStatement_result("SELECT * FROM vente;");
+		
+		try {
+			while (rs.next())
+			{
+				VenteBI v = new VenteBI();
+				
+				v.setDateHeure(rs.getString("dateHeure"));
+				v.setMontant(rs.getInt("montant"));
+				v.setMoyen_paiement(rs.getString("moyen_paiement"));
+				v.setNumero_client(rs.getString("numero_client"));
+				v.getArticlesBDD(rs.getString("articles"));
+				
+				ventes.add(v);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public String sendXML()
@@ -85,6 +117,22 @@ public class EnvoiVenteDetailleeBI {
 		return null;
 	}
 	
+	public String getLieu() {
+		return lieu;
+	}
+
+	public void setLieu(String lieu) {
+		this.lieu = lieu;
+	}
+
+	public List<VenteBI> getVentes() {
+		return ventes;
+	}
+
+	public void setVentes(List<VenteBI> ventes) {
+		this.ventes = ventes;
+	}
+
 	public EnteteBI getEntete() {
 		return entete;
 	}

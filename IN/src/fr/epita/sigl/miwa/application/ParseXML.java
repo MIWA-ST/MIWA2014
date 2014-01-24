@@ -347,6 +347,8 @@ public class ParseXML {
 		for(Element e : listArticles)
 			niveauStock.getArticles().add(new ArticleNiveauStockRecuGC(e.getChildText("REFERENCE"), e.getChildText("QUANTITE")));
 		
+		niveauStock.MAJBDD();
+		
 		 LOGGER.info(niveauStock.print_logger());
 		 return true;
 	}

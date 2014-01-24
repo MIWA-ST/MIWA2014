@@ -21,7 +21,7 @@ Champs du XML :
 -->
 
 <XML>
-    <ENTETE objet="ventes détaillees" source="" date="" />
+    <ENTETE objet="ventes detaillees" source="" date="" />
     <VENTES-DETAILLEES lieu="">
         <VENTE numero_client="" montant="" moyen_paiement="" dateHeure="">
             <ARTICLES>

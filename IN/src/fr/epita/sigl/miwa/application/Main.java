@@ -68,6 +68,7 @@ public class Main {
 			
 			parser.parseMDM();
 			
+
 			
 			
 			
@@ -122,8 +123,8 @@ public class Main {
 			// Test Envoi des commandes GC
 //			List<ArticleCommandeParClientGC> articles = new ArrayList<ArticleCommandeParClientGC>();
 //			
-//			articles.add(new ArticleCommandeParClientGC("Categorie 1", "08deb933-bb39-411d-b0ee-59b28812", "77"));
-//			articles.add(new ArticleCommandeParClientGC("Categorie 2", "292f8025-58bf-498a-a092-1404d30f", "59"));
+//			articles.add(new ArticleCommandeParClientGC("Categorie 1", "01", "77"));
+//			articles.add(new ArticleCommandeParClientGC("Categorie 2", "02", "59"));
 ////			articles.add(new ArticleCommandeParClientGC("Categorie 3", "Referenc0e", "99"));
 //			
 //			EnvoiCommandeGC testEnvoiCommande = new EnvoiCommandeGC("CV56E8",
@@ -135,18 +136,29 @@ public class Main {
 //					"CHAWQUI",
 //					articles);
 //			System.out.println(testEnvoiCommande.sendXML());
+//			
+//			
 //			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(testEnvoiCommande.sendXML(), EApplication.GESTION_COMMERCIALE);
-			
+//			
 
 			
-//			List<DemandeNiveauStockArticlesGC> articles = new ArrayList<DemandeNiveauStockArticlesGC>();
-//			
-//			articles.add(new DemandeNiveauStockArticlesGC("042ef636-acbd-40b6-afcd-3c82236c"));
-//			
-//			DemandeNiveauStockGC testDmandeNiveauStock = new DemandeNiveauStockGC("CV6598", "20131225", articles);
-//			boolean result = SyncMessHandler.getSyncMessSender().sendMessage(EApplication.DEBUG, testDmandeNiveauStock.sendXML());
-//			
-//			
+			List<DemandeNiveauStockArticlesGC> articles = new ArrayList<DemandeNiveauStockArticlesGC>();
+			
+			articles.add(new DemandeNiveauStockArticlesGC("01"));
+			
+			DemandeNiveauStockGC testDmandeNiveauStock = new DemandeNiveauStockGC("CV6598", "20131225", articles);
+			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.GESTION_COMMERCIALE, testDmandeNiveauStock.sendXML());
+			
+			ParseXML parserGC = new ParseXML();
+			parserGC.readXML(result,
+					ParseXML.TYPE_LANGUAGE.STRING);
+			
+			
+			parserGC.parseGC();
+			
+			
+			
+
 			
 			
 			// Test de la MO
@@ -188,7 +200,28 @@ public class Main {
 //			EnvoiInformationVentesBI envoiInfoVenteBI = new EnvoiInformationVentesBI(enteteBI2, categories);
 //			System.out.println(envoiInfoVenteBI.sendXML());
 			
-		
+			
+			// Test BI
+			
+//			EnvoiInformationVentesBI ventes = new EnvoiInformationVentesBI();
+//			
+//			EnteteBI entete = new EnteteBI("ventes 15min", "internet", new Date());
+//			
+//			
+//			ventes.setEntete(entete);
+//			ventes.getBDD();
+//			System.out.println(ventes.sendXML());
+//			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(ventes.sendXML(), EApplication.BI);
+			
+			// Test BI 2
+			
+//			EnvoiVenteDetailleeBI ventes = new EnvoiVenteDetailleeBI();
+//			
+//			EnteteBI entete = new EnteteBI("ventes detaillees", "internet", new Date());
+//			ventes.setEntete(entete);
+//			
+//			ventes.getBDD();
+//			System.out.println(ventes.sendXML());
 			
 			
 			

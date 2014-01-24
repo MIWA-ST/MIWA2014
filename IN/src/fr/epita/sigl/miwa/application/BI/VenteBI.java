@@ -1,9 +1,13 @@
 package fr.epita.sigl.miwa.application.BI;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import fr.epita.sigl.miwa.application.MiwaBDDIn;
 
 public class VenteBI {
 	private String numero_client;
@@ -44,6 +48,24 @@ public class VenteBI {
 		return result.toString();
 	}
 	
+	public Boolean getArticlesBDD(String articlesBDD)
+	{
+		if (articlesBDD != null)
+		{
+			String articlesQuantite[] = articlesBDD.split("///");
+			for (String s : articlesQuantite)
+			{
+				String art[] = s.split("---");
+				if (art.length != 2)
+					return false;
+				articles.add(new ArticleVenteBI(art[0], Integer.parseInt(art[1])));
+			}
+			return true;
+		}
+		else
+			return false;
+	}
+	
 	public String getNumero_client() {
 		return numero_client;
 	}
@@ -67,6 +89,15 @@ public class VenteBI {
 	}
 	public void setDateHeure(Date dateHeure) {
 		this.dateHeure = dateHeure;
+	}
+	public void setDateHeure(String dateHeure) {
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			this.dateHeure = df.parse(dateHeure);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public List<ArticleVenteBI> getArticles() {

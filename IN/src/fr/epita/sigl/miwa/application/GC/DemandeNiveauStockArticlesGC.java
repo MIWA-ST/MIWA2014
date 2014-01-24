@@ -17,7 +17,7 @@ public class DemandeNiveauStockArticlesGC {
 		
 		result.append("<REFERENCE>" + this.reference + "</REFERENCE>");
 		
-		result.append("<ARTICLE>");		
+		result.append("</ARTICLE>");		
 		
 		return result.toString();
 	}
