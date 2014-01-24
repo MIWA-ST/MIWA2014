@@ -1,11 +1,17 @@
 package fr.epita.sigl.miwa.application.MDM;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
+import fr.epita.sigl.miwa.application.MiwaBDDIn;
+import fr.epita.sigl.miwa.application.ParseXML;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticlesGC;
 
 public class ArticleAVendreMDM {
+	private static final Logger LOGGER = Logger.getLogger(ParseXML.class.getName());
 	private String reference;
 	private String ean;
 	private String categorie;
@@ -16,6 +22,23 @@ public class ArticleAVendreMDM {
 	
 	public ArticleAVendreMDM()
 	{
+	}
+	
+	public ArticleAVendreMDM(String reference, String ean, String categorie,
+			String prix_fournisseur, String prix_vente, String description)
+	{
+		this.reference = reference;
+		this.ean = ean;
+		this.categorie = categorie;
+		if (prix_fournisseur != null && !prix_fournisseur.equals(""))
+			this.prix_fournisseur = Float.parseFloat(prix_fournisseur);
+		else
+			this.prix_fournisseur = 0.f;
+		if (prix_vente != null && !prix_vente.equals(""))
+			this.prix_vente = Float.parseFloat(prix_vente);
+		else
+			this.prix_vente = 0.f;
+		this.description = description;
 	}
 	
 	public ArticleAVendreMDM(String reference, String ean, String categorie,
@@ -34,6 +57,67 @@ public class ArticleAVendreMDM {
 			this.prix_vente = 0.f;
 		this.description = description;
 		this.promotions = promotions;
+	}
+	
+	public Boolean addBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		ResultSet rs = bdd.executeStatement_result("SELECT * FROM article WHERE reference='" + reference + "'");
+		
+		try {
+			if (rs.next())
+			{
+				bdd.executeStatement("UPDATE article SET ean='" + ean + "', categorie='" + categorie + "', prix_fournisseur='" + prix_fournisseur + "', prix_vente='" + prix_vente + "', description='" + description + "' WHERE reference='" + reference + "';");
+			}		
+			else
+			{
+				bdd.executeStatement("INSERT INTO article VALUES('" + reference + "', '" 
+			+ ean + "', '" + categorie + ""
+					+ "', " + prix_fournisseur + ""
+							+ ", '" + prix_vente + ""
+									+ "', '" + description + "');");
+			}
+		} catch (SQLException e) {
+			LOGGER.info("***** Erreur sql : " + e.getMessage());
+		}
+		for (PromotionArticleMDM p : promotions)
+			if (!p.addBDD())
+				return false;
+		return true;
+	}
+	
+	public Boolean deleteBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		if (!bdd.executeStatement("DELETE from promotion WHERE reference_article='" + reference + "'"))
+			return false;
+		return bdd.executeStatement("DELETE from article WHERE reference='" + reference + "'");
+	}
+	
+	public Boolean getPromotionsBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		ResultSet rs = bdd.executeStatement_result("SELECT * FROM promotion WHERE reference_article='" + reference + "'");
+
+		Integer i = 0;
+		
+		try {
+			while (rs.next())
+			{
+				i++;
+				try {
+					promotions.add(new PromotionArticleMDM(this.reference, rs.getString("debut"), rs.getString("fin"), rs.getInt("percent")));
+				} catch (SQLException e) {
+					LOGGER.info("***** Erreur SQL : " + e.getMessage());
+				}
+			}
+		} catch (SQLException e) {
+			LOGGER.info("***** Erreur SQL : " + e.getMessage());
+		}
+		return (i != 0);
 	}
 	
 	public String getReference() {

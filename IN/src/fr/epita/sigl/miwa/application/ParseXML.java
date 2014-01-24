@@ -206,14 +206,15 @@ public class ParseXML {
 			List<Element> listPromotions = promitions.getChildren("PROMOTION");
 
 			for(Element elt : listPromotions)
-				articleAVendre.getPromotions().add(new PromotionArticleMDM(elt.getAttributeValue("debut"),
+				articleAVendre.getPromotions().add(new PromotionArticleMDM(articleAVendre.getReference(), elt.getAttributeValue("debut"),
 						elt.getAttributeValue("fin"),
 						Integer.parseInt(elt.getAttributeValue("pourcent"))));
 			
 			productsClient.getArticles().add(articleAVendre);
 		}
 		
-		LOGGER.info(productsClient.print_logger());
+//		LOGGER.info(productsClient.print_logger());
+		productsClient.addBDD();
 		return true;
 	}
 
