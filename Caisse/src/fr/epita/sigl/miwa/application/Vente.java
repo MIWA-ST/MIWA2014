@@ -111,6 +111,7 @@ public class Vente {
 						if (fid == 1) {
 							String updatedTicket = XmlGenerator.AskReducToBO(
 									selectedproducts, idClient, type);
+							if (updatedTicket == "")
 							{
 							String updatedPrice = XmlParser
 									.getUpdatedPrice(updatedTicket);
@@ -145,7 +146,7 @@ public class Vente {
 						if (fid == 1) {
 							String updatedTicket = XmlGenerator.AskReducToBO(
 									selectedproducts, idClient, type);
-							if (updatedTicket == null)
+							if (updatedTicket == "")
 							{
 							String updatedPrice = XmlParser
 									.getUpdatedPrice(updatedTicket);
@@ -178,7 +179,7 @@ public class Vente {
 						if (fid == 1) {
 							String updatedTicket = XmlGenerator.AskReducToBO(
 									selectedproducts, idClient, type);
-							if (updatedTicket == null)
+							if (updatedTicket == "")
 							{
 							String updatedPrice = XmlParser
 									.getUpdatedPrice(updatedTicket);
