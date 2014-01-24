@@ -33,7 +33,7 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 		{
 			return null;
 		}
-		
+		this.openNode("XML", null, 0);
 		List<NodeAttribute> headerAttributes = new ArrayList<NodeAttribute>();
 		headerAttributes.add(new NodeAttribute("objet", "article-prix-promo"));
 		headerAttributes.add(new NodeAttribute("source", "bo"));
@@ -52,7 +52,7 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 			this.openClosedNode("ARTICLE", articleAttributes, 1);
 		}
 		this.closeNode("ARTICLES", 0);
-		
+		this.closeNode("XML", 0);
 		return this.xml;
 	}
 	

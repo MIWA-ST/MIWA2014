@@ -34,7 +34,7 @@ public class CRMXMLConstructor extends XMLConstructor
 		
 		List<NodeAttribute> ticketAttributes = new ArrayList<NodeAttribute>();
 		ticketAttributes.add(new NodeAttribute("refclient", sale.customerNumber));
-		ticketAttributes.add(new NodeAttribute("moyenpayemen", sale.paymentMeans));
+		ticketAttributes.add(new NodeAttribute("moyenpayement", sale.paymentMeans));
 		this.openNode("TICKETVENTE", ticketAttributes, 0);
 		
 
@@ -78,7 +78,7 @@ public class CRMXMLConstructor extends XMLConstructor
 		
 		List<NodeAttribute> ticketAttributes = new ArrayList<NodeAttribute>();
 		ticketAttributes.add(new NodeAttribute("refclient", sale.customerNumber));
-		ticketAttributes.add(new NodeAttribute("moyenpayemen", sale.paymentMeans));
+		ticketAttributes.add(new NodeAttribute("moyenpayement", sale.paymentMeans));
 		this.openNode("TICKETVENTE", ticketAttributes, 0);
 
 		for (Article article : sale.articles)

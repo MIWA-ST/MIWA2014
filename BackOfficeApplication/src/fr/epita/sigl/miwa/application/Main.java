@@ -51,11 +51,28 @@ public class Main {
 			e.printStackTrace();
 		}
 
+		/*
 		// BO => GC demande de réassort
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
 		send(PlugStoreManagement.restockRequest, EApplication.GESTION_COMMERCIALE);
 		System.out.println("***** demande de réassort envoyé à la GC"); // mettre + d'infos
-
+		*/
+		
+		/*
+		 * mock pour simuler la descente des articles du matin vers la caisse envoyés par le mdm
+		System.out.println("Caisse attrape !!");
+		AsyncFileFactory.getInstance().getFileManager().send("outputFileBOresponse.xml", EApplication.CAISSE);
+		System.out.println("Caisse dans ta gueule !");
+		*/
+		
+		/*
+		 * BDD : faire des clock pour modifier les promo en live
+		System.out.println("Caisse attrape !!");
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(PlugCashRegister.articleAndLocalPriceAndPromotion, EApplication.CAISSE);
+		System.out.println("Caisse c'est bon ??!!");
+		*/
+		
+		
 		/*
 		// BO => BI envoi des vente par catégorie
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().

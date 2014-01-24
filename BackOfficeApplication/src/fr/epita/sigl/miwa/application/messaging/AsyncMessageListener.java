@@ -18,6 +18,7 @@ import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
 import fr.epita.sigl.miwa.bo.parser.DomParserStoreManagement;
 import fr.epita.sigl.miwa.bo.parser.DomParserReferential;
 import fr.epita.sigl.miwa.bo.parser.DomParserWarehouse;
+import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
 import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.util.Convert;
 import fr.epita.sigl.miwa.bo.xmlconstructor.CRMXMLConstructor;
@@ -141,6 +142,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 			/* BO => Caisse : descente des articles */
 			CashRegisterXMLConstructor cashregisterconstructor = new CashRegisterXMLConstructor();
+			articles = PlugCashRegister.getpromotion(articles); // BDD : en attente pour mettre les promotions
 			ArticleAndLocalPriceAndPromotion articlepromotionned = new ArticleAndLocalPriceAndPromotion(articles);
 			String fileresponsename = file.getName().substring(0, file.getName().length()-4)+"response.xml";
 			FileManager.createFile(fileresponsename, cashregisterconstructor.articleAndLocalPriceAndPromotion(articlepromotionned));
