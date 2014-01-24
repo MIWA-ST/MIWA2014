@@ -195,7 +195,9 @@ public class XmlReader {
 						productList.add(p);
 						
 						if (modification.equals("add")) {
-							dbHandler.addNewProduct(p);
+							dbHandler.addNewProductDelta(p);
+							//Update promotions
+							dbHandler.updatePromoDelta(p);
 						}
 						
 						else if (modification.equals("delete")) {
@@ -204,12 +206,9 @@ public class XmlReader {
 						
 						else if (modification.equals("update")) {
 							dbHandler.updateProductDelta(name, priceTTC, description, long_d);
+							//Update promotions
+							dbHandler.updatePromoDelta(p);
 						}	
-					}
-					
-					if (qName.equalsIgnoreCase("PRODUCTS")) {
-						//Mettre à jour les produits si add/delete/update
-						dbHandler.updatePromoDelta(productList);
 					}
 				}
 			};

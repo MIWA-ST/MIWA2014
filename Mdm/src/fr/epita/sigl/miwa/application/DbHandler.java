@@ -25,6 +25,49 @@ public class DbHandler {
 		this.password = password;
 	}
 
+	public void addNewProductDelta(Product p)
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+
+			conn = DriverManager.getConnection(dbUrl, user, password);
+
+			stmt = conn.createStatement();
+			UUID id = UUID.randomUUID();
+			String ref = id.toString();
+			if (ref.length() < 32)
+				ref += p.getEAN();
+			String sql = "INSERT INTO PRODUCT (EAN, reference, description, buyPrice, nbMin, providerNumber, categorie, name, longDesc) "
+					+ "VALUES ('" + p.getEAN() + "', '" + ref.substring(0, 32) + "', '" + p.getDescription() + "', " +
+					p.getBuyPrice() + ", " + p.getNbMin() + ", " + p.getProviderNumber() + ", '" + p.getCategorie() + p.getName() + p.getLong_desc() + "');";
+
+			//System.out.println(sql);
+			stmt.executeUpdate(sql);
+			stmt.close();
+			conn.close();
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
+	}
+	
 	public void addNewProduct(Product p)
 	{
 		Connection conn = null;
@@ -321,6 +364,43 @@ public class DbHandler {
 		}
 	}
 	
+	public void updatePromoDelta(Product p) {
+		for (PromotionForGC promo : p.getPromotionGCList())
+		{
+		Connection conn = null;
+		Statement stmt = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(dbUrl, user, password);
+			stmt = conn.createStatement();
+
+			String sql = "UPDATE PromotionGC SET idPromotionGC=" + promo.getId() + ", nbMin=" + promo.getNbMin() + ", rebate=" + promo.getRebate() + ", startDate=" + promo.getStartDate() + ", endDate=" + promo.getEndDate() + "from promotionGC INNER JOIN Product_has_PromotionGC ON promotionGC.idPromotionGC = Product_has_PromotionGC.PromotionGC_idPromotionGC where Product_has_PromotionGC.Product_reference ='" + p.getReference() + "';";
+		
+			//System.out.println(sql);
+			stmt.executeUpdate(sql);
+			stmt.close();
+			conn.close();
+		} catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		} catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		} finally{
+			try{
+				if(stmt!=null)
+					stmt.close();
+			} catch(SQLException se2){
+			}
+			try{
+				if(conn!=null)
+					conn.close();
+			} catch(SQLException se){
+				se.printStackTrace();
+			}
+		}
+		}
+	}
 	
 	public void updateProduct(String ref, Float sellPrice)
 	{
@@ -424,10 +504,5 @@ public class DbHandler {
 				se.printStackTrace();
 			}
 		}
-	}
-	
-	public void updatePromoDelta(ArrayList<Product> productList) 
-	{
-		
 	}
 }
