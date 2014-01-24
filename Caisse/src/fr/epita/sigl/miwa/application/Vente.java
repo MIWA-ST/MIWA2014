@@ -35,7 +35,6 @@ public class Vente {
 						tabproduct.add(prod);
 					}
 				} catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				// Construction de la liste des produits sélectionnée
@@ -44,15 +43,10 @@ public class Vente {
 				Iterator<Produit> e = tabproduct.iterator();
 				Produit current = new Produit();
 				while (e.hasNext()) {
-					int lower = 0;
-					int higher = 3;
-					int add = (int) (Math.random() * (higher - lower)) + lower;
+					int add = random(0,3);
 					current = e.next();
 					if (add == 1) {
-						lower = 1;
-						higher = 5;
-						quant = (int) (Math.random() * (higher - lower))
-								+ lower;
+						quant = random(0,5);
 						prixtotal += (current.getPrix() - (current.getPrix() * current.getPromo() / 100)) * quant;
 						current.setQuantite(quant);
 						System.out.println("Ajout de : " + quant + " "
@@ -63,10 +57,7 @@ public class Vente {
 				if (selectedproducts.isEmpty())
 					System.out.println("Pas de produit, vente annulée");
 				else {
-					int minclient = 0;
-					int maxclient = 5;
-					int fid = (int) (Math.random() * (maxclient - minclient))
-							+ minclient;
+					int fid = random(0,5);
 					String idClient = "";
 					
 					// je suis fidèle
@@ -84,12 +75,9 @@ public class Vente {
 								iteratclient++;
 							}
 						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						int min = 0;
-						int max = iteratclient;
-						int rclient = (int) (Math.random() * (max - min)) + min;
+						int rclient = random(0, iteratclient);
 						int iterator = 0;
 						for (String el : listclient) {
 							if (iterator == rclient)
@@ -99,10 +87,7 @@ public class Vente {
 					
 					System.out.println("id du client : " + idClient);
 					// random sur le paiment
-					int lower = 0;
-					int higher = 3;
-					int paiement = (int) (Math.random() * (higher - lower))
-							+ lower;
+					int paiement = random(0,3);
 					String type = "";
 					// si je paye par espece
 					if (paiement == 0) {
@@ -124,23 +109,11 @@ public class Vente {
 					}
 					// si je paye par CB
 					else if (paiement == 1) {
-						int cbmin = 0;
-						int cbmax = 99999999;
-						int cbchiffre = (int) (Math.random() * (cbmax - cbmin))
-								+ cbmin;
-						int cbchiffre2 = (int) (Math.random() * (cbmax - cbmin))
-								+ cbmin;
-						int datemin = 1;
-						int datemax = 13;
-						int datemax2 = 31;
-						int cbdate1 = (int) (Math.random() * (datemax - datemin))
-								+ datemin;
-						int cbdate2 = (int) (Math.random() * (datemax2 - datemin))
-								+ datemin;
-						int picto1 = 100;
-						int picto2 = 999;
-						int cbpicto = (int) (Math.random() * (picto2 - picto1))
-								+ picto1;
+						int cbchiffre = random(1111111,999999);
+						int cbchiffre2 = random(1111111,999999);
+						int cbdate1 = random(1, 13);
+						int cbdate2 = random(1, 31);
+						int cbpicto = random(100, 999);
 						type = "cb";
 						if (fid == 1) {
 							String updatedTicket = XmlGenerator.AskReducToBO(
@@ -194,7 +167,6 @@ public class Vente {
 							System.out.println("paiement par espece finalement : ok");
 							type = "esp";
 						}
-
 						
 					}
 					System.out.println("-------------------------------------");
@@ -210,11 +182,16 @@ public class Vente {
 				}
 
 			} else {
-				// System.out.println("je dors");
 				Thread.sleep(300);
-
 			}
 
 		}
+	}
+	public int random(int min, int max)
+	{
+		int rand = 0;
+		rand = (int) (Math.random() * (max - min))
+				+ min;
+		return rand;
 	}
 }
