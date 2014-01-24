@@ -245,6 +245,7 @@ System.out.println("je passe dans XMLM");
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertDemandeNiveauStock(demande);
 		JdbcConnection.getInstance().closeConnection();
+		System.out.println("j'ai fini xmlm");
 		return demande;
 
 	}

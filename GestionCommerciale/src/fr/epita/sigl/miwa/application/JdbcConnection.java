@@ -13,7 +13,7 @@ public class JdbcConnection {
 	private static JdbcConnection instance = null;
 	private Connection connection = null;
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-	
+
 	public static JdbcConnection getInstance() {
 		if (instance == null)
 			instance = new JdbcConnection();
@@ -216,7 +216,7 @@ public class JdbcConnection {
 	public void insertCommandeInternet(CommandeInternet cmd) {
 		try {
 			// System.out.println("Insert commandes internet");
-			
+
 			if (connection != null) {
 				String verif = "SELECT * FROM commandes_internet WHERE numero_commande = ?";
 				PreparedStatement verif_req = connection
@@ -309,9 +309,9 @@ public class JdbcConnection {
 
 						PreparedStatement statement2 = connection
 								.prepareStatement(request2);
-						statement.setString(1, cmd.getCommandNumber());
-						statement.setString(2, a.getRef_article());
-						statement.setString(3, cmd.getquantity().get(indice));
+						statement2.setString(1, cmd.getCommandNumber());
+						statement2.setString(2, a.getRef_article());
+						statement2.setString(3, cmd.getquantity().get(indice));
 
 						statement2.executeUpdate();
 						indice++;
@@ -344,7 +344,7 @@ public class JdbcConnection {
 						.prepareStatement(verif);
 				verif_req.setString(1, dmd.getCommandNumber());
 				ResultSet rs = verif_req.executeQuery();
-				
+
 				if (!rs.next()) {
 					String request = "INSERT INTO demandes_reassort (numero_demande, ref_bo, adresse_bo, tel_bo, date_bc, traitee) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -524,18 +524,24 @@ public class JdbcConnection {
 				statement.executeUpdate();
 
 				// / Si y a un bug, ça vient de là
-				ResultSet res = statement.getGeneratedKeys();
-				if (res.first()) {
-					int id = res.getInt(1);
+				String request_id = "SELECT id_demande FROM demande_niveau_stock WHERE numero_demande = ?";
+
+				PreparedStatement statement_id = connection
+						.prepareStatement(request_id);
+				statement_id.setString(1, dmd.getCommandNumber());
+				ResultSet ret = statement_id.executeQuery();
+				if (ret.next()) {
+					String qt = ret.getString("id_demande");
+					// Nouveau
 					int indice = 0;
 					for (Articles a : dmd.getArticles()) {
 						String request2 = "INSERT INTO articles_map (ref_article, id_demande, quantite) VALUES (?, ?, ?)";
 
 						PreparedStatement statement2 = connection
 								.prepareStatement(request2);
-						statement.setString(1, a.getRef_article());
-						statement.setString(2, Integer.toString(id));
-						statement.setString(3, dmd.getQuantity().get(indice));
+						statement2.setString(1, a.getRef_article());
+						statement2.setString(2, qt);
+						statement2.setString(3, dmd.getQuantity().get(indice));
 
 						statement2.executeUpdate();
 						indice++;
@@ -565,16 +571,14 @@ public class JdbcConnection {
 							.prepareStatement(request);
 					statement.setString(1, a.getRef_article());
 
-					statement.executeUpdate();
-
-					// / Si y a un bug, ça vient de là
-
 					ResultSet ret = statement.executeQuery();
-					int qt = ret.getInt(1);
-					List<String> nouv = dns.getQuantity();
-					nouv.add(Integer.toString(qt));
-					res.setQuantity(nouv);
-					// indice++;
+					if (ret.next()) {
+						String qt = ret.getString("quantite");
+
+						List<String> nouv = dns.getQuantity();
+						nouv.add(qt);
+						res.setQuantity(nouv);
+					}
 				}
 			}
 		} catch (SQLException e) {

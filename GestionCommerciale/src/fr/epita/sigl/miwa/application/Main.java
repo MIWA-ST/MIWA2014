@@ -23,8 +23,8 @@ public class Main {
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		Conf.getInstance();
 		SyncMessFactory.initSyncMessReceiver();
-		//AsyncMessageFactory.getInstance().getAsyncMessageManager()
-			//	.initListener(new AsyncMessageListener());
+		AsyncMessageFactory.getInstance().getAsyncMessageManager()
+				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
 
@@ -47,7 +47,7 @@ public class Main {
 		String xml = "<DEMANDENIVEAUDESTOCK><NUMERO>ABC0001</NUMERO><REFMAGASIN>1</REFMAGASIN><DATE>2014-03-03</DATE><ARTICLES>";
 				xml += "<ARTICLE><REFERENCE>44d0617d-c53a-4732-aaf3-e19617e0</REFERENCE></ARTICLE>";
 				xml += "</ARTICLES></DEMANDENIVEAUDESTOCK>";
-		//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.BACK_OFFICE);
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(xml, EApplication.BACK_OFFICE);
 				
 		
 		try {
@@ -59,8 +59,8 @@ public class Main {
 
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
-		//AsyncMessageFactory.getInstance().getAsyncMessageManager()
-			//	.stopListener();
+		AsyncMessageFactory.getInstance().getAsyncMessageManager()
+				.stopListener();
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 	}
 

@@ -108,6 +108,7 @@ public class SyncMessHandler {
 				System.out.println(request);
 				DemandeNiveauStock dns = XMLManager.getInstance()
 						.getdemandeniveaustockfromInternet(request, doc);
+				
 				LOGGER.severe("*****: demande niveau de stock recu depuis internet : "
 						+ dns.getCommandNumber());
 				JdbcConnection.getInstance().getConnection();
