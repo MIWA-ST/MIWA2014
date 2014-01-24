@@ -200,8 +200,8 @@ public class XmlParser {
 					String prevPrix = "";
 
 					ResultSet rs = Main.bdd
-							.select("select produit_id, produit_nom, produit_pourcentagepromo, produit_prix from produit where produit_ref ="
-									+ ref);
+							.select("select produit_id, produit_nom, produit_pourcentagepromo, produit_prix from produit where produit_ref = '"
+									+ ref + "'");
 
 					while (rs.next()) {
 						nom = rs.getString("produit_nom");

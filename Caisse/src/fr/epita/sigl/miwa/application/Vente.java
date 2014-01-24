@@ -46,7 +46,7 @@ public class Vente {
 					int add = random(0,3);
 					current = e.next();
 					if (add == 1) {
-						quant = random(0,5);
+						quant = random(1,6);
 						prixtotal += (current.getPrix() - (current.getPrix() * current.getPromo() / 100)) * quant;
 						current.setQuantite(quant);
 						System.out.println("Ajout de : " + quant + " "
@@ -57,7 +57,7 @@ public class Vente {
 				if (selectedproducts.isEmpty())
 					System.out.println("Pas de produit, vente annulée");
 				else {
-					int fid = random(0,5);
+					int fid = random(1,4);
 					String idClient = "";
 					
 					// je suis fidèle

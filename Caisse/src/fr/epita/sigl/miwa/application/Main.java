@@ -7,6 +7,8 @@ import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -85,9 +87,22 @@ public class Main {
 		//XmlParser.ParseBOString(xml);	
 			// fin de la clock
 
+			/*
+			String updatedTicket = "<XML><ENTETE objet=\"facture-client\" source=\"bo\" date=\"AAAAA-MM-JJ\"/><FACTURE refclient=\"3445533\" montanttotal=\"34445\" >";
+			updatedTicket += "<ARTICLE refarticle=\"" + "13751734875" + "\" quantite=\"" + "10" + "\" nvprix=\"" + "1234" + "\" />";
+			updatedTicket += "</FACTURE></XML>";
+			String updatedPrice = XmlParser
+					.getUpdatedPrice(updatedTicket);
+			Set<Produit> selectedproducts = new HashSet<Produit>();
+			selectedproducts = XmlParser
+					.getUpdatedProducts(updatedTicket);
+			Float prixtotal = Float.parseFloat(updatedPrice);
+			System.out.println(updatedPrice);
+			System.out.println(prixtotal);*/
+			
+			
 			// CI DESSOUS TEST MANUEL POUR LE PARSING XML DEPUIS LE BO VERS NOUS
-			// AsyncFileFactory.getInstance().getFileManager().send("toto.xml",
-			// EApplication.CAISSE);
+			//AsyncFileFactory.getInstance().getFileManager().send("C:/outputFileBOresponse.xml", EApplication.CAISSE);
 			String myXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 			myXML += "<ARTICLES>";
 			myXML += "<ARTICLE nomarticle=\"Table\" refarticle=\"565644\" prix=\"200.99\" promotion=\"0\" />";
