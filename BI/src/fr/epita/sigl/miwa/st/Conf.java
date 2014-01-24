@@ -41,6 +41,8 @@ public class Conf {
 
 
 	private Properties _prop = new Properties();
+	
+	public static double _appId;
 
 	private EApplication _currentApplication;
 	private String _serverHostAddress;
@@ -77,6 +79,7 @@ public class Conf {
 	}
 
 	private Conf() {
+		_appId = Math.random() * 1000000;
 		try {
 			_prop.load(new FileInputStream("conf/config.properties"));
 			_currentApplication = EApplication.getFromShortName(_prop
