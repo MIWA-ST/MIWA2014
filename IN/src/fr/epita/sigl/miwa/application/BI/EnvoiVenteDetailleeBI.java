@@ -46,6 +46,27 @@ public class EnvoiVenteDetailleeBI {
 		this.lieu = lieu;
 	}
 	
+	public String createFileXML()
+	{
+		String path = "C:\\Users\\Yacine\\Desktop\\miwa_env\\local_repo\\IN\\Envoi_ventesdétaillées_IN_to_BI.xml";
+		File file = new File(path);
+		
+		try {
+			file.createNewFile();
+			
+			FileWriter fw = new FileWriter(file);
+			BufferedWriter buf = new BufferedWriter(fw);
+			buf.write(sendXML());
+			buf.flush();
+			buf.close();
+			return "Envoi_ventesdétaillées_IN_to_BI.xml";
+		} catch (IOException e) {
+			LOGGER.info("***** Erreur à la création du fichier : " + e.getMessage());
+		}
+		
+		return null;
+	}
+	
 	public Boolean getBDD()
 	{
 		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
