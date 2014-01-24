@@ -5,5 +5,5 @@ import java.util.Date;
 
 
 public interface IClockClient extends Remote {
-	public String wakeUp(Date date, Object message) throws RemoteException;
+	public String wakeUp(Date date, Object message, double appId) throws RemoteException;
 }
