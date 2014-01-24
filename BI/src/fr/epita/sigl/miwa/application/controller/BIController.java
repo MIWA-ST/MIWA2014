@@ -87,9 +87,9 @@ public class BIController {
 	}
 
 	public void generateSaleStatistic() {
-		if (!hasSaleBO){
+		if (!hasSaleBO || !hasSaleInternet){
 			LOGGER.severe("***** Génération des statistiques des ventes interrompue : manque d'informations");
-			LOGGER.severe("***** BO: " + hasSaleBO);
+			LOGGER.severe("***** BO: " + hasSaleBO + ", Internet: " + hasSaleInternet);
 			return;
 		}
 		List<Sale> sales = biDao.getSalesOfToday();
@@ -102,9 +102,9 @@ public class BIController {
 	}
 
 	public String generateSegmentation(List<Critere> criteres) {
-		if (!hasClient || !hasDetailSaleBOForSegmentation){
+		if (!hasClient || !hasDetailSaleBOForSegmentation || !hasDetailSaleInternetSegmentation){
 			LOGGER.severe("***** Génération de la segmentation interrompue : manque d'informations");
-			LOGGER.severe("***** CRM: " + hasClient + ", BO: " + hasDetailSaleBOForSegmentation);
+			LOGGER.severe("***** CRM: " + hasClient + ", BO: " + hasDetailSaleBOForSegmentation + ", Internet: " + hasDetailSaleInternetSegmentation);
 			//return printer.createSegmentationFile(criteres, new ArrayList<Segmentation>());
 		}
 		List<Client> clients = biDao.getClientByCriteria(criteres);
@@ -124,18 +124,20 @@ public class BIController {
 		List<DetailSale> detailSales = biDao.getDetailSalesForClients(clients);
 		List<Product> products = biDao.getAllProducts();
 		List<Segmentation> segmentations = computer.computeSegmentation(detailSales, products);
+		hasDetailSaleBOForSegmentation = false;
+		hasDetailSaleInternetSegmentation = false;
 		biDao.insertSegmentation(segmentations);
 		return printer.createSegmentationFile(criteres, segmentations);
 	}
 
 	/** @param path */
 	public void generatePaymentStatistics() {
-		if (!hasDetailSaleBOForPayment){
+		if (!hasDetailSaleBOForPayment || !hasDetailSaleInternetForPayment){
 			LOGGER.severe("***** Génération des statistiques de paiement interrompue : manque d'informations");
-			LOGGER.severe("***** BO: " + hasDetailSaleBOForPayment);
+			LOGGER.severe("***** BO: " + hasDetailSaleBOForPayment + ", Internet: " + hasDetailSaleInternetForPayment);
 			return;
 		}
-		List<DetailSale> detailSales = biDao.getAllBODetailSales();
+		List<DetailSale> detailSales = biDao.getAllDetailSales();
 		List<PaymentStatistic> paiementStatistics = computer.computePaymentStatistics(detailSales);
 		hasDetailSaleBOForPayment = false;
 		hasDetailSaleInternetForPayment = false;
@@ -187,11 +189,6 @@ public class BIController {
 
 	}
 	public void parseInternetMessage(String message) {
-		if (!hasMDMData){
-			LOGGER.severe("***** Insertion des ventes de l'Internet en BDD interrompue : manque d'informations");
-			LOGGER.severe("***** MDM: " + hasMDMData);
-			return;
-		}
 		List<Sale> sales = parser.parseSaleMessage(message);
 		biDao.insertSales(sales);
 		hasSaleInternet  = true;

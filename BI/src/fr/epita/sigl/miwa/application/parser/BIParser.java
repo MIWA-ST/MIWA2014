@@ -237,7 +237,7 @@ public class BIParser {
 				sale.setSupplierTotal(Integer.valueOf(tmpInfo));
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_vente").getNodeValue();
 				sale.setSalesTotal(Integer.valueOf(tmpInfo));
-				sale.setSource("BO");
+				sale.setSource("bo");
 
 				saleList.add(sale);
 			}
@@ -342,7 +342,7 @@ public class BIParser {
 
 			// Parsage du fichier : Partie entête
 			NodeList headerNodes = saleFile.getElementsByTagName("ENTETE");
-			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("dateHeure").getNodeValue();
+			String dateStr = headerNodes.item(0).getAttributes().getNamedItem("date").getNodeValue();
 			Date saleDate = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")).parse(dateStr);
 
 			// Parsage du fichier : Partie corps
@@ -357,14 +357,14 @@ public class BIParser {
 
 				sale.setDateTime(saleDate);
 				sale.setStore("internet");
-				tmpInfo = saleNode.getAttributes().getNamedItem("quantité_vendue").getNodeValue();
+				tmpInfo = saleNode.getAttributes().getNamedItem("quantite_vendue").getNodeValue();
 				sale.setSoldQty(Integer.valueOf(tmpInfo));
 				sale.setProductCategory(saleNode.getAttributes().getNamedItem("ref-categorie").getNodeValue());
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_fournisseur").getNodeValue();
 				sale.setSupplierTotal(Integer.valueOf(tmpInfo));
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_vente").getNodeValue();
 				sale.setSalesTotal(Integer.valueOf(tmpInfo));
-				sale.setSource("INTERNET");
+				sale.setSource("internet");
 
 				saleList.add(sale);
 			}
@@ -566,14 +566,14 @@ public class BIParser {
 				detailSale.setClientNb(Integer.valueOf(tmpInfo));
 
 				// Construction de la liste des produits vendus pour le ticket
-				NodeList soldProductNodes = detailSaleNode.getChildNodes();
+				NodeList soldProductNodes = detailSaleNode.getChildNodes().item(0).getChildNodes();;
 				for (int j = 0; j < soldProductNodes.getLength(); j++) {
 					Node soldProductNode = soldProductNodes.item(j);
 					SoldProduct soldProduct = new SoldProduct();
-
-					soldProduct.setProductRef(soldProductNode.getAttributes().getNamedItem("ref-article").getNodeValue());
-					tmpInfo = soldProductNode.getAttributes().getNamedItem("quantité").getNodeValue();
+					tmpInfo = soldProductNode.getAttributes().getNamedItem("quantite").getNodeValue();
 					soldProduct.setQuantity(Integer.valueOf(tmpInfo));
+					String test = soldProductNode.getAttributes().getNamedItem("ref-article").getNodeValue();
+					soldProduct.setProductRef(test);
 
 					soldProductList.add(soldProduct);
 				}

@@ -126,9 +126,10 @@ public class BIPrinter {
 
 	public void publishPaiementStatistics(List<PaymentStatistic> paiementStatistics){
 		StringBuilder builder = new StringBuilder(initConsole());
-		builder.append("**** REPARTITION DU CHIFFRE D\'AFFAIRES PAR MOYEN DE PAIEMENT");
+		builder.append("**** REPARTITION DU CHIFFRE D\'AFFAIRES PAR MOYEN DE PAIEMENT\n");
 		for (PaymentStatistic statistic : paiementStatistics){
 			builder.append(statistic.toString());
+			builder.append("\n");
 		}		
 		System.out.println(builder.toString());
 	}
