@@ -69,27 +69,27 @@ public class Clock extends UnicastRemoteObject implements IClock {
 	}
 
 	@Override
-	public void wakeMeUp(EApplication sender, Date date, Object message)
+	public void wakeMeUp(EApplication sender, Date date, Object message, double appId)
 			throws RemoteException {
-		registerMessage(sender, date, message, RepeatFrequecy.NEVER);
+		registerMessage(sender, date, message, RepeatFrequecy.NEVER, appId);
 	}
 
 	@Override
 	public void wakeMeUpEveryHours(EApplication sender, Date nextOccurence,
-			Object message) throws RemoteException {
-		registerMessage(sender, nextOccurence, message, RepeatFrequecy.HOUR);
+			Object message, double appId) throws RemoteException {
+		registerMessage(sender, nextOccurence, message, RepeatFrequecy.HOUR, appId);
 	}
 
 	@Override
 	public void wakeMeUpEveryDays(EApplication sender, Date nextOccurence,
-			Object message) throws RemoteException {
-		registerMessage(sender, nextOccurence, message, RepeatFrequecy.DAY);
+			Object message, double appId) throws RemoteException {
+		registerMessage(sender, nextOccurence, message, RepeatFrequecy.DAY, appId);
 	}
 
 	@Override
 	public void wakeMeUpEveryWeeks(EApplication sender, Date nextOccurence,
-			Object message) throws RemoteException {
-		registerMessage(sender, nextOccurence, message, RepeatFrequecy.WEEK);
+			Object message, double appId) throws RemoteException {
+		registerMessage(sender, nextOccurence, message, RepeatFrequecy.WEEK, appId);
 	}
 
 	/* !Remotes methods */
@@ -153,9 +153,9 @@ public class Clock extends UnicastRemoteObject implements IClock {
 	/* !Time management */
 	/* Message Handling */
 	private void registerMessage(EApplication sender, Date date,
-			Object message, RepeatFrequecy frequency) {
+			Object message, RepeatFrequecy frequency, double appId) {
 		MessageHandler messageH = new MessageHandler(sender, date,
-				message, frequency);
+				message, frequency, appId);
 		_messagesToDeliver.add(messageH);
 		log.info(sender.getShortName() + "registred with : " + message.toString());
 	}
@@ -194,11 +194,13 @@ public class Clock extends UnicastRemoteObject implements IClock {
 		public Date _date;
 		public Object _message;
 		public RepeatFrequecy _frequency;
+		public double _appId;
 		public boolean toRemove = false;
 
 		public MessageHandler(EApplication sender, Date date, Object message,
-				RepeatFrequecy frequency) {
+				RepeatFrequecy frequency, double appId) {
 			_sender = sender;
+			_appId = appId;
 			_message = message;
 			_date = date;
 			_frequency = frequency;
@@ -210,7 +212,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 			try {
 				final IClockClient receiver = getClientConnection(false);
 				if (receiver != null) {
-					receiver.wakeUp(_date, _message);
+					receiver.wakeUp(_date, _message, _appId);
 					log.info("wakeup " + _sender.getShortName());
 				} else {
 					return;
@@ -221,7 +223,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				final IClockClient receiver = getClientConnection(true);
 				if (receiver != null) {
 					try {
-						receiver.wakeUp(_date, _message);
+						receiver.wakeUp(_date, _message, _appId);
 						log.info("wakeup " + _sender.getShortName());
 					} catch (Exception e1) {
 						log.log(Level.SEVERE,
@@ -242,7 +244,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 					cal.add(Calendar.WEEK_OF_YEAR, 1);
 				}
 				_date = cal.getTime();
-				registerMessage(_sender, _date, _message, _frequency);
+				registerMessage(_sender, _date, _message, _frequency, _appId);
 			}
 		}
 
