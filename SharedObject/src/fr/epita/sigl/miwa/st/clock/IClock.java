@@ -8,9 +8,9 @@ import fr.epita.sigl.miwa.st.EApplication;
 
 public interface IClock extends Remote {
 	public Date getHour() throws RemoteException;
-	public void wakeMeUp(EApplication sender, Date date, Object message) throws RemoteException;
-	public void wakeMeUpEveryHours(EApplication sender, Date nextOccurence, Object message) throws RemoteException;
-	public void wakeMeUpEveryDays(EApplication sender, Date nextOccurence, Object message) throws RemoteException;
-	public void wakeMeUpEveryWeeks(EApplication sender, Date nextOccurence, Object message) throws RemoteException;
+	public void wakeMeUp(EApplication sender, Date date, Object message, double appId) throws RemoteException;
+	public void wakeMeUpEveryHours(EApplication sender, Date nextOccurence, Object message, double appId) throws RemoteException;
+	public void wakeMeUpEveryDays(EApplication sender, Date nextOccurence, Object message, double appId) throws RemoteException;
+	public void wakeMeUpEveryWeeks(EApplication sender, Date nextOccurence, Object message, double appId) throws RemoteException;
 	public void removeSubscriptions(EApplication sender) throws RemoteException;
 }
