@@ -183,18 +183,22 @@ public class SyncMessHandler {
 
 				// Récupération de l'id du client en vérifiant limite crédit totale et liste noire
 				// TODO AND monthCreditSum < montly_credit_limit
-				PreparedStatement pS = connection.prepareStatement("SELECT id_fidelity_credit_account as id, customer_code, echelon_nb, total_credit_limit, montly_credit_limit "
+				PreparedStatement pS = connection.prepareStatement("SELECT id_fidelity_credit_account as id, echelon_nb "
 						+ "FROM fidelity_credit_account as fca LEFT JOIN loyalty_card_type as lct ON fca.id_loyalty_card_type = lct.id_loyalty_card_type "
-						+ "WHERE customer_code = ? AND (total_credit_amount - total_repaid_credit__amount) < total_credit_limit "
-						//+ "AND (SELECT SUM(amount / echelon_nb) FROM fidelity_credit WHERE fidelity_credit.id_fidelity_credit_account = fca.id_fidelity_credit_account AND is_repaid = FALSE) < montly_credit_limit "
-						+ "AND is_blacklisted = FALSE AND IS_DELETED = FALSE;");
+						+ "WHERE customer_code = ? AND is_blacklisted = FALSE AND is_deleted = FALSE "
+						+ "AND (total_credit_amount - total_repaid_credit__amount) + ? < total_credit_limit "
+						+ "AND IFNULL((SELECT SUM(amount / echelon_nb) FROM fidelity_credit WHERE fidelity_credit.id_fidelity_credit_account = fca.id_fidelity_credit_account AND is_repaid = FALSE), 0) "
+						+ "+ (? / echelon_nb) < montly_credit_limit"
+						+ ";");
 				pS.setString(1, matriculeClientXML);
+				pS.setFloat(2, montantFloat);
+				pS.setFloat(3, montantFloat);
 				ResultSet result = pS.executeQuery();
 
 				if (result.next()) 
 				{				
 					Integer idClient = result.getInt("id");
-					Integer echelonNb = result.getInt("echelon_nb");					
+					Integer echelonNb = result.getInt("echelon_nb");
 					
 					LOGGER.info("***** SERVICE CF : REQUEST -> Credit of " + montantFloat + "€ (" + echelonNb + " month(s)) for the fidelity account: " + matriculeClientXML + ".");			
 					
@@ -217,7 +221,7 @@ public class SyncMessHandler {
 				// En cas de client inexistant ou non éligible pour crédit
 				else
 				{
-					LOGGER.info("***** ERROR -> Unknown or ineligible fidelity credit account with customer matricule : " + matriculeClientXML + ".");
+					LOGGER.info("***** ERROR -> Unknown or ineligible fidelity credit account with customer matricule: " + matriculeClientXML + " for " + montantFloat + "€.");
 					LOGGER.info("***** Paiement by fidelity service terminated normally with: " + false + ".");
 					System.out.println("***** END SERVICE *****");
 					return false;

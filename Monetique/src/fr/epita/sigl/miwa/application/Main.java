@@ -76,7 +76,7 @@ public class Main {
 		    // TEST Paiement CB
 		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cb\"><montant>12.00</montant><cb><numero>XXXXXXXXXXXXXXXX</numero><date_validite>MMAA</date_validite><pictogramme>XXX</pictogramme></cb></monetique>"));
 		    // TEST Paiement CF	    
-		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>150.50</montant><matricule_client>C123456789</matricule_client></monetique>"));
+		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"paiement_cf\"><montant>1500</montant><matricule_client>38167037</matricule_client></monetique>"));
 		    
 		    // TEST Ajout carte fidélité
 		    //is.setCharacterStream(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><monetique service=\"cms_type_carte\" action=\"c\"><type_cf><id>12GOLD</id><limite_mensuelle>100.00</limite_mensuelle><limite_totale>1200.00</limite_totale><nb_echelon>3</nb_echelon></type_cf></monetique>"));
@@ -88,9 +88,9 @@ public class Main {
 		    Document doc = db.parse(is);
 			SyncMessHandler.getSyncMessSender().sendXML(EApplication.MONETIQUE, doc);
 		} 
-		catch (Exception e1) 
+		catch (Exception e) 
 		{
-			e1.printStackTrace();
+			e.printStackTrace();
 		}*/
 		/* !CODE HERE */
 		
