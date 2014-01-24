@@ -59,29 +59,7 @@ public class SyncMessHandler {
 
 			} else if (sender == EApplication.INTERNET) {
 				if (root.toLowerCase().equals("demandeniveaudestockinternet")) {
-					LOGGER.severe("*****: demande des niveaux de stock depuis INTERNET");
-
-					DemandeNiveauStock dns = XMLManager.getInstance()
-							.getdemandeniveaustockfromInternet(message, doc);
-					LOGGER.severe("*****: demande niveau de stock recu depuis internet : "
-							+ dns.getCommandNumber());
-					JdbcConnection.getInstance().getConnection();
-					DemandeNiveauStock demande = JdbcConnection.getInstance()
-							.envoiStock(dns);
-					JdbcConnection.getInstance().closeConnection();
-					int i = 0;
-					while (i < demande.getArticles().size()) {
-						LOGGER.info("*****: demande de stock pour article : "
-								+ demande.getArticles().get(i) + " quantité :"
-								+ demande.getQuantity().get(i));
-					}
-
-					content = XMLManager.getInstance()
-							.envoiniveaustocktoInternet(demande);
-					LOGGER.info("*****: XML généré : " + content);
-					AsyncMessageFactory.getInstance().getAsyncMessageManager()
-							.send(content, EApplication.INTERNET);
-					LOGGER.severe("*****: niveau de stock envoyé à Internet");
+					
 
 				}
 			} else if (sender == EApplication.MDM) {
@@ -109,22 +87,73 @@ public class SyncMessHandler {
 	@Deprecated
 	static public String answerToRequestMessage(EApplication sender,
 			String request) {
-		System.out.println("TOTOOOOOOOOOOOOOOOOOO");
-		// TODO Auto-generated method stub
-		if (sender == EApplication.BACK_OFFICE) {
-			LOGGER.info("Request synchrone reçu du back office :" + request);
-		} else if (sender == EApplication.INTERNET) {
-			LOGGER.info("Request synchrone reçu d'internet :" + request);
-		} else if (sender == EApplication.MDM) {
-			LOGGER.info("Request synchrone reçu du référentiel :" + request);
-		} else if (sender == EApplication.ENTREPOT) {
-			LOGGER.info("Request synchrone reçu de l'entrepot :" + request);
-		} else {
-			LOGGER.info("Request synchrone reçu de : " + sender.toString()
-					+ " non traité.");
-		}
+		String root = "";
+		String content = "";
+		DocumentBuilder db;
+		try {
+			db = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader(request));
 
+			Document doc = db.parse(is);
+			root = doc.getFirstChild().getNodeName();
+			System.out.println("TOTOOOOOOOOOOOOOOOOOO");
+			// TODO Auto-generated method stub
+			if (sender == EApplication.BACK_OFFICE) {
+				LOGGER.info("Request synchrone reçu du back office :" + request);
+			} else if (sender == EApplication.INTERNET) {
+				LOGGER.info("Request synchrone reçu d'internet :" + request);
+				LOGGER.severe("*****: demande des niveaux de stock depuis INTERNET");
+				System.out.println(request);
+				DemandeNiveauStock dns = XMLManager.getInstance()
+						.getdemandeniveaustockfromInternet(request, doc);
+				LOGGER.severe("*****: demande niveau de stock recu depuis internet : "
+						+ dns.getCommandNumber());
+				JdbcConnection.getInstance().getConnection();
+				DemandeNiveauStock demande = JdbcConnection.getInstance()
+						.envoiStock(dns);
+				JdbcConnection.getInstance().closeConnection();
+				int i = 0;
+				while (i < demande.getArticles().size()) {
+					LOGGER.info("*****: demande de stock pour article : "
+							+ demande.getArticles().get(i) + " quantité :"
+							+ demande.getQuantity().get(i));
+				}
+
+				content = XMLManager.getInstance()
+						.envoiniveaustocktoInternet(demande);
+				LOGGER.info("*****: XML généré : " + content);
+				
+				LOGGER.severe("*****: niveau de stock envoyé à Internet");
+				return content;
+			} else if (sender == EApplication.MDM) {
+				LOGGER.info("Request synchrone reçu du référentiel :" + request);
+			} else if (sender == EApplication.ENTREPOT) {
+				LOGGER.info("Request synchrone reçu de l'entrepot :" + request);
+			} else {
+				LOGGER.info("Request synchrone reçu de : " + sender.toString()
+						+ " non traité.");
+			}
+
+			return null;
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (AsyncMessageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
+		
+		
+		
 	}
 
 	/*

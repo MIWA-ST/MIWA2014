@@ -220,11 +220,12 @@ public class XMLManager {
 
 	public DemandeNiveauStock getdemandeniveaustockfromInternet(String message,
 			Document doc) throws AsyncMessageException {
-
+System.out.println("je passe dans XMLM");
 		DemandeNiveauStock demande = new DemandeNiveauStock();
-		demande.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0)
+		demande.setCommandNumber(doc.getElementsByTagName("numero").item(0)
 				.getTextContent());
-		demande.setDatedemand(doc.getElementsByTagName("DATE").item(0)
+		System.out.println("j'ai le num " + demande.getCommandNumber());
+		demande.setDatedemand(doc.getElementsByTagName("date").item(0)
 				.getTextContent());
 
 		List<Articles> articles = new ArrayList<Articles>();
@@ -238,6 +239,7 @@ public class XMLManager {
 			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
 					.getTextContent());
 			articles.add(a);
+			System.out.println("un article add " + a.getRef_article());
 		}
 		demande.setArticles(articles);
 		JdbcConnection.getInstance().getConnection();
