@@ -7,7 +7,6 @@ package fr.epita.sigl.miwa.application.controller;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -21,10 +20,8 @@ import fr.epita.sigl.miwa.application.data.MDMData;
 import fr.epita.sigl.miwa.application.data.Product;
 import fr.epita.sigl.miwa.application.data.Promotion;
 import fr.epita.sigl.miwa.application.data.Sale;
-import fr.epita.sigl.miwa.application.data.SoldProduct;
 import fr.epita.sigl.miwa.application.data.Stock;
 import fr.epita.sigl.miwa.application.enums.EBOMessageType;
-import fr.epita.sigl.miwa.application.enums.EPaiementType;
 import fr.epita.sigl.miwa.application.parser.BIParser;
 import fr.epita.sigl.miwa.application.printer.BIPrinter;
 import fr.epita.sigl.miwa.application.statistics.PaymentStatistic;
@@ -59,9 +56,9 @@ public class BIController {
 
 	private boolean hasPromoBO = false;
 
-	private boolean hasDetailSaleBOForSegmentation = false;
+	private boolean hasDetailSaleBOForSegmentation = true;
 
-	private boolean hasDetailSaleInternetSegmentation = false;
+	private boolean hasDetailSaleInternetSegmentation = true;
 
 	private BIController(){
 	}
@@ -108,19 +105,6 @@ public class BIController {
 			//return printer.createSegmentationFile(criteres, new ArrayList<Segmentation>());
 		}
 		List<Client> clients = biDao.getClientByCriteria(criteres);
-		List<SoldProduct> soldProducts = new ArrayList<SoldProduct>();
-		SoldProduct sp1 = new SoldProduct("042ef636-acbd-40b6-afcd-3c82236c", 15);
-		soldProducts.add(sp1);
-		List<DetailSale> detailSalesToInsert = new ArrayList<DetailSale>();
-		DetailSale sale1 = new DetailSale(1, EPaiementType.CB, new Date(), 100, "Mag 1", 50762119, soldProducts, "BO");
-		detailSalesToInsert.add(sale1);
-		DetailSale sale2 = new DetailSale(2, EPaiementType.CB, new Date(), 50, "Mag 1", 38167037, soldProducts, "BO");
-		detailSalesToInsert.add(sale2);
-		DetailSale sale3 = new DetailSale(3, EPaiementType.CQ, new Date(), 100, "Mag 1", 68523705, soldProducts, "BO");
-		detailSalesToInsert.add(sale3);
-		DetailSale sale4 = new DetailSale(4, EPaiementType.CF, new Date(), 150, "Mag 1", 86710410, soldProducts, "BO");
-		detailSalesToInsert.add(sale4);
-		biDao.insertDetailSales(detailSalesToInsert);
 		List<DetailSale> detailSales = biDao.getDetailSalesForClients(clients);
 		List<Product> products = biDao.getAllProducts();
 		List<Segmentation> segmentations = computer.computeSegmentation(detailSales, products);
