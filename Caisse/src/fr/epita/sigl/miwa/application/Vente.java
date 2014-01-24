@@ -49,11 +49,11 @@ public class Vente {
 					int add = (int) (Math.random() * (higher - lower)) + lower;
 					current = e.next();
 					if (add == 1) {
-						prixtotal += current.getPrix();
 						lower = 1;
 						higher = 5;
 						quant = (int) (Math.random() * (higher - lower))
 								+ lower;
+						prixtotal += (current.getPrix() - (current.getPrix() * current.getPromo() / 100)) * quant;
 						current.setQuantite(quant);
 						System.out.println("Ajout de : " + quant + " "
 								+ current.getNom() + " dans le panier");
@@ -68,9 +68,8 @@ public class Vente {
 					int fid = (int) (Math.random() * (maxclient - minclient))
 							+ minclient;
 					String idClient = "";
-					System.out.println("SI FID VAUT 1 ALORS CLIENT FIDELISE : " + fid);
+					
 					// je suis fidèle
-					//if (fid == 1) {
 					if (true){	
 					// je cherche un client fidèlisé
 						ArrayList<String> listclient = new ArrayList<String>();
