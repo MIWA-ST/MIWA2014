@@ -44,7 +44,7 @@ public class ClockClient {
 		try {
 		if (message instanceof String) {
 			if (message.equals("BO")) {
-				LOGGER.severe("*****: CLOCK BO !");
+				LOGGER.severe("*****: CLOCK BO DEMANDE DE STOCK A LA BO !");
 				String content = "";
 				DemandeNiveauStock demand = new DemandeNiveauStock();
 				demand.setCommandNumber(ClockClient.getClock().getHour().toString());
@@ -54,11 +54,11 @@ public class ClockClient {
 				JdbcConnection.getInstance().closeConnection();
 				content = XMLManager.getInstance().envoidemandeniveaudestocktoBO(demand);
 				AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BACK_OFFICE);
-				
+				LOGGER.severe("*****: DEMANDE DE STOCK ENVOYEE A LA BO : " + content );
 			}
 			else if (message.equals("BI"))
 			{
-				LOGGER.severe("*****: CLOCK BI !");
+				LOGGER.severe("*****: CLOCK BI ENVOI DES STOCKS!");
 				String content = "";
 				List<StockMagasin> listmag = new ArrayList<StockMagasin>();
 				List<StockEntrepot> listent = new ArrayList<StockEntrepot>();
@@ -70,6 +70,7 @@ public class ClockClient {
 				JdbcConnection.getInstance().closeConnection();
 				content = XMLManager.getInstance().envoiStockToBI(listent, listmag);
 				AsyncMessageFactory.getInstance().getAsyncMessageManager().send(content, EApplication.BI);
+				LOGGER.severe("*****: FIN D'ENVOI DES STOCKS A BI ! msg: "+content);
 			}
 			else {
 				System.out.println(date.toString() + " : " + message);

@@ -41,13 +41,12 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
-		
-		System.out.println("TAGADAAAAAA");
+	
 		try {
 			String root = "";
 			String content = "";
 
-			LOGGER.info("***** Message reçu par GC");
+
 
 			DocumentBuilder db = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
@@ -57,7 +56,6 @@ public class SyncMessHandler {
 			Document doc = db.parse(is);
 			root = doc.getFirstChild().getNodeName();
 			if (sender == EApplication.BACK_OFFICE) {
-				LOGGER.info("Message synchrone reçu du back office :" + message);
 
 			} else if (sender == EApplication.INTERNET) {
 				if (root.toLowerCase().equals("demandeniveaudestockinternet")) {

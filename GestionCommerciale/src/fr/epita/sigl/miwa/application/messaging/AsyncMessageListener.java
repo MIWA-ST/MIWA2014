@@ -48,6 +48,16 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		try {
 			String root = "";
 			String content = "";
+			System.out.println("*");
+			System.out.println("**");
+			System.out.println("*****");
+			System.out.println("*******");
+			System.out.println("*********");
+			System.out.println("*******");
+			System.out.println("*****");
+			System.out.println("**");
+			System.out.println("*");
+
 
 			DocumentBuilder db = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
