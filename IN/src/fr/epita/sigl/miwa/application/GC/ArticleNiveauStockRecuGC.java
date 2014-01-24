@@ -22,7 +22,7 @@ public class ArticleNiveauStockRecuGC {
 	public void MAJBDD()
 	{
 		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
-		
+
 		ResultSet rs = bdd.executeStatement_result("SELECT * FROM article WHERE reference='" + reference + "';");
 		
 		try {

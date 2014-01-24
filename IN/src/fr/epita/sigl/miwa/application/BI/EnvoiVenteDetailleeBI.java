@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 
 import fr.epita.sigl.miwa.application.MiwaBDDIn;
 import fr.epita.sigl.miwa.application.ParseXML;
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 
 public class EnvoiVenteDetailleeBI {
 	private static final Logger LOGGER = Logger.getLogger(ParseXML.class.getName());
@@ -44,6 +45,39 @@ public class EnvoiVenteDetailleeBI {
 		this.entete = entete;
 		this.ventes = ventes;
 		this.lieu = lieu;
+	}
+	
+	public void generateVentes()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		ResultSet rs = bdd.executeStatement_result("Select * from client;");
+		try {
+			while (rs != null && rs.next())
+			{
+				// numero_client, montant, moyen_paiement, dateHeure, articles
+				VenteBI v = new VenteBI();
+				
+				v.setNumero_client(rs.getString("matricule"));
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				v.setDateHeure(df.format(ClockClient.getClock().getHour()));
+				
+				ResultSet rs2 = bdd.executeStatement_result("SELECT * FROM article WHERE stock > 0;");
+				while (rs2 != null && rs2.next())
+				{
+					Integer stock = Integer.parseInt(rs2.getString("stock"));
+					String ref = rs2.getString("reference");
+					
+					v.getArticles().add(new ArticleVenteBI(ref, 1));
+					bdd.executeStatement("UPDATE article SET stock='"+(stock - 1)+"' WHERE reference='"+ref+"';");
+				}
+				v.addBDD();
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public String createFileXML()

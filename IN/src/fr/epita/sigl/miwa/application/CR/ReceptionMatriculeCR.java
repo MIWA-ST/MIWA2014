@@ -1,5 +1,7 @@
 package fr.epita.sigl.miwa.application.CR;
 
+import fr.epita.sigl.miwa.application.MiwaBDDIn;
+
 public class ReceptionMatriculeCR {
 	private EnteteCRM entete;
 	private String matricule;
@@ -8,6 +10,13 @@ public class ReceptionMatriculeCR {
 	
 	public ReceptionMatriculeCR() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public void updateBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		bdd.executeStatement("UPDATE client SET matricule='"+matricule+"' WHERE nom='"+nom+"' AND prenom='"+prenom+"';");
 	}
 	
 	public String getNom() {

@@ -58,6 +58,7 @@ public class ParseXML {
 	{
 		SAXBuilder saxBuilder = new SAXBuilder();
 		
+		
 		if (typeFlux == ParseXML.TYPE_LANGUAGE.FICHIER)
 		{
 			File file = new File(flux);
@@ -214,7 +215,10 @@ public class ParseXML {
 		}
 		
 //		LOGGER.info(productsClient.print_logger());
-		productsClient.addBDD();
+		if (productsClient != null)
+			productsClient.addBDD();
+		else
+			return false;
 		return true;
 	}
 
@@ -313,7 +317,9 @@ public class ParseXML {
 			receptionMatricule.setNom(client.getAttributeValue("nom"));
 			receptionMatricule.setPrenom(client.getAttributeValue("prenom"));
 			
-			LOGGER.info(receptionMatricule.print_logger());
+			// LOGGER.info(receptionMatricule.print_logger());
+			
+			receptionMatricule.updateBDD();
 			return true;
 		}
 		else
@@ -349,7 +355,7 @@ public class ParseXML {
 		
 		niveauStock.MAJBDD();
 		
-		 LOGGER.info(niveauStock.print_logger());
+		 // LOGGER.info(niveauStock.print_logger());
 		 return true;
 	}
 

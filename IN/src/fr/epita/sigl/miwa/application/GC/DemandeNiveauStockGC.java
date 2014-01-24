@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,7 +19,10 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.DOMOutputter;
 import org.w3c.dom.Document;
 
+import fr.epita.sigl.miwa.application.MiwaBDDIn;
 import fr.epita.sigl.miwa.application.ParseXML;
+import fr.epita.sigl.miwa.application.messaging.SyncMessHandler;
+import fr.epita.sigl.miwa.st.EApplication;
 
 public class DemandeNiveauStockGC {
 	private static final Logger LOGGER = Logger.getLogger(ParseXML.class.getName());
@@ -36,6 +41,42 @@ public class DemandeNiveauStockGC {
 		this.numero = numero;
 		this.date = date;
 		this.articles = articles;
+	}
+	
+	public DemandeNiveauStockGC(String numero, String date)
+	{
+		this.numero = numero;
+		this.date = date;
+	}
+	
+	public void MiseAJourStock()
+	{
+		this.setArticlesBDD();
+		
+		String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.GESTION_COMMERCIALE, this.sendXML());
+		
+		ParseXML parserGC = new ParseXML();
+		parserGC.readXML(result,
+				ParseXML.TYPE_LANGUAGE.STRING);
+
+		parserGC.parseGC();
+	}
+	
+	public void setArticlesBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		ResultSet rs = bdd.executeStatement_result("SELECT * FROM article;");
+		
+		try {
+			while (rs != null && rs.next())
+			{
+				articles.add(new DemandeNiveauStockArticlesGC(rs.getString("reference")));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public String sendXML()

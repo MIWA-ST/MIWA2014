@@ -63,10 +63,10 @@ public class ArticleAVendreMDM {
 	{
 		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
 		
-		ResultSet rs = bdd.executeStatement_result("SELECT * FROM article WHERE reference='" + reference + "'");
+		ResultSet rs = bdd.executeStatement_result("SELECT * FROM article WHERE reference='" + reference + "';");
 		
 		try {
-			if (rs.next())
+			if (rs != null && rs.next())
 			{
 				bdd.executeStatement("UPDATE article SET ean='" + ean + "', categorie='" + categorie + "', prix_fournisseur='" + prix_fournisseur + "', prix_vente='" + prix_vente + "', description='" + description + "' WHERE reference='" + reference + "';");
 			}		

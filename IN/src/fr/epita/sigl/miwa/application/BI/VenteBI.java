@@ -30,6 +30,24 @@ public class VenteBI {
 		this.articles = articles;
 	}
 	
+	public void addBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		String art = "";
+		for (ArticleVenteBI a : articles)
+		{
+			if (art.equals(""))
+				art += a.getRef_article() + "---" + a.getQuantite();
+			else
+				art += "///" + a.getRef_article() + "---" + a.getQuantite();
+		}
+			
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String date = df.format(dateHeure);
+		bdd.executeStatement("INSERT INTO vente VALUES('"+numero_client+"', "+montant+", '"+moyen_paiement+"', '"+date+"', '"+art+"');");
+	}
+	
 	public String sendXML()
 	{
 		StringBuilder result = new StringBuilder();

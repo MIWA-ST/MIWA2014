@@ -51,6 +51,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			
 			if (parser.readXML(file, ParseXML.TYPE_LANGUAGE.FICHIER))
 				parser.parseCRM();
+			else
+				LOGGER.info("***** Problème à la lecture du fichier de CRM.");
 		}
 		else if (source == EApplication.GESTION_COMMERCIALE)
 		{
@@ -58,6 +60,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			
 			if (parser.readXML(file, ParseXML.TYPE_LANGUAGE.FICHIER))
 				parser.parseGC();
+			else
+				LOGGER.info("***** Problème à la lecture du fichier de GC.");
 		}
 		else if (source == EApplication.MDM)
 		{
@@ -65,7 +69,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			
 			if (parser.readXML(file, ParseXML.TYPE_LANGUAGE.FICHIER))
 				parser.parseMDM();
+			else
+				LOGGER.info("***** Problème à la lecture du fichier de MDM.");
 		}
 	}
-
 }

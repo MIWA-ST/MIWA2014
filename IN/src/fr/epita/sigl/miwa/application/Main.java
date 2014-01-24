@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -56,21 +57,63 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();			
+		bdd.connection();
 		
 		try {
-			MiwaBDDIn bdd = MiwaBDDIn.getInstance();			
-			bdd.connection();
 			
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
+		// ENvoi des messages (wakeMeUp...)
+			// Envoi des commandes Internet à la GC 1 fois par jour à 9h00
+			Calendar dateouverture = Calendar.getInstance();
+			dateouverture.setTime(ClockClient.getClock().getHour());
+			Date nextOccurence = new Date();
+			if (dateouverture.get(Calendar.HOUR_OF_DAY) >= 9) 
+				dateouverture.add((Calendar.DAY_OF_MONTH), 1);
+			dateouverture.set(Calendar.HOUR_OF_DAY, 9);
+			dateouverture.set(Calendar.MINUTE, 0);
+			dateouverture.set(Calendar.SECOND, 0);
+			dateouverture.set(Calendar.MILLISECOND, 0);
+			nextOccurence = dateouverture.getTime();
+			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "Commandes internet to GC");
 			
-			// ENvoi des messages (wakeMeUp...)
+			// Envoi des commandes Internet à BI tous les jours
+				// Envoi des Informations ventes par catégorie toutes les 15 mn
+			Calendar dateouverture_BI2 = Calendar.getInstance();
+			dateouverture_BI2.setTime(ClockClient.getClock().getHour());
+			Date nextOccurence_BI2 = new Date();
+			dateouverture_BI2.add(Calendar.MINUTE, 15);
+			nextOccurence_BI2 = dateouverture_BI2.getTime();
+			ClockClient.getClock().wakeMeUp(nextOccurence_BI2, "Commandes internet to BI 1");
 			
-			bdd.close();
+				// Envoi des ventes détaillées tous les jours à 21h00
+			Calendar dateouverture_BI = Calendar.getInstance();
+			dateouverture_BI.setTime(ClockClient.getClock().getHour());
+			Date nextOccurence_BI = new Date();
+			if (dateouverture_BI.get(Calendar.HOUR_OF_DAY) >= 21) 
+				dateouverture_BI.add((Calendar.DAY_OF_MONTH), 1);
+			dateouverture_BI.set(Calendar.HOUR_OF_DAY, 21);
+			dateouverture_BI.set(Calendar.MINUTE, 0);
+			dateouverture_BI.set(Calendar.SECOND, 0);
+			dateouverture_BI.set(Calendar.MILLISECOND, 0);
+			nextOccurence_BI = dateouverture_BI.getTime();
+			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence_BI, "Commandes internet to BI 2");
+			
+			
+			
 			Thread.sleep(40000);
 		} catch (InterruptedException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		try {
+		new BufferedReader(new InputStreamReader(System.in)).readLine();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		bdd.close();
 	//	SyncMessHandler.getSyncMessSender().sendMessage(
 			//	EApplication.INTERNET, "Coucou IN");
 		/* !CODE HERE */

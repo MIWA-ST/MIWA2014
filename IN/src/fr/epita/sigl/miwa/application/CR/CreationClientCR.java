@@ -11,6 +11,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.DOMOutputter;
 import org.w3c.dom.Document;
 
+import fr.epita.sigl.miwa.application.MiwaBDDIn;
 import fr.epita.sigl.miwa.application.ParseXML;
 
 public class CreationClientCR {
@@ -47,6 +48,12 @@ public class CreationClientCR {
 		this.iban = iban;
 		this.bic = bic;
 		this.nbenfant = nbenfant;
+	}
+	
+	public Boolean addBDD()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		return bdd.executeStatement("INSERT INTO client (civilite, nom, prenom, adresse, code_postal, email, telephone, situation, naissance, nbenfant, iban) VALUES('"+civilite+"', '"+nom+"', '"+prenom+"', '"+adresse+"', '"+code_postal+"', '"+email+"', '"+telephone+"', '"+situation+"', '"+naissance+"', "+nbenfant+", '"+iban+"');");		
 	}
 	
 	public String sendXML()
