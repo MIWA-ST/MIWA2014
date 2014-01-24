@@ -73,14 +73,14 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
-			remoteClock.wakeMeUp(app, date, message);
+			remoteClock.wakeMeUp(app, date, message, Conf._appId);
 		} catch (RemoteException e) {
 			log.log(Level.WARNING,
 					"CLOCK CLIENT : Failed to register a unique event, try to reinit the connection.");
 			e.printStackTrace();
 			initConnection();
 			try {
-				remoteClock.wakeMeUp(app, date, message);
+				remoteClock.wakeMeUp(app, date, message, Conf._appId);
 			} catch (RemoteException e1) {
 				log.log(Level.SEVERE,
 						"CLOCK CLIENT : Failed to register a unique event for the second time.");
@@ -93,14 +93,14 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
-			remoteClock.wakeMeUpEveryDays(app, nextOccurence, message);
+			remoteClock.wakeMeUpEveryDays(app, nextOccurence, message, Conf._appId);
 		} catch (RemoteException e) {
 			log.log(Level.WARNING,
 					"CLOCK CLIENT : Failed to register a daily event, try to reinit the connection.");
 			e.printStackTrace();
 			initConnection();
 			try {
-				remoteClock.wakeMeUpEveryDays(app, nextOccurence, message);
+				remoteClock.wakeMeUpEveryDays(app, nextOccurence, message, Conf._appId);
 			} catch (RemoteException e1) {
 				log.log(Level.SEVERE,
 						"CLOCK CLIENT : Failed to register a daily event for the second time.");
@@ -113,14 +113,14 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
-			remoteClock.wakeMeUpEveryWeeks(app, nextOccurence, message);
+			remoteClock.wakeMeUpEveryWeeks(app, nextOccurence, message, Conf._appId);
 		} catch (RemoteException e) {
 			log.log(Level.WARNING,
 					"CLOCK CLIENT : Failed to register a weekly event, try to reinit the connection.");
 			e.printStackTrace();
 			initConnection();
 			try {
-				remoteClock.wakeMeUpEveryWeeks(app, nextOccurence, message);
+				remoteClock.wakeMeUpEveryWeeks(app, nextOccurence, message, Conf._appId);
 			} catch (RemoteException e1) {
 				log.log(Level.SEVERE,
 						"CLOCK CLIENT : Failed to register a weekly event for the second time.");
@@ -133,14 +133,14 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 		EApplication app = Conf.getInstance()
 				.getCurrentApplication();
 		try {
-			remoteClock.wakeMeUpEveryHours(app, nextOccurence, message);
+			remoteClock.wakeMeUpEveryHours(app, nextOccurence, message, Conf._appId);
 		} catch (RemoteException e) {
 			log.log(Level.WARNING,
 					"CLOCK CLIENT : Failed to register a hourly event, try to reinit the connection.");
 			e.printStackTrace();
 			initConnection();
 			try {
-				remoteClock.wakeMeUpEveryHours(app, nextOccurence, message);
+				remoteClock.wakeMeUpEveryHours(app, nextOccurence, message, Conf._appId);
 			} catch (RemoteException e1) {
 				log.log(Level.SEVERE,
 						"CLOCK CLIENT : Failed to register a hourly event for the second time.");
@@ -150,7 +150,11 @@ class Clock extends UnicastRemoteObject implements IClockClient, IExposedClock {
 	}
 
 	@Override
-	public String wakeUp(Date date, Object message) throws RemoteException {
+	public String wakeUp(Date date, Object message, double appId) throws RemoteException {
+		if (appId != Conf._appId) {
+			log.warning("wakeup wrong appId");
+			return null;
+		}
 		class OneShotTask implements Runnable {
 			Date date;
 			Object message;
