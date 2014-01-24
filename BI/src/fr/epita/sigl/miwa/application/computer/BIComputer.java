@@ -14,16 +14,23 @@ import fr.epita.sigl.miwa.application.enums.EPaiementType;
 import fr.epita.sigl.miwa.application.statistics.*;
 
 public class BIComputer {
-	/** @param stocks */
-	public List<StockStatistic> computeStockStatistics(List<Stock> stocks) {
+	public Map<String, List<StockStatistic>> computeStockStatistics(List<Stock> stocks) {
 		Date date = ClockClient.getClock().getHour();
-		List<StockStatistic> stockStatistics = new ArrayList<StockStatistic>();
+		Map<String, List<StockStatistic>> stockStatistics = new HashMap<String, List<StockStatistic>>();
+		List<StockStatistic> statistics;
 		for (Stock stock : stocks){
+			String storeId = stock.getStore();
+			if (stockStatistics.containsKey(storeId)){
+				statistics = stockStatistics.get(storeId);
+			} else {
+				statistics = new ArrayList<StockStatistic>();
+			}			
 			float stockPourcent = (stock.getStockQty() / stock.getMaxQty()) * 100;
 			if (stockPourcent <= 15.0 || stockPourcent >= 85.0){
-				StockStatistic stockStatistic = new StockStatistic(date, stock.getStore(), stock.getProductRef(), stockPourcent >= 85.0, stockPourcent <= 15.0, stock.getOrdered());
-				stockStatistics.add(stockStatistic);
+				StockStatistic stockStatistic = new StockStatistic(date, storeId, stock.getProductRef(), stockPourcent >= 85.0, stockPourcent <= 15.0, stock.getOrdered());
+				statistics.add(stockStatistic);
 			}
+			stockStatistics.put(storeId, statistics);
 		}
 		return stockStatistics;
 	}

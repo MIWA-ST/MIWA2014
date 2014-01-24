@@ -39,8 +39,8 @@ public class Main {
 		Calendar reveilVente = Calendar.getInstance();
 		reveilVente.setTime(clockDate);
 		reveilVente.add(Calendar.DAY_OF_MONTH, 1);
-		reveilVente.set(Calendar.HOUR_OF_DAY, 23);
-		reveilVente.set(Calendar.MINUTE, 0);
+		reveilVente.set(Calendar.HOUR_OF_DAY, 22);
+		reveilVente.set(Calendar.MINUTE, 30);
 		LOGGER.info("***** Enregistrement auprès de la Clock pour la génération des statistiques de ventes à " + reveilVente.getTime());
 		ClockClient.getClock().wakeMeUpEveryDays(reveilVente.getTime(), EClockMessage.VENTE.toString());
 		//Réveil à 23h pour la répartition des moyens de paiement
@@ -48,7 +48,7 @@ public class Main {
 		reveilPayment.setTime(clockDate);
 		reveilPayment.add(Calendar.DAY_OF_MONTH, 1);
 		reveilPayment.set(Calendar.HOUR_OF_DAY, 23);
-		reveilPayment.set(Calendar.MINUTE, 15);
+		reveilPayment.set(Calendar.MINUTE, 30);
 		LOGGER.info("***** Enregistrement auprès de la Clock pour la génération des statistiques de paiement à " + reveilPayment.getTime());
 		ClockClient.getClock().wakeMeUpEveryDays(reveilPayment.getTime(), EClockMessage.REP_PAYMENT.toString());
 		try {

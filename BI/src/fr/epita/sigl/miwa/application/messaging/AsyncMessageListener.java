@@ -1,10 +1,12 @@
 package fr.epita.sigl.miwa.application.messaging;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.controller.BIController;
 import fr.epita.sigl.miwa.application.criteres.Critere;
 import fr.epita.sigl.miwa.st.EApplication;
@@ -44,7 +46,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		}
 		// Message de la GC (stock)
 		else if (source == EApplication.GESTION_COMMERCIALE){
-			LOGGER.info("***** Message reçu de la GC");
+			Date date = ClockClient.getClock().getHour();
+			LOGGER.info("***** Message reçu de la GC à " + date);
 			try{
 				LOGGER.info("Message is : " + message);
 				controller.parseGCMessage(message);

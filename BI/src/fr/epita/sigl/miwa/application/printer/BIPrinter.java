@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.jdom.Attribute;
@@ -34,51 +36,52 @@ public class BIPrinter {
 
 	private static final String ENTREPOT = "entrepot";
 
-	public void publishStockStatistics(List<StockStatistic> stockStatistics){
+	public void publishStockStatistics(Map<String, List<StockStatistic>> stockStatistics){
 		StringBuilder builder = new StringBuilder();
 		builder.append(initConsole());
-		boolean headerEntrepot = false;
-		boolean headerMagasin = false;
 		if (stockStatistics.isEmpty()){
 			builder.append("Aucun problème relevé sur les stocks\n\n");
 		} else {
-			for (StockStatistic statistic : stockStatistics){
-				if (!headerEntrepot && ENTREPOT.equalsIgnoreCase(statistic.getStore())){
+			for (Entry<String, List<StockStatistic>> entry : stockStatistics.entrySet()){
+				String storeId = entry.getKey();
+				List<StockStatistic> statisticList = entry.getValue();
+				if (ENTREPOT.equalsIgnoreCase(storeId)){
 					builder.append("\n");
 					builder.append("**** GESTION DES STOCKS : ENTREPOT");
 					builder.append("\n");
-					headerEntrepot = true;
 				}
-				if (!headerMagasin && !ENTREPOT.equalsIgnoreCase(statistic.getStore())){
+				if (!ENTREPOT.equalsIgnoreCase(storeId)){
 					builder.append("\n");
-					builder.append("**** GESTION DES STOCKS : MAGASIN " + statistic.getStore());
+					builder.append("**** GESTION DES STOCKS : MAGASIN " + storeId);
 					builder.append("\n");
-					headerMagasin = true;
 				}
-				if (!statistic.isPlein() && !statistic.isVide()){
-					continue;
-				}
-				else{
-					builder.append("ARTICLE ");
-					builder.append(statistic.getArticle());
-					builder.append(" : ");
-					if (statistic.isPlein()){
-						if (statistic.isCommande()){
-							builder.append(EAlerteType.AP);						
-						}
+				for (StockStatistic statistic : statisticList){
+					if (!statistic.isPlein() && !statistic.isVide()){
+						continue;
 					}
-					if (statistic.isVide()){
-						if (statistic.isCommande()){
-							builder.append(EAlerteType.AV);
+					else{
+						builder.append("ARTICLE ");
+						builder.append(statistic.getArticle());
+						builder.append(" : ");
+						if (statistic.isPlein()){
+							if (statistic.isCommande()){
+								builder.append(EAlerteType.AP);						
+							}
 						}
-						else {
-							builder.append(EAlerteType.AC);
+						if (statistic.isVide()){
+							if (statistic.isCommande()){
+								builder.append(EAlerteType.AV);
+							}
+							else {
+								builder.append(EAlerteType.AC);
+							}
 						}
+						builder.append("\n");
 					}
-					builder.append("\n");
 				}
 			}
 		}
+		builder.append("\n");
 		System.out.print(builder.toString());
 	}
 

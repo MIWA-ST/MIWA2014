@@ -48,7 +48,7 @@ public class BIController {
 
 	private boolean hasStockGC = false;
 
-	private boolean hasMDMData = false;
+	private boolean hasMDMData = true;
 
 	private boolean hasSaleInternet = false;
 
@@ -77,7 +77,7 @@ public class BIController {
 			return;
 		}
 		List<Stock> stocks = biDao.getStockOfToday();
-		List<StockStatistic> stockStatistics = computer.computeStockStatistics(stocks);
+		Map<String, List<StockStatistic>> stockStatistics = computer.computeStockStatistics(stocks);
 		hasStockGC = false;
 		biDao.insertStockStatistics(stockStatistics);
 		printer.publishStockStatistics(stockStatistics);

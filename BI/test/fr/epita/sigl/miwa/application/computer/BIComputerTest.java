@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,6 +31,7 @@ public class BIComputerTest {
 
 	private BIComputer computer = new BIComputer();
 
+	private BIPrinter printer = new BIPrinter();
 	
 	@Test
 	public void computeStockStatisticsTest() {
@@ -40,10 +42,8 @@ public class BIComputerTest {
 		stocks.add(stock1);
 		stocks.add(stock2);
 		stocks.add(stock3);
-		List<StockStatistic> statistics = computer.computeStockStatistics(stocks);
-		assertTrue(statistics.get(0).isPlein() && statistics.get(0).isCommande());
-		assertTrue(statistics.get(1).isVide() && !statistics.get(1).isCommande());
-		assertTrue(statistics.get(2).isVide() && statistics.get(2).isCommande());
+		Map<String, List<StockStatistic>> statistics = computer.computeStockStatistics(stocks);
+		printer.publishStockStatistics(statistics);
 	}
 
 	@Test

@@ -27,9 +27,11 @@ public class ClockClient {
 	static public void wakeUp(Date date, Object message) {
 		if (message instanceof String) {
 			EClockMessage clockMessage = EClockMessage.fromString((String) message);
+			Date dateClock = ClockClient.getClock().getHour();
 			switch (clockMessage) {
 			case STOCK:
 				LOGGER.info("***** Réveil pour la génération des statistiques des stocks");
+				LOGGER.info("***** Il est " + dateClock);
 				controller.generateStockStatistic();
 				break;
 			case VENTE:
@@ -37,7 +39,7 @@ public class ClockClient {
 				controller.generateSaleStatistic();
 				break;
 			case REP_PAYMENT:
-				LOGGER.info("***** Réveil pour la génération des statistiques de payment");
+				LOGGER.info("***** Réveil pour la génération des statistiques de paiement");
 				controller.generatePaymentStatistics();
 				break;
 			default:

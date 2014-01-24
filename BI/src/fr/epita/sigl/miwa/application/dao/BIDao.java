@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.clock.ClockClient;
@@ -295,17 +297,19 @@ public class BIDao {
 
 	}
 
-	public void insertStockStatistics(List<StockStatistic> stockStatistics) {
+	public void insertStockStatistics(Map<String, List<StockStatistic>> stockStatistics) {
 		Statement stmt = null;
 		try {
 			if (connect()){
 				stmt = conn.createStatement();
-				for (StockStatistic stockStatistic : stockStatistics){
-					String SQL = "INSERT INTO statisticstock(datetime, iswide, isempty, ordered, store, productreference) "
-							+ "VALUES ('" + stockStatistic.getDateTime() + "', '" + stockStatistic.isPlein() + "', '"
-							+ stockStatistic.isVide() + "', '" + stockStatistic.isCommande() + "', '" + stockStatistic.getStore()
-							+ "', '" + stockStatistic.getArticle() + "')";
-					stmt.execute(SQL);				
+				for (Entry<String, List<StockStatistic>> entry : stockStatistics.entrySet()){
+					for (StockStatistic stockStatistic : entry.getValue()){
+						String SQL = "INSERT INTO statisticstock(datetime, iswide, isempty, ordered, store, productreference) "
+								+ "VALUES ('" + stockStatistic.getDateTime() + "', '" + stockStatistic.isPlein() + "', '"
+								+ stockStatistic.isVide() + "', '" + stockStatistic.isCommande() + "', '" + stockStatistic.getStore()
+								+ "', '" + stockStatistic.getArticle() + "')";
+						stmt.execute(SQL);	
+					}
 				}
 			}
 		} catch (SQLException e) {
