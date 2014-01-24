@@ -57,7 +57,7 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveXML(EApplication sender, Document xml){
-		LOGGER.info("***** MONETIQUE SERVICE CALL : Recepting message.");
+		LOGGER.fine("***** MONETIQUE SERVICE CALL : Recepting message.");
 
 		xml.getDocumentElement().normalize();
 		String serviceToPerform = xml.getDocumentElement().getAttribute("service");
