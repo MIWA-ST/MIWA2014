@@ -55,6 +55,7 @@ public class Main {
 		
 		// Mise en place de l'alerte pour le remboursement des crédits en fin de mois
 		ClockClient.getClock().wakeMeUpEveryWeeks(getLastDayInMonth(), "newWeek");
+		ClockClient.getClock().wakeMeUpEveryDays(ClockClient.getClock().getHour(), "newDay");
 		
 		// Init MySQL connector
 		InitMysqlConnector.init();

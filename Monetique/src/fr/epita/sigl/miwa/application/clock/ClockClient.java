@@ -15,9 +15,9 @@ import fr.epita.sigl.miwa.st.clock.ClockFactory;
 import fr.epita.sigl.miwa.st.clock.IExposedClock;
 
 public class ClockClient {
-	
+
 	private static final Logger log = Logger.getLogger(ClockClient.class.getName());
-	
+
 	private static Integer counter = 0;
 
 	/*
@@ -26,7 +26,7 @@ public class ClockClient {
 	static public IExposedClock getClock() {
 		return ClockFactory.getServerClock();
 	}
-	
+
 	/*
 	 * Vous ne devez faire aucun appel � cette fonction, seulement remplir le code
 	 * Elle est automatiquement appel�e lorsque l'horloge vous contacte
@@ -38,12 +38,12 @@ public class ClockClient {
 				// Paiement fidélité en fin de mois
 				if (counter == 0)
 				{		
-					System.out.println("***** BEGIN SERVICE PAYOFF CREDITS *****");
+					System.out.println("***** BEGIN SERVICE PAYOFF CREDITS : " + date.toString() + " *****");
 					log.info("***** MONETIQUE SERVICE CALL: REQUEST -> Payoff fidelity credits the: " + date + ".");
-					
+
 					Map<Integer, Float> comptes = new HashMap<>();
 					Map<Integer, String> idToMatricule = new HashMap<>();
-					
+
 					DbHandler dbHandler = new DbHandler();
 					try 
 					{
@@ -51,11 +51,11 @@ public class ClockClient {
 						Connection connection = dbHandler.open();
 
 						log.info("***** SERVICE PAYOFF CREDITS: Fetching in-debts accounts.");	
-							
+
 						// Sélection des comptes qui ont des crédits à rembourser
 						PreparedStatement ps = connection.prepareStatement("SELECT ID_FIDELITY_CREDIT_ACCOUNT, CUSTOMER_CODE FROM fidelity_credit_account WHERE IS_DELETED = FALSE AND (TOTAL_CREDIT_AMOUNT - TOTAL_REPAID_CREDIT__AMOUNT) > 0;");
 						ResultSet res = ps.executeQuery();
-						
+
 						while (res.next())
 						{
 							comptes.put(res.getInt("ID_FIDELITY_CREDIT_ACCOUNT"), 0f);
@@ -72,7 +72,7 @@ public class ClockClient {
 							if (res.next())
 							{
 								comptes.put(c, res.getFloat(1));
-								
+
 								log.info("***** SERVICE PAYOFF CREDITS: Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' has " + res.getFloat(1)+ "€ to pay.");
 							}
 						}
@@ -84,7 +84,7 @@ public class ClockClient {
 								ps = connection.prepareStatement("UPDATE fidelity_credit_account SET IS_BLACKLISTED = true, BLAKLISTED_DATE = NOW() WHERE ID_FIDELITY_CREDIT_ACCOUNT = ?;");
 								ps.setInt(1, c);
 								ps.executeUpdate();
-								
+
 								log.info("***** SERVICE PAYOFF CREDITS : Fidelity account with customer matricule: '" + idToMatricule.get(c) + "' is now blacklisted because bank refuses paiement.");
 							}
 							else
@@ -93,11 +93,11 @@ public class ClockClient {
 								ps.setFloat(1, comptes.get(c));
 								ps.setInt(2, c);
 								ps.executeUpdate();
-								
+
 								ps = connection.prepareStatement("UPDATE fidelity_credit SET REPAID_AMOUNT = REPAID_AMOUNT + (AMOUNT / ECHELON_NB) WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false;");
 								ps.setInt(1, c);
 								ps.executeUpdate();
-								
+
 								ps = connection.prepareStatement("UPDATE fidelity_credit SET IS_REPAID = true WHERE ID_FIDELITY_CREDIT_ACCOUNT = ? AND IS_REPAID = false AND REPAID_AMOUNT >= AMOUNT;");
 								ps.setInt(1, c);
 								ps.executeUpdate();
@@ -117,7 +117,7 @@ public class ClockClient {
 						counter++;
 						dbHandler.close();
 					}
-					
+
 					log.info("***** SERVICE PAYOFF CREDITS: REQUEST -> DONE.");
 					System.out.println("***** END SERVICE *****");
 				}
@@ -125,19 +125,24 @@ public class ClockClient {
 				{
 					counter = (counter + 1) % 4;
 				}
-				
-			} else {
+
+			} 
+			else if (((String) message).equalsIgnoreCase("newDay")) {
+				Date clockDate = ClockClient.getClock().getHour();
+				System.out.println("NEW DAY: " + clockDate);
+			}
+			else {
 				System.out.println(date.toString() + " : " + message);
 			}
 		}
-	}	
-	
+	}
+
 	private static boolean getBankPaiement() 
 	{
 		log.info("***** BANK SERVICE : Bank Paiement service call started.");		
 		Random rnd = new Random();
 		Integer myRnd = rnd.nextInt(100);
-		
+
 		log.info("***** BANK SERVICE : Bank Paiement service call stopped with : " + (myRnd < 70) + ".");
 		return myRnd < 70;
 	}
