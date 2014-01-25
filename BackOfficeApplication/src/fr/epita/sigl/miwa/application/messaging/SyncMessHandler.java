@@ -32,24 +32,8 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
-		Sale sale = new Sale();
 		switch (sender)
 		{
-		case CRM:
-			/* CRM => BO : Vente en cours avec fidélisation effectuée */
-			System.out.println("***** Un panier a pu être retourné par le CRM.");
-
-			// ATTENTION : Mauvais dom parser ! Créer le domparserCRM !!
-			DomParserCRM parsercrm = new DomParserCRM();
-			sale = parsercrm.saleTicket(message);
-
-			System.out.println("****** Le panier du client = " + sale.customerNumber + " a été redescendu par le CRM." );
-			System.out.println("****** Fin du parsing.");
-			
-			// BO => Caisse : On redescend le panier envoyé par le CRM à la Caisse.
-			CashRegisterXMLConstructor cashregisterconstructor = new CashRegisterXMLConstructor();
-			getSyncMessSender().sendMessage(EApplication.CAISSE, cashregisterconstructor.facture(sale));
-			break;
 
 //		case GESTION_COMMERCIALE:
 //			/* GESCO => BO : Demande de niveau de stock */
@@ -97,10 +81,23 @@ public class SyncMessHandler {
 			System.out.println("****** Fin du parsing.");
 
 			CRMXMLConstructor crmconstructor = new CRMXMLConstructor();
-			getSyncMessSender().requestMessage(EApplication.CRM, crmconstructor.CustomerTicket(sale));
-			System.out.println("****** Panier remonté au CRM.");
+			System.out.println("****** Panier va être remonté au CRM.");
+			String reponse = getSyncMessSender().requestMessage(EApplication.CRM, crmconstructor.CustomerTicket(sale));
+			/* CRM => BO : Vente en cours avec fidélisation effectuée */
 
+			System.out.println("****** Un panier a pu être retourné par le CRM.");
+			
+			DomParserCRM parsercrm = new DomParserCRM();
+			sale = parsercrm.saleTicket(request);
+
+			System.out.println("****** Le panier du client = " + sale.customerNumber + " a été redescendu par le CRM." );
+			System.out.println("****** Fin du parsing.");
+			
+			// BO => Caisse : On redescend le panier envoyé par le CRM à la Caisse.
+			CashRegisterXMLConstructor cashregisterconstructor = new CashRegisterXMLConstructor();
+			getSyncMessSender().sendMessage(EApplication.CAISSE, cashregisterconstructor.facture(sale));
 			break;
+			
 		default:
 			break;
 		}

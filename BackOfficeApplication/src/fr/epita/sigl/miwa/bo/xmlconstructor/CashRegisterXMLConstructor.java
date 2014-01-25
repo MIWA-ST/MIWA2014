@@ -112,7 +112,7 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 		{
 			return null;
 		}
-		
+		this.openNode("XML", null, 0);
 		List<NodeAttribute> headerAttributes = new ArrayList<NodeAttribute>();
 		headerAttributes.add(new NodeAttribute("objet", "facture-client"));
 		headerAttributes.add(new NodeAttribute("source", "bo"));
@@ -120,7 +120,7 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 		this.openClosedNode("ENTETE", headerAttributes, 0);
 		
 		List<NodeAttribute> factureAttributes = new ArrayList<NodeAttribute>();
-		factureAttributes.add(new NodeAttribute("refclient", sale.customer)); // NBA : changer en customernumber normalement, avec le parser !
+		factureAttributes.add(new NodeAttribute("refclient", sale.customerNumber)); // NBA : changer en customernumber normalement, avec le parser !
 		factureAttributes.add(new NodeAttribute("montanttotal", sale.total));
 		this.openNode("FACTURE", factureAttributes, 0);
 		for (Article article : sale.articles)
@@ -132,7 +132,7 @@ public class CashRegisterXMLConstructor extends XMLConstructor
 			this.openClosedNode("ARTICLE", articleAttributes, 1);
 		}
 		this.closeNode("FACTURE", 0);
-		
+		this.closeNode("XML", 0);
 		return this.xml;
 	}
 }
