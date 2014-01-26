@@ -1,0 +1,26 @@
+<XML>
+	<ENTETE objet="ventes detaillees" source="bo" date="2014-01-27" />
+	<VENTES-DETAILLEES lieu="Magasin 1">
+		<VENTE numero_client="1" montant="3007" moyen_paiement="CF"
+			dateHeure="2014-01-27 17:40:13">
+			<ARTICLES>
+				<ARTICLE ref-article="1" quantite="393" />
+				<ARTICLE ref-article="3" quantite="133" />
+			</ARTICLES>
+		</VENTE>
+		<VENTE numero_client="2" montant="3170" moyen_paiement="CB"
+			dateHeure="2014-01-27 17:40:13">
+			<ARTICLES>
+				<ARTICLE ref-article="2" quantite="3123" />
+				<ARTICLE ref-article="3" quantite="133" />
+			</ARTICLES>
+		</VENTE>
+		<VENTE numero_client="3" montant="5327" moyen_paiement="CB"
+			dateHeure="2014-01-27 17:40:13">
+			<ARTICLES>
+				<ARTICLE ref-article="1" quantite="363" />
+				<ARTICLE ref-article="2" quantite="7133" />
+			</ARTICLES>
+		</VENTE>
+	</VENTES-DETAILLEES>
+</XML>

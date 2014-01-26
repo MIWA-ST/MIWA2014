@@ -34,7 +34,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			// Envoi du fichier de segmentation au CRM suite à leur demande
 			try {
 				List<Critere> criteres = controller.parseCRMMessage(message);
-				LOGGER.info("***** Message bien parsé. Données insérées en base");
 				String filename = controller.generateSegmentation(criteres);
 				AsyncFileFactory.getInstance().getFileManager().send(filename, EApplication.CRM);
 				LOGGER.info("***** Fichier " + filename + "envoyé au CRM");
@@ -52,7 +51,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("***** Message is : " + message);
 			try{
 				controller.parseGCMessage(message);
-				LOGGER.info("***** Message bien parsé. Données insérées en base");
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur pendant le parsing du message de la GC");
 				LOGGER.severe("***** L'erreur est : " + e);
@@ -64,7 +62,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("***** Message is : " + message);
 			try{
 				controller.parseBOMessage(message);
-				LOGGER.info("***** Message bien parsé. Données insérées en base");
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur pendant le parsing du message du BO");
 				LOGGER.severe("***** L'erreur est : " + e);
@@ -76,7 +73,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("Message is : " + message);
 			try {
 				controller.parseInternetMessage(message);
-				LOGGER.info("Message bien parsé. Données insérées en base");
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur pendant le parsing du message de l'Internet");
 				LOGGER.severe("***** L'erreur est : " + e);
@@ -97,7 +93,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("***** Fichier " + file.getAbsolutePath() + " reçu du CRM à " + date);
 			try {
 				controller.parseCRMFile(file);
-				LOGGER.info("***** Fichier bien parsé");
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur de parsing du fichier du CRM");
 				LOGGER.severe("***** L'erreur est : " + e);
@@ -108,7 +103,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("***** Fichier " + file.getAbsolutePath() + " reçu du référentiel");
 			try {
 				controller.parseMDMFile(file);
-				LOGGER.info("***** Fichier bien parsé");
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur de parsing du fichier du MDM");
 				LOGGER.severe("***** L'erreur est : " + e);
@@ -119,7 +113,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("***** Fichier " + file.getAbsolutePath() + " reçu du BO à " + date);
 			try {
 				controller.parseBOFile(file);
-				LOGGER.info("***** Fichier bien parsé");
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur de parsing du fichier du BO");
 				LOGGER.severe("***** L'erreur est : " + e);
@@ -130,7 +123,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			LOGGER.info("***** Fichier " + file.getAbsolutePath() + " reçu d'Internet à " + date);
 			try {
 				controller.parseInternetFile(file);
-				LOGGER.info("***** Fichier bien parsé");
 			} catch (Exception e){
 				LOGGER.severe("***** Erreur de parsing du fichier de l'Internet");
 				LOGGER.severe("***** L'erreur est : " + e);

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<XML>
+	<ENTETE date="2014-01-27" objet="liste-article" source="mdm" />
+	<ARTICLES>
+		<ARTICLE categorie="Categorie 1" ean="1234567891223"
+			prix_fournisseur="141.6" prix_vente="155.76"
+			reference="1">
+			<DESCRIPTION>Description du produit 1</DESCRIPTION>
+			<PROMOTIONS />
+		</ARTICLE>
+		<ARTICLE categorie="Categorie 2" ean="1234567891221"
+			prix_fournisseur="49.56" prix_vente="54.516"
+			reference="2">
+			<DESCRIPTION>Description du produit 2</DESCRIPTION>
+			<PROMOTIONS />
+		</ARTICLE>
+		<ARTICLE categorie="Categorie 1" ean="1234567891224"
+			prix_fournisseur="259.6" prix_vente="285.56"
+			reference="3">
+			<DESCRIPTION>Description du produit 3</DESCRIPTION>
+			<PROMOTIONS />
+		</ARTICLE>
+	</ARTICLES>
+</XML>

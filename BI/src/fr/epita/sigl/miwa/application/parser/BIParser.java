@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -230,7 +231,7 @@ public class BIParser {
 
 				sale.setDateTime(saleDate);
 				sale.setStore(storeId);
-				tmpInfo = saleNode.getAttributes().getNamedItem("quantité_vendue").getNodeValue();
+				tmpInfo = saleNode.getAttributes().getNamedItem("quantite_vendue").getNodeValue();
 				sale.setSoldQty(Integer.valueOf(tmpInfo));
 				sale.setProductCategory(saleNode.getAttributes().getNamedItem("ref-categorie").getNodeValue());
 				tmpInfo = saleNode.getAttributes().getNamedItem("montant_fournisseur").getNodeValue();
@@ -531,9 +532,7 @@ public class BIParser {
 			NodeList headerNodes = detailSaleFile.getElementsByTagName("ENTETE");
 			String source = headerNodes.item(0).getAttributes().getNamedItem("source").getNodeValue();
 			// Parsage du fichier : Partie corps
-			NodeList bodyNodes = detailSaleFile.getElementsByTagName("VENTES-DETAILLEES");
-			String storeId = bodyNodes.item(0).getAttributes().getNamedItem("lieu").getNodeValue();
-			NodeList detailSaleNodes = bodyNodes.item(0).getChildNodes();
+			NodeList detailSaleNodes = detailSaleFile.getElementsByTagName("VENTE");
 			detailSaleList = new ArrayList<DetailSale>();
 
 			// Création des éléments DetailSale
@@ -560,22 +559,26 @@ public class BIParser {
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("montant").getNodeValue();
 				detailSale.setTotal(Integer.valueOf(tmpInfo));
 
+				String storeId = detailSaleNode.getParentNode().getAttributes().getNamedItem("lieu").getNodeValue();
 				detailSale.setStore(storeId);
 
 				tmpInfo = detailSaleNode.getAttributes().getNamedItem("numero_client").getNodeValue();
 				detailSale.setClientNb(Integer.valueOf(tmpInfo));
 
 				// Construction de la liste des produits vendus pour le ticket
-				NodeList soldProductNodes = detailSaleNode.getChildNodes().item(0).getChildNodes();;
-				for (int j = 0; j < soldProductNodes.getLength(); j++) {
-					Node soldProductNode = soldProductNodes.item(j);
-					SoldProduct soldProduct = new SoldProduct();
-					tmpInfo = soldProductNode.getAttributes().getNamedItem("quantite").getNodeValue();
-					soldProduct.setQuantity(Integer.valueOf(tmpInfo));
-					String test = soldProductNode.getAttributes().getNamedItem("ref-article").getNodeValue();
-					soldProduct.setProductRef(test);
+				NodeList soldProductsNode = detailSaleNode.getChildNodes().item(1).getChildNodes();
 
-					soldProductList.add(soldProduct);
+				for (int j = 0; j < soldProductsNode.getLength(); j++) {
+					Node soldProductNode = soldProductsNode.item(j);
+					if (soldProductNode instanceof Element){
+						SoldProduct soldProduct = new SoldProduct();
+						tmpInfo = soldProductNode.getAttributes().getNamedItem("quantite").getNodeValue();
+						soldProduct.setQuantity(Integer.valueOf(tmpInfo));
+						String test = soldProductNode.getAttributes().getNamedItem("ref-article").getNodeValue();
+						soldProduct.setProductRef(test);
+
+						soldProductList.add(soldProduct);
+					}
 				}
 				detailSale.setProductList(soldProductList);
 

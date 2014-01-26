@@ -1,0 +1,11 @@
+<XML>
+	<ENTETE objet="information-client" source="crm" date="2014-02-27" />
+	<CLIENTS>
+		<CLIENT id="1" civilite="M" naissance="1991-12-31"
+			codepostal="75000" situationfam="celibataire" nbenfant="false" typecarte="Silver" />
+		<CLIENT id="2" civilite="M" naissance="1972-01-03"
+			codepostal="94800" situationfam="marie" nbenfant="true" typecarte="Gold" />
+		<CLIENT id="3" civilite="F" naissance="1974-12-31"
+			codepostal="93170" situationfam="marie" nbenfant="true" typecarte="Silver" />
+	</CLIENTS>
+</XML>
