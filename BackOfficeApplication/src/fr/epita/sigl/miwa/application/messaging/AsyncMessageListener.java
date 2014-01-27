@@ -58,6 +58,36 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			sale = parserCashregister.saleTicket(message);
 			
 			System.out.println("****** Le client n°= " + sale.customerNumber + " a acheté " + sale.articles.size() + " articles en payant par " + sale.paymentMeans + "." );
+			
+			for(Article a : sale.articles)
+			{
+				ResultSet res = Mapper.get("reference,quantity", "article", "reference='" + a.reference + "'");
+				if (res != null)
+				{
+					try
+					{
+						Integer initQuantity = Integer.parseInt(res.getString(2));
+						if (initQuantity < Integer.parseInt(a.quantity))
+						{
+							Mapper.update("article", "quantity='0'", "reference='" + a.reference + "'");
+							System.out.println("****** La quantité de l'article de référence " + a.reference + " à été mis à jour (ancien quantité:" + initQuantity + ", nouvelle quantité:0");
+						}
+						else
+						{
+							Integer newQuantity = initQuantity - Integer.parseInt(a.quantity);
+							Mapper.update("article", "quantity='" + newQuantity + "'", "reference='" + a.reference + "'");
+							System.out.println("****** La quantité de l'article de référence " + a.reference + " à été mis à jour (ancien quantité:" + initQuantity + ", nouvelle quantité:" + newQuantity);
+						}
+					}
+					catch(Exception e)
+					{
+						Mapper.update("article", "quantity='0'", "reference='" + a.reference + "'");
+						System.out.println("****** La quantité de l'article de référence " + a.reference + " à été mis à jour (nouvelle quantité:0");
+					}
+				}
+				
+			}
+			
 			System.out.println("****** Fin du parsing.");	
 			
 			CRMXMLConstructor crmconstructor = new CRMXMLConstructor();
