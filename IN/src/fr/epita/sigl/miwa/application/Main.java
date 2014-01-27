@@ -61,8 +61,7 @@ public class Main {
 		
 		
 		MiwaBDDIn bdd = MiwaBDDIn.getInstance();			
-		bdd.connection();
-		
+		bdd.connection();	
 		
 		try {
 
@@ -80,6 +79,9 @@ public class Main {
 			dateouverture.set(Calendar.MILLISECOND, 0);
 			nextOccurence = dateouverture.getTime();
 			ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "Commandes internet to GC");
+			
+			// Generation des commandes toutes les 3 heures...
+			ClockClient.getClock().wakeMeUpEveryHours(ClockClient.getClock().getHour(), "Génération commande...");
 			
 			// Envoi des commandes Internet à BI tous les jours
 				// Envoi des Informations ventes par catégorie toutes les 15 mn

@@ -54,6 +54,12 @@ public class ClockClient {
 				testDmandeNiveauStock.MiseAJourStock();
 				LOGGER.info("***** Envoi d'un message à GC : mise à jour des stocks Internet.");
 			}
+			else if (message.equals("Génération commande..."))
+			{
+				EnvoiVenteDetailleeBI genrationVentes = new EnvoiVenteDetailleeBI();
+				
+				genrationVentes.generateVentes();
+			}
 			else if (message.equals("Commandes internet to BI 1"))
 			{
 				Calendar dateouverture_BI2 = Calendar.getInstance();
@@ -84,7 +90,6 @@ public class ClockClient {
 				
 				
 				ventes.setEntete(entete);
-				ventes.generateVentes();
 				ventes.getBDD();
 				LOGGER.info("***** Envoi d'un message à BI : envoi des ventes détaillés internet.");
 				try {
