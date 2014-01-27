@@ -100,14 +100,14 @@ public class SyncMessHandler {
 
 			Document doc = db.parse(is);
 			root = doc.getFirstChild().getNodeName();
-			System.out.println("TOTOOOOOOOOOOOOOOOOOO");
+			//System.out.println("TOTOOOOOOOOOOOOOOOOOO");
 			// TODO Auto-generated method stub
 			if (sender == EApplication.BACK_OFFICE) {
 				LOGGER.info("Request synchrone reçu du back office :" + request);
 			} else if (sender == EApplication.INTERNET) {
 				LOGGER.info("Request synchrone reçu d'internet :" + request);
 				LOGGER.severe("*****: demande des niveaux de stock depuis INTERNET");
-				System.out.println(request);
+				//System.out.println(request);
 				DemandeNiveauStock dns = XMLManager.getInstance()
 						.getdemandeniveaustockfromInternet(request, doc);
 				List<String> q = new ArrayList<String>();

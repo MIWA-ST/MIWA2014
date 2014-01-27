@@ -384,7 +384,35 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 								+ " Prix fournisseur :"
 								+ articles.getPrix_fournisseur());
 					}
-
+					JdbcConnection.getInstance().getConnection();
+					List<StockEntrepot> setstock =  JdbcConnection.getInstance().envoi_all_stock();
+					JdbcConnection.getInstance().closeConnection();
+					for (Articles articles : pf) {
+						int u = 0;
+						Boolean finded = false;
+						while (u<setstock.size())
+						{
+							if (setstock.get(u).getRef_article().equals(articles))
+							{
+								finded = true;
+								break;
+							}
+						u++;
+						}
+						if (!finded)
+						{
+							StockEntrepot s = new StockEntrepot();
+							s.setRef_article(articles.getRef_article());
+							s.setQuantity("10");
+							setstock.add(s);
+						}	
+					}
+					JdbcConnection.getInstance().getConnection();
+					for (StockEntrepot stockEntrepot : setstock) {
+						JdbcConnection.getInstance().insertStockEntrepot(stockEntrepot);
+					}
+					JdbcConnection.getInstance().closeConnection();
+					
 					LOGGER.severe("*****: Envoi des prix de vente au REFERENTIEL");
 					JdbcConnection.getInstance().getConnection();
 					List<Articles> art = JdbcConnection.getInstance()

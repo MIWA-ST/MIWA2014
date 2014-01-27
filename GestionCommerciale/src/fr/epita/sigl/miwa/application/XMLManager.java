@@ -423,7 +423,8 @@ public class XMLManager {
 		String xml = "<PROMOTIONS>";
 		for (Promotions promotions : promos) {
 			
-			xml += "<PROMOTION datedebut=\"" + promotions.getBegin()
+			xml += "<PROMOTION id=\"" + promotions.getId() 
+					+ "\" datedebut=\"" + promotions.getBegin()
 					+ "\" datefin=\"" + promotions.getEnd()
 					+ "\" promotion_pourcentage=\""
 					+ promotions.getPourcentage() + "\"><ARTICLES>"

@@ -3,10 +3,20 @@ package fr.epita.sigl.miwa.application;
 public class Promotions {
 private Articles article;
 	private String ref_article;
-private String begin;
+private String Id;
+	private String begin;
+
 private String end;
 private String pourcentage;
 
+
+
+public String getId() {
+	return Id;
+}
+public void setId(String id) {
+	Id = id;
+}
 public Articles getArticle() {
 	return article;
 }
