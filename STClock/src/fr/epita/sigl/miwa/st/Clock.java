@@ -1,6 +1,7 @@
 package fr.epita.sigl.miwa.st;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -8,6 +9,7 @@ import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -207,14 +209,17 @@ public class Clock extends UnicastRemoteObject implements IClock {
 		}
 
 		public void sendMessage() {	
+			Date initDate = new Date();
 			if (toRemove)
 				return;
 			try {
 				final IClockClient receiver = getClientConnection(false);
 				if (receiver != null) {
 					receiver.wakeUp(_date, _message, _appId);
-					log.info("wakeup " + _sender.getShortName());
+					Date finDate = new Date();
+					log.info("wakeup " + _sender.getShortName() + " duration : " + Long.toString((finDate.getTime() - initDate.getTime())));
 				} else {
+					log.info("wake up failed to connect duration :" + Long.toString((new Date().getTime() - initDate.getTime())));
 					return;
 				}
 			} catch (Exception e) {
@@ -224,13 +229,18 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				if (receiver != null) {
 					try {
 						receiver.wakeUp(_date, _message, _appId);
-						log.info("wakeup " + _sender.getShortName());
+						Date finDate = new Date();
+						log.info("wakeup " + _sender.getShortName() +  " duration : " +  Long.toString((finDate.getTime() - initDate.getTime())));
 					} catch (Exception e1) {
+						Date finDate = new Date();
 						log.log(Level.SEVERE,
 								"CLOCK SERVER : Failed to wakeUp " + _sender
-								+ " for the second try.");
+								+ " for the second try. duration : " + Long.toString((finDate.getTime() - initDate.getTime())));
 						return;
 					}
+				} else {
+					log.info("wake up failed to reconnect duration :" + Long.toString((new Date().getTime() - initDate.getTime())));
+					return;
 				}
 			}
 			if (!_frequency.equals(RepeatFrequecy.NEVER)) {

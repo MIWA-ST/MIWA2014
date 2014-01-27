@@ -1,11 +1,13 @@
 package fr.epita.sigl.miwa.st;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.RMISocketFactory;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.st.application_locator.IApplicationLocator;
@@ -34,6 +36,11 @@ public class ConnectionHandler {
 			} catch (MalformedURLException | RemoteException
 				| NotBoundException e) {
 			log.severe("Application Locator : Failed to establish connection with. \n" + e.getMessage());
+			}
+			try {
+				RMISocketFactory.setSocketFactory(new TimedSocketFactory(5000));
+			} catch (IOException e) {
+				log.severe("failed to set RMIFactory.");
 			}
 	}
 
