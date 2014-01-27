@@ -70,7 +70,7 @@ public void ajout_stock (Articles art, String ajout) {
 	int n_qt = Integer.parseInt(quantity) + Integer.parseInt(ajout);
 	String nouvelle_qt = String.valueOf(n_qt);
 	quantity = nouvelle_qt;
-	JdbcConnection.getInstance().modif_stock(art, nouvelle_qt);;
+	JdbcConnection.getInstance().modif_stock(art.getRef_article(), nouvelle_qt);;
 	JdbcConnection.getInstance().closeConnection();
 }
 
@@ -79,7 +79,7 @@ public void retrait_stock (Articles art, String retrait) {
 	int n_qt = Integer.parseInt(quantity) + Integer.parseInt(retrait);
 	String nouvelle_qt = String.valueOf(n_qt);
 	quantity = nouvelle_qt;
-	JdbcConnection.getInstance().modif_stock(art, nouvelle_qt);;
+	JdbcConnection.getInstance().modif_stock(art.getRef_article(), nouvelle_qt);;
 	JdbcConnection.getInstance().closeConnection();	
 }
 }

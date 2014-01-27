@@ -220,7 +220,7 @@ public class XMLManager {
 
 	public DemandeNiveauStock getdemandeniveaustockfromInternet(String message,
 			Document doc) throws AsyncMessageException {
-System.out.println("je passe dans XMLM");
+
 		DemandeNiveauStock demande = new DemandeNiveauStock();
 		demande.setCommandNumber(doc.getElementsByTagName("numero").item(0)
 				.getTextContent());
@@ -242,10 +242,11 @@ System.out.println("je passe dans XMLM");
 			System.out.println("un article add " + a.getRef_article());
 		}
 		demande.setArticles(articles);
+		System.out.println("j'ai fini xmlm");
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertDemandeNiveauStock(demande);
 		JdbcConnection.getInstance().closeConnection();
-		System.out.println("j'ai fini xmlm");
+		System.out.println("fin jdbc");
 		return demande;
 
 	}
@@ -454,7 +455,7 @@ System.out.println("je passe dans XMLM");
 				+ "</DATE><ARTICLES>";
 		int i = 0;
 		while (i < demande.getArticles().size()) {
-			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i)
+			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i).getRef_article()
 					+ "</REFERENCE>";
 			xml += "<QUANTITE>" + demande.getQuantity().get(i)
 					+ "</QUANTITE></ARTICLE>";
@@ -543,7 +544,7 @@ System.out.println("je passe dans XMLM");
 				+ "</DATE><ARTICLES>";
 		int i = 0;
 		while (i < demande.getArticles().size()) {
-			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i)
+			xml += "<ARTICLE><REFERENCE>" + demande.getArticles().get(i).getRef_article()
 					+ "</REFERENCE></ARTICLE>";
 			i++;
 		}

@@ -166,7 +166,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 						int y = 0;
 						while (y < stock.size()
 								&& stock.get(y)
-										.getArticle()
 										.getRef_article()
 										.equals(demandereassort.getArticles()
 												.get(i).getRef_article())) {
@@ -179,7 +178,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 									Integer.toString(newquantity));
 							JdbcConnection.getInstance().getConnection();
 							JdbcConnection.getInstance().modif_stock(
-									stock.get(y).getArticle(),
+									stock.get(y).getRef_article(),
 									stock.get(y).getQuantity());
 							JdbcConnection.getInstance().closeConnection();
 							y++;
@@ -199,6 +198,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 
 				} else if (root.toLowerCase().equals("demandeniveaudestock")) {
 					LOGGER.severe("*****: Reception des niveaux de stock depuis BO");
+					System.out.println("*****: message de BO : "+ message);
 					List<StockMagasin> stocks = XMLManager.getInstance()
 							.getniveauStockfromBO(message, doc);
 					for (StockMagasin stockMagasin : stocks) {
@@ -247,9 +247,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 						boolean finded = false;
 						int y = 0;
 						while (y < stock.size()
-								&& stock.get(y)
-										.getArticle()
-										.getRef_article()
+								&& stock.get(y).getRef_article()
 										.equals(cmd.getArticles()
 												.get(i).getRef_article())) {
 							finded = true;
@@ -261,7 +259,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 									Integer.toString(newquantity));
 							JdbcConnection.getInstance().getConnection();
 							JdbcConnection.getInstance().modif_stock(
-									stock.get(y).getArticle(),
+									stock.get(y).getRef_article(),
 									stock.get(y).getQuantity());
 							JdbcConnection.getInstance().closeConnection();
 							y++;
@@ -302,9 +300,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 						boolean finded = false;
 						int y = 0;
 						while (y < stock.size()
-								&& stock.get(y)
-										.getArticle()
-										.getRef_article()
+								&& stock.get(y).getRef_article()
 										.equals(cmd.getArticles()
 												.get(i).getRef_article())) {
 							finded = true;
@@ -315,7 +311,7 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 									Integer.toString(newquantity));
 							JdbcConnection.getInstance().getConnection();
 							JdbcConnection.getInstance().modif_stock(
-									stock.get(y).getArticle(),
+									stock.get(y).getRef_article(),
 									stock.get(y).getQuantity());
 							JdbcConnection.getInstance().closeConnection();
 							y++;
@@ -323,7 +319,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 						if (!finded) {
 							StockEntrepot newstock = new StockEntrepot();
 							newstock.setRef_article(cmd.getArticles().get(i).getRef_article());
-							newstock.setQuantity("0");
 							JdbcConnection.getInstance().getConnection();
 							JdbcConnection.getInstance().insertStockEntrepot(
 									newstock);

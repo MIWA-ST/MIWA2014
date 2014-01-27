@@ -439,7 +439,7 @@ public class JdbcConnection {
 				String verif = "SELECT * FROM stock_entrepot WHERE ref_article = ?";
 				PreparedStatement verif_req = connection
 						.prepareStatement(verif);
-				verif_req.setString(1, stck.getArticle().getRef_article());
+				verif_req.setString(1, stck.getRef_article());
 				ResultSet rs = verif_req.executeQuery();
 
 				if (!rs.next()) {
@@ -447,17 +447,17 @@ public class JdbcConnection {
 
 					PreparedStatement statement = connection
 							.prepareStatement(request);
-					statement.setString(1, stck.getArticle().getRef_article());
+					statement.setString(1, stck.getRef_article());
 					statement.setString(2, stck.getQuantity());
 
 					statement.executeUpdate();
 				} else {
-					String request = "UPDATE stock_entrepot SET quantite ? WHERE ref_article = ?";
+					String request = "UPDATE stock_entrepot SET quantite = ? WHERE ref_article = ?";
 
 					PreparedStatement statement = connection
 							.prepareStatement(request);
 					statement.setString(1, stck.getQuantity());
-					statement.setString(2, stck.getArticle().getRef_article());
+					statement.setString(2, stck.getRef_article());
 
 					statement.executeUpdate();
 
@@ -510,7 +510,7 @@ public class JdbcConnection {
 
 	public void insertDemandeNiveauStock(DemandeNiveauStock dmd) {
 		try {
-			// System.out.println("Insert demande niveau stock");
+			//System.out.println("Insert demande niveau stock");
 			if (connection != null) {
 				String request = "INSERT INTO demande_niveau_stock (numero_demande, date_demande, date_reponse, ref_bo) VALUES (?, ?, ?, ?)";
 
@@ -522,7 +522,6 @@ public class JdbcConnection {
 				statement.setString(4, dmd.getRefbo());
 
 				statement.executeUpdate();
-
 				// / Si y a un bug, ça vient de là
 				String request_id = "SELECT id_demande FROM demande_niveau_stock WHERE numero_demande = ?";
 
@@ -534,15 +533,14 @@ public class JdbcConnection {
 					String qt = ret.getString("id_demande");
 					// Nouveau
 					int indice = 0;
+					System.out.println("TETE");
 					for (Articles a : dmd.getArticles()) {
-						String request2 = "INSERT INTO articles_map (ref_article, id_demande, quantite) VALUES (?, ?, ?)";
-
-						PreparedStatement statement2 = connection
-								.prepareStatement(request2);
+						String request2 = "INSERT INTO articles_map (ref_article, id_demande) VALUES (?, ?)";
+System.out.println(a);
+						PreparedStatement statement2 = connection.prepareStatement(request2);
 						statement2.setString(1, a.getRef_article());
-						statement2.setString(2, qt);
-						statement2.setString(3, dmd.getQuantity().get(indice));
-
+						statement2.setInt(2, Integer.parseInt(qt));
+						//statement2.setString(3, dmd.getQuantity().get(indice));
 						statement2.executeUpdate();
 						indice++;
 					}
@@ -558,13 +556,14 @@ public class JdbcConnection {
 		DemandeNiveauStock res = new DemandeNiveauStock();
 
 		res = dns;
+		res.setArticles(dns.getArticles());
+		List<String> nouv = new ArrayList<String>();
 
 		try {
 			// System.out.println("Recup niveau stock");
 			if (connection != null) {
 				// int indice = 0;
 				for (Articles a : dns.getArticles()) {
-
 					String request = "SELECT quantite FROM stock_entrepot WHERE ref_article = ?";
 
 					PreparedStatement statement = connection
@@ -574,12 +573,15 @@ public class JdbcConnection {
 					ResultSet ret = statement.executeQuery();
 					if (ret.next()) {
 						String qt = ret.getString("quantite");
-
-						List<String> nouv = dns.getQuantity();
+						//System.out.println(qt);
 						nouv.add(qt);
-						res.setQuantity(nouv);
 					}
+					else {
+						nouv.add("0");
+					}
+						
 				}
+				res.setQuantity(nouv);
 			}
 		} catch (SQLException e) {
 			System.out.println("Erreur insertion en base");
@@ -750,16 +752,16 @@ public class JdbcConnection {
 		return res;
 	}
 
-	public void modif_stock(Articles art, String ajout) {
+	public void modif_stock(String art, String ajout) {
 		try {
 			// System.out.println("Insert demande reassort");
 			if (connection != null) {
-				String request = "UPDATE stock_entrepot SET (quantite = ?) WHERE ref_article = ?";
+				String request = "UPDATE stock_entrepot SET quantite = ? WHERE ref_article = ?";
 
 				PreparedStatement statement = connection
 						.prepareStatement(request);
 				statement.setString(1, ajout);
-				statement.setString(2, art.getRef_article());
+				statement.setString(2, art);
 
 				statement.executeUpdate();
 			}

@@ -2,6 +2,8 @@ package fr.epita.sigl.miwa.application.messaging;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -108,7 +110,13 @@ public class SyncMessHandler {
 				System.out.println(request);
 				DemandeNiveauStock dns = XMLManager.getInstance()
 						.getdemandeniveaustockfromInternet(request, doc);
-				
+				List<String> q = new ArrayList<String>();
+				int j = 0;
+				while (j < dns.getArticles().size()) {
+						q.add("0");
+						j++;
+				}
+				dns.setQuantity(q);
 				LOGGER.severe("*****: demande niveau de stock recu depuis internet : "
 						+ dns.getCommandNumber());
 				JdbcConnection.getInstance().getConnection();
@@ -118,8 +126,9 @@ public class SyncMessHandler {
 				int i = 0;
 				while (i < demande.getArticles().size()) {
 					LOGGER.info("*****: demande de stock pour article : "
-							+ demande.getArticles().get(i) + " quantité :"
+							+ demande.getArticles().get(i).getRef_article() + " quantité :"
 							+ demande.getQuantity().get(i));
+					i++;
 				}
 
 				content = XMLManager.getInstance()
