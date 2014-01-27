@@ -44,6 +44,15 @@ public class ClockClient {
 		try {
 		if (message instanceof String) {
 			if (message.equals("BO")) {
+				System.out.println("*");
+				System.out.println("**");
+				System.out.println("*****");
+				System.out.println("*******");
+				System.out.println("*********");
+				System.out.println("*******");
+				System.out.println("*****");
+				System.out.println("**");
+				System.out.println("*");
 				LOGGER.severe("*****: CLOCK BO DEMANDE DE STOCK A LA BO !");
 				String content = "";
 				DemandeNiveauStock demand = new DemandeNiveauStock();
@@ -58,6 +67,15 @@ public class ClockClient {
 			}
 			else if (message.equals("BI"))
 			{
+				System.out.println("*");
+				System.out.println("**");
+				System.out.println("*****");
+				System.out.println("*******");
+				System.out.println("*********");
+				System.out.println("*******");
+				System.out.println("*****"); 
+				System.out.println("**");
+				System.out.println("*");
 				LOGGER.severe("*****: CLOCK BI ENVOI DES STOCKS!");
 				String content = "";
 				List<StockMagasin> listmag = new ArrayList<StockMagasin>();

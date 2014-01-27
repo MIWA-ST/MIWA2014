@@ -105,7 +105,15 @@ public class SyncMessHandler {
 			if (sender == EApplication.BACK_OFFICE) {
 				LOGGER.info("Request synchrone reçu du back office :" + request);
 			} else if (sender == EApplication.INTERNET) {
-				LOGGER.info("Request synchrone reçu d'internet :" + request);
+				System.out.println("*");
+				System.out.println("**");
+				System.out.println("*****");
+				System.out.println("*******");
+				System.out.println("*********");
+				System.out.println("*******");
+				System.out.println("*****");
+				System.out.println("**");
+				System.out.println("*");
 				LOGGER.severe("*****: demande des niveaux de stock depuis INTERNET");
 				//System.out.println(request);
 				DemandeNiveauStock dns = XMLManager.getInstance()

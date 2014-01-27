@@ -58,7 +58,6 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			System.out.println("**");
 			System.out.println("*");
 
-
 			DocumentBuilder db = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
 			InputSource is = new InputSource();
@@ -83,7 +82,15 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					List<StockEntrepot> stock = JdbcConnection.getInstance()
 							.envoi_all_stock();
 					JdbcConnection.getInstance().closeConnection();
-
+					System.out.println("*");
+					System.out.println("**");
+					System.out.println("*****");
+					System.out.println("*******");
+					System.out.println("*********");
+					System.out.println("*******");
+					System.out.println("*****");
+					System.out.println("**");
+					System.out.println("*");
 					List<Articles> articlefournisseur = new ArrayList<Articles>();
 					List<String> quantitefoutnisseur = new ArrayList<String>();
 					int j = 0;
@@ -130,26 +137,42 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 							}
 						}
 
-						if (!articlefournisseur.isEmpty()) {
-							CommandeFournisseur commandef = new CommandeFournisseur();
-							commandef.setArticles(articlefournisseur);
-							commandef.setquantity(quantitefoutnisseur);
-							commandef.setTraitee("FALSE");
-							commandef.setNumero_commande(ClockClient.getClock()
-									.getHour().toString());
-							DateFormat df = new SimpleDateFormat("yyyyMMdd");
-							commandef.setBon_commande(df.format(ClockClient
-									.getClock().getHour()));
-							content = XMLManager.getInstance()
-									.envoicommandefournisseurtoEntrepot(
-											commandef);
-							AsyncMessageFactory.getInstance()
-									.getAsyncMessageManager()
-									.send(content, EApplication.ENTREPOT);
-						}
+						
 						j++;
 					}
-
+					
+					if (!articlefournisseur.isEmpty()) {
+						CommandeFournisseur commandef = new CommandeFournisseur();
+						commandef.setArticles(articlefournisseur);
+						commandef.setquantity(quantitefoutnisseur);
+						commandef.setTraitee("FALSE");
+						commandef.setNumero_commande(ClockClient.getClock()
+								.getHour().toString());
+						DateFormat df = new SimpleDateFormat("yyyyMMdd");
+						commandef.setBon_commande(df.format(ClockClient
+								.getClock().getHour()));
+						LOGGER.severe("*****: Envoi commande fournisseur to ENTREPOT: " + commandef.getBon_commande());
+						for (Articles articles : articlefournisseur) {
+							LOGGER.info("*****: Commande fournisseur de l'article :" + articles.getRef_article());							
+						}
+						
+						content = XMLManager.getInstance()
+								.envoicommandefournisseurtoEntrepot(
+										commandef);
+						AsyncMessageFactory.getInstance()
+								.getAsyncMessageManager()
+								.send(content, EApplication.ENTREPOT);
+						LOGGER.severe("*****: FIN ENVOI TO ENTREPOT");
+					}
+					System.out.println("*");
+					System.out.println("**");
+					System.out.println("*****");
+					System.out.println("*******");
+					System.out.println("*********");
+					System.out.println("*******");
+					System.out.println("*****");
+					System.out.println("**");
+					System.out.println("*");
 					LOGGER.severe("*****:Préparation de l'envoi de la demande de réassort à l'ENTREPOT : "
 							+ demandereassort.getCommandNumber());
 					content = XMLManager.getInstance()
@@ -195,10 +218,19 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 						}
 						i++;
 					}
+					System.out.println("*");
+					System.out.println("**");
+					System.out.println("*****");
+					System.out.println("*******");
+					System.out.println("*********");
+					System.out.println("*******");
+					System.out.println("*****");
+					System.out.println("**");
+					System.out.println("*");
 
 				} else if (root.toLowerCase().equals("demandeniveaudestock")) {
 					LOGGER.severe("*****: Reception des niveaux de stock depuis BO");
-					System.out.println("*****: message de BO : "+ message);
+					System.out.println("*****: message de BO : " + message);
 					List<StockMagasin> stocks = XMLManager.getInstance()
 							.getniveauStockfromBO(message, doc);
 					for (StockMagasin stockMagasin : stocks) {
@@ -237,24 +269,34 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					LOGGER.severe("*****: FIN Bon de livraison commande fournisseur recu : "
 							+ cmd.getNumero_commande());
 					// FIXME incrémenter les stocks
+					System.out.println("*");
+					System.out.println("**");
+					System.out.println("*****");
+					System.out.println("*******");
+					System.out.println("*********");
+					System.out.println("*******");
+					System.out.println("*****");
+					System.out.println("**");
+					System.out.println("*");
 					JdbcConnection.getInstance().getConnection();
 					List<StockEntrepot> stock = JdbcConnection.getInstance()
 							.envoi_all_stock();
 					JdbcConnection.getInstance().closeConnection();
-					
+
 					int i = 0;
 					while (i < cmd.getArticles().size()) {
 						boolean finded = false;
 						int y = 0;
 						while (y < stock.size()
-								&& stock.get(y).getRef_article()
-										.equals(cmd.getArticles()
-												.get(i).getRef_article())) {
+								&& stock.get(y)
+										.getRef_article()
+										.equals(cmd.getArticles().get(i)
+												.getRef_article())) {
 							finded = true;
 							int newquantity = Integer.parseInt(stock.get(y)
 									.getQuantity())
-									+ Integer.parseInt(cmd
-											.getquantity().get(i));
+									+ Integer
+											.parseInt(cmd.getquantity().get(i));
 							stock.get(y).setQuantity(
 									Integer.toString(newquantity));
 							JdbcConnection.getInstance().getConnection();
@@ -266,7 +308,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 						}
 						if (!finded) {
 							StockEntrepot newstock = new StockEntrepot();
-							newstock.setRef_article(cmd.getArticles().get(i).getRef_article());
+							newstock.setRef_article(cmd.getArticles().get(i)
+									.getRef_article());
 							newstock.setQuantity(cmd.getquantity().get(i));
 							JdbcConnection.getInstance().getConnection();
 							JdbcConnection.getInstance().insertStockEntrepot(
@@ -289,8 +332,8 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					}
 					LOGGER.severe("*****: FIN expedition client recu : "
 							+ cmd.getCommandNumber());
-					
-					//DECREMENTER STOCK
+
+					// DECREMENTER STOCK
 					JdbcConnection.getInstance().getConnection();
 					List<StockEntrepot> stock = JdbcConnection.getInstance()
 							.envoi_all_stock();
@@ -299,31 +342,39 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					while (i < cmd.getArticles().size()) {
 						boolean finded = false;
 						int y = 0;
-						while (y < stock.size()
-								&& stock.get(y).getRef_article()
-										.equals(cmd.getArticles()
-												.get(i).getRef_article())) {
-							finded = true;
-							int newquantity = Integer.parseInt(stock.get(y)
-									.getQuantity())
-									- Integer.parseInt(cmd.getquantity().get(i));
-							stock.get(y).setQuantity(
-									Integer.toString(newquantity));
-							JdbcConnection.getInstance().getConnection();
-							JdbcConnection.getInstance().modif_stock(
-									stock.get(y).getRef_article(),
-									stock.get(y).getQuantity());
-							JdbcConnection.getInstance().closeConnection();
+						while (y < stock.size()) {
+							if (stock
+									.get(y)
+									.getRef_article()
+									.equals(cmd.getArticles().get(i)
+											.getRef_article())) {
+								finded = true;
+								int newquantity = Integer.parseInt(stock.get(y)
+										.getQuantity())
+										- Integer.parseInt(cmd.getquantity()
+												.get(i));
+								stock.get(y).setQuantity(
+										Integer.toString(newquantity));
+								JdbcConnection.getInstance().getConnection();
+								JdbcConnection.getInstance().modif_stock(
+										stock.get(y).getRef_article(),
+										stock.get(y).getQuantity());
+								JdbcConnection.getInstance().closeConnection();
+								break;
+
+							}
 							y++;
 						}
 						if (!finded) {
 							StockEntrepot newstock = new StockEntrepot();
-							newstock.setRef_article(cmd.getArticles().get(i).getRef_article());
+							newstock.setRef_article(cmd.getArticles().get(i)
+									.getRef_article());
 							JdbcConnection.getInstance().getConnection();
 							JdbcConnection.getInstance().insertStockEntrepot(
 									newstock);
 							JdbcConnection.getInstance().closeConnection();
 						}
+
 						i++;
 					}
 				}
@@ -385,34 +436,42 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 								+ articles.getPrix_fournisseur());
 					}
 					JdbcConnection.getInstance().getConnection();
-					List<StockEntrepot> setstock =  JdbcConnection.getInstance().envoi_all_stock();
+					List<StockEntrepot> setstock = JdbcConnection.getInstance()
+							.envoi_all_stock();
 					JdbcConnection.getInstance().closeConnection();
 					for (Articles articles : pf) {
 						int u = 0;
 						Boolean finded = false;
-						while (u<setstock.size())
-						{
-							if (setstock.get(u).getRef_article().equals(articles))
-							{
+						while (u < setstock.size()) {
+							if (setstock.get(u).getRef_article()
+									.equals(articles.getRef_article())) {
 								finded = true;
 								break;
 							}
-						u++;
+							u++;
 						}
-						if (!finded)
-						{
+						if (!finded) {
 							StockEntrepot s = new StockEntrepot();
 							s.setRef_article(articles.getRef_article());
 							s.setQuantity("10");
 							setstock.add(s);
-						}	
+						}
 					}
 					JdbcConnection.getInstance().getConnection();
 					for (StockEntrepot stockEntrepot : setstock) {
-						JdbcConnection.getInstance().insertStockEntrepot(stockEntrepot);
+						JdbcConnection.getInstance().insertStockEntrepot(
+								stockEntrepot);
 					}
 					JdbcConnection.getInstance().closeConnection();
-					
+					System.out.println("*");
+					System.out.println("**");
+					System.out.println("*****");
+					System.out.println("*******");
+					System.out.println("*********");
+					System.out.println("*******");
+					System.out.println("*****");
+					System.out.println("**");
+					System.out.println("*");
 					LOGGER.severe("*****: Envoi des prix de vente au REFERENTIEL");
 					JdbcConnection.getInstance().getConnection();
 					List<Articles> art = JdbcConnection.getInstance()
@@ -429,7 +488,15 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 					AsyncMessageFactory.getInstance().getAsyncMessageManager()
 							.send(content, EApplication.MDM);
 					LOGGER.severe("*****: prix de vente des articles envoyés au référentiel");
-
+					System.out.println("*");
+					System.out.println("**");
+					System.out.println("*****");
+					System.out.println("*******");
+					System.out.println("*********");
+					System.out.println("*******");
+					System.out.println("*****");
+					System.out.println("**");
+					System.out.println("*");
 					// Envoyer promotions au ref
 					LOGGER.severe("*****:Envoi des promotions au référentiel");
 

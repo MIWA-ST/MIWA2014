@@ -93,7 +93,7 @@ public class XMLManager {
 
 	public List<Articles> getprixfournisseurs(String message, Document doc)
 			throws AsyncMessageException {
-		LOGGER.severe("TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO1");
+		//LOGGER.severe("TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO1");
 
 		Node listarticles = doc.getElementsByTagName("ARTICLES").item(0);
 
@@ -102,7 +102,7 @@ public class XMLManager {
 
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Articles a = new Articles();
-			LOGGER.severe("TOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			//LOGGER.severe("TOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			// Récupéraction du noeud à traiter
 			Node nNode = nList.item(temp);
 			// Conversion en element

@@ -536,7 +536,7 @@ public class JdbcConnection {
 					//System.out.println("TETE");
 					for (Articles a : dmd.getArticles()) {
 						String request2 = "INSERT INTO articles_map (ref_article, id_demande) VALUES (?, ?)";
-System.out.println(a);
+						//System.out.println(a);
 						PreparedStatement statement2 = connection.prepareStatement(request2);
 						statement2.setString(1, a.getRef_article());
 						statement2.setInt(2, Integer.parseInt(qt));
