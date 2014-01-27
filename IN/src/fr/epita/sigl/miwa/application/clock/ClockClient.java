@@ -61,10 +61,8 @@ public class ClockClient {
 				Date nextOccurence_BI2 = new Date();
 				dateouverture_BI2.add(Calendar.MINUTE, 15);
 				nextOccurence_BI2 = dateouverture_BI2.getTime();
-				ClockClient.getClock().wakeMeUp(nextOccurence_BI2, "Commandes internet to BI 1 - Envoi message !");
-			}
-			else if (message.equals("Commandes internet to BI 1 - Envoi message !"))
-			{
+				ClockClient.getClock().wakeMeUp(nextOccurence_BI2, "Commandes internet to BI 1");
+				
 				EnvoiInformationVentesBI ventes = new EnvoiInformationVentesBI();
 				EnteteBI entete = new EnteteBI("ventes 15min", "internet", date);
 				
@@ -92,7 +90,6 @@ public class ClockClient {
 				try {
 					AsyncFileFactory.getInstance().getFileManager().send(ventes.createFileXML(), EApplication.BI);
 				} catch (AsyncFileException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

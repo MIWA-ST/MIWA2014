@@ -14,6 +14,9 @@ import fr.epita.sigl.miwa.application.MiwaBDDIn;
 import fr.epita.sigl.miwa.application.GC.ArticleCommandeParClientGC;
 import fr.epita.sigl.miwa.application.GC.EnvoiCommandeGC;
 import fr.epita.sigl.miwa.application.clock.ClockClient;
+import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
+import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 
 public class VenteBI {
 	private String numero_client;
@@ -81,7 +84,12 @@ public class VenteBI {
 		for (ArticleVenteBI a : articles)
 			envoiCommande.getArticles().add(new ArticleCommandeParClientGC(a.getCategorie(), a.getRef_article(), a.getQuantite().toString()));
 		
-		System.out.println(envoiCommande.sendXML());
+		try {
+			AsyncMessageFactory.getInstance().getAsyncMessageManager().send(envoiCommande.sendXML(), EApplication.GESTION_COMMERCIALE);
+		} catch (AsyncMessageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
 	}
 	
 	public void addBDD()

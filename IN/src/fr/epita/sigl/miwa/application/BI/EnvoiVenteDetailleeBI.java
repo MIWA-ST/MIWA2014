@@ -22,6 +22,10 @@ import org.w3c.dom.Document;
 
 import fr.epita.sigl.miwa.application.MiwaBDDIn;
 import fr.epita.sigl.miwa.application.ParseXML;
+import fr.epita.sigl.miwa.application.ParseXML.TYPE_LANGUAGE;
+import fr.epita.sigl.miwa.application.CR.CreationClientCR;
+import fr.epita.sigl.miwa.application.CR.EnvoiEnteteCR;
+import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockGC;
 import fr.epita.sigl.miwa.application.GC.EnvoiCommandeGC;
 import fr.epita.sigl.miwa.application.MO.PaiementCbMO;
 import fr.epita.sigl.miwa.application.MO.PaiementCfMO;
@@ -53,9 +57,55 @@ public class EnvoiVenteDetailleeBI {
 		this.lieu = lieu;
 	}
 	
+	public void majNiveauStock()
+	{
+		// Mise à joru des niveaux de stock de tous les articles
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		Random rnd = new Random();
+		Integer r = rnd.nextInt(3);
+		
+		DemandeNiveauStockGC testDmandeNiveauStock = new DemandeNiveauStockGC("CV65" + r, df.format(ClockClient.getClock().getHour()));
+		
+		testDmandeNiveauStock.MiseAJourStock();
+		LOGGER.info("***** Envoi d'un message à GC : mise à jour des stocks Internet.");
+	}
+	
 	public void generateVentes()
 	{
 		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		Random r2 = new Random();
+		Integer rand2 = r2.nextInt(2);
+		if (rand2 > 0)
+		{
+			Random randName = new Random();
+			Integer randNom = randName.nextInt(5);
+			
+			CreationClientCR testCreationCRM = new CreationClientCR(new EnvoiEnteteCR("creation_compte", "Internet", ClockClient.getClock().getHour()),
+			"HADDAD" + randNom,
+			"CHAWQUI" + randNom + "93",
+			"93 RUE DU BOSSS",
+			"93170",
+			"chawqui.haddad@gmail.com",
+			"0630189798",
+			"M",
+			"Marie",
+			"1989-12-09",
+			"IBAN",
+			"BIC",
+			"3");
+			
+			String result = SyncMessHandler.getSyncMessSender().requestMessage(EApplication.CRM, testCreationCRM.sendXML());
+			if (result != null)
+			{
+				testCreationCRM.addBDD();
+				ParseXML parser = new ParseXML();
+				parser.readXML(result, TYPE_LANGUAGE.STRING);
+				parser.parseCRM();
+			}
+			else
+				LOGGER.info("***** Erreur lors de la création côté CRM -> Le flux reçu est nul.");
+		}
 		
 		ResultSet rs = bdd.executeStatement_result("Select * from client;");
 		try {
@@ -70,6 +120,8 @@ public class EnvoiVenteDetailleeBI {
 				v.setAdresse(rs.getString("adresse"));
 				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				v.setDateHeure(df.format(ClockClient.getClock().getHour()));
+				
+				this.majNiveauStock();
 				
 				ResultSet rs2 = bdd.executeStatement_result("SELECT * FROM article WHERE stock > 0;");
 				if (!rs2.next())

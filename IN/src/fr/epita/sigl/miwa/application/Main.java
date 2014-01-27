@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.MDM.ProductsClientMDM;
@@ -64,7 +65,7 @@ public class Main {
 		
 		
 		try {
-			
+
 			new BufferedReader(new InputStreamReader(System.in)).readLine();
 		// ENvoi des messages (wakeMeUp...)
 			// Envoi des commandes Internet à la GC 1 fois par jour à 9h00
