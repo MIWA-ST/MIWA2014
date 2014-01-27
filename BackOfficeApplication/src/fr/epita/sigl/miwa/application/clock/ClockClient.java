@@ -2,6 +2,11 @@ package fr.epita.sigl.miwa.application.clock;
 
 import java.util.Date;
 
+import fr.epita.sigl.miwa.bo.util.MiscFunction;
+import fr.epita.sigl.miwa.bo.xmlconstructor.StoreManagementXMLConstructor;
+import fr.epita.sigl.miwa.st.EApplication;
+import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
+import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 import fr.epita.sigl.miwa.st.clock.ClockFactory;
 import fr.epita.sigl.miwa.st.clock.IExposedClock;
 
@@ -22,8 +27,23 @@ public class ClockClient {
 	static public void wakeUp(Date date, Object message) {
 
 		if (message instanceof String) {
-			if (message.equals("Hello World!")) {
-				System.out.println(date.toString() + " : Hello dear client!");
+
+			if (message.equals("heure actuelle")) {
+				System.out.println("***** Date est heure actuelle : " + date.toString());
+			}
+			else if (message.equals("fermeture")) {
+				
+				// BO => GC demande de réassort
+				StoreManagementXMLConstructor storeManagementXMLConstructor = new StoreManagementXMLConstructor();
+				try {
+					AsyncMessageFactory.getInstance().getAsyncMessageManager().
+					send(storeManagementXMLConstructor.restockRequest(MiscFunction.getArticlesForRestockRequest()), EApplication.GESTION_COMMERCIALE);
+				} catch (AsyncMessageException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("***** Demande de réassort envoyée à la GC");
+				
 			} else {
 				System.out.println(date.toString() + " : " + message);
 			}

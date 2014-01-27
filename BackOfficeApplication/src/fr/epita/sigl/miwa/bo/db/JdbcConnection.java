@@ -54,7 +54,6 @@ public class JdbcConnection
  
 		if (connection != null)
 		{
-			System.out.println("Connexion à la base effectuée");
 			return true;
 		}
 		else
@@ -71,7 +70,6 @@ public class JdbcConnection
 			if (connection != null)
 				connection.close();
 			
-			System.out.println("Connexion à la base fermée");
 			return true;
 		}
 		catch (SQLException e)

@@ -95,13 +95,9 @@ public class SyncMessHandler {
 			
 			// BO => Caisse : On redescend le panier envoyé par le CRM à la Caisse.
 			CashRegisterXMLConstructor cashregisterconstructor = new CashRegisterXMLConstructor();
-			System.out.println("NIZAR DANS TA GUEULE 1 !");
-			System.out.println(reponse);
-			System.out.println("NIZAR DANS TA GUEULE 2 !");
-			sale.print();
-			System.out.println("BRICE DANS TA GUEULE !");
+
 			String result = cashregisterconstructor.facture(sale);
-			System.out.println(result);
+
 			return result;
 //			getSyncMessSender().sendMessage(EApplication.CAISSE, cashregisterconstructor.facture(sale));
 			

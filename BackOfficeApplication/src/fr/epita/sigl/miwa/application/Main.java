@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import org.jgroups.util.Buffer;
 
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.bo.db.JdbcConnection;
 import fr.epita.sigl.miwa.bo.db.Mapper;
@@ -57,9 +60,21 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		DomParserReferential parserReferential = new DomParserReferential();
-		ArticleList articles = parserReferential.articleList(PlugReferential.articleList);
+		
+		Calendar datefermeture = Calendar.getInstance();
+		datefermeture.setTime(ClockClient.getClock().getHour());
+		Date nextOccurence = new Date();
+		if (datefermeture.get(Calendar.HOUR_OF_DAY) >= 22) 
+			datefermeture.add((Calendar.DAY_OF_MONTH), 1);
+		datefermeture.set(Calendar.HOUR_OF_DAY, 22);
+		datefermeture.set(Calendar.MINUTE, 0);
+		datefermeture.set(Calendar.SECOND, 0);
+		datefermeture.set(Calendar.MILLISECOND, 0);
+		nextOccurence = datefermeture.getTime();
+		
+		ClockClient.getClock().wakeMeUpEveryDays(nextOccurence, "fermeture");
+		
+		ClockClient.getClock().wakeMeUpEveryHours(ClockClient.getClock().getHour(), "heure actuelle");
 		
 		/*
 		// EXEMPLE POUR STOCKAGE ET RECUPE DANS LA BASE
@@ -83,14 +98,7 @@ public class Main {
 			}
 		}
 		*/
-		
-		/* TODO : to remove but keep in case of ...
-		// BO => GC demande de réassort
-		AsyncMessageFactory.getInstance().getAsyncMessageManager().
-		send(PlugStoreManagement.restockRequest, EApplication.GESTION_COMMERCIALE);
-		System.out.println("***** Bouchon : Demande de réassort envoyée à la GC"); // mettre + d'infos
-		*/
-		
+
 		/*
 		// BO => GC demande de réassort
 		StoreManagementXMLConstructor storeManagementXMLConstructor = new StoreManagementXMLConstructor();
@@ -105,6 +113,7 @@ public class Main {
 		AsyncFileFactory.getInstance().getFileManager().send("outputFileBOresponse.xml", EApplication.CAISSE);
 		System.out.println("***** Bouchon : Articles matinaux.");
 		*/
+		
 
 		/*
 		// BDD : faire des clock pour modifier les promo en live

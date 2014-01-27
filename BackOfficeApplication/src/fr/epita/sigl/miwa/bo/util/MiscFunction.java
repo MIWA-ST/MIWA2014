@@ -16,6 +16,10 @@ public class MiscFunction {
 	
 		RestockRequest rr = new RestockRequest();
 		rr.date = new Date();
+		rr.number = "CV398719873";
+		rr.backOfficeReference = "20131225";
+		rr.backOfficeAdresse = "20 rue pasteur";
+		rr.backOfficePhone = "0133897654";
 		
 		ResultSet res = Mapper.get("id_article,reference,name_article,category_article,quantity,provider_price,sales_price,ean,description", "article", "true");
 		

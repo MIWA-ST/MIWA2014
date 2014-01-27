@@ -21,8 +21,6 @@ public class Mapper
 
             if (i != 0)
             {
-            	System.out.println("Request: " + sqlRequest);
-            	System.out.println("Inserted in table " + table);
             	JdbcConnection.getInstance().closeConnection();
             	return i;
             } 
@@ -52,7 +50,6 @@ public class Mapper
             int i = ps.executeUpdate();
             if (i != 0)
             {
-            	System.out.println("Request: " + sqlRequest);
                 System.out.println("Deleted in table " + table);
             }
             else
@@ -80,7 +77,6 @@ public class Mapper
             int i = ps.executeUpdate();
             if (i != 0)
             {
-            	System.out.println("request: " + sqlRequest);
             	System.out.println("updated table " + table);
             }
             else
