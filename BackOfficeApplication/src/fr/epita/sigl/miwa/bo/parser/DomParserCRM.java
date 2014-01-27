@@ -42,7 +42,7 @@ public class DomParserCRM extends DomParser
 		
 
 		Node saleNode = DomParserHelper.getNode("FACTURE", this.doc);
-		sale.customer = DomParserHelper.getNodeAttr("refclient", saleNode); // NBA : Pourquoi pas customernumber ? si changement, penser au constructor
+		sale.customerNumber = DomParserHelper.getNodeAttr("refclient", saleNode); // NBA : Pourquoi pas customernumber ? si changement, penser au constructor
 		sale.total = DomParserHelper.getNodeAttr("montanttotal", saleNode);			
 
 		List<Node> articleNodes = DomParserHelper.getNodes("ARTICLE", saleNode.getChildNodes());

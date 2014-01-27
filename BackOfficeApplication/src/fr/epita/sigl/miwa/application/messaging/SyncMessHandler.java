@@ -88,15 +88,22 @@ public class SyncMessHandler {
 			System.out.println("****** Un panier a pu être retourné par le CRM.");
 			
 			DomParserCRM parsercrm = new DomParserCRM();
-			sale = parsercrm.saleTicket(request);
+			sale = parsercrm.saleTicket(reponse);
 
 			System.out.println("****** Le panier du client = " + sale.customerNumber + " a été redescendu par le CRM." );
 			System.out.println("****** Fin du parsing.");
 			
 			// BO => Caisse : On redescend le panier envoyé par le CRM à la Caisse.
 			CashRegisterXMLConstructor cashregisterconstructor = new CashRegisterXMLConstructor();
-			getSyncMessSender().sendMessage(EApplication.CAISSE, cashregisterconstructor.facture(sale));
-			break;
+			System.out.println("NIZAR DANS TA GUEULE 1 !");
+			System.out.println(reponse);
+			System.out.println("NIZAR DANS TA GUEULE 2 !");
+			sale.print();
+			System.out.println("BRICE DANS TA GUEULE !");
+			String result = cashregisterconstructor.facture(sale);
+			System.out.println(result);
+			return result;
+//			getSyncMessSender().sendMessage(EApplication.CAISSE, cashregisterconstructor.facture(sale));
 			
 		default:
 			break;
