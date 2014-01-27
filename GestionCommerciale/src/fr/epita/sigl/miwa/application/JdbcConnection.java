@@ -533,7 +533,7 @@ public class JdbcConnection {
 					String qt = ret.getString("id_demande");
 					// Nouveau
 					int indice = 0;
-					System.out.println("TETE");
+					//System.out.println("TETE");
 					for (Articles a : dmd.getArticles()) {
 						String request2 = "INSERT INTO articles_map (ref_article, id_demande) VALUES (?, ?)";
 System.out.println(a);
