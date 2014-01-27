@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -27,7 +28,7 @@ public class EnvoiCommandeGC {
 	private String prenom;
 
 	// liste des articles commandes par le client
-	private List<ArticleCommandeParClientGC> articles;
+	private List<ArticleCommandeParClientGC> articles = new ArrayList<ArticleCommandeParClientGC>();
 	
 	public EnvoiCommandeGC(String numero, String refclient, String datebc, String datebl, String adresseClient, String nom, String prenom, List<ArticleCommandeParClientGC> articles)
 	{
@@ -41,6 +42,10 @@ public class EnvoiCommandeGC {
 		this.articles = articles;
 	}
 	
+	public EnvoiCommandeGC() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String sendXML()
 	{
 		StringBuilder result = new StringBuilder();

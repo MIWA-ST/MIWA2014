@@ -57,8 +57,11 @@ public class Main {
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
+		
+		
 		MiwaBDDIn bdd = MiwaBDDIn.getInstance();			
 		bdd.connection();
+		
 		
 		try {
 			
@@ -113,7 +116,12 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
+		
 		bdd.close();
+		
+		
 	//	SyncMessHandler.getSyncMessSender().sendMessage(
 			//	EApplication.INTERNET, "Coucou IN");
 		/* !CODE HERE */

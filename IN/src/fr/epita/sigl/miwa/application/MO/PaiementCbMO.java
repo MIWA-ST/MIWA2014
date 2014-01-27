@@ -52,8 +52,6 @@ public class PaiementCbMO {
 		result.append("<pictogramme>" + this.pictogramme + "</pictogramme>");
 		result.append("</cb></monetique>");
 		
-		System.out.println(result.toString());
-		
 		return result.toString();
 	}
 	

@@ -1,17 +1,26 @@
 package fr.epita.sigl.miwa.application.BI;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import fr.epita.sigl.miwa.application.MiwaBDDIn;
+import fr.epita.sigl.miwa.application.GC.ArticleCommandeParClientGC;
+import fr.epita.sigl.miwa.application.GC.EnvoiCommandeGC;
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 
 public class VenteBI {
 	private String numero_client;
-	private Integer montant;
+	private String nom;
+	private String prenom;
+	private String adresse;
+	private Float montant;
 	private String moyen_paiement;
 	private Date dateHeure;
 	private List<ArticleVenteBI> articles = new ArrayList<ArticleVenteBI>();
@@ -21,13 +30,58 @@ public class VenteBI {
 		
 	}
 	
-	public VenteBI(String numero_client, Integer montant, String moyen_paiement, Date dateHeure, List<ArticleVenteBI> articles)
+	public VenteBI(String numero_client, Float montant, String moyen_paiement, Date dateHeure, List<ArticleVenteBI> articles)
 	{
 		this.numero_client = numero_client;
 		this.montant = montant;
 		this.moyen_paiement = moyen_paiement;
 		this.dateHeure = dateHeure;
 		this.articles = articles;
+	}
+	
+	public void updatesArticles()
+	{
+		MiwaBDDIn bdd = MiwaBDDIn.getInstance();
+		
+		
+		ResultSet rs2 = bdd.executeStatement_result("SELECT * FROM article WHERE stock > 0;");
+		
+		try {
+			while (rs2 != null && rs2.next())
+			{
+				Integer stock = Integer.parseInt(rs2.getString("stock"));
+				Integer vendues = Integer.parseInt(rs2.getString("vente"));
+				String ref = rs2.getString("reference");
+				
+				bdd.executeStatement("UPDATE article SET stock='"+(stock - 1)+"' WHERE reference='"+ref+"';");
+				bdd.executeStatement("UPDATE article SET vente='"+(vendues + 1)+"' WHERE reference='"+ref+"';");
+			}
+		} catch (NumberFormatException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void envoiCommandeGC()
+	{
+		// numero, matricule, datebl, datebc, adresse, nom, prenom, articles
+		EnvoiCommandeGC envoiCommande = new EnvoiCommandeGC();
+		
+		Random r = new Random();
+		Integer rnd = r.nextInt(9);
+		envoiCommande.setNumero("CV56E" + rnd);
+		envoiCommande.setRefclient(numero_client);
+		envoiCommande.setNom(nom);
+		envoiCommande.setPrenom(prenom);
+		envoiCommande.setAdresseClient(adresse);
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		envoiCommande.setDatebc(df.format(ClockClient.getClock().getHour()));
+		envoiCommande.setDatebl(df.format(ClockClient.getClock().getHour()));
+		
+		for (ArticleVenteBI a : articles)
+			envoiCommande.getArticles().add(new ArticleCommandeParClientGC(a.getCategorie(), a.getRef_article(), a.getQuantite().toString()));
+		
+		System.out.println(envoiCommande.sendXML());
 	}
 	
 	public void addBDD()
@@ -90,10 +144,10 @@ public class VenteBI {
 	public void setNumero_client(String numero_client) {
 		this.numero_client = numero_client;
 	}
-	public Integer getMontant() {
+	public Float getMontant() {
 		return montant;
 	}
-	public void setMontant(Integer montant) {
+	public void setMontant(Float montant) {
 		this.montant = montant;
 	}
 	public String getMoyen_paiement() {
@@ -124,5 +178,29 @@ public class VenteBI {
 
 	public void setArticles(List<ArticleVenteBI> articles) {
 		this.articles = articles;
+	}
+
+	public String getNom() {
+		return nom;
+	}
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
+	public String getPrenom() {
+		return prenom;
+	}
+
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
+
+	public String getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
 	}
 }

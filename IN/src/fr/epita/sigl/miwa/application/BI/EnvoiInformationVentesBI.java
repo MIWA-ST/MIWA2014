@@ -74,8 +74,8 @@ public class EnvoiInformationVentesBI {
 					
 					categorie.setRef_categorie(rs.getString("categorie"));
 					categorie.setQuantite_vendue(rs.getInt("vente"));
-					categorie.setMontant_fournisseur(rs.getFloat("prix_fournisseur"));
-					categorie.setMontant_vente(rs.getFloat("prix_vente"));
+					categorie.setMontant_fournisseur(rs.getFloat("prix_fournisseur") * rs.getInt("vente"));
+					categorie.setMontant_vente(rs.getFloat("prix_vente") * rs.getInt("vente"));
 					
 					categories.add(categorie);
 				}

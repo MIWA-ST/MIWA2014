@@ -1,14 +1,17 @@
 package fr.epita.sigl.miwa.application.clock;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import fr.epita.sigl.miwa.application.Main;
 import fr.epita.sigl.miwa.application.ParseXML;
 import fr.epita.sigl.miwa.application.BI.EnteteBI;
+import fr.epita.sigl.miwa.application.BI.EnvoiInformationVentesBI;
 import fr.epita.sigl.miwa.application.BI.EnvoiVenteDetailleeBI;
 import fr.epita.sigl.miwa.application.GC.ArticleCommandeParClientGC;
 import fr.epita.sigl.miwa.application.GC.DemandeNiveauStockArticlesGC;
@@ -42,35 +45,14 @@ public class ClockClient {
 		if (message instanceof String) {
 			if (message.equals("Commandes internet to GC")) {
 				// Mise à joru des niveaux de stock de tous les articles
-				DemandeNiveauStockGC testDmandeNiveauStock = new DemandeNiveauStockGC("CV6598", "20131225");
+				SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+				Random rnd = new Random();
+				Integer r = rnd.nextInt(3);
+				
+				DemandeNiveauStockGC testDmandeNiveauStock = new DemandeNiveauStockGC("CV65" + r, df.format(date));
 				
 				testDmandeNiveauStock.MiseAJourStock();
-				
-				
-				
-//				List<ArticleCommandeParClientGC> articlesCommande = new ArrayList<ArticleCommandeParClientGC>();
-//				
-//				articlesCommande.add(new ArticleCommandeParClientGC("Categorie 1", "05280cc5-6804-4687-a39b-6c0446df", "77"));
-//				articlesCommande.add(new ArticleCommandeParClientGC("Categorie 2", "073e5d55-02f2-4e65-99c9-3e498ac8", "59"));
-//				articlesCommande.add(new ArticleCommandeParClientGC("Categorie 3", "096252df-1961-4133-a9a4-aa9debda", "99"));
-//				
-//				EnvoiCommandeGC testEnvoiCommande = new EnvoiCommandeGC("CV56E8",
-//						"Fd595SD",
-//						"20121223",
-//						"20140102",
-//						"ADRESSE CLIENTE !!!",
-//						"HADDAD",
-//						"CHAWQUI",
-//						articlesCommande);
-//				System.out.println(testEnvoiCommande.sendXML());
-//				
-//				
-//				try {
-//					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(testEnvoiCommande.sendXML(), EApplication.GESTION_COMMERCIALE);
-//				} catch (AsyncMessageException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				LOGGER.info("***** Envoi d'un message à GC : mise à jour des stocks Internet.");
 			}
 			else if (message.equals("Commandes internet to BI 1"))
 			{
@@ -79,7 +61,22 @@ public class ClockClient {
 				Date nextOccurence_BI2 = new Date();
 				dateouverture_BI2.add(Calendar.MINUTE, 15);
 				nextOccurence_BI2 = dateouverture_BI2.getTime();
-				ClockClient.getClock().wakeMeUp(nextOccurence_BI2, "Commandes internet to BI 1");
+				ClockClient.getClock().wakeMeUp(nextOccurence_BI2, "Commandes internet to BI 1 - Envoi message !");
+			}
+			else if (message.equals("Commandes internet to BI 1 - Envoi message !"))
+			{
+				EnvoiInformationVentesBI ventes = new EnvoiInformationVentesBI();
+				EnteteBI entete = new EnteteBI("ventes 15min", "internet", date);
+				
+				ventes.setEntete(entete);
+				ventes.getBDD();
+				try {
+					AsyncMessageFactory.getInstance().getAsyncMessageManager().send(ventes.sendXML(), EApplication.BI);
+					LOGGER.info("***** Envoi d'un message à BI : envoi des ventes par catégories internet.");
+				} catch (AsyncMessageException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else if (message.equals("Commandes internet to BI 2"))
 			{
