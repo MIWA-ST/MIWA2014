@@ -9,16 +9,25 @@ import fr.epita.sigl.miwa.bo.object.ArticleList;
 public class PlugCashRegister {
 	
 	public static String articleAndLocalPriceAndPromotion =
-	"<ENTETE objet='article-prix-promo' source='bo' date='2013-12-18'/>\n\r" +
-	"<ARTICLES>\n\r" +
-		"  <ARTICLE nomarticle='poire' refarticle='P456' prix='11' promotion='25' />\n\r" +
-	"</ARTICLES>\n\r";
+	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+	"<ENTETE objet='article-prix-promo' source='bo' date='2013-12-18'/>" +
+	"<ARTICLES>" +
+		"<ARTICLE nomarticle='poire' refarticle='P456' prix='11' promotion='25' />" +
+	"</ARTICLES>";
 	
-	public static String articlePricePromotionUpdate =
-	"<ENTETE objet='article-prix-promo-update' source='bo' date='2013-12-18'/>\n\r" +
-	"<ARTICLES>\n\r" +
-		"  <ARTICLE nomarticle='fraise' refarticle='F324' prix='12' promotion='50' />\n\r" +
-	"</ARTICLES>\n\r";
+	public static String articlePricePromotionUpdate1 =
+	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+	"<ENTETE objet=\"article-prix-promo-update\" source=\"bo\" date=\"2013-12-18\"/>" +
+	"<ARTICLES>" +
+		"<ARTICLE nomarticle=\"Chocapic\" refarticle=\"45678765434567\" prix=\"12\" promotion=\"50\" />" +
+	"</ARTICLES>";
+	
+	public static String articlePricePromotionUpdate2 =
+	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+	"<ENTETE objet='article-prix-promo-update' source='bo' date='2013-12-18'/>" +
+	"<ARTICLES>" +
+		"<ARTICLE nomarticle='Chocapic' refarticle='45678765434567' prix='12' promotion='50' />" +
+	"</ARTICLES>";
 	
 	public static String salesTicket =
 	"<ENTETE objet='ticket-vente-journee' source='caisse' date='2013-12-18'/>\n\r" +

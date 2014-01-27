@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.application.clock.ClockClient;
 import fr.epita.sigl.miwa.bo.object.ArticleList;
 import fr.epita.sigl.miwa.bo.object.Delivery;
 import fr.epita.sigl.miwa.bo.object.DeliveryList;
@@ -43,10 +44,11 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 		case CAISSE:
 			System.out.println("***** Une vente réalisée envoyée par la Caisse a été reçue.");
 
+			System.out.println("XML:" + message);
 			DomParserCashRegister parserCashregister = new DomParserCashRegister();			
 			sale = parserCashregister.saleTicket(message);
 			
-			System.out.println("****** Le client = " + sale.customer + " a acheté " + sale.articles.size() + " articles en payant par " + sale.paymentMeans + "." );
+			System.out.println("****** Le client = " + sale.customer + " a acheté " + sale.articles.size() + " articles en payant par " + sale.paymentMeans + " à " + ClockClient.getClock().getHour().toString() + "." );
 			System.out.println("****** Fin du parsing.");			
 			break;
 		

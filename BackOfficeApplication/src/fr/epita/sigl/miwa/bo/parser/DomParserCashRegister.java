@@ -99,15 +99,12 @@ public class DomParserCashRegister extends DomParser
 		
 		String header = DomParserHelper.getHeader(xml);
 		String body = DomParserHelper.getBody(xml);
-		
-		System.out.println(header);
-		
+	
 		this.setXml(header);
 		this.updateDoc();
 	
 		sale.dateAndTime= Convert.stringToDate(DomParserHelper.getNodeAttr("ENTETE", "date", this.doc.getChildNodes()), "AAAA-MM-JJ");
 		
-		System.out.println("===>" + body);
 		this.setXml(body);
 		
 		this.updateDoc();
@@ -115,9 +112,9 @@ public class DomParserCashRegister extends DomParser
 
 		Node saleNode = DomParserHelper.getNode("TICKETVENTE", this.doc);
 		sale.customer = DomParserHelper.getNodeAttr("refclient", saleNode);
-		sale.paymentMeans = DomParserHelper.getNodeAttr("moyenpaiement", saleNode);			
+		sale.paymentMeans = DomParserHelper.getNodeAttr("moyenpayement", saleNode);			
 
-		List<Node> articleNodes = DomParserHelper.getNodes("ARTICLE", saleNode.getChildNodes());
+		List<Node> articleNodes = DomParserHelper.getNodes("ARTICLE", saleNode);
 		
 			for (Node articleNode : articleNodes)
 			{
@@ -130,8 +127,6 @@ public class DomParserCashRegister extends DomParser
 				sale.articles.add(article);
 			}
 
-		sale.print();
-		
 		return sale;
 	}
 

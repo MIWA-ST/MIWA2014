@@ -71,6 +71,7 @@ public class Main {
 			System.out.println("***** Ventes détaillées envoyés à la BI");
 		*/
 		
+		
 		/*
 		// BO => GC envoi niveau de stock
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
@@ -78,6 +79,13 @@ public class Main {
 		System.out.println("***** niveau de stock envoyé à la GC");
 		*/
 		
+		
+		// BO => Caisse envoi mise à jour prix et promo local
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().
+		send(PlugCashRegister.articlePricePromotionUpdate1, EApplication.CAISSE);
+		System.out.println("***** Mise à jour prix et promo local envoyé à la caisse");
+		
+
 		/* !CODE HERE */
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING BELOW */
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
