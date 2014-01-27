@@ -1,12 +1,15 @@
 package fr.epita.sigl.miwa.application.messaging;
 
 import java.io.File;
+import java.sql.ResultSet;
 import java.util.logging.Logger;
 
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 
 import fr.epita.sigl.miwa.application.Main;
+import fr.epita.sigl.miwa.bo.db.Mapper;
 import fr.epita.sigl.miwa.bo.file.FileManager;
+import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleAndLocalPriceAndPromotion;
 import fr.epita.sigl.miwa.bo.object.ArticleList;
 import fr.epita.sigl.miwa.bo.object.Delivery;
@@ -136,6 +139,17 @@ public class AsyncMessageListener extends AAsyncMessageListener {
 			DomParserReferential parserReferential = new DomParserReferential();
 
 			ArticleList articles = parserReferential.articleList(Convert.ReadFile(file));
+			
+			// Stockage des articles
+			
+			for (Article a : articles.articles)
+			{
+				ResultSet res = Mapper.get("reference", "article", "reference='" + a.reference + "'");
+				if (res == null)
+				{
+					Mapper.add("article", "reference,quantity,provider_price,sales_price", "'" + a.reference + "','" + a.quantity + "','" + a.providerPrice + "','" + a.salesPrice + "'");
+				}
+			}
 
 			System.out.println("****** date = " + articles.date);
 			System.out.println("****** nombre d'articles = " + articles.articles.size());

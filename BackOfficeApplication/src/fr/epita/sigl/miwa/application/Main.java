@@ -4,6 +4,8 @@ package fr.epita.sigl.miwa.application;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import org.jgroups.util.Buffer;
@@ -12,14 +14,18 @@ import fr.epita.sigl.miwa.application.messaging.AsyncMessageListener;
 import fr.epita.sigl.miwa.bo.db.JdbcConnection;
 import fr.epita.sigl.miwa.bo.db.Mapper;
 import fr.epita.sigl.miwa.bo.file.FileManager;
+import fr.epita.sigl.miwa.bo.object.Article;
 import fr.epita.sigl.miwa.bo.object.ArticleList;
 import fr.epita.sigl.miwa.bo.object.Sale;
 import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
+import fr.epita.sigl.miwa.bo.parser.DomParserReferential;
 import fr.epita.sigl.miwa.bo.parser.DomParserStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugBusinessIntelligence;
 import fr.epita.sigl.miwa.bo.plug.PlugReferential;
 import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
+import fr.epita.sigl.miwa.bo.util.Convert;
+import fr.epita.sigl.miwa.bo.util.MiscFunction;
 import fr.epita.sigl.miwa.bo.util.Test;
 import fr.epita.sigl.miwa.bo.xmlconstructor.CashRegisterXMLConstructor;
 import fr.epita.sigl.miwa.bo.xmlconstructor.StoreManagementXMLConstructor;
@@ -52,11 +58,45 @@ public class Main {
 			e.printStackTrace();
 		}
 
+		DomParserReferential parserReferential = new DomParserReferential();
+		ArticleList articles = parserReferential.articleList(PlugReferential.articleList);
+		
 		/*
+		// EXEMPLE POUR STOCKAGE ET RECUPE DANS LA BASE
+		for (Article a : articles.articles)
+		{
+			ResultSet res = Mapper.get("reference", "article", "reference='" + a.reference + "'");
+			if (res == null)
+			{
+				Mapper.add("article", "reference,quantity,provider_price,sales_price", "'" + a.reference + "','" + a.quantity + "','" + a.providerPrice + "','" + a.salesPrice + "'");
+			}
+			// EXEMPLE FOR RETRIVE ELEMENT
+			else
+			{
+				Article ar = new Article();
+            	try {
+					ar.reference = res.getString(1);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}		
+			}
+		}
+		*/
+		
+		/* TODO : to remove but keep in case of ...
 		// BO => GC demande de réassort
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
 		send(PlugStoreManagement.restockRequest, EApplication.GESTION_COMMERCIALE);
 		System.out.println("***** Bouchon : Demande de réassort envoyée à la GC"); // mettre + d'infos
+		*/
+		
+		/*
+		// BO => GC demande de réassort
+		StoreManagementXMLConstructor storeManagementXMLConstructor = new StoreManagementXMLConstructor();
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().
+		send(storeManagementXMLConstructor.restockRequest(MiscFunction.getArticlesForRestockRequest()), EApplication.GESTION_COMMERCIALE);
+		System.out.println("***** Demande de réassort envoyée à la GC"); // mettre + d'infos
 		*/
 		
 		/*
@@ -94,11 +134,12 @@ public class Main {
 		System.out.println("***** niveau de stock envoyé à la GC");
 		*/
 		
-		
+		/*
 		// BO => Caisse envoi mise à jour prix et promo local
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
 		send(PlugCashRegister.articlePricePromotionUpdate1, EApplication.CAISSE);
 		System.out.println("***** Mise à jour prix et promo local envoyé à la caisse");
+		*/
 		
 
 		/* !CODE HERE */

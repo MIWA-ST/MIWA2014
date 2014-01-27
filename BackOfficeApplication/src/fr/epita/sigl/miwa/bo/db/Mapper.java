@@ -35,6 +35,7 @@ public class Mapper
          }
          catch (Exception e)
          {
+        	 System.out.println("REQUEST:" + sqlRequest);
         	 JdbcConnection.getInstance().closeConnection();
         	 e.printStackTrace();
              return -1;
@@ -62,6 +63,7 @@ public class Mapper
         }
 		catch (Exception e)
         {
+			System.out.println("REQUEST:" + sqlRequest);
 			JdbcConnection.getInstance().closeConnection();
              e.printStackTrace();
         }		
@@ -89,6 +91,7 @@ public class Mapper
         }
 		catch (Exception e)
 		{
+			System.out.println("REQUEST:" + sqlRequest);
 			JdbcConnection.getInstance().closeConnection();
             e.printStackTrace();
         }
@@ -114,6 +117,7 @@ public class Mapper
         }
 		catch (SQLException e)
         {
+			System.out.println("REQUEST:" + sqlRequest);
 			JdbcConnection.getInstance().closeConnection();
 			e.printStackTrace();
             return null;
