@@ -17,6 +17,7 @@ import fr.epita.sigl.miwa.bo.object.Sale;
 import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
 import fr.epita.sigl.miwa.bo.parser.DomParserStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugBusinessIntelligence;
+import fr.epita.sigl.miwa.bo.plug.PlugReferential;
 import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
 import fr.epita.sigl.miwa.bo.plug.PlugCashRegister;
 import fr.epita.sigl.miwa.bo.util.Test;
@@ -30,6 +31,7 @@ import fr.epita.sigl.miwa.st.async.message.AsyncMessageFactory;
 import fr.epita.sigl.miwa.st.async.message.exception.AsyncMessageException;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 import fr.epita.sigl.miwa.st.async.file.AsyncFileFactory;;
+
 public class Main {
 	private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
@@ -37,7 +39,7 @@ public class Main {
 			AsyncMessageException {
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		Conf.getInstance();
-		SyncMessFactory.initSyncMessReceiver();	
+		SyncMessFactory.initSyncMessReceiver();
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
 				.initListener(new AsyncMessageListener());
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
@@ -49,14 +51,28 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		/*
 		// BO => GC demande de réassort
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
 		send(PlugStoreManagement.restockRequest, EApplication.GESTION_COMMERCIALE);
-		System.out.println("***** demande de réassort envoyé à la GC");
+		System.out.println("***** Bouchon : Demande de réassort envoyée à la GC"); // mettre + d'infos
 		*/
 		
+		/*
+		// BO => Caisse : mock pour simuler la descente des articles du matin vers la caisse censé être envoyés par le mdm
+		System.out.println("***** Bouchon : Envoi des articles matinaux vers la caisse.");
+		AsyncFileFactory.getInstance().getFileManager().send("outputFileBOresponse.xml", EApplication.CAISSE);
+		System.out.println("***** Bouchon : Articles matinaux.");
+		*/
+
+		/*
+		// BDD : faire des clock pour modifier les promo en live
+		System.out.println("***** Bouchon : Envoi des correctifs vers la caisse.");
+		AsyncMessageFactory.getInstance().getAsyncMessageManager().send(PlugCashRegister.articleAndLocalPriceAndPromotion, EApplication.CAISSE);
+		System.out.println("***** Bouchon : Correctifs envoyés.");
+		*/
+
 		/*
 		// BO => BI envoi des vente par catégorie
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().
@@ -68,10 +84,9 @@ public class Main {
 		// BO => BI : Envoi des ventes détaillées
 		FileManager.createFile("ventedetaille.xml", PlugBusinessIntelligence.detailedSale);
 			AsyncFileFactory.getInstance().getFileManager().send("ventedetaille.xml", EApplication.BI);
-			System.out.println("***** Ventes détaillées envoyés à la BI");
+			System.out.println("***** Ventes détaillées envoyées à la BI");
 		*/
-		
-		
+
 		/*
 		// BO => GC envoi niveau de stock
 		AsyncMessageFactory.getInstance().getAsyncMessageManager().

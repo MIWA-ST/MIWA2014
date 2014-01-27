@@ -22,8 +22,8 @@ public class Sale
 	public void print()
 	{
 		System.out.println("***** ==========SALE=BEGIN==========");
-		System.out.println("***** CUSOMER:" + this.customer);
-		System.out.println("***** CUSOMER NUMBER:" + this.customerNumber);
+		System.out.println("***** CUSTOMER:" + this.customer);
+		System.out.println("***** CUSTOMER NUMBER:" + this.customerNumber);
 		System.out.println("***** PAYMENT MEANS:" + this.paymentMeans);
 		System.out.println("***** TOTAL:" + this.total);
 		if (this.dateAndTime != null)

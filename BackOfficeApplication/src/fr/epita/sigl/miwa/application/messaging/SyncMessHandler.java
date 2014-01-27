@@ -2,10 +2,16 @@ package fr.epita.sigl.miwa.application.messaging;
 
 import org.w3c.dom.Document;
 
+import fr.epita.sigl.miwa.bo.object.ArticleList;
 import fr.epita.sigl.miwa.bo.object.Sale;
+import fr.epita.sigl.miwa.bo.parser.DomParserCRM;
 import fr.epita.sigl.miwa.bo.parser.DomParserCashRegister;
 import fr.epita.sigl.miwa.bo.parser.DomParserReferential;
 import fr.epita.sigl.miwa.bo.parser.DomParserStoreManagement;
+import fr.epita.sigl.miwa.bo.plug.PlugStoreManagement;
+import fr.epita.sigl.miwa.bo.xmlconstructor.CRMXMLConstructor;
+import fr.epita.sigl.miwa.bo.xmlconstructor.CashRegisterXMLConstructor;
+import fr.epita.sigl.miwa.bo.xmlconstructor.StoreManagementXMLConstructor;
 import fr.epita.sigl.miwa.st.EApplication;
 import fr.epita.sigl.miwa.st.sync.ISyncMessSender;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
@@ -26,41 +32,29 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) {
-		System.out.println(message);
-		
-		switch (sender) {
-		case CAISSE:
-			/* Caisse => BO : Vente en cours en demande de fidélisation */
-			System.out.println("***** Une vente en cours de réalisation est remontée par la Caisse.");
+		switch (sender)
+		{
 
-			DomParserCashRegister parserCashregister = new DomParserCashRegister();
-			
-			Sale sale = parserCashregister.saleTicket(message);
-			
-			System.out.println("****** Le client " + sale.customerNumber + " souhaite avoir accès à des promotions ciblées." );
-			System.out.println("****** Fin du parsing.");
-			
-			break;
-		
-		case CRM:
-			/* CRM => BO : Vente en cours avec fidélisation effectuée */
-			System.out.println("***** Un panier a pu être retourné par le CRM.");
+//		case GESTION_COMMERCIALE:
+//			/* GESCO => BO : Demande de niveau de stock */
+//			System.out.println("***** Une demande de niveau de stock de la part de la Gestion Commerciale vient d'être reçue.");
+//
+//			DomParserStoreManagement parserStoremanagement = new DomParserStoreManagement();
+//			ArticleList articles = parserStoremanagement.stockLevel(message);
+//
+//			System.out.println("****** La gestion commerciale souhaite avoir le niveau de stock de " + articles.articles.size() + " article(s)." );
+//			System.out.println("****** Fin du parsing.");
+//
+//			// Fonction temporaire qui met de fausses quantités, attente de BDD
+//			PlugStoreManagement.getstockLevel(articles);
+//
+//			// BO ==> GESTION COMMERCIALE : on renvoit le niveau de stock
+//			StoreManagementXMLConstructor storemanagementconstructor = new StoreManagementXMLConstructor();
+//			getSyncMessSender().sendMessage(EApplication.GESTION_COMMERCIALE, storemanagementconstructor.stockLevel(articles));
 
-			DomParserStoreManagement parserStoremanagement = new DomParserStoreManagement();
-			sale  = parserStoremanagement.saleTicket(message);
-			
-			System.out.println("****** Le panier du client = " + sale.customerNumber + " a été redescendu par le CRM." );
-			System.out.println("****** Fin du parsing.");
-			
-			// BO => Caisse : On redescend le panier envoyé par le CRM à la Caisse.
-			getSyncMessSender().sendMessage(EApplication.CAISSE, message);
-
-			
-			
 		default:
 			break;
 		}
-		
 		return false;
 	}
 
@@ -72,7 +66,41 @@ public class SyncMessHandler {
 	 */
 	@Deprecated
 	static public String answerToRequestMessage(EApplication sender, String request){
-		// TODO Auto-generated method stub
+
+		Sale sale = new Sale();
+		switch (sender) {
+		case CAISSE:
+			/* Caisse => BO : Vente en cours en demande de fidélisation */
+			System.out.println("***** Une vente en cours de réalisation est remontée par la Caisse.");
+
+			DomParserCashRegister parserCashregister = new DomParserCashRegister();
+			
+			sale = parserCashregister.saleTicket(request);
+
+			System.out.println("****** Le client " + sale.customerNumber + " souhaite avoir accès à des promotions ciblées." );
+			System.out.println("****** Fin du parsing.");
+
+			CRMXMLConstructor crmconstructor = new CRMXMLConstructor();
+			System.out.println("****** Panier va être remonté au CRM.");
+			String reponse = getSyncMessSender().requestMessage(EApplication.CRM, crmconstructor.CustomerTicket(sale));
+			/* CRM => BO : Vente en cours avec fidélisation effectuée */
+
+			System.out.println("****** Un panier a pu être retourné par le CRM.");
+			
+			DomParserCRM parsercrm = new DomParserCRM();
+			sale = parsercrm.saleTicket(request);
+
+			System.out.println("****** Le panier du client = " + sale.customerNumber + " a été redescendu par le CRM." );
+			System.out.println("****** Fin du parsing.");
+			
+			// BO => Caisse : On redescend le panier envoyé par le CRM à la Caisse.
+			CashRegisterXMLConstructor cashregisterconstructor = new CashRegisterXMLConstructor();
+			getSyncMessSender().sendMessage(EApplication.CAISSE, cashregisterconstructor.facture(sale));
+			break;
+			
+		default:
+			break;
+		}
 		return null;
 	}
 	

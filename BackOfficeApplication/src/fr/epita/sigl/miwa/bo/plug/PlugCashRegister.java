@@ -9,11 +9,11 @@ import fr.epita.sigl.miwa.bo.object.ArticleList;
 public class PlugCashRegister {
 	
 	public static String articleAndLocalPriceAndPromotion =
-	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-	"<ENTETE objet='article-prix-promo' source='bo' date='2013-12-18'/>" +
-	"<ARTICLES>" +
-		"<ARTICLE nomarticle='poire' refarticle='P456' prix='11' promotion='25' />" +
-	"</ARTICLES>";
+
+	"<XML><ENTETE objet='article-prix-promo' source='bo' date='2013-12-18'/>\n\r" +
+	"<ARTICLES>\n\r" +
+		"  <ARTICLE nomarticle='patou3' refarticle='3dfcd223-3314-47d6-b3bf-14812bdb' prix='200' promotion='70' />\n\r" +
+	"</ARTICLES></XML>\n\r";
 	
 	public static String articlePricePromotionUpdate1 =
 	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -94,5 +94,20 @@ public class PlugCashRegister {
 		a.articles.add(a2);
 
 		return a;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static ArticleList getpromotion(ArticleList articlesSource)
+	{
+		ArticleList articleResult = articlesSource;
+		for (Article article : articleResult.articles)
+		{
+			// Temporaire, attente de BDD
+			if (article != null)
+			{
+				article.promotion = "25";
+			}
+		}
+		return articleResult;
 	}
 }

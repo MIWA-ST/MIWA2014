@@ -15,6 +15,7 @@ public class Article
 	public String description = null;
 	public String promotion = null;
 	public List<Promotion> promotions = null;
+	public String capacity = null;
 	
 	public Article()
 	{
@@ -28,6 +29,7 @@ public class Article
 		System.out.println("***** REFERENCE:" + this.reference);
 		System.out.println("***** CATEGORY:" + this.category);
 		System.out.println("***** QUANTITY:" + this.quantity);
+		System.out.println("***** CAPACITE:" + this.capacity);
 		System.out.println("***** PROVIDER PRICE:" + this.providerPrice);
 		System.out.println("***** SALES PRICE:" + this.salesPrice);
 		System.out.println("***** EAN:" + this.ean);

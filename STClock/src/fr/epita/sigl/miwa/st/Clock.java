@@ -69,27 +69,27 @@ public class Clock extends UnicastRemoteObject implements IClock {
 	}
 
 	@Override
-	public void wakeMeUp(EApplication sender, Date date, Object message)
+	public void wakeMeUp(EApplication sender, Date date, Object message, double appId)
 			throws RemoteException {
-		registerMessage(sender, date, message, RepeatFrequecy.NEVER);
+		registerMessage(sender, date, message, RepeatFrequecy.NEVER, appId);
 	}
 
 	@Override
 	public void wakeMeUpEveryHours(EApplication sender, Date nextOccurence,
-			Object message) throws RemoteException {
-		registerMessage(sender, nextOccurence, message, RepeatFrequecy.HOUR);
+			Object message, double appId) throws RemoteException {
+		registerMessage(sender, nextOccurence, message, RepeatFrequecy.HOUR, appId);
 	}
 
 	@Override
 	public void wakeMeUpEveryDays(EApplication sender, Date nextOccurence,
-			Object message) throws RemoteException {
-		registerMessage(sender, nextOccurence, message, RepeatFrequecy.DAY);
+			Object message, double appId) throws RemoteException {
+		registerMessage(sender, nextOccurence, message, RepeatFrequecy.DAY, appId);
 	}
 
 	@Override
 	public void wakeMeUpEveryWeeks(EApplication sender, Date nextOccurence,
-			Object message) throws RemoteException {
-		registerMessage(sender, nextOccurence, message, RepeatFrequecy.WEEK);
+			Object message, double appId) throws RemoteException {
+		registerMessage(sender, nextOccurence, message, RepeatFrequecy.WEEK, appId);
 	}
 
 	/* !Remotes methods */
@@ -153,58 +153,69 @@ public class Clock extends UnicastRemoteObject implements IClock {
 	/* !Time management */
 	/* Message Handling */
 	private void registerMessage(EApplication sender, Date date,
-			Object message, RepeatFrequecy frequency) {
-		synchronized (_messagesToDeliver) {
-			synchronized (_hour) {
-				MessageHandler messageH = new MessageHandler(sender, date,
-						message, frequency);
-				_messagesToDeliver.add(messageH);
-				log.info(sender.getShortName() + "registred with : " + message.toString());
-			}
-		}
+			Object message, RepeatFrequecy frequency, double appId) {
+		MessageHandler messageH = new MessageHandler(sender, date,
+				message, frequency, appId);
+		_messagesToDeliver.add(messageH);
+		log.info(sender.getShortName() + "registred with : " + message.toString());
 	}
 
 	private void checkMessages() {
-		new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				synchronized (_messagesToDeliver) {
-					Set<MessageHandler> toRemoveSet = new HashSet<Clock.MessageHandler>();
-					for (MessageHandler message : _messagesToDeliver) {
-						if (message._date.before(_hour)
-								|| message._date.equals(_hour)) {
-							new Thread(message).start();
-							toRemoveSet.add(message);
-						}
+		synchronized (_messagesToDeliver) {
+			Set<Thread> threadToJoin = new HashSet<Thread>();
+			Set<MessageHandler> toRemoveSet = new HashSet<Clock.MessageHandler>();
+			for (MessageHandler message : _messagesToDeliver) {
+				if (message._date.before(_hour)
+						|| message._date.equals(_hour)) {
+					if (!message.toRemove) {
+						Thread t = new Thread(message);
+						t.start();
+						threadToJoin.add(t);
 					}
-					_messagesToDeliver.removeAll(toRemoveSet);
+					toRemoveSet.add(message);
 				}
-
 			}
-		}).start();
+			_messagesToDeliver.removeAll(toRemoveSet);
+			for (Thread t : threadToJoin) {
+				try {
+					t.join();
+				} catch (InterruptedException e) {
+					log.severe("Failed to join wakeup thread");
+				}
+			}
+		}
+
 	}
+
 
 	private class MessageHandler implements Runnable {
 		public EApplication _sender;
 		public Date _date;
 		public Object _message;
 		public RepeatFrequecy _frequency;
+		public double _appId;
+		public boolean toRemove = false;
 
 		public MessageHandler(EApplication sender, Date date, Object message,
-				RepeatFrequecy frequency) {
+				RepeatFrequecy frequency, double appId) {
 			_sender = sender;
+			_appId = appId;
 			_message = message;
 			_date = date;
 			_frequency = frequency;
 		}
 
 		public void sendMessage() {	
+			if (toRemove)
+				return;
 			try {
 				final IClockClient receiver = getClientConnection(false);
 				if (receiver != null) {
-					receiver.wakeUp(_date, _message);
+					receiver.wakeUp(_date, _message, _appId);
 					log.info("wakeup " + _sender.getShortName());
+				} else {
+					return;
 				}
 			} catch (Exception e) {
 				log.log(Level.WARNING, "CLOCK SERVER : Failed to wakeUp "
@@ -212,12 +223,12 @@ public class Clock extends UnicastRemoteObject implements IClock {
 				final IClockClient receiver = getClientConnection(true);
 				if (receiver != null) {
 					try {
-						receiver.wakeUp(_date, _message);
+						receiver.wakeUp(_date, _message, _appId);
 						log.info("wakeup " + _sender.getShortName());
 					} catch (Exception e1) {
 						log.log(Level.SEVERE,
 								"CLOCK SERVER : Failed to wakeUp " + _sender
-										+ " for the second try.");
+								+ " for the second try.");
 						return;
 					}
 				}
@@ -233,7 +244,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 					cal.add(Calendar.WEEK_OF_YEAR, 1);
 				}
 				_date = cal.getTime();
-				registerMessage(_sender, _date, _message, _frequency);
+				registerMessage(_sender, _date, _message, _frequency, _appId);
 			}
 		}
 
@@ -344,7 +355,7 @@ public class Clock extends UnicastRemoteObject implements IClock {
 					System.exit(0);
 				} else {
 					System.out
-							.println("Commande inconnue, tapez help pour la liste des commandes disponibles");
+					.println("Commande inconnue, tapez help pour la liste des commandes disponibles");
 				}
 				System.out.println("Entrez votre commande :");
 			} while (true);
@@ -358,22 +369,31 @@ public class Clock extends UnicastRemoteObject implements IClock {
 	@Override
 	public void removeSubscriptions(EApplication sender) throws RemoteException {
 		class OneShotTask implements Runnable {
-	        EApplication sender;
-	        OneShotTask(EApplication sender) { this.sender = sender; }
-	        public void run() {
-	        	synchronized (_messagesToDeliver) {
+			EApplication sender;
+			OneShotTask(EApplication sender) { this.sender = sender; }
+			public void run() {
+				synchronized (_messagesToDeliver) {
 					Set<MessageHandler> toRemoveSet = new HashSet<Clock.MessageHandler>();
 					for (MessageHandler message : _messagesToDeliver) {
 						if (message._sender == sender) {
 							toRemoveSet.add(message);
+							message.toRemove = true;
+							log.info(message._sender + " remove message " + message._message);
 						}
 					}
 					_messagesToDeliver.removeAll(toRemoveSet);
 				}
 
-	        }
-	    }
-		new Thread(new OneShotTask(sender)).start();		
-		
+			}
+		}
+		Thread thread = new Thread(new OneShotTask(sender));
+		thread.start();
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			log.severe("Clock : Failed to wait to unsubscribe");
+			e.printStackTrace();
+		}
+
 	}
 }
