@@ -265,27 +265,27 @@ public class XMLManager
 									break;
 								case "geographie":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("departement").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** Le département est: " + c.getValue());
 								    break;
 								case "sexe":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("sexe").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** Le sexe est: " + c.getValue());
 								    break;
 								case "situation-familiale":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("situation").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** La situation familiale est: " + c.getValue());
 								    break;
 								case "enfant":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("enfant").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** Le nombre d'enfants est de: " + c.getValue());
 								    break;
 								case "fidelite":
 									c.setType(type);
-									c.setValue(criteriaNodes.getAttributes().getNamedItem("carte").getNodeValue());
+									c.setValue(criteriaNodes.getAttributes().getNamedItem("valeur").getNodeValue());
 									LOGGER.info("***** La fidélité est: " + c.getValue());
 								    break;
 							}
@@ -325,6 +325,9 @@ public class XMLManager
 			}
 		}
 		String bl = "<EXPEDITIONCLIENT>";
+		
+		LOGGER.info("******Segmentation terminée");
+		
 		return bl;
 	}
 	
@@ -365,7 +368,7 @@ public class XMLManager
 	{
 		LOGGER.info("***** Préparation d'une demande de segmentation client");
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String bl = "<XML><ENTETE objet=\"demande-segmentation-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour());
+		String bl = "<XML><ENTETE objet=\"demande-segmentation-client\" source=\"crm\" date=\"2013-01-19";// + df.format(ClockClient.getClock().getHour());
 		//TODO: heure
 		bl += "\"/><CRITERES>";
 		int lower = 15;
@@ -378,15 +381,16 @@ public class XMLManager
 				
 		if (random%2 == 0)
 		{
-			bl += "<CRITERE type=\"situation-familiale\" valeur=\"célibataire\"/>"
+			bl += "<CRITERE type=\"situation-familiale\" valeur=\"celibataire\"/>"
 					+ "<CRITERE type=\"sexe\" valeur=\"M\" />";
 		}
 		else
 		{
-			bl += "<CRITERE type=\"situation-familiale\" valeur=\"marié\"/>"
+			bl += "<CRITERE type=\"situation-familiale\" valeur=\"marie\"/>"
 					+ "<CRITERE type=\"sexe\" valeur=\"F\" />";
 		}
-		if (random%3 == 0)
+		
+		/*if (random%3 == 0)
 		{
 			bl += "<CRITERE type=\"enfant\" valeur=\"TRUE\" />"
 					+ "<CRITERE type=\"fidelite\" valeur=\"1\" />";
@@ -395,10 +399,13 @@ public class XMLManager
 		{
 			bl += "<CRITERE type=\"enfant\" valeur=\"FALSE\" />"
 					+ "<CRITERE type=\"fidelite\" valeur=\"Silver\" />";
-		}	
+		}	*/
 		
 		bl += "</CRITERES></XML>";
+		
+		LOGGER.info("***** Préparation d'une demande de segmentation client");
 		return bl;
+		
 	}
 	
 	public String getDemandeCreationCompte(String message, String xml) throws AsyncMessageException, IOException, SAXException, ParseException
@@ -690,26 +697,44 @@ public class XMLManager
 		return bl;
 	}
 	
-	public String getModifTypeCarte(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
+	public String getModifTypeCarte(String type) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		LOGGER.info("***** Modification du type de carte");
-		CarteFidelite fed = new CarteFidelite("Silver");
-		fed.setEchellon(3);
-		fed.setLimite_m(4000);
-		fed.setLimite_tot(10000);
-		JdbcConnection.getInstance().updateCarteFed(fed);
+		CarteFidelite fed = new CarteFidelite(type);
+		if (type == "Silver")
+		{
+			fed.setEchellon(1);
+			fed.setLimite_m(1000);
+			fed.setLimite_tot(1000);
+		}
+		else if (type == "Gold")
+		{
+			fed.setEchellon(5);
+			fed.setLimite_m(5000);
+			fed.setLimite_tot(15000);
+		}
+		else
+		{
+			fed.setEchellon(2);
+			fed.setLimite_m(600);
+			fed.setLimite_tot(1500);
+		}
+		//JdbcConnection.getInstance().updateCarteFed(fed);
 		
-		client.setCarteFed(fed);
+		//client.setCarteFed(fed);
+		
 		
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-					"<monetique service=\"cms_type_carte\" action=\"m\">" +
-					"<type_cf id=\"" + fed.getType() + "\">" +
-					"<limite_mesuelle>" + fed.getLimite_m() + "</limite_mesuelle>" +
-					"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
-					"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
-					"</type_cf>" +
-					"</monetique>";
+				"<monetique service=\"cms_type_carte\" action=\"m\">" +
+				"<type_cf id=\"" + fed.getType() + "\" >" +
+				//"<id>" + fed.getType() + "</id>" +
+				"<limite_mensuelle>" + fed.getLimite_m() + "</limite_mensuelle>" +
+				"<limite_totale>" + fed.getLimite_tot() + "</limite_totale>" +
+				"<nb_echelon>" + fed.getEchellon() + "</nb_echelon>" +
+				"</type_cf>" +
+				"</monetique>";
 		
+		//System.out.println(bl);
 		return bl;
 	}
 	
@@ -720,7 +745,7 @@ public class XMLManager
 		String bl = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
 					"<monetique service=\"cms_type_carte\" action=\"s\">" +
 					"<type_cf id=\"" + type + "\">" +
-					"<nouvel_id></nouvel_id>" +
+					"<nouvel_id>TEST</nouvel_id>" +
 					"</type_cf>" +
 					"</monetique>";
 		LOGGER.info("***** Envoi du XML vers Monétique");
@@ -731,7 +756,7 @@ public class XMLManager
 	public String getCreationCompteCreditFed(Client client) throws AsyncMessageException, IOException, SAXException, ParseException
 	{
 		LOGGER.info("***** Création du compte crédit pour le client: " + client.getMatricule());
-		CarteFidelite fed = new CarteFidelite("Silver");
+		CarteFidelite fed = new CarteFidelite("myBronze");
 		fed.setEchellon(3);
 		fed.setLimite_m(3000);
 		fed.setLimite_tot(10000);
@@ -876,7 +901,7 @@ public class XMLManager
 					Article article = new Article();
 					article.setRef(artNodes.getAttributes().getNamedItem("refarticle").getNodeValue());
 					article.setQuantite(Integer.parseInt(artNodes.getAttributes().getNamedItem("quantite").getNodeValue()));
-					article.setPrix(Integer.parseInt(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
+					article.setPrix(Float.parseFloat(artNodes.getAttributes().getNamedItem("prix").getNodeValue()));
 					ticketVente.getArticle().add(article);
 					LOGGER.info("******** Article " + j + ": " + article.getRef() + " - " + article.getQuantite() + " - " + article.getPrix());
 					if (c.articlesList == null)
@@ -965,11 +990,11 @@ public class XMLManager
 				}
 			}
 		}
+		
 		LOGGER.info("***** Montant total : " + totalPrice);
-		LOGGER.info("***** Construction du nouveau ticket de vente");
+		LOGGER.info("***** Construction du nouveau ticket de vente pour le client :" + ticketVente.getRefclient());
 		
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
 		
 		String bl = "<ENTETE objet=\"facture-client\" source=\"crm\" date=\"" + df.format(ClockClient.getClock().getHour()) + "\"/>" +
 						"<FACTURE refclient=\"" + ticketVente.getRefclient() + "\" montanttotal=\"" + totalPrice + "\" >";

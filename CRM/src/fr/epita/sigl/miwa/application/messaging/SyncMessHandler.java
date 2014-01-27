@@ -35,13 +35,13 @@ public class SyncMessHandler {
 	@Deprecated
 	static public boolean receiveMessage(EApplication sender, String message) throws SAXException, IOException, AsyncMessageException, ParseException {
 		try {
-		if (sender == EApplication.CAISSE)
+		if (sender == EApplication.BACK_OFFICE)
 		{
-			LOGGER.info("*****Message synchrone reçu de la caisse :" + message);
+			LOGGER.info("*****Message synchrone reçu du Back Office :" + message);
 
 			PrintWriter out = null;
 			try {
-				out = new PrintWriter("caisse.xml");
+				out = new PrintWriter("panier.xml");
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -50,7 +50,7 @@ public class SyncMessHandler {
 			out.close();
 			
 			try {
-				XMLManager.getInstance().dispatchXML("", "caisse.xml");
+				XMLManager.getInstance().dispatchXML("", "panier.xml");
 			} catch (SAXException | IOException | AsyncMessageException
 					| ParseException e) {
 				// TODO Auto-generated catch block
@@ -140,32 +140,9 @@ public class SyncMessHandler {
 	static public String answerToRequestMessage(EApplication sender, String request) {
 		// TODO Auto-generated method stub
 		try{
-		if (sender == EApplication.CAISSE)
+		if (sender == EApplication.INTERNET)
 		{
-			LOGGER.info("*****XML synchrone reçu de la caisse :"); // + xml.getDocumentURI());
-			
-			PrintWriter out = null;
-			try {
-				out = new PrintWriter("caisse.xml");
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			out.print(request);
-			out.close();
-			
-			try {
-				XMLManager.getInstance().dispatchXML("", "caisse.xml");
-			} catch (SAXException | IOException | AsyncMessageException
-					| ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		else if (sender == EApplication.INTERNET)
-		{
-			LOGGER.info("*****XML synchrone reçu d'internet"); // + xml.getDocumentURI());
+			LOGGER.info("*****Request reçu d'internet"); // + xml.getDocumentURI());
 			// Demande d'information client
 			
 			PrintWriter out = null;
@@ -192,7 +169,7 @@ public class SyncMessHandler {
 		}
 		else if (sender == EApplication.MONETIQUE)
 		{
-			LOGGER.info("*****XML synchrone reçu de la monétique :"); // + xml.getDocumentURI());
+			LOGGER.info("*****Request reçu de la monétique :"); // + xml.getDocumentURI());
 			PrintWriter out = null;
 			try {
 				out = new PrintWriter("monetique.xml");
@@ -205,6 +182,27 @@ public class SyncMessHandler {
 			
 			try {
 				XMLManager.getInstance().dispatchXML("", "monetique");
+			} catch (SAXException | IOException | AsyncMessageException
+					| ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+		}
+		else if (sender == EApplication.BACK_OFFICE)
+		{
+			LOGGER.info("*****Request reçu du back office : " + request); // + xml.getDocumentURI());
+			PrintWriter out = null;
+			try {
+				out = new PrintWriter("backoffice.xml");
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			out.print(request);
+			out.close();
+			String res = null;
+			try {
+				return (XMLManager.getInstance().getTicketCaisse("", "backoffice.xml"));
 			} catch (SAXException | IOException | AsyncMessageException
 					| ParseException e) {
 				// TODO Auto-generated catch block

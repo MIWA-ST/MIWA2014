@@ -40,10 +40,10 @@ public class Main {
 			AsyncMessageException, IOException, SAXException, ParseException {
 		/* ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		
-		/*Conf.getInstance();
+		Conf.getInstance();
 		SyncMessFactory.initSyncMessReceiver();	
 		AsyncMessageFactory.getInstance().getAsyncMessageManager()
-				.initListener(new AsyncMessageListener());*/
+				.initListener(new AsyncMessageListener());
 		
 		/* !ST DO NOT REMOVE/MODIFY OR PUT ANYTHING ABOVE */
 		/* CODE HERE */
@@ -57,20 +57,38 @@ public class Main {
 		
 		/**************** Fin Initialisation ******************/
 		
+		/**************** Création client ******************/
+		
+		/*while (true)
+		{
+			
+		}*/
+		
+		/**************** Fin création client ******************/
+		
+		
 		
 		/**************** BI ******************/
-		// Automatisation base client
-		//Date date = ClockClient.getClock().getHour();
-		//ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
+		 //Automatisation base client
+//		Date date = ClockClient.getClock().getHour();
+//		ClockClient.getClock().wakeMeUpEveryDays(date, "baseclient");
 		
 		//AsyncMessageFactory.getInstance().getAsyncMessageManager().send(XMLManager.getInstance().getDemandeSegmentationClient("plop"), EApplication.BI);
-		XMLManager.getInstance().getSegmentationClient("lol", "segmentation-client.xml");
+		//XMLManager.getInstance().getSegmentationClient("lol", "segmentation-client.xml");
+		
+		//System.out.println(XMLManager.getInstance().getDemandeSegmentationClient("plop"));
 		
 		/**************** Fin BI ******************/
 		
 		
 		
-		/**************** BO ******************/
+		/**************** Monétique ******************/
+		
+		// Modification carte
+		
+		
+		
+		// Création carte
 		/*DocumentBuilderFactory dbFactory = DocumentBuilderFactory
 				.newInstance();
 		DocumentBuilder dBuilder = null;
@@ -81,9 +99,9 @@ public class Main {
 			e.printStackTrace();
 		}
 		Document doc = dBuilder.parse(new InputSource(new StringReader(
-				XMLManager.getInstance().getCreationTypeCarte("Gold"))));
+				XMLManager.getInstance().getSupprTypeCarte("Gold"))));
 		doc.getDocumentElement().normalize();
-		
+			
 		if (SyncMessHandler.getSyncMessSender().sendXML(
 				EApplication.MONETIQUE, doc) == false)
 		{
@@ -91,11 +109,11 @@ public class Main {
 		}
 		else
 		{
-			LOGGER.info("***** Création du type de carte Gold effectué auprès de la Monétique");
-		}
-		*/
+			LOGGER.info("***** Création du type de carte effectué auprès de la Monétique");
+		}*/
 		
-		/**************** Fin BO ******************/
+		
+		/**************** Fin Monétique ******************/
 		
 		
 		//XMLManager.getInstance().getSegmentationClient("coucou");

@@ -56,7 +56,7 @@ public class JdbcConnection
  
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5432/postgres", "postgres", "root");
+			connection = DriverManager.getConnection("jdbc:postgresql://127.0.0.1:5433/MIWA", "postgres", "plop");
 		}
 		catch (SQLException e)
 		{
@@ -392,8 +392,10 @@ public class JdbcConnection
 					client.setBIC(result.getString(10));
 					CarteFidelite c = new CarteFidelite(result.getString(11));
 					client.setCivilite(result.getString(12));
-					client.setNbenfant(Integer.parseInt(result.getString(14)));
-					client.setSituation(result.getString(15));
+					client.setNbenfant(Integer.parseInt(result.getString(13)));
+					client.setSituation(result.getString(14));
+					//client.setDate(result.getString(15));
+					
 				/*	
 					System.out.println("**************");
 					System.out.println(result.getString(15));
@@ -401,21 +403,19 @@ public class JdbcConnection
 					System.out.println((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(15)));
 					System.out.println("**************");
 				*/
-					client.setDate((new SimpleDateFormat("YYYY/MM/dd")).parse(result.getString(13)));
+					client.setDate((new SimpleDateFormat("YYYY-MM-dd")).parse(result.getString(15)));
 					client.setCarteFed(c);
 				
 					//System.out.println((new SimpleDateFormat("YYYY-MM-dd")).format(client.getDate()));
 					
 					Client.clientsList.add(client);
 					
-					
-					
 				}
 			}
 		}
 		catch (SQLException | ParseException e)
 		{
-			System.out.println("Erreur récupération des clients en base");
+			//System.out.println("Erreur récupération des clients en base");
 			e.printStackTrace();
 		}
 		
@@ -470,7 +470,7 @@ public class JdbcConnection
 	{
 		try
 		{
-			System.out.println("insertion article");
+			//System.out.println("insertion article");
 			if (connection != null)
 			{
 				String search = "SELECT * FROM Article WHERE reference = ? AND prix = ?";
@@ -488,10 +488,10 @@ public class JdbcConnection
 					statement.setString(2, Float.toString(article.getPrix()));
 					
 					int rowsInserted = statement.executeUpdate();
-					if (rowsInserted > 0)
+					/*if (rowsInserted > 0)
 					{
 						System.out.println("Nouveau article ajouté en base !");
-					}
+					}*/
 				}
 				else
 					System.out.println("Article déjà existant");

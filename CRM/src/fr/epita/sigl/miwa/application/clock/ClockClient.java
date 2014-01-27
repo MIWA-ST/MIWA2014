@@ -36,13 +36,13 @@ public class ClockClient {
 	static public void wakeUp(Date date, Object message) {
 		if (message instanceof String) {
 			if (message.equals("baseclient")) {
-				LOGGER.info("***** TODO: envoi de la segmentation client.");
+				LOGGER.info("***** TODO: envoi de la base client.");
 				try {
 					String res;
 					res = XMLManager.getInstance().getSendClientBI();
 					
 					AsyncFileFactory.getInstance().getFileManager().send("clients.xml", EApplication.BI);
-					LOGGER.info("***** Envoi de la segmentation client.");
+					LOGGER.info("***** Envoi de la base client.");
 				} catch (AsyncFileException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
