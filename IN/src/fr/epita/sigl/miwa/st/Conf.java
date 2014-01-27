@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import src.fr.epita.sigl.miwa.st.TimedSocketFactory;
 import fr.epita.sigl.miwa.st.application_locator.IApplicationLocator;
 import fr.epita.sigl.miwa.st.sync.SyncMessFactory;
 
@@ -154,8 +155,8 @@ public class Conf {
 	}
 
 	/**
-	 * Retourne le chemin vers le répertoire local où les fichiers asynchrones
-	 * vont être stockés
+	 * Retourne le chemin vers le rï¿½pertoire local oï¿½ les fichiers asynchrones
+	 * vont ï¿½tre stockï¿½s
 	 * 
 	 * @return
 	 * @throws ConfigurationException

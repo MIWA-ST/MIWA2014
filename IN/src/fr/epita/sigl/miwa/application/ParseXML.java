@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.jdom2.Document;
@@ -88,9 +89,8 @@ public class ParseXML {
 				LOGGER.info("***** CRM : Une erreure s'est produite lors de la mise à jour.");
 				return true;
 			}
-			Random r = new Random();
-			Integer rand = r.nextInt(5);
-			File file = new File("temp.xml" + rand);
+			String uuid = UUID.randomUUID().toString();
+			File file = new File(uuid + ".xml");
 			
 			try {
 				BufferedWriter out = new BufferedWriter(new FileWriter(file));

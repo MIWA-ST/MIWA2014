@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.jdom2.JDOMException;
@@ -78,12 +79,11 @@ public class EnvoiVenteDetailleeBI {
 		Integer rand2 = r2.nextInt(2);
 		if (rand2 > 0)
 		{
-			Random randName = new Random();
-			Integer randNom = randName.nextInt(5);
+			String uuid = UUID.randomUUID().toString();
 			
 			CreationClientCR testCreationCRM = new CreationClientCR(new EnvoiEnteteCR("creation_compte", "Internet", ClockClient.getClock().getHour()),
-			"HADDAD" + randNom,
-			"CHAWQUI" + randNom + "93",
+			"HADDAD" + uuid,
+			"CHAWQUI" + uuid + "93",
 			"93 RUE DU BOSSS",
 			"93170",
 			"chawqui.haddad@gmail.com",
