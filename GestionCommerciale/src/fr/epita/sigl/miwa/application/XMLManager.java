@@ -224,7 +224,7 @@ public class XMLManager {
 		DemandeNiveauStock demande = new DemandeNiveauStock();
 		demande.setCommandNumber(doc.getElementsByTagName("numero").item(0)
 				.getTextContent());
-		System.out.println("j'ai le num " + demande.getCommandNumber());
+		//System.out.println("j'ai le num " + demande.getCommandNumber());
 		demande.setDatedemand(doc.getElementsByTagName("date").item(0)
 				.getTextContent());
 
@@ -239,14 +239,14 @@ public class XMLManager {
 			a.setRef_article(eElement.getElementsByTagName("REFERENCE").item(0)
 					.getTextContent());
 			articles.add(a);
-			System.out.println("un article add " + a.getRef_article());
+			//System.out.println("un article add " + a.getRef_article());
 		}
 		demande.setArticles(articles);
-		System.out.println("j'ai fini xmlm");
+		//System.out.println("j'ai fini xmlm");
 		JdbcConnection.getInstance().getConnection();
 		JdbcConnection.getInstance().insertDemandeNiveauStock(demande);
 		JdbcConnection.getInstance().closeConnection();
-		System.out.println("fin jdbc");
+		//System.out.println("fin jdbc");
 		return demande;
 
 	}
@@ -293,7 +293,7 @@ public class XMLManager {
 
 	public CommandeInternet getexpeditionclientfromEntrepot(String message,
 			Document doc) throws AsyncMessageException {
-		System.out.println("mesg entrepot " + message);
+		//System.out.println("mesg entrepot " + message);
 		CommandeInternet command = new CommandeInternet();
 		command.setCommandNumber(doc.getElementsByTagName("NUMERO").item(0)
 				.getTextContent());
