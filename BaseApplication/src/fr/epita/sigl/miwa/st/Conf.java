@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.RMISocketFactory;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,6 +79,11 @@ public class Conf {
 	}
 
 	private Conf() {
+		try {
+			RMISocketFactory.setSocketFactory(new TimedSocketFactory(5000));
+		} catch (IOException e) {
+			LOGGER.severe("failed to set RMIFactory.");
+		}
 		try {
 			_prop.load(new FileInputStream("conf/config.properties"));
 			_currentApplication = EApplication.getFromShortName(_prop
